@@ -22,6 +22,8 @@ work in progress
 
 Thanks to :
 
+https://github.com/EDCD/EDDI
+
 https://github.com/EliteAPI/EliteAPI
 
 https://github.com/Filtik/EliteDangerousLCD
