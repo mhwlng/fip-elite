@@ -191,8 +191,18 @@ namespace Elite
         //private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
         //protected Thread GraphicsDrawingThread;
 
-        private Font font = new Font("Console", 10f);
-        private SolidBrush solidBrush = new SolidBrush(Color.White);
+        private static Font font = new Font("Arial Unicode MS", 10f);
+        private static SolidBrush solidBrush = new SolidBrush(Color.White);
+
+        private static List<Bitmap> pageBitmapList = new List<Bitmap>
+        {
+            new Bitmap(".\\Images\\1.png"),
+            new Bitmap(".\\Images\\2.png"),
+            new Bitmap(".\\Images\\3.png"),
+            new Bitmap(".\\Images\\4.png"),
+            new Bitmap(".\\Images\\5.png"),
+            new Bitmap(".\\Images\\6.png")
+        };
 
         protected DirectOutputClass.PageCallback PageCallbackDelegate;
         protected DirectOutputClass.SoftButtonCallback SoftButtonCallbackDelegate;
@@ -206,6 +216,7 @@ namespace Elite
         private Location LocationData = new Location();
         private Dock Dock = new Dock();
 
+        
 
         public FipPanel(IntPtr devicePtr) 
         {
@@ -237,6 +248,7 @@ namespace Elite
             {
                 App.log.Error("FipPanel failed to init RegisterSoftButtonCallback. " + returnValues1);
             }
+
 
             AddPage(DEFAULT_PAGE, true);
 
@@ -394,8 +406,14 @@ namespace Elite
                     {
                         graphics.Clear(Color.Black);
 
-                        var str = DateTime.Now.ToLongTimeString() + "\n";
-                        
+                        var str = "";//DateTime.Now.ToLongTimeString() + "\n";
+
+                        if (_currenttab > 0)
+                        {
+                            graphics.DrawImage(pageBitmapList[(int) _currenttab - 1], 0, 0);
+                        }
+
+
                         switch (_currenttab)
                         {
                             
@@ -404,7 +422,7 @@ namespace Elite
                                 break;
 
                             case LCDTab.Commander:
-                                str += "CMDR\n";
+
 
                                 str += "Commander : " + Commander.Name + "\n";
                                 str += "Ship : " + ShipExtra.Name != "" ? ShipExtra.Name + "\n" : ShipExtra.Type + "\n";
@@ -443,7 +461,6 @@ namespace Elite
 
                                 break;
                             case LCDTab.Ship:
-                                str += "SHIP\n";
 
                                 str += "Ship: ";
                                 str += ShipExtra.Name != "" ? ShipExtra.Name + "\n" : ShipExtra.Type + "\n";
@@ -458,7 +475,6 @@ namespace Elite
                                 break;
 
                             case LCDTab.Navigation:
-                                str += "NAV\n";
 
                                 str += "Star System: ";
                                 str += App.EliteApi.Location.StarSystem + "\n";
@@ -495,7 +511,6 @@ namespace Elite
                                 break;
 
                             case LCDTab.Events:
-                                str += "EVENTS\n";
                                 foreach (var b in EventHistory)
                                 {
                                     str += b + "\n";
@@ -572,7 +587,7 @@ namespace Elite
                                     */
 
 
-                        var point = new PointF(0, 0);
+                        var point = new PointF(70, 0);
                         graphics.DrawString(str, font, solidBrush, point);
 
                         fipImage.RotateFlip(RotateFlipType.Rotate180FlipX);
