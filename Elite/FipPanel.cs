@@ -580,7 +580,6 @@ namespace Elite
 
                         if (_lasttab > 0)
                         {
-
                             DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint)_lasttab, false);
                         }
 
