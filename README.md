@@ -1,7 +1,7 @@
 # fip-elite
 Logitech Flight Instrument Panel driver for Elite Dangerous
 
-Logitech Flight Instrument Panel Drivers :
+works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 
 https://support.logi.com/hc/en-us/articles/360024848713--Downloads-Flight-Instrument-Panel
 
