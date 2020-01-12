@@ -1,38 +1,38 @@
-<div style="font-family:'Arial Unicode MS';font-size:15px;line-height:24px;margin-top:1px;margin-left:65px;color:white;">
-    <table style="border-spacing:5px;">
+<div class="main">
+    <table>
         <tr>
-            <td>Star System</td>
-            <td>@Model.StarSystem</td>
+            <td class="caption">Star System</td>
+            <td class="data">@Model.StarSystem</td>
         </tr>
         <tr>
-            <td>Body</td>
-            <td>@Model.Body</td>
+            <td class="caption">Body</td>
+            <td class="data">@Model.Body</td>
         </tr>
         <tr>
-            <td>Body Type</td>
-            <td>@Model.BodyType</td>
+            <td class="caption">Body Type</td>
+            <td class="data">@Model.BodyType</td>
         </tr>
         <tr>
-            <td>Station</td>
-            <td>@Model.Station</td>
+            <td class="caption">Station</td>
+            <td class="data">@Model.Station</td>
         </tr>
         @if (Model.Docked)
         {
             <tr>
-                <td>Landing Pad</td>
-                <td>@Model.LandingPad</td>
+                <td class="caption">Landing Pad</td>
+                <td class="data">@Model.LandingPad</td>
             </tr>
             <tr>
-                <td>Station Type</td>
-                <td>@Model.StationType</td>
+                <td class="caption">Station Type</td>
+                <td class="data">@Model.StationType</td>
             </tr>
             <tr>
-                <td>Government</td>
-                <td>@Model.Government</td>
+                <td class="caption">Government</td>
+                <td class="data">@Model.Government</td>
             </tr>
             <tr>
-                <td>Allegiance</td>
-                <td>@Model.Allegiance</td>
+                <td class="caption">Allegiance</td>
+                <td class="data">@Model.Allegiance</td>
             </tr>
         }
     </table>

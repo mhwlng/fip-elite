@@ -1,16 +1,19 @@
-<div style="font-family:'Arial Unicode MS';font-size:15px;line-height:24px;margin-top:1px;margin-left:65px;color:white;">
-    <table style="border-spacing:5px;">
+<div class="main">
+    <table>
         <tr>
-            <td>Commander</td>
-            <td>@Model.Commander</td>
+            <td class="caption">Commander</td>
+            <td class="data">@Model.Commander</td>
         </tr>
+        @if (!string.IsNullOrEmpty(@Model.Ship))
+        {
+            <tr>
+                <td class="caption">Ship</td>
+                <td class="data">@Model.Ship</td>
+            </tr>
+        }
         <tr>
-            <td>Ship</td>
-            <td>@Model.Ship</td>
-        </tr>
-        <tr>
-            <td>Credits</td>
-            <td>@Model.Credits</td>
+            <td class="caption">Credits</td>
+            <td class="data">@Model.Credits</td>
         </tr>
     </table>
 </div>

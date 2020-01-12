@@ -10,6 +10,7 @@ using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using Somfic.Logging;
 using Somfic.Logging.Handlers;
+using TheArtOfDev.HtmlRenderer.Core;
 
 namespace Elite
 {
@@ -28,6 +29,8 @@ namespace Elite
 
         public static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        public static CssData cssData;
+        
         protected override void OnStartup(StartupEventArgs e)
         {
             const string appName = "Fip-Elite";
@@ -69,6 +72,8 @@ namespace Elite
             Engine.Razor.Compile("4.cshtml", null);
             Engine.Razor.Compile("5.cshtml", null);
             Engine.Razor.Compile("6.cshtml", null);
+
+            cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(File.ReadAllText("Templates\\styles.css"), true);
 
             log.Info("Fip-Elite started");
 

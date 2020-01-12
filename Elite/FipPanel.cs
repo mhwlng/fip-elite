@@ -26,7 +26,7 @@ namespace Elite
 {
     public enum LCDTab
     {
-        None = -1,
+        None = 0,
         Commander = 1,
         Rank = 2,
         Ship = 3,
@@ -198,6 +198,7 @@ namespace Elite
 
         private static List<Bitmap> pageBitmapList = new List<Bitmap>
         {
+            new Bitmap(".\\Images\\0.png"),
             new Bitmap(".\\Images\\1.png"),
             new Bitmap(".\\Images\\2.png"),
             new Bitmap(".\\Images\\3.png"),
@@ -253,6 +254,8 @@ namespace Elite
 
 
             AddPage(DEFAULT_PAGE, true);
+
+            RefreshDevicePage(0);
 
             App.EliteApi.Events.AllEvent += HandleEliteEventsDelegate;
 
@@ -413,8 +416,7 @@ namespace Elite
 
                             case LCDTab.None:
 
-                                str =
-                                    "<div style=\"font-family:'Arial Unicode MS';font-size:15px;line-height:24px;margin-top:1px;margin-left:65px;color:white;\">";
+                                str = "<div class=\"main\">";
 
                                 str += "INIT<br/>";
 
@@ -456,9 +458,8 @@ namespace Elite
                                         ExplorationRank = App.EliteApi.Commander.ExplorationRankLocalised,
                                         ExplorationRankProgress = App.EliteApi.Commander.ExplorationRankProgress,
 
-                                        CqcRank = (App.EliteApi.Commander.CqcRank == 0
-                                            ? ""
-                                            : App.EliteApi.Commander.CqcRank.ToString()),
+                                        CqcRank = App.EliteApi.Commander.CqcRank.ToString(),
+
                                         CqcRankProgress = App.EliteApi.Commander.CqcRankProgress,
                                     });
 
@@ -512,8 +513,7 @@ namespace Elite
 
                             case LCDTab.Events:
 
-                                str =
-                                    "<div style=\"font-family:'Arial Unicode MS';font-size:15px;line-height:24px;margin-top:1px;margin-left:65px;color:white;\">";
+                                str = str = "<div class=\"main\">";
 
                                 foreach (var b in EventHistory)
                                 {
@@ -595,16 +595,15 @@ namespace Elite
 
                         graphics.Clear(Color.Black);
 
-                        Image image = HtmlRender.RenderToImage(str,
-                            new Size(320, 240), new Size(320, 240), Color.Black);
-
-                        graphics.DrawImage(image, 0, 0);
-
                         if (_currenttab > 0)
                         {
-                            graphics.DrawImage(pageBitmapList[(int) _currenttab - 1], 0, 0);
+                            Image image = HtmlRender.RenderToImage(str,
+                                new Size(320, 240), new Size(320, 240), Color.Black, App.cssData);
+
+                            graphics.DrawImage(image, 0, 0);
                         }
 
+                        graphics.DrawImage(pageBitmapList[(int)_currenttab], 0, 0);
 
                         fipImage.RotateFlip(RotateFlipType.Rotate180FlipX);
                         SetImage(page, fipImage);

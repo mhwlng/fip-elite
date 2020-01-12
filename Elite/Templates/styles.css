@@ -1,0 +1,26 @@
+.caption {
+    color: #FFFFFF;
+}
+
+.data {
+     color: #FFB000;
+ }
+
+.right {
+    text-align: right;
+}
+
+div.main {
+    padding: 0;
+    margin: 0;
+    font-family: 'Arial Unicode MS';
+    font-size: 15px;
+    margin-left: 65px;
+    color: white;
+}
+
+table {
+    border-spacing: 5px;
+}
+
+

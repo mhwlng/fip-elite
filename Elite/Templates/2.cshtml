@@ -1,34 +1,37 @@
-<div style="font-family:'Arial Unicode MS';font-size:15px;line-height:24px;margin-top:1px;margin-left:65px;color:white;">
-    <table style="border-spacing:5px;">
+<div class="main">
+    <table>
         <tr>
-            <td>Federation</td>
-            <td>@Model.FederationRank</td>
-            <td>@Model.FederationRankProgress %</td>
+            <td class="caption">Federation</td>
+            <td class="data">@Model.FederationRank</td>
+            <td class="data right">@Model.FederationRankProgress %</td>
         </tr>
         <tr>
-            <td>Empire</td>
-            <td>@Model.EmpireRank</td>
-            <td>@Model.EmpireRankProgress %</td>
+            <td class="caption">Empire</td>
+            <td class="data">@Model.EmpireRank</td>
+            <td class="data right">@Model.EmpireRankProgress %</td>
         </tr>
         <tr>
-            <td>Combat</td>
-            <td>@Model.CombatRank</td>
-            <td>@Model.CombatRankProgress %</td>
+            <td class="caption">Combat</td>
+            <td class="data">@Model.CombatRank</td>
+            <td class="data right">@Model.CombatRankProgress %</td>
         </tr>
         <tr>
-            <td>Trade</td>
-            <td>@Model.TradeRank</td>
-            <td>@Model.TradeRankProgress %</td>
+            <td class="caption">Trade</td>
+            <td class="data">@Model.TradeRank</td>
+            <td class="data right">@Model.TradeRankProgress %</td>
         </tr>
         <tr>
-            <td>Explorer</td>
-            <td>@Model.ExplorationRank</td>
-            <td>@Model.ExplorationRankProgress %</td>
+            <td class="caption">Explorer</td>
+            <td class="data">@Model.ExplorationRank</td>
+            <td class="data right">@Model.ExplorationRankProgress %</td>
         </tr>
-        <tr>
-            <td>CQC</td>
-            <td>@Model.CqcRank</td>
-            <td>@Model.CqcRankProgress %</td>
-        </tr>
+        @if (Model.CqcRank != "0")
+        {
+            <tr>
+                <td class="caption">CQC</td>
+                <td class="data">@Model.CqcRank</td>
+                <td class="data right">@Model.CqcRankProgress %</td>
+            </tr>
+        }
     </table>
 </div>
