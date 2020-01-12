@@ -1,5 +1,18 @@
 # fip-elite
-Logitech Flight Instrument Panel driver for Elite Dangerous
+Logitech Flight Instrument Panel application for Elite Dangerous
+
+WORK IN PROGRESS
+
+![Logitech Flight Instrument Panel with Elgato Stream Deck](https://i.imgur.com/HTcbXx9.jpg)
+
+![Screenshot 1](https://i.imgur.com/TOnj5NI.png)
+![Screenshot 2](https://i.imgur.com/NePOhLk.png)
+![Screenshot 3](https://i.imgur.com/rXM4j8n.png)
+![Screenshot 4](https://i.imgur.com/vAhmwGY.png)
+![Screenshot 5](https://i.imgur.com/Os2GbWU.png)
+![Screenshot 6](https://i.imgur.com/UDZainr.png)
+
+This application displays data from Elite Dangerous on Logitech Flight Instrument Panels
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 
@@ -12,13 +25,9 @@ Last Update: 2017-05-11
 https://download01.logi.com/web/ftp/pub/techsupport/simulation/Flight_Instrument_Panel_x64_Drivers.exe
 
 
+Also see companion plugin for Elgato stream deck :
 
-
-
-
-work in progress
-
-
+https://github.com/mhwlng/streamdeck-elite
 
 Thanks to :
 

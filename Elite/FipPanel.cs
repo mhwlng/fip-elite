@@ -307,7 +307,7 @@ namespace Elite
                                     {
                                         Commander = Commander.Name,
 
-                                        ShipName = ShipExtra.Name,
+                                        ShipName = ShipExtra.Name?.Trim(),
 
                                         ShipType = ShipExtra.Type,
 
@@ -369,7 +369,7 @@ namespace Elite
                                 str =
                                     Engine.Razor.Run("3.cshtml", null, new
                                     {
-                                        ShipName = ShipExtra.Name,
+                                        ShipName = ShipExtra.Name?.Trim(),
 
                                         ShipType = ShipExtra.Type,
 
@@ -595,6 +595,10 @@ namespace Elite
                         }
 
                         graphics.DrawImage(pageBitmapList[(int)_currenttab], 0, 0);
+
+#if DEBUG
+                        fipImage.Save(@"screenshot"+(int)_currenttab+".png", ImageFormat.Png);
+#endif
 
                         fipImage.RotateFlip(RotateFlipType.Rotate180FlipX);
                         SetImage(page, fipImage);
