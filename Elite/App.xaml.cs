@@ -46,17 +46,6 @@ namespace Elite
             base.OnStartup(e);
 
             log4net.Config.XmlConfigurator.Configure();
-            
-            //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
-            notifyIcon = (TaskbarIcon) FindResource("NotifyIcon");
-
-
-            EliteApi.Start(false);
-
-            if (!fipHandler.Initialize())
-            {
-                Application.Current.Shutdown();
-            }
 
             var config = new TemplateServiceConfiguration
             {
@@ -74,6 +63,16 @@ namespace Elite
             Engine.Razor.Compile("6.cshtml", null);
 
             cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(File.ReadAllText("Templates\\styles.css"), true);
+
+            //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
+            notifyIcon = (TaskbarIcon) FindResource("NotifyIcon");
+
+            EliteApi.Start(false);
+
+            if (!fipHandler.Initialize())
+            {
+                Application.Current.Shutdown();
+            }
 
             log.Info("Fip-Elite started");
 

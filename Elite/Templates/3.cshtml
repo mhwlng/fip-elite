@@ -1,13 +1,19 @@
 <div class="main">
     <table>
-        <tr>
-            <td class="caption">Ship</td>
-            <td class="data">@Model.Ship</td>
-        </tr>
-        <tr>
-            <td class="caption">Ship Type</td>
-            <td class="data">@Model.ShipType</td>
-        </tr>
+        @if (!string.IsNullOrEmpty(Model.ShipName))
+        {
+            <tr>
+                <td class="caption">Ship Name</td>
+                <td class="data">@Model.ShipName</td>
+            </tr>
+        }
+        @if (!string.IsNullOrEmpty(Model.ShipType))
+        {
+            <tr>
+                <td class="caption">Ship Type</td>
+                <td class="data">@Model.ShipType</td>
+            </tr>
+        }
         <tr>
             <td class="caption">Fuel Main</td>
             <td class="data">@Model.FuelMain</td>
@@ -20,5 +26,13 @@
             <td class="caption">Fuel Max</td>
             <td class="data">@Model.MaxFuel</td>
         </tr>
+        @if (Model.JumpRange > 0)
+        {
+            <tr>
+                <td class="caption">Jump Range</td>
+                <td class="data">@Model.JumpRange</td>
+            </tr>
+        }
+
     </table>
 </div>
