@@ -5,6 +5,9 @@ using System.Windows;
 using EliteAPI;
 using Hardcodet.Wpf.TaskbarNotification;
 using log4net;
+using RazorEngine;
+using RazorEngine.Configuration;
+using RazorEngine.Templating;
 using Somfic.Logging;
 using Somfic.Logging.Handlers;
 
@@ -51,6 +54,21 @@ namespace Elite
             {
                 Application.Current.Shutdown();
             }
+
+            var config = new TemplateServiceConfiguration
+            {
+                TemplateManager = new ResolvePathTemplateManager(new[] { "Templates" }),
+                DisableTempFileLocking = true
+            };
+
+            Engine.Razor = RazorEngineService.Create(config);
+
+            Engine.Razor.Compile("1.cshtml", null);
+            Engine.Razor.Compile("2.cshtml", null);
+            Engine.Razor.Compile("3.cshtml", null);
+            Engine.Razor.Compile("4.cshtml", null);
+            Engine.Razor.Compile("5.cshtml", null);
+            Engine.Razor.Compile("6.cshtml", null);
 
             log.Info("Fip-Elite started");
 

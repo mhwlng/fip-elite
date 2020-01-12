@@ -14,6 +14,9 @@ using EliteAPI.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TheArtOfDev.HtmlRenderer.WinForms;
+using RazorEngine;
+using RazorEngine.Templating; // For extension methods.
+
 
 // ReSharper disable IdentifierTypo
 // ReSharper disable StringLiteralTypo
@@ -192,9 +195,6 @@ namespace Elite
         protected bool DoShutdown;
         //private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
         //protected Thread GraphicsDrawingThread;
-
-        private static Font font = new Font("Arial Unicode MS", 10f);
-        private static SolidBrush solidBrush = new SolidBrush(Color.White);
 
         private static List<Bitmap> pageBitmapList = new List<Bitmap>
         {
@@ -397,7 +397,7 @@ namespace Elite
             }
             return ReturnValues.E_FAIL;
         }
-        
+
         public void RefreshDevicePage(uint page)
         {
             lock (_refreshDevicePageLock)
@@ -406,131 +406,121 @@ namespace Elite
                 {
                     using (var graphics = Graphics.FromImage(fipImage))
                     {
-                        var str = "";//DateTime.Now.ToLongTimeString() + "<br/>";
-                        
+                        var str = ""; //DateTime.Now.ToLongTimeString() + "<br/>";
+
                         switch (_currenttab)
                         {
-                            
+
                             case LCDTab.None:
+
+                                str =
+                                    "<div style=\"font-family:'Arial Unicode MS';font-size:15px;line-height:24px;margin-top:1px;margin-left:65px;color:white;\">";
+
                                 str += "INIT<br/>";
+
+                                str += "</div>";
+
                                 break;
 
                             case LCDTab.Commander:
 
-                                str += "<table style=\"border-spacing:5px;\">";
 
-                                str += "<tr><td>Commander</td>";
-                                str += "<td>" + Commander.Name + "</td>";
+                                str =
+                                    Engine.Razor.Run("1.cshtml", null, new
+                                    {
+                                        Commander = Commander.Name,
 
-                                str += "</tr><tr><td>Ship</td>";
-                                str += "<td>" + (ShipExtra.Name != "" ? ShipExtra.Name : ShipExtra.Type) + "</td>";
+                                        Ship = (ShipExtra.Name != "" ? ShipExtra.Name : ShipExtra.Type),
 
-                                str += "</tr><tr><td>Credits</td>";
-                                str += "<td>" + Commander.Credits.ToString("N0") + " CR" + "</td>";
-
-                                str += "</tr></table>";
-
-
+                                        Credits = Commander.Credits.ToString("N0") + " CR"
+                                    });
 
                                 break;
                             case LCDTab.Rank:
 
-                                str += "<table style=\"border-spacing:5px;\">";
+                                str =
+                                    Engine.Razor.Run("2.cshtml", null, new
+                                    {
+                                        FederationRank = App.EliteApi.Commander.FederationRankLocalised,
+                                        FederationRankProgress = App.EliteApi.Commander.FederationRankProgress,
 
-                                str += "<tr><td>Federation</td>";
-                                str += "<td>"+App.EliteApi.Commander.FederationRankLocalised + "</td>" +
-                                       "<td>" + App.EliteApi.Commander.FederationRankProgress + "%</td>";
+                                        EmpireRank = App.EliteApi.Commander.EmpireRankLocalised,
+                                        EmpireRankProgress = App.EliteApi.Commander.EmpireRankProgress,
 
-                                str += "</tr><tr><td>Empire</td>";
-                                str += "<td>" + App.EliteApi.Commander.EmpireRankLocalised + "</td>" +
-                                       "<td>" + App.EliteApi.Commander.EmpireRankProgress + "%</td>";
+                                        CombatRank = App.EliteApi.Commander.CombatRankLocalised,
+                                        CombatRankProgress = App.EliteApi.Commander.CombatRankProgress,
 
-                                //str += "Alliance: ";
-                                //str += Ranks.AllianceReputation + "%<br/>";
+                                        TradeRank = App.EliteApi.Commander.TradeRankLocalised,
+                                        TradeRankProgress = App.EliteApi.Commander.TradeRankProgress,
 
-                                str += "</tr><tr><td>Combat</td>";
-                                str += "<td>" + App.EliteApi.Commander.CombatRankLocalised + "</td>" +
-                                       "<td>" + App.EliteApi.Commander.CombatRankProgress + "%</td>";
+                                        ExplorationRank = App.EliteApi.Commander.ExplorationRankLocalised,
+                                        ExplorationRankProgress = App.EliteApi.Commander.ExplorationRankProgress,
 
-                                str += "</tr><tr><td>Trade</td>";
-                                str += "<td>" + App.EliteApi.Commander.TradeRankLocalised + "</td>" +
-                                       "<td>" + App.EliteApi.Commander.TradeRankProgress + "%</td>";
+                                        CqcRank = (App.EliteApi.Commander.CqcRank == 0
+                                            ? ""
+                                            : App.EliteApi.Commander.CqcRank.ToString()),
+                                        CqcRankProgress = App.EliteApi.Commander.CqcRankProgress,
+                                    });
 
-                                str += "</tr><tr><td>Explorer</td>";
-                                str += "<td>" + App.EliteApi.Commander.ExplorationRankLocalised + "</td>" +
-                                       "<td>" + App.EliteApi.Commander.ExplorationRankProgress + "%</td>";
-
-                                str += "</tr><tr><td>CQC</td>";
-                                str += "<td>" + (App.EliteApi.Commander.CqcRank == 0 ? "" : App.EliteApi.Commander.CqcRank.ToString()) + "</td>" +
-                                       "<td>" + App.EliteApi.Commander.CqcRankProgress + "%</td>";
-
-                                str += "</tr></table>";
 
                                 break;
                             case LCDTab.Ship:
 
-                                str += "<table style=\"border-spacing:5px;\">";
+                                str =
+                                    Engine.Razor.Run("3.cshtml", null, new
+                                    {
+                                        Ship = ShipExtra.Name != "" ? ShipExtra.Name : ShipExtra.Type,
 
-                                str += "<tr><td>Ship</td>";
-                                str += "<td>" + ShipExtra.Name != "" ? ShipExtra.Name : ShipExtra.Type + "</td>"; 
+                                        ShipType = ShipExtra.Type,
 
-                                str += "</tr><tr><td>Ship Type</td>";
-                                str += "<td>" + ShipExtra.Type + "</td>" ;
+                                        FuelMain = App.EliteApi.Status.Fuel.FuelMain,
 
-                                str += "</tr><tr><td>Fuel Main</td>";
-                                str += "<td>" + App.EliteApi.Status.Fuel.FuelMain + "</td>" ;
+                                        FuelReservoir = App.EliteApi.Status.Fuel.FuelReservoir,
 
-                                str += "</tr><tr><td>Fuel Reservoir</td>";
-                                str += "<td>" + App.EliteApi.Status.Fuel.FuelReservoir + "</td>" ;
+                                        MaxFuel = App.EliteApi.Status.Fuel.MaxFuel
 
-                                str += "</tr><tr><td>Fuel Max</td>";
-                                str += "<td>" + App.EliteApi.Status.Fuel.MaxFuel + "</td>";
-
-                                str += "</tr></table>";
+                                    });
 
                                 break;
 
                             case LCDTab.Navigation:
 
-                                str += "<table style=\"border-spacing:5px;\">";
+                                str =
+                                    Engine.Razor.Run("4.cshtml", null, new
+                                    {
 
-                                str += "<tr><td>Star System</td>";
-                                str += "<td>" + App.EliteApi.Location.StarSystem + "</td>";
+                                        StarSystem = App.EliteApi.Location.StarSystem,
 
-                                str += "</tr><tr><td>Body</td>";
-                                str += "<td>" + App.EliteApi.Location.Body + "</td>";
+                                        Body = App.EliteApi.Location.Body,
 
-                                str += "</tr><tr><td>Body Type</td>";
-                                str += "<td>" + App.EliteApi.Location.BodyType + "</td>";
+                                        BodyType = App.EliteApi.Location.BodyType,
 
-                                str += "</tr><tr><td>Station</td>";
-                                str += "<td>" + App.EliteApi.Location.Station + "</td>";
-                                
+                                        Station = App.EliteApi.Location.Station,
 
-                                if (App.EliteApi.Status.Docked)
-                                {
-                                    str += "<tr><td>Landingpad</td>";
-                                    str += "<td>" + (Dock.LandingPad != -1 ? Dock.LandingPad.ToString() : "-") + "</td>";
+                                        Docked = App.EliteApi.Status.Docked,
 
-                                    str += "</tr><tr><td>Stationtype</td>";
-                                    str += "<td>" + Dock.Type + "</td>";
+                                        LandingPad = Dock.LandingPad != -1 ? Dock.LandingPad.ToString() : "-",
 
-                                    str += "</tr><tr><td>Government</td>";
-                                    str += "<td>" + Dock.Government + "</td>";
+                                        StationType = Dock.Type,
 
-                                    str += "</tr><tr><td>Allegiance</td>";
-                                    str += "<td>" + Dock.Allegiance + "</td>";
-                                }
+                                        Government = Dock.Government,
 
-                                str += "</tr></table>";
+                                        Allegiance = Dock.Allegiance
+                                    });
 
                                 break;
 
                             case LCDTab.Events:
+
+                                str =
+                                    "<div style=\"font-family:'Arial Unicode MS';font-size:15px;line-height:24px;margin-top:1px;margin-left:65px;color:white;\">";
+
                                 foreach (var b in EventHistory)
                                 {
                                     str += b + "<br/>";
                                 }
+
+                                str += "</div>";
 
                                 break;
                         }
@@ -602,16 +592,17 @@ namespace Elite
 
                                     */
 
+
                         graphics.Clear(Color.Black);
 
-                        Image image = HtmlRender.RenderToImage("<div style=\"font-family:'Arial Unicode MS';font-size:15px;line-height:24px;margin-top:1px;margin-left:65px;color:white;\">"+str+"</div>",
+                        Image image = HtmlRender.RenderToImage(str,
                             new Size(320, 240), new Size(320, 240), Color.Black);
 
                         graphics.DrawImage(image, 0, 0);
 
                         if (_currenttab > 0)
                         {
-                            graphics.DrawImage(pageBitmapList[(int)_currenttab - 1], 0, 0);
+                            graphics.DrawImage(pageBitmapList[(int) _currenttab - 1], 0, 0);
                         }
 
 
@@ -620,12 +611,12 @@ namespace Elite
 
                         if (_lasttab > 0)
                         {
-                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint)_lasttab, false);
+                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint) _lasttab, false);
                         }
 
                         if (_currenttab > 0)
                         {
-                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint)_currenttab, true);
+                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint) _currenttab, true);
                         }
 
                     }

@@ -1,0 +1,39 @@
+<div style="font-family:'Arial Unicode MS';font-size:15px;line-height:24px;margin-top:1px;margin-left:65px;color:white;">
+    <table style="border-spacing:5px;">
+        <tr>
+            <td>Star System</td>
+            <td>@Model.StarSystem</td>
+        </tr>
+        <tr>
+            <td>Body</td>
+            <td>@Model.Body</td>
+        </tr>
+        <tr>
+            <td>Body Type</td>
+            <td>@Model.BodyType</td>
+        </tr>
+        <tr>
+            <td>Station</td>
+            <td>@Model.Station</td>
+        </tr>
+        @if (Model.Docked)
+        {
+            <tr>
+                <td>Landing Pad</td>
+                <td>@Model.LandingPad</td>
+            </tr>
+            <tr>
+                <td>Station Type</td>
+                <td>@Model.StationType</td>
+            </tr>
+            <tr>
+                <td>Government</td>
+                <td>@Model.Government</td>
+            </tr>
+            <tr>
+                <td>Allegiance</td>
+                <td>@Model.Allegiance</td>
+            </tr>
+        }
+    </table>
+</div>
