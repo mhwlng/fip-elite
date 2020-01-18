@@ -1,32 +1,38 @@
+@{
+    Layout = "layout.cshtml";
+}
+
 <div class="main">
     <table>
-        @if (!string.IsNullOrEmpty(Model.Commander))
-        {
-            <tr>
-                <td class="caption">Commander</td>
-                <td class="data">@Model.Commander</td>
-            </tr>
-        }
-        @if (!string.IsNullOrEmpty(Model.ShipName))
-        {
-            <tr>
-                <td class="caption">Ship Name</td>
-                <td class="data">@Model.ShipName</td>
-            </tr>
-        }
-        @if (!string.IsNullOrEmpty(Model.ShipType))
-        {
-            <tr>
-                <td class="caption">Ship Type</td>
-                <td class="data">@Model.ShipType</td>
-            </tr>
-        }
-        @if (Model.Credits != "0")
-        {
-            <tr>
-                <td class="caption">Credits</td>
-                <td class="data">@Model.Credits CR</td>
-            </tr>
-        }
+        <tbody>
+            @if (!string.IsNullOrEmpty(Model.Commander))
+            {
+                <tr>
+                    <td class="caption">Commander</td>
+                    <td class="data">@Model.Commander</td>
+                </tr>
+            }
+            @if (!string.IsNullOrEmpty(Model.ShipName))
+            {
+                <tr>
+                    <td class="caption">Ship Name</td>
+                    <td class="data">@Model.ShipName</td>
+                </tr>
+            }
+            @if (!string.IsNullOrEmpty(Model.ShipType))
+            {
+                <tr>
+                    <td class="caption">Ship Type</td>
+                    <td class="data">@Model.ShipType</td>
+                </tr>
+            }
+            @if (Model.Credits != "0")
+            {
+                <tr>
+                    <td class="caption">Credits</td>
+                    <td class="data">@Model.Credits CR</td>
+                </tr>
+            }
+        </tbody>
     </table>
 </div>

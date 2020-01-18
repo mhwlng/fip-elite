@@ -1,57 +1,63 @@
+@{
+    Layout = "layout.cshtml";
+}
+
 <div class="main">
     <table>
-        <tr>
-            <td class="caption">Star System</td>
-            <td class="data">@Model.StarSystem</td>
-        </tr>
-        @if (Model.BodyType == "Station")
-        {
+        <tbody>
             <tr>
-                <td class="caption">Station</td>
-                <td class="data">@Model.Station</td>
+                <td class="caption">Star System</td>
+                <td class="data">@Model.StarSystem</td>
             </tr>
-        }
-        else
-        {
-            <tr>
-                <td class="caption">Body</td>
-                <td class="data">@Model.Body</td>
-            </tr>
-            <tr>
-                <td class="caption">Body Type</td>
-                <td class="data">@Model.BodyType</td>
-            </tr>
-        }
-        @if (Model.Docked)
-        {
-            if (Model.LandingPad > 0)
-            {
-            <tr>
-                <td class="caption">Landing Pad</td>
-                <td class="data">@Model.LandingPad</td>
-            </tr>
-            }
-            if (!string.IsNullOrEmpty(Model.StationType))
+            @if (Model.BodyType == "Station")
             {
                 <tr>
-                    <td class="caption">Station Type</td>
-                    <td class="data">@Model.StationType</td>
+                    <td class="caption">Station</td>
+                    <td class="data">@Model.Station</td>
                 </tr>
             }
-            if (!string.IsNullOrEmpty(Model.Government))
+            else
             {
                 <tr>
-                    <td class="caption">Government</td>
-                    <td class="data">@Model.Government</td>
+                    <td class="caption">Body</td>
+                    <td class="data">@Model.Body</td>
                 </tr>
-            }
-            if (!string.IsNullOrEmpty(Model.Allegiance))
-            {
                 <tr>
-                    <td class="caption">Allegiance</td>
-                    <td class="data">@Model.Allegiance</td>
+                    <td class="caption">Body Type</td>
+                    <td class="data">@Model.BodyType</td>
                 </tr>
             }
-        }
+            @if (Model.Docked)
+            {
+                if (Model.LandingPad > 0)
+                {
+                    <tr>
+                        <td class="caption">Landing Pad</td>
+                        <td class="data">@Model.LandingPad</td>
+                    </tr>
+                }
+                if (!string.IsNullOrEmpty(Model.StationType))
+                {
+                    <tr>
+                        <td class="caption">Station Type</td>
+                        <td class="data">@Model.StationType</td>
+                    </tr>
+                }
+                if (!string.IsNullOrEmpty(Model.Government))
+                {
+                    <tr>
+                        <td class="caption">Government</td>
+                        <td class="data">@Model.Government</td>
+                    </tr>
+                }
+                if (!string.IsNullOrEmpty(Model.Allegiance))
+                {
+                    <tr>
+                        <td class="caption">Allegiance</td>
+                        <td class="data">@Model.Allegiance</td>
+                    </tr>
+                }
+            }
+        </tbody>
     </table>
 </div>

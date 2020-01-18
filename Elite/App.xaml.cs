@@ -50,10 +50,15 @@ namespace Elite
             var config = new TemplateServiceConfiguration
             {
                 TemplateManager = new ResolvePathTemplateManager(new[] { "Templates" }),
-                DisableTempFileLocking = true
-            };
+                DisableTempFileLocking = true,
+                BaseTemplateType = typeof(HtmlSupportTemplateBase<>)
+
+        };
 
             Engine.Razor = RazorEngineService.Create(config);
+
+            Engine.Razor.Compile("menu.cshtml", null);
+            Engine.Razor.Compile("layout.cshtml", null);
 
             Engine.Razor.Compile("1.cshtml", null);
             Engine.Razor.Compile("2.cshtml", null);

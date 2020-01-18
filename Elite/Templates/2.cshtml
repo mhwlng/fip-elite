@@ -1,37 +1,43 @@
+@{
+    Layout = "layout.cshtml";
+}
+
 <div class="main">
     <table>
-        <tr>
-            <td class="caption">Federation</td>
-            <td class="data">@Model.FederationRank</td>
-            <td class="data right">@Model.FederationRankProgress %</td>
-        </tr>
-        <tr>
-            <td class="caption">Empire</td>
-            <td class="data">@Model.EmpireRank</td>
-            <td class="data right">@Model.EmpireRankProgress %</td>
-        </tr>
-        <tr>
-            <td class="caption">Combat</td>
-            <td class="data">@Model.CombatRank</td>
-            <td class="data right">@Model.CombatRankProgress %</td>
-        </tr>
-        <tr>
-            <td class="caption">Trade</td>
-            <td class="data">@Model.TradeRank</td>
-            <td class="data right">@Model.TradeRankProgress %</td>
-        </tr>
-        <tr>
-            <td class="caption">Explorer</td>
-            <td class="data">@Model.ExplorationRank</td>
-            <td class="data right">@Model.ExplorationRankProgress %</td>
-        </tr>
-        @if (Model.CqcRank != "0")
-        {
+        <tbody>
             <tr>
-                <td class="caption">CQC</td>
-                <td class="data">@Model.CqcRank</td>
-                <td class="data right">@Model.CqcRankProgress %</td>
+                <td class="caption">Federation</td>
+                <td class="data">@Model.FederationRank</td>
+                <td class="data right">@Model.FederationRankProgress %</td>
             </tr>
-        }
+            <tr>
+                <td class="caption">Empire</td>
+                <td class="data">@Model.EmpireRank</td>
+                <td class="data right">@Model.EmpireRankProgress %</td>
+            </tr>
+            <tr>
+                <td class="caption">Combat</td>
+                <td class="data">@Model.CombatRank</td>
+                <td class="data right">@Model.CombatRankProgress %</td>
+            </tr>
+            <tr>
+                <td class="caption">Trade</td>
+                <td class="data">@Model.TradeRank</td>
+                <td class="data right">@Model.TradeRankProgress %</td>
+            </tr>
+            <tr>
+                <td class="caption">Explorer</td>
+                <td class="data">@Model.ExplorationRank</td>
+                <td class="data right">@Model.ExplorationRankProgress %</td>
+            </tr>
+            @if (Model.CqcRank != "0")
+            {
+                <tr>
+                    <td class="caption">CQC</td>
+                    <td class="data">@Model.CqcRank</td>
+                    <td class="data right">@Model.CqcRankProgress %</td>
+                </tr>
+            }
+        </tbody>
     </table>
 </div>

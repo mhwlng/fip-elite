@@ -15,7 +15,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TheArtOfDev.HtmlRenderer.WinForms;
 using RazorEngine;
-using RazorEngine.Templating; // For extension methods.
+using RazorEngine.Templating;
+using RazorEngine.Text;
+
+// For extension methods.
 
 
 // ReSharper disable IdentifierTypo
@@ -63,6 +66,24 @@ namespace Elite
 
     }
 
+    public class MyHtmlHelper
+    {
+        public IEncodedString Raw(string rawString)
+        {
+            return new RawString(rawString);
+        }
+    }
+
+    public abstract class HtmlSupportTemplateBase<T> : TemplateBase<T>
+    {
+        public HtmlSupportTemplateBase()
+        {
+            Html = new MyHtmlHelper();
+        }
+
+        public MyHtmlHelper Html { get; set; }
+    }
+
     class FipPanel
     {
         private readonly object _refreshDevicePageLock = new object();
@@ -70,7 +91,7 @@ namespace Elite
 
         private LCDTab _currenttab = LCDTab.None;
         private LCDTab _lasttab = LCDTab.None;
-        private int CurrentLCDOffset = 0;
+        private int CurrentLCDYOffset = 0;
         private int CurrentLCDHeight = 0;
 
         public IntPtr FipDevicePointer;
@@ -83,25 +104,18 @@ namespace Elite
 
         private Pen scrollPen = new Pen(Color.FromArgb(0xff,0xFF,0xB0,0x00));
         private SolidBrush scrollBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xB0, 0x00));
-        private const int HtmlWindowWidth = 311;
+        
+        private const int HtmlMenuWindowWidth = 63;
+
         private const int HtmlWindowHeight = 240;
 
-
+        private const int HtmlWindowXOffset = 65;
+        private const int HtmlWindowWidth = 311- HtmlWindowXOffset;
+        
 
         protected bool DoShutdown;
         //private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
         //protected Thread GraphicsDrawingThread;
-
-        private static List<Bitmap> pageBitmapList = new List<Bitmap>
-        {
-            new Bitmap(".\\Images\\0.png"),
-            new Bitmap(".\\Images\\1.png"),
-            new Bitmap(".\\Images\\2.png"),
-            new Bitmap(".\\Images\\3.png"),
-            new Bitmap(".\\Images\\4.png"),
-            new Bitmap(".\\Images\\5.png"),
-            new Bitmap(".\\Images\\6.png")
-        };
 
         protected DirectOutputClass.PageCallback PageCallbackDelegate;
         protected DirectOutputClass.SoftButtonCallback SoftButtonCallbackDelegate;
@@ -193,7 +207,7 @@ namespace Elite
             _lasttab = _currenttab;
             _currenttab = tab;
 
-            CurrentLCDOffset = 0;
+            CurrentLCDYOffset = 0;
         }
 
         private void PageCallback(IntPtr device, IntPtr page, byte bActivated, IntPtr context)
@@ -223,11 +237,11 @@ namespace Elite
                     switch (button)
                     {
                         case 2: // scroll clockwise
-                            CurrentLCDOffset+=20;
+                            CurrentLCDYOffset+=20;
                             break;
 
                         case 4: // scroll anti-clockwise
-                            CurrentLCDOffset-=20;
+                            CurrentLCDYOffset-=20;
                             break;
 
                         case 32:
@@ -255,12 +269,12 @@ namespace Elite
 
         private void CheckLcdOffset()
         {
-            if (CurrentLCDOffset + HtmlWindowHeight > CurrentLCDHeight)
+            if (CurrentLCDYOffset + HtmlWindowHeight > CurrentLCDHeight)
             {
-                CurrentLCDOffset = CurrentLCDHeight - HtmlWindowHeight;
+                CurrentLCDYOffset = CurrentLCDHeight - HtmlWindowHeight;
             }
 
-            if (CurrentLCDOffset < 0) CurrentLCDOffset = 0;
+            if (CurrentLCDYOffset < 0) CurrentLCDYOffset = 0;
         }
 
         private ReturnValues AddPage(uint pageNumber, bool setActive)
@@ -325,6 +339,12 @@ namespace Elite
                 {
                     using (var graphics = Graphics.FromImage(fipImage))
                     {
+                        var menustr =
+                            Engine.Razor.Run("menu.cshtml", null, new
+                            {
+                                CurrentTab = (int)_currenttab
+                            });
+
                         var str = ""; 
 
                         switch (_currenttab)
@@ -334,6 +354,8 @@ namespace Elite
                                 str =
                                     Engine.Razor.Run("1.cshtml", null, new
                                     {
+                                        CurrentTab = (int)_currenttab,
+
                                         Commander = Commander.Name,
 
                                         ShipName = ShipExtra.Name?.Trim(),
@@ -367,6 +389,8 @@ namespace Elite
                                 str =
                                     Engine.Razor.Run("2.cshtml", null, new
                                     {
+                                        CurrentTab = (int)_currenttab,
+
                                         FederationRank = App.EliteApi.Commander.FederationRankLocalised,
                                         FederationRankProgress = App.EliteApi.Commander.FederationRankProgress,
 
@@ -398,6 +422,8 @@ namespace Elite
                                 str =
                                     Engine.Razor.Run("3.cshtml", null, new
                                     {
+                                        CurrentTab = (int)_currenttab,
+
                                         ShipName = ShipExtra.Name?.Trim(),
 
                                         ShipType = ShipExtra.Type,
@@ -517,6 +543,7 @@ namespace Elite
                                 str =
                                     Engine.Razor.Run("4.cshtml", null, new
                                     {
+                                        CurrentTab = (int)_currenttab,
 
                                         StarSystem = App.EliteApi.Location.StarSystem,
 
@@ -600,14 +627,19 @@ namespace Elite
 
                             case LCDTab.Events:
 
-                                str = str = "<div class=\"main\">";
-
+                                var eventlist = "";
                                 foreach (var b in EventHistory)
                                 {
-                                    str += b + "<br/>";
+                                    eventlist += b + "<br/>";
                                 }
 
-                                str += "</div>";
+                                str =
+                                    Engine.Razor.Run("5.cshtml", null, new
+                                    {
+                                        CurrentTab = (int)_currenttab,
+
+                                        EventList = eventlist
+                                    });
 
                                 break;
                         }
@@ -625,13 +657,12 @@ namespace Elite
 
                             if (CurrentLCDHeight > 0)
                             {
-
                                 var image = HtmlRender.RenderToImage(str,
                                     new Size(HtmlWindowWidth, CurrentLCDHeight), Color.Black, App.cssData);
 
-                                graphics.DrawImage(image, new Rectangle(new Point(0,0),
+                                graphics.DrawImage(image, new Rectangle(new Point(HtmlWindowXOffset,0),
                                                                                    new Size(HtmlWindowWidth, HtmlWindowHeight) ),
-                                                         new Rectangle(new Point(0, CurrentLCDOffset),
+                                                         new Rectangle(new Point(0, CurrentLCDYOffset),
                                                              new Size(HtmlWindowWidth, HtmlWindowHeight)),
                                                          GraphicsUnit.Pixel);
                             }
@@ -641,20 +672,23 @@ namespace Elite
                                 double scrollBarHeight = 233.0;
                                 
                                 double scrollThumbHeight = ((double)HtmlWindowHeight / (double)CurrentLCDHeight * (double)scrollBarHeight);
-                                double scrollThumbOffset = (double)CurrentLCDOffset / (double)CurrentLCDHeight * scrollBarHeight;
+                                double scrollThumbYOffset = (double)CurrentLCDYOffset / (double)CurrentLCDHeight * scrollBarHeight;
 
 
                                 graphics.DrawRectangle(scrollPen, new Rectangle(new Point(320-9, 2),
                                                                    new Size(5, (int)scrollBarHeight)));
 
-                                graphics.FillRectangle(scrollBrush, new Rectangle(new Point(320 - 9, 2 + (int)scrollThumbOffset),
+                                graphics.FillRectangle(scrollBrush, new Rectangle(new Point(320 - 9, 2 + (int)scrollThumbYOffset),
                                     new Size(5, 1 + (int)scrollThumbHeight)));
 
                             }
 
                         }
 
-                        graphics.DrawImage(pageBitmapList[(int)_currenttab], 0, 0);
+                        var menuimage = HtmlRender.RenderToImage(menustr,
+                            new Size(HtmlMenuWindowWidth, HtmlWindowHeight), Color.Black, App.cssData);
+
+                        graphics.DrawImage(menuimage, 0,0);
 
 #if DEBUG
                         fipImage.Save(@"screenshot"+(int)_currenttab+".png", ImageFormat.Png);
@@ -1842,9 +1876,9 @@ namespace Elite
             }
 
             // scroll to the end
-            if (_currenttab == LCDTab.Events && CurrentLCDOffset > 0)
+            if (_currenttab == LCDTab.Events && CurrentLCDYOffset > 0)
             {
-                CurrentLCDOffset = 99999999;
+                CurrentLCDYOffset = 99999999;
             }
 
             RefreshDevicePage(_currentPage);
