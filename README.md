@@ -8,9 +8,9 @@ WORK IN PROGRESS
 ![Screenshot 1](https://i.imgur.com/TOnj5NI.png)
 ![Screenshot 2](https://i.imgur.com/NePOhLk.png)
 ![Screenshot 3](https://i.imgur.com/rXM4j8n.png)
-![Screenshot 4](https://i.imgur.com/vAhmwGY.png)
+![Screenshot 4](https://i.imgur.com/mTqQEKT.png)
 ![Screenshot 5](https://i.imgur.com/Os2GbWU.png)
-![Screenshot 6](https://i.imgur.com/UDZainr.png)
+![Screenshot 6](https://i.imgur.com/syJSN8p.png)
 
 This application displays data from Elite Dangerous on Logitech Flight Instrument Panels
 

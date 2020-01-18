@@ -70,6 +70,8 @@ namespace Elite
 
         private LCDTab _currenttab = LCDTab.None;
         private LCDTab _lasttab = LCDTab.None;
+        private int CurrentLCDOffset = 0;
+        private int CurrentLCDHeight = 0;
 
         public IntPtr FipDevicePointer;
 
@@ -78,6 +80,13 @@ namespace Elite
         private uint _prevButtons;
 
         private List<uint> _pageList = new List<uint>();
+
+        private Pen scrollPen = new Pen(Color.FromArgb(0xff,0xFF,0xB0,0x00));
+        private SolidBrush scrollBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xB0, 0x00));
+        private const int HtmlWindowWidth = 311;
+        private const int HtmlWindowHeight = 240;
+
+
 
         protected bool DoShutdown;
         //private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
@@ -99,14 +108,14 @@ namespace Elite
 
         protected EventHandler<dynamic> HandleEliteEventsDelegate;
 
-        private RingBuffer<string> EventHistory = new RingBuffer<string>(11, true);
+        private RingBuffer<string> EventHistory = new RingBuffer<string>(50, true);
 
         private Commander Commander = new Commander();
         private Ship ShipExtra = new Ship();
         private Location LocationData = new Location();
         private Dock Dock = new Dock();
 
-        
+
 
         public FipPanel(IntPtr devicePtr) 
         {
@@ -183,6 +192,8 @@ namespace Elite
         {
             _lasttab = _currenttab;
             _currenttab = tab;
+
+            CurrentLCDOffset = 0;
         }
 
         private void PageCallback(IntPtr device, IntPtr page, byte bActivated, IntPtr context)
@@ -211,6 +222,14 @@ namespace Elite
                 {
                     switch (button)
                     {
+                        case 2: // scroll clockwise
+                            CurrentLCDOffset+=20;
+                            break;
+
+                        case 4: // scroll anti-clockwise
+                            CurrentLCDOffset-=20;
+                            break;
+
                         case 32:
                             SetTab(LCDTab.Commander);
                             break;
@@ -234,7 +253,17 @@ namespace Elite
             }
         }
 
-        public ReturnValues AddPage(uint pageNumber, bool setActive)
+        private void CheckLcdOffset()
+        {
+            if (CurrentLCDOffset + HtmlWindowHeight > CurrentLCDHeight)
+            {
+                CurrentLCDOffset = CurrentLCDHeight - HtmlWindowHeight;
+            }
+
+            if (CurrentLCDOffset < 0) CurrentLCDOffset = 0;
+        }
+
+        private ReturnValues AddPage(uint pageNumber, bool setActive)
         {
             var result = ReturnValues.E_FAIL;
             try
@@ -588,10 +617,41 @@ namespace Elite
 
                         if (_currenttab > 0)
                         {
-                            Image image = HtmlRender.RenderToImage(str,
-                                new Size(320, 240), new Size(320, 240), Color.Black, App.cssData);
+                            var htmlSize = HtmlRender.Measure(graphics, str, 320, App.cssData);
 
-                            graphics.DrawImage(image, 0, 0);
+                            CurrentLCDHeight = (int)htmlSize.Height;
+
+                            CheckLcdOffset();
+
+                            if (CurrentLCDHeight > 0)
+                            {
+
+                                var image = HtmlRender.RenderToImage(str,
+                                    new Size(HtmlWindowWidth, CurrentLCDHeight), Color.Black, App.cssData);
+
+                                graphics.DrawImage(image, new Rectangle(new Point(0,0),
+                                                                                   new Size(HtmlWindowWidth, HtmlWindowHeight) ),
+                                                         new Rectangle(new Point(0, CurrentLCDOffset),
+                                                             new Size(HtmlWindowWidth, HtmlWindowHeight)),
+                                                         GraphicsUnit.Pixel);
+                            }
+
+                            if (CurrentLCDHeight > HtmlWindowHeight)
+                            {
+                                double scrollBarHeight = 233.0;
+                                
+                                double scrollThumbHeight = ((double)HtmlWindowHeight / (double)CurrentLCDHeight * (double)scrollBarHeight);
+                                double scrollThumbOffset = (double)CurrentLCDOffset / (double)CurrentLCDHeight * scrollBarHeight;
+
+
+                                graphics.DrawRectangle(scrollPen, new Rectangle(new Point(320-9, 2),
+                                                                   new Size(5, (int)scrollBarHeight)));
+
+                                graphics.FillRectangle(scrollBrush, new Rectangle(new Point(320 - 9, 2 + (int)scrollThumbOffset),
+                                    new Size(5, 1 + (int)scrollThumbHeight)));
+
+                            }
+
                         }
 
                         graphics.DrawImage(pageBitmapList[(int)_currenttab], 0, 0);
@@ -631,10 +691,8 @@ namespace Elite
             {
                 string evt = e.@event.ToString();
 
-                if (!evt.StartsWith("Status."))
-                {
-                    EventHistory.Put(DateTime.Now.ToLongTimeString() + " : " + e.@event.ToString());
-                }
+                EventHistory.Put(DateTime.Now.ToLongTimeString() + " : " + e.@event.ToString());
+
 
                 switch (evt)
                 {
@@ -1781,6 +1839,12 @@ namespace Elite
                         */
 
                 }
+            }
+
+            // scroll to the end
+            if (_currenttab == LCDTab.Events && CurrentLCDOffset > 0)
+            {
+                CurrentLCDOffset = 99999999;
             }
 
             RefreshDevicePage(_currentPage);
