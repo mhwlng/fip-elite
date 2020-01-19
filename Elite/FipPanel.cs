@@ -265,10 +265,11 @@ namespace Elite
                 {
                     switch (button)
                     {
+                        case 8: // scroll clockwise
                         case 2: // scroll clockwise
                             CurrentLCDYOffset+=20;
                             break;
-
+                        case 16: // scroll anti-clockwise
                         case 4: // scroll anti-clockwise
                             CurrentLCDYOffset-=20;
                             break;
