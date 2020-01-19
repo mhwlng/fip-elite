@@ -6,18 +6,22 @@
 <div class="main">
     <table>
         <tbody>
-            @if (Model.StarSystem != Model.FsdTargetName && Model.RemainingJumpsInRoute > 0 && !string.IsNullOrEmpty(Model.FsdTargetName))
-            {
-                <tr>
-                    <td class="caption">FSD Target</td>
-                    <td class="data">@Model.FsdTargetName</td>
-                </tr>
-            }
             @if (Model.StarSystem != Model.FsdTargetName && Model.RemainingJumpsInRoute > 0)
             {
+                if (!string.IsNullOrEmpty(Model.FsdTargetName))
+                {
+                    <tr>
+                        <td class="caption">FSD Target</td>
+                        <td class="data">@Model.FsdTargetName</td>
+                    </tr>
+                }
                 <tr>
                     <td class="caption">&nbsp;&nbsp;&nbsp;Jumps Left</td>
                     <td class="data">@Model.RemainingJumpsInRoute</td>
+                </tr>
+
+                <tr>
+                    <td class="divider" colspan="2">&nbsp;</td>
                 </tr>
             }
 
@@ -33,7 +37,13 @@
                     <td class="data">@Model.SystemSecurity</td>
                 </tr>
             }
-
+            @if (Model.Population > 0)
+            {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Population</td>
+                    <td class="data">@Model.Population.ToString("N0")</td>
+                </tr>
+            }
             @if (!string.IsNullOrEmpty(Model.SystemGovernment))
             {
                 <tr>
@@ -63,13 +73,45 @@
                 </tr>
             }
 
-
-            @if (Model.BodyType == "Station")
+            @if (!Model.HideBody)
             {
-                <tr>
-                    <td class="caption">Station</td>
-                    <td class="data">@Model.Station</td>
-                </tr>
+                if (Model.BodyType == "Station")
+                {
+                    <tr>
+                        <td class="divider" colspan="2">&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td class="caption">Station</td>
+                        <td class="data">@Model.Station</td>
+                    </tr>
+                }
+                else if (Model.Body != Model.FsdTargetName && !string.IsNullOrEmpty(Model.Body))
+                {
+                    <tr>
+                        <td class="divider" colspan="2">&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td class="caption">Body</td>
+                        <td class="data">@Model.Body</td>
+                    </tr>
+                    if (!string.IsNullOrEmpty(Model.BodyType))
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Type</td>
+                            <td class="data">@Model.BodyType</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(Model.Settlement))
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Settlement</td>
+                            <td class="data">@Model.Settlement</td>
+                        </tr>
+                    }
+
+                }
             }
 
             @if (Model.Docked)
@@ -81,6 +123,14 @@
                         <td class="data">@Model.StationType</td>
                     </tr>
                 }
+                if (Model.DistFromStarLs > 0)
+                {
+                    <tr>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Dist.</td>
+                        <td class="data">@Model.DistFromStarLs.ToString("N1") LS</td>
+                    </tr>
+                }
+
                 if (!string.IsNullOrEmpty(Model.Government))
                 {
                     <tr>

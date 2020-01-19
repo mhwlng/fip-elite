@@ -52,6 +52,7 @@ namespace Elite
         public string Faction { get; set; } = "";
         public string Economy { get; set; } = "";
         public string Services { get; set; } = "";
+        public double DistFromStarLs { get; set; } = -1;
     }
 
 
@@ -78,6 +79,8 @@ namespace Elite
 
         public string FsdTargetName { get; set; }
 
+        public string Settlement { get; set; }
+
         public string Body { get; set; }
         public string BodyType { get; set; }
 
@@ -86,6 +89,10 @@ namespace Elite
         public string SystemSecurity { get; set; }
         public string SystemEconomy { get; set; }
         public string SystemGovernment { get; set; }
+
+        public long Population { get; set; }
+
+        public bool HideBody { get; set; } = false;
     }
 
     public class MyHtmlHelper
@@ -577,9 +584,18 @@ namespace Elite
 
                                         Body = !string.IsNullOrEmpty(LocationData.Body) ? LocationData.Body  : App.EliteApi.Location.Body,
 
+                                        /*
+                                        "Station"
+                                        "Star"
+                                        "Planet"
+                                        "PlanetaryRing"
+                                        "StellarRing"                                        
+                                        "AsteroidCluster"                                         
+                                         */
+
                                         BodyType = !string.IsNullOrEmpty(LocationData.BodyType) ? LocationData.BodyType : App.EliteApi.Location.BodyType,
 
-                                        Station = LocationData.BodyType == "Station" && string.IsNullOrEmpty(LocationData.Body) ? LocationData.Body : App.EliteApi.Location.Station,
+                                        Station = LocationData.BodyType == "Station" && !string.IsNullOrEmpty(LocationData.Body) ? LocationData.Body : App.EliteApi.Location.Station,
 
                                         Docked = App.EliteApi.Status.Docked,
 
@@ -597,6 +613,10 @@ namespace Elite
 
                                         FsdTargetName = LocationData.FsdTargetName,
 
+                                        Settlement = LocationData.Settlement,
+
+                                        HideBody = LocationData.HideBody,
+
                                         StationType = Dock.Type,
 
                                         Government = Dock.Government,
@@ -607,6 +627,8 @@ namespace Elite
 
                                         Economy = Dock.Economy,
 
+                                        DistFromStarLs = Dock.DistFromStarLs,
+
                                         SystemAllegiance = LocationData.SystemAllegiance,
 
                                         SystemFaction = LocationData.SystemFaction,
@@ -615,18 +637,18 @@ namespace Elite
 
                                         SystemEconomy = LocationData.SystemEconomy,
 
-                                        SystemGovernment = LocationData.SystemGovernment
+                                        SystemGovernment = LocationData.SystemGovernment,
+
+                                        Population = LocationData.Population
 
                                     });
 
                                 //dockedInfo.StationEconomies
 
-                                //dockedInfo.DistFromStarLs
 
                                 //locationInfo.SystemSecondEconomyLocalised
                                 //fsdJumpInfo.SystemSecondEconomyLocalised
 
-                                //fsdJumpInfo.Population
                                 //fsdJumpInfo.PowerplayState
                                 //fsdJumpInfo.Powers
                                 //fsdJumpInfo.StarPos
@@ -635,7 +657,6 @@ namespace Elite
 
                                 //approachSettlementInfo.Latitude
                                 //approachSettlementInfo.Longitude
-                                //approachSettlementInfo.NameLocalised
 
                                 break;
 
@@ -773,6 +794,8 @@ namespace Elite
 
                         Commander.Name = loadGameInfo.Commander;
                         Commander.Credits = Convert.ToUInt32(loadGameInfo.Credits);
+
+                        LocationData.Settlement = "";
 
                         break;
 
@@ -934,10 +957,6 @@ namespace Elite
 
                         LocationInfo locationInfo = e.ToObject<LocationInfo>();
 
-                        //App.EliteApi.Location.Body
-                        //App.EliteApi.Location.BodyType
-                        //App.EliteApi.Location.StarSystem
-
                         LocationData.SystemAllegiance = locationInfo.SystemAllegiance;
 
                         LocationData.SystemFaction = locationInfo.SystemFaction?.Name;
@@ -948,9 +967,16 @@ namespace Elite
 
                         LocationData.SystemGovernment = locationInfo.SystemGovernmentLocalised;
 
+                        LocationData.Population = locationInfo.Population;
+
+                        LocationData.HideBody = false;
+
+                        //App.EliteApi.Location.Body
+                        //App.EliteApi.Location.BodyType
+                        //App.EliteApi.Location.StarSystem
+
                         //locationInfo.Docked
                         //locationInfo.Factions
-                        //locationInfo.Population
                         //locationInfo.StarPos
                         //locationInfo.SystemSecondEconomyLocalised
 
@@ -963,24 +989,33 @@ namespace Elite
                         //App.EliteApi.Location.Body
                         //App.EliteApi.Location.StarSystem
                         //App.EliteApi.Location.BodyType="Planet"
+
+                        LocationData.HideBody = false;
+
                         break;
 
                     case "ApproachSettlement":
 
                         ApproachSettlementInfo approachSettlementInfo = e.ToObject<ApproachSettlementInfo>();
 
+                        LocationData.Settlement = approachSettlementInfo.Name;
+
+                        LocationData.HideBody = false;
+
                         //App.EliteApi.Location.Station 
                         //App.EliteApi.Location.BodyType="Planet"
 
                         //approachSettlementInfo.Latitude
                         //approachSettlementInfo.Longitude
-                        //approachSettlementInfo.NameLocalised
 
                         break;
 
                     case "LeaveBody":
 
                         LeaveBodyInfo leaveBodyInfo = e.ToObject<LeaveBodyInfo>();
+
+                        LocationData.HideBody = true;
+
                         //App.EliteApi.Location.Body
                         //App.EliteApi.Location.StarSystem
                         //App.EliteApi.Location.BodyType="Planet"
@@ -1007,7 +1042,6 @@ namespace Elite
 
                         //App.EliteApi.Location.Station
 
-                        //dockedInfo.DistFromStarLs
                         //dockedInfo.StarSystem
                         //dockedInfo.StationEconomies
 
@@ -1019,6 +1053,7 @@ namespace Elite
                         Dock.Allegiance = dockedInfo.StationAllegiance;
                         Dock.Faction = dockedInfo.StationFaction?.Name;
                         Dock.Economy = dockedInfo.StationEconomyLocalised;
+                        Dock.DistFromStarLs = dockedInfo.DistFromStarLs;
 
                         Dock.Services = string.Join(", ", dockedInfo.StationServices);
 
@@ -1061,6 +1096,8 @@ namespace Elite
                         LocationData.SystemEconomy = fsdJumpInfo.SystemEconomyLocalised;
 
                         LocationData.SystemGovernment = fsdJumpInfo.SystemGovernmentLocalised;
+
+                        LocationData.Population = fsdJumpInfo.Population;
 
                         //App.EliteApi.Location.StarSystem
                         //App.EliteApi.Status.JumpRange (fsdJumpInfo.JumpDist)
@@ -1111,6 +1148,8 @@ namespace Elite
 
                         LocationData.JumpToSystem = supercruiseEntryInfo.StarSystem;
 
+                        LocationData.HideBody = true;
+
                         break;
 
                     case "SupercruiseExit":
@@ -1125,6 +1164,7 @@ namespace Elite
 
                         LocationData.Body = supercruiseExitInfo.Body;
                         LocationData.BodyType = supercruiseExitInfo.BodyType;
+                        LocationData.HideBody = false;
 
 
                         break;
