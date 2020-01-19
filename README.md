@@ -1,8 +1,6 @@
 # fip-elite
 Logitech Flight Instrument Panel application for Elite Dangerous
 
-WORK IN PROGRESS
-
 ![Logitech Flight Instrument Panel with Elgato Stream Deck](https://i.imgur.com/HTcbXx9.jpg)
 
 ![Screenshot 1](https://i.imgur.com/NePOhLk.png)
@@ -12,6 +10,8 @@ WORK IN PROGRESS
 ![Screenshot 5](https://i.imgur.com/syJSN8p.png)
 
 This application displays data from Elite Dangerous on Logitech Flight Instrument Panels
+
+The menu area and each screen can be configured via razor (.cshtml) web page templates.
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 
