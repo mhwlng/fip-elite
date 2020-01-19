@@ -49,12 +49,16 @@ namespace Elite
         public string Type { get; set; } = "";
         public string Government { get; set; } = "";
         public string Allegiance { get; set; } = "";
+        public string Faction { get; set; } = "";
+        public string Economy { get; set; } = "";
         public string Services { get; set; } = "";
     }
 
 
     public class Ship
     {
+        public bool AutomaticDocking { get; set; }
+
         public string Name { get; set; } = "";
         public string Type { get; set; } = "";
 
@@ -62,8 +66,26 @@ namespace Elite
 
     public class Location
     {
+        public bool StartJump { get; set; }
 
+        public string JumpType { get; set; }
 
+        public string JumpToSystem { get; set; }
+
+        public string JumpToStarClass { get; set; }
+
+        public int RemainingJumpsInRoute { get; set; }
+
+        public string FsdTargetName { get; set; }
+
+        public string Body { get; set; }
+        public string BodyType { get; set; }
+
+        public string SystemAllegiance { get; set; }
+        public string SystemFaction { get; set; }
+        public string SystemSecurity { get; set; }
+        public string SystemEconomy { get; set; }
+        public string SystemGovernment { get; set; }
     }
 
     public class MyHtmlHelper
@@ -105,11 +127,11 @@ namespace Elite
         private Pen scrollPen = new Pen(Color.FromArgb(0xff,0xFF,0xB0,0x00));
         private SolidBrush scrollBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xB0, 0x00));
         
-        private const int HtmlMenuWindowWidth = 63;
+        private const int HtmlMenuWindowWidth = 66;
 
         private const int HtmlWindowHeight = 240;
 
-        private const int HtmlWindowXOffset = 65;
+        private const int HtmlWindowXOffset = HtmlMenuWindowWidth + 1;
         private const int HtmlWindowWidth = 311- HtmlWindowXOffset;
         
 
@@ -269,9 +291,14 @@ namespace Elite
 
         private void CheckLcdOffset()
         {
-            if (CurrentLCDYOffset + HtmlWindowHeight > CurrentLCDHeight)
+            if (CurrentLCDHeight <= HtmlWindowHeight)
             {
-                CurrentLCDYOffset = CurrentLCDHeight - HtmlWindowHeight;
+                CurrentLCDYOffset = 0;
+            }
+
+            if (CurrentLCDYOffset + HtmlWindowHeight > CurrentLCDHeight )
+            {
+                CurrentLCDYOffset = CurrentLCDHeight - HtmlWindowHeight + 4;
             }
 
             if (CurrentLCDYOffset < 0) CurrentLCDYOffset = 0;
@@ -428,11 +455,17 @@ namespace Elite
 
                                         ShipType = ShipExtra.Type,
 
+                                        AutomaticDocking = ShipExtra.AutomaticDocking,
+
+                                        Docked = App.EliteApi.Status.Docked,
+
                                         FuelMain = App.EliteApi.Status.Fuel.FuelMain,
 
                                         FuelReservoir = App.EliteApi.Status.Fuel.FuelReservoir,
 
                                         MaxFuel = App.EliteApi.Status.Fuel.MaxFuel,
+
+                                        FuelPercent = Convert.ToInt32(100 / App.EliteApi.Status.Fuel.MaxFuel * App.EliteApi.Status.Fuel.FuelMain),
 
                                         JumpRange = App.EliteApi.Status.JumpRange
 
@@ -483,7 +516,6 @@ namespace Elite
                                 App.EliteApi.Status.GuiFocus
 
                                 App.EliteApi.Status.Pips
-                                App.EliteApi.Status.JumpRange
                                 */
 
                                 //loadoutInfo.Hot
@@ -527,10 +559,6 @@ namespace Elite
 
                                 //scannedInfo.ScanType     
 
-                                //loadGameInfo.FuelLevel
-                                //fsdJumpInfo.FuelLevel
-                                //fsdJumpInfo.FuelUsed
-
                                 //loadGameInfo.ShipIdent
                                 //loadGameInfo.ShipLocalised
                                 //setUserShipNameInfo.UserShipId
@@ -547,81 +575,67 @@ namespace Elite
 
                                         StarSystem = App.EliteApi.Location.StarSystem,
 
-                                        Body = App.EliteApi.Location.Body,
+                                        Body = !string.IsNullOrEmpty(LocationData.Body) ? LocationData.Body  : App.EliteApi.Location.Body,
 
-                                        BodyType = App.EliteApi.Location.BodyType,
+                                        BodyType = !string.IsNullOrEmpty(LocationData.BodyType) ? LocationData.BodyType : App.EliteApi.Location.BodyType,
 
-                                        Station = App.EliteApi.Location.Station,
+                                        Station = LocationData.BodyType == "Station" && string.IsNullOrEmpty(LocationData.Body) ? LocationData.Body : App.EliteApi.Location.Station,
 
                                         Docked = App.EliteApi.Status.Docked,
 
                                         LandingPad = Dock.LandingPad,
 
+                                        StartJump = LocationData.StartJump,
+
+                                        JumpType = LocationData.JumpType,
+
+                                        JumpToSystem = LocationData.JumpToSystem,
+
+                                        JumpToStarClass = LocationData.JumpToStarClass,
+
+                                        RemainingJumpsInRoute = LocationData.RemainingJumpsInRoute,
+
+                                        FsdTargetName = LocationData.FsdTargetName,
+
                                         StationType = Dock.Type,
 
                                         Government = Dock.Government,
 
-                                        Allegiance = Dock.Allegiance
+                                        Allegiance = Dock.Allegiance,
+
+                                        Faction = Dock.Faction,
+
+                                        Economy = Dock.Economy,
+
+                                        SystemAllegiance = LocationData.SystemAllegiance,
+
+                                        SystemFaction = LocationData.SystemFaction,
+
+                                        SystemSecurity = LocationData.SystemSecurity,
+
+                                        SystemEconomy = LocationData.SystemEconomy,
+
+                                        SystemGovernment = LocationData.SystemGovernment
+
                                     });
 
-                                //undockedInfo.StationName
-                                //dockingGrantedInfo.StationName
-
-                                //undockedInfo.StationType
-                                //dockingGrantedInfo.StationType
-                                //dockingRequestedInfo.StationType
-
                                 //dockedInfo.StationEconomies
-                                //dockedInfo.StationEconomyLocalised
-
-                                //dockedInfo.StationFaction
 
                                 //dockedInfo.DistFromStarLs
 
-                                //locationInfo.SystemAllegiance
-                                //fsdJumpInfo.SystemAllegiance
-
-                                //locationInfo.SystemEconomyLocalised
-                                //fsdJumpInfo.SystemEconomyLocalised
-
-                                //locationInfo.SystemFaction
-                                //fsdJumpInfo.SystemFaction
-
-                                //locationInfo.SystemGovernmentLocalised
-                                //fsdJumpInfo.SystemGovernmentLocalised
-
                                 //locationInfo.SystemSecondEconomyLocalised
                                 //fsdJumpInfo.SystemSecondEconomyLocalised
-
-                                //locationInfo.SystemSecurityLocalised
-                                //fsdJumpInfo.SystemSecurityLocalised
-
-                                //dockedInfo.StarSystem
-                                //startJumpInfo.StarSystem
-                                //supercruiseEntryInfo.StarSystem
-                                //supercruiseExitInfo.StarSystem
-
-                                //startJumpInfo.StarClass
-
-                                //supercruiseExitInfo.Body
-
-                                //supercruiseExitInfo.BodyType
 
                                 //fsdJumpInfo.Population
                                 //fsdJumpInfo.PowerplayState
                                 //fsdJumpInfo.Powers
                                 //fsdJumpInfo.StarPos
-                                //fSDTargetInfo.Name
                                 //fsdJumpInfo.FactionState
                                 //fsdJumpInfo.Factions
 
                                 //approachSettlementInfo.Latitude
                                 //approachSettlementInfo.Longitude
                                 //approachSettlementInfo.NameLocalised
-
-                                //fSDTargetInfo.RemainingJumpsInRoute
-
-                                //startJumpInfo.JumpType
 
                                 break;
 
@@ -658,12 +672,12 @@ namespace Elite
                             if (CurrentLCDHeight > 0)
                             {
                                 var image = HtmlRender.RenderToImage(str,
-                                    new Size(HtmlWindowWidth, CurrentLCDHeight), Color.Black, App.cssData);
+                                    new Size(HtmlWindowWidth, CurrentLCDHeight + 20), Color.Black, App.cssData);
 
                                 graphics.DrawImage(image, new Rectangle(new Point(HtmlWindowXOffset,0),
-                                                                                   new Size(HtmlWindowWidth, HtmlWindowHeight) ),
+                                                                                   new Size(HtmlWindowWidth, HtmlWindowHeight + 20) ),
                                                          new Rectangle(new Point(0, CurrentLCDYOffset),
-                                                             new Size(HtmlWindowWidth, HtmlWindowHeight)),
+                                                             new Size(HtmlWindowWidth, HtmlWindowHeight + 20)),
                                                          GraphicsUnit.Pixel);
                             }
 
@@ -725,12 +739,15 @@ namespace Elite
             {
                 string evt = e.@event.ToString();
 
-                EventHistory.Put(DateTime.Now.ToLongTimeString() + " : " + e.@event.ToString());
-
+                if (evt != "FSSSignalDiscovered" && evt != "FSSDiscoveryScan")
+                {
+                    EventHistory.Put(DateTime.Now.ToLongTimeString() + " : " + evt);
+                }
 
                 switch (evt)
                 {
                     //----------- COMMANDER
+
 
                     case "LoadGame":
 
@@ -748,6 +765,8 @@ namespace Elite
                         //loadGameInfo.Loan
                         //loadGameInfo.ShipIdent
                         //loadGameInfo.ShipLocalised
+
+                        Commander.Credits = Convert.ToUInt32(e.Credits);
 
                         ShipExtra.Name = loadGameInfo.ShipName;
                         ShipExtra.Type = loadGameInfo.Ship;
@@ -919,16 +938,21 @@ namespace Elite
                         //App.EliteApi.Location.BodyType
                         //App.EliteApi.Location.StarSystem
 
+                        LocationData.SystemAllegiance = locationInfo.SystemAllegiance;
+
+                        LocationData.SystemFaction = locationInfo.SystemFaction?.Name;
+
+                        LocationData.SystemSecurity = locationInfo.SystemSecurityLocalised;
+
+                        LocationData.SystemEconomy = locationInfo.SystemEconomyLocalised;
+
+                        LocationData.SystemGovernment = locationInfo.SystemGovernmentLocalised;
+
                         //locationInfo.Docked
                         //locationInfo.Factions
                         //locationInfo.Population
                         //locationInfo.StarPos
-                        //locationInfo.SystemAllegiance
-                        //locationInfo.SystemEconomyLocalised
-                        //locationInfo.SystemFaction
-                        //locationInfo.SystemGovernmentLocalised
                         //locationInfo.SystemSecondEconomyLocalised
-                        //locationInfo.SystemSecurityLocalised
 
                         break;
 
@@ -966,10 +990,14 @@ namespace Elite
                     case "Undocked":
 
                         UndockedInfo undockedInfo = e.ToObject<UndockedInfo>();
+
                         //undockedInfo.StationName
                         //undockedInfo.StationType
 
                         Dock = new Dock();
+
+                        LocationData.Body = "";
+                        LocationData.BodyType = "";
 
                         break;
 
@@ -982,21 +1010,27 @@ namespace Elite
                         //dockedInfo.DistFromStarLs
                         //dockedInfo.StarSystem
                         //dockedInfo.StationEconomies
-                        //dockedInfo.StationEconomyLocalised
-                        //dockedInfo.StationFaction
+
+                        ShipExtra.AutomaticDocking = false;
 
                         Dock.Type = dockedInfo.StationType;
+
                         Dock.Government = dockedInfo.StationGovernmentLocalised;
                         Dock.Allegiance = dockedInfo.StationAllegiance;
+                        Dock.Faction = dockedInfo.StationFaction?.Name;
+                        Dock.Economy = dockedInfo.StationEconomyLocalised;
+
                         Dock.Services = string.Join(", ", dockedInfo.StationServices);
+
+                        Dock.LandingPad = -1;
 
                         break;
 
                     case "DockingGranted":
 
                         DockingGrantedInfo dockingGrantedInfo = e.ToObject<DockingGrantedInfo>();
-                        //dockingGrantedInfo.StationName
-                        //dockingGrantedInfo.StationType
+
+                        LocationData.Body = "Station";
 
                         Dock.LandingPad = Convert.ToInt32(dockingGrantedInfo.LandingPad);
                         break;
@@ -1005,14 +1039,28 @@ namespace Elite
 
                         DockingRequestedInfo dockingRequestedInfo = e.ToObject<DockingRequestedInfo>();
 
-                        //App.EliteApi.Location.Station
-
-                        //dockingRequestedInfo.StationType
+                        LocationData.Body = dockingRequestedInfo.StationName;
+                        LocationData.BodyType = "Station";
                         break;
 
                     case "FSDJump":
 
                         FSDJumpInfo fsdJumpInfo = e.ToObject<FSDJumpInfo>();
+
+                        LocationData.StartJump = false;
+                        LocationData.JumpToSystem = "";
+                        LocationData.JumpToStarClass = "";
+                        LocationData.JumpType = "";
+
+                        LocationData.SystemAllegiance = fsdJumpInfo.SystemAllegiance;
+
+                        LocationData.SystemFaction = fsdJumpInfo.SystemFaction?.Name;
+
+                        LocationData.SystemSecurity = fsdJumpInfo.SystemSecurityLocalised;
+
+                        LocationData.SystemEconomy = fsdJumpInfo.SystemEconomyLocalised;
+
+                        LocationData.SystemGovernment = fsdJumpInfo.SystemGovernmentLocalised;
 
                         //App.EliteApi.Location.StarSystem
                         //App.EliteApi.Status.JumpRange (fsdJumpInfo.JumpDist)
@@ -1025,12 +1073,7 @@ namespace Elite
                         //fsdJumpInfo.PowerplayState
                         //fsdJumpInfo.Powers
                         //fsdJumpInfo.StarPos
-                        //fsdJumpInfo.SystemAllegiance
-                        //fsdJumpInfo.SystemEconomyLocalised
-                        //fsdJumpInfo.SystemSecurityLocalised
                         //fsdJumpInfo.SystemSecondEconomyLocalised
-                        //fsdJumpInfo.SystemGovernmentLocalised
-                        //fsdJumpInfo.SystemFaction
 
                         break;
 
@@ -1038,15 +1081,27 @@ namespace Elite
 
                         StartJumpInfo startJumpInfo = e.ToObject<StartJumpInfo>();
 
-                        //startJumpInfo.JumpType
-                        //startJumpInfo.StarClass
-                        //startJumpInfo.StarSystem
+                        LocationData.StartJump = true;
+                        LocationData.JumpType = startJumpInfo.JumpType;
+                        LocationData.JumpToSystem = startJumpInfo.StarSystem;
+                        LocationData.JumpToStarClass = startJumpInfo.StarClass;
+
+                        break;
+
+                    case "Status.FsdCooldown":
+
+                        break;
+
+                    case "Status.FsdCharging":
+
                         break;
 
                     case "FSDTarget":
-                        FSDTargetInfo fSDTargetInfo = e.ToObject<FSDTargetInfo>();
-                        //fSDTargetInfo.RemainingJumpsInRoute
-                        //fSDTargetInfo.Name
+                        FSDTargetInfo fSdTargetInfo = e.ToObject<FSDTargetInfo>();
+
+                        LocationData.FsdTargetName = fSdTargetInfo.Name;
+
+                        LocationData.RemainingJumpsInRoute = fSdTargetInfo.RemainingJumpsInRoute;
 
                         break;
 
@@ -1054,15 +1109,23 @@ namespace Elite
 
                         SupercruiseEntryInfo supercruiseEntryInfo = e.ToObject<SupercruiseEntryInfo>();
 
-                        //supercruiseEntryInfo.StarSystem
+                        LocationData.JumpToSystem = supercruiseEntryInfo.StarSystem;
+
                         break;
 
                     case "SupercruiseExit":
 
                         SupercruiseExitInfo supercruiseExitInfo = e.ToObject<SupercruiseExitInfo>();
-                        //supercruiseExitInfo.Body
-                        //supercruiseExitInfo.BodyType
-                        //supercruiseExitInfo.StarSystem
+
+                        LocationData.StartJump = false;
+
+                        LocationData.JumpToSystem = "";
+                        LocationData.JumpToStarClass = "";
+                        LocationData.JumpType = "";
+
+                        LocationData.Body = supercruiseExitInfo.Body;
+                        LocationData.BodyType = supercruiseExitInfo.BodyType;
+
 
                         break;
 
@@ -1183,9 +1246,29 @@ namespace Elite
 
                         //App.EliteApi.Status.MusicTrack
 
-                        //case "MainMenu":
-                        //case "DockingComputer":
-                        //case "NoTrack":
+                        switch (musicInfo.MusicTrack)
+                        {
+                            case "MainMenu":
+                                //TabLCDStartElite.Create();
+                                break;
+
+                            case "DockingComputer":
+                                ShipExtra.AutomaticDocking = true;
+
+                                //Tab.Refresh(LCDTab.Ship);
+                                break;
+
+                            case "NoTrack":
+                                if (ShipExtra.AutomaticDocking)
+                                {
+                                    ShipExtra.AutomaticDocking = false;
+                                    //Tab.Refresh(LCDTab.Ship);
+                                }
+                                break;
+
+                            default:
+                                return;
+                        }
 
                         break;
 

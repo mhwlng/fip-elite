@@ -20,22 +20,14 @@
                 </tr>
             }
             <tr>
-                <td class="caption">Fuel Main</td>
-                <td class="data">@Model.FuelMain</td>
-            </tr>
-            <tr>
-                <td class="caption">Fuel Reservoir</td>
-                <td class="data">@Model.FuelReservoir</td>
-            </tr>
-            <tr>
-                <td class="caption">Fuel Max</td>
-                <td class="data">@Model.MaxFuel</td>
+                <td class="caption">Fuel</td>
+                <td class="data">@Model.FuelPercent %</td>
             </tr>
             @if (Model.JumpRange > 0)
             {
                 <tr>
                     <td class="caption">Jump Range</td>
-                    <td class="data">@Model.JumpRange</td>
+                    <td class="data">@Model.JumpRange.ToString("N1") LY</td>
                 </tr>
             }
         </tbody>
