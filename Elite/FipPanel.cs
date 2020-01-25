@@ -597,9 +597,9 @@ namespace Elite
 
                                         StarSystem = App.EliteApi.Location.StarSystem,
 
-                                        Body = !string.IsNullOrEmpty(LocationData.Body)
+                                        Body = !string.IsNullOrEmpty(LocationData.BodyType) && !string.IsNullOrEmpty(LocationData.Body)
                                             ? LocationData.Body
-                                            : App.EliteApi.Location.Body,
+                                            : null, 
 
                                         /*
                                         "Station"
@@ -610,9 +610,7 @@ namespace Elite
                                         "AsteroidCluster"                                         
                                          */
 
-                                        BodyType = !string.IsNullOrEmpty(LocationData.BodyType)
-                                            ? LocationData.BodyType
-                                            : App.EliteApi.Location.BodyType,
+                                        BodyType = LocationData.BodyType,
 
                                         Station = LocationData.BodyType == "Station" &&
                                                   !string.IsNullOrEmpty(LocationData.Body)
@@ -1067,6 +1065,9 @@ namespace Elite
 
                         LocationData.Population = locationInfo.Population;
 
+                        LocationData.Body = locationInfo.Body;
+                        LocationData.BodyType = locationInfo.BodyType;
+
                         LocationData.HideBody = false;
 
                         //locationInfo.Docked
@@ -1080,6 +1081,9 @@ namespace Elite
 
                         ApproachBodyInfo approachBodyInfo = e.ToObject<ApproachBodyInfo>();
 
+                        LocationData.Body = approachBodyInfo.Body;
+                        LocationData.BodyType = "Planet"; 
+
                         LocationData.HideBody = false;
 
                         break;
@@ -1089,6 +1093,8 @@ namespace Elite
                         ApproachSettlementInfo approachSettlementInfo = e.ToObject<ApproachSettlementInfo>();
 
                         LocationData.Settlement = approachSettlementInfo.Name;
+
+                        LocationData.BodyType = "Planet";
 
                         LocationData.HideBody = false;
 
@@ -1100,6 +1106,9 @@ namespace Elite
                     case "LeaveBody":
 
                         LeaveBodyInfo leaveBodyInfo = e.ToObject<LeaveBodyInfo>();
+
+                        LocationData.Body = "";
+                        LocationData.BodyType = "";
 
                         LocationData.HideBody = true;
 
@@ -1146,7 +1155,8 @@ namespace Elite
 
                         DockingGrantedInfo dockingGrantedInfo = e.ToObject<DockingGrantedInfo>();
 
-                        LocationData.Body = "Station";
+                        LocationData.Body = dockingGrantedInfo.StationName;
+                        LocationData.BodyType = "Station";
 
                         DockData.LandingPad = Convert.ToInt32(dockingGrantedInfo.LandingPad);
                         break;
@@ -1226,6 +1236,9 @@ namespace Elite
                         SupercruiseEntryInfo supercruiseEntryInfo = e.ToObject<SupercruiseEntryInfo>();
 
                         LocationData.JumpToSystem = supercruiseEntryInfo.StarSystem;
+
+                        LocationData.Body = "";
+                        LocationData.BodyType = "";
 
                         LocationData.HideBody = true;
 

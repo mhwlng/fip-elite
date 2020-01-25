@@ -3,11 +3,12 @@ Logitech Flight Instrument Panel application for Elite Dangerous
 
 ![Logitech Flight Instrument Panel with Elgato Stream Deck](https://i.imgur.com/HTcbXx9.jpg)
 
-![Screenshot 1](https://i.imgur.com/NePOhLk.png)
-![Screenshot 2](https://i.imgur.com/rXM4j8n.png)
-![Screenshot 3](https://i.imgur.com/bNvRhL3.png)
-![Screenshot 4](https://i.imgur.com/pOWJuQ2.png)
-![Screenshot 5](https://i.imgur.com/syJSN8p.png)
+![Screenshot 1](https://i.imgur.com/kGf11OK.png)
+![Screenshot 2](https://i.imgur.com/PQzEya1.png)
+![Screenshot 3](https://i.imgur.com/1F3aQzU.png)
+![Screenshot 4](https://i.imgur.com/kMkOC2w.png)
+![Screenshot 5](https://i.imgur.com/o220wkq.png)
+
 
 This application displays data from Elite Dangerous on Logitech Flight Instrument Panels
 
