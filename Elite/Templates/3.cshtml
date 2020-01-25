@@ -23,6 +23,14 @@
                 <td class="caption">Fuel</td>
                 <td class="data">@Model.FuelPercent %</td>
             </tr>
+            @if (Model.CargoCapacity > 0 && Model.CargoCapacity >= Model.Cargo)
+            {
+                <tr>
+                    <td class="caption">Cargo</td>
+                    <td class="data">@Model.Cargo of @Model.CargoCapacity T</td>
+                </tr>
+            }
+
             @if (Model.JumpRange > 0)
             {
                 <tr>

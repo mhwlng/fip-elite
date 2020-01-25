@@ -63,6 +63,8 @@ namespace Elite
         public string Name { get; set; } = "";
         public string Type { get; set; } = "";
 
+        public long CargoCapacity { get; set; }
+
     }
 
     public class Location
@@ -475,7 +477,11 @@ namespace Elite
 
                                         FuelPercent = Convert.ToInt32(100 / App.EliteApi.Status.Fuel.MaxFuel * App.EliteApi.Status.Fuel.FuelMain),
 
-                                        JumpRange = App.EliteApi.Status.JumpRange
+                                        JumpRange = App.EliteApi.Status.JumpRange,
+
+                                        Cargo = App.EliteApi.Status.Cargo,
+
+                                        CargoCapacity = ShipExtra.CargoCapacity
 
                                     });
 
@@ -503,7 +509,6 @@ namespace Elite
                                 App.EliteApi.Status.InMainMenu
                                 App.EliteApi.Status.SilentRunning
                                 App.EliteApi.Status.Flags
-                                App.EliteApi.Status.Docked
                                 App.EliteApi.Status.Landed
                                 App.EliteApi.Status.Gear
                                 App.EliteApi.Status.Supercruise
@@ -513,8 +518,6 @@ namespace Elite
                                 App.EliteApi.Status.Lights
                                 App.EliteApi.Status.CargoScoop
                                 App.EliteApi.Status.Scooping
-
-                                App.EliteApi.Status.Cargo
 
                                 App.EliteApi.Status.LegalState
                                 App.EliteApi.Status.GameMode
@@ -831,6 +834,108 @@ namespace Elite
 
                         ShipExtra.Name = loadoutInfo.ShipName;
                         ShipExtra.Type = loadoutInfo.Ship;
+
+                        ShipExtra.CargoCapacity = 0;
+
+                        foreach (var m in loadoutInfo.Modules.Where(x => x.Item.Contains("_cargorack_")))
+                        {
+                            // "int_cargorack_size3_class1"
+                            var size = m.Item.Substring(m.Item.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
+                                
+                            size = size.Substring(0,size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+
+                            ShipExtra.CargoCapacity += Convert.ToInt32(size);
+                        }
+
+                        break;
+
+                    case "ModuleBuy":
+                        ModuleBuyInfo moduleBuyInfo = e.ToObject<ModuleBuyInfo>();
+
+                        if (moduleBuyInfo.BuyItem?.Contains("_cargorack_") == true)
+                        {
+                            // "int_cargorack_size3_class1"
+                            var size = moduleBuyInfo.BuyItem.Substring(moduleBuyInfo.BuyItem.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
+
+                            size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+
+                            ShipExtra.CargoCapacity += Convert.ToInt32(size);
+                        }
+
+                        if (moduleBuyInfo.SellItem?.Contains("_cargorack_") == true)
+                        {
+                            // "int_cargorack_size3_class1"
+                            var size = moduleBuyInfo.SellItem.Substring(moduleBuyInfo.SellItem.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
+
+                            size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+
+                            ShipExtra.CargoCapacity -= Convert.ToInt32(size);
+                        }
+
+                        break;
+
+                    case "ModuleSell":
+                        ModuleSellInfo moduleSellInfo = e.ToObject<ModuleSellInfo>();
+
+                        if (moduleSellInfo.SellItem?.Contains("_cargorack_") == true)
+                        {
+                            // "int_cargorack_size3_class1"
+                            var size = moduleSellInfo.SellItem.Substring(moduleSellInfo.SellItem.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
+
+                            size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+
+                            ShipExtra.CargoCapacity -= Convert.ToInt32(size);
+                        }
+
+                        break;
+
+                    case "ModuleStore":
+                        ModuleStoreInfo moduleStoreInfo = e.ToObject<ModuleStoreInfo>();
+
+                        if (moduleStoreInfo.StoredItem?.Contains("_cargorack_") == true)
+                        {
+                            // "int_cargorack_size3_class1"
+                            var size = moduleStoreInfo.StoredItem.Substring(moduleStoreInfo.StoredItem.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
+
+                            size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+
+                            ShipExtra.CargoCapacity -= Convert.ToInt32(size);
+                        }
+
+                        break;
+
+                    case "ModuleRetrieve":
+                        ModuleRetrieveInfo moduleRetrieveInfo = e.ToObject<ModuleRetrieveInfo>();
+
+                        if (moduleRetrieveInfo.RetrievedItem?.Contains("_cargorack_") == true)
+                        {
+                            // "int_cargorack_size3_class1"
+                            var size = moduleRetrieveInfo.RetrievedItem.Substring(moduleRetrieveInfo.RetrievedItem.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
+
+                            size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+
+                            ShipExtra.CargoCapacity += Convert.ToInt32(size);
+                        }
+
+                        break;
+
+                    case "MassModuleStore":
+                        MassModuleStoreInfo massModuleStoreInfo = e.ToObject<MassModuleStoreInfo>();
+
+                        foreach (var i in massModuleStoreInfo.Items)
+                        {
+                            if (i.Name?.Contains("_cargorack_") == true)
+                            {
+                                // "int_cargorack_size3_class1"
+                                var size = i.Name.Substring(
+                                    i.Name.IndexOf("_size", StringComparison.OrdinalIgnoreCase) +
+                                    5);
+
+                                size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+
+                                ShipExtra.CargoCapacity -= Convert.ToInt32(size);
+                            }
+                        }
                         break;
 
                     case "Rank":
@@ -1383,618 +1488,600 @@ namespace Elite
                         //scannedInfo.ScanType
                         break;
 
-                    /*
-    
-                        //---------------- MATERIAL 
-    
-                        case "Materials":
-                            MaterialsInfo materialsInfo = e.ToObject<MaterialsInfo>();
-                            break;
-    
-                        case "MaterialCollected":
-                            MaterialCollectedInfo materialCollectedInfo = e.ToObject<MaterialCollectedInfo>();
-                            break;
-    
-                        case "MaterialDiscarded":
-                            MaterialDiscardedInfo materialDiscardedInfo = e.ToObject<MaterialDiscardedInfo>();
-                            break;
-    
-                        case "MaterialTrade":
-                            MaterialTradeInfo materialTradeInfo = e.ToObject<MaterialTradeInfo>();
-                            break;
-    
-                        case "Synthesis":
-                            SynthesisInfo synthesisInfo = e.ToObject<SynthesisInfo>();
-                            break;
-    
-                        //------------------
-    
-                        case "ShieldState": // no longer works ?
-    
-                            ShieldStateInfo shieldStateInfo = e.ToObject<ShieldStateInfo>();
-                            //shieldStateInfo.ShieldsUp
-    
-                            break;
-    
-    
-                        case "Fileheader":
-                            FileheaderInfo fileheaderInfo = e.ToObject<FileheaderInfo>();
-                            //TabLCDStartElite.Create();
-                            break;
-    
-                        case "Shutdown":
-                            ShutdownInfo shutdownInfo = e.ToObject<ShutdownInfo>();
-                            //EDLCD.Instance = new Instance();
-                            //TabLCDStartup.Create();
-                            break;
-    
-                        case "Scan":
-                            ScanInfo scanInfo = e.ToObject<ScanInfo>();
-                            //scanInfo.AxialTilt
-                            //scanInfo.RotationPeriod
-                            //scanInfo.OrbitalPeriod
-                            //scanInfo.Periapsis
-                            //scanInfo.OrbitalInclination
-                            //scanInfo.Eccentricity
-                            //scanInfo.SemiMajorAxis
-                            //scanInfo.Composition
-                            //scanInfo.Materials
-                            //scanInfo.Landable
-                            //scanInfo.SurfacePressure
-                            //scanInfo.SurfaceTemperature
-                            //scanInfo.SurfaceGravity
-                            //scanInfo.Rings
-                            //scanInfo.Radius
-                            //scanInfo.Volcanism
-                            //scanInfo.AtmosphereType
-                            //scanInfo.Atmosphere
-                            //scanInfo.PlanetClass
-                            //scanInfo.TerraformState
-                            //scanInfo.TidalLock
-                            //scanInfo.DistanceFromArrivalLs
-                            //scanInfo.Parents
-                            //scanInfo.BodyId
-                            //scanInfo.BodyName
-                            //scanInfo.ScanType
-                            //scanInfo.MassEm
-                            //scanInfo.ReserveLevel
-    
-                            break;
-    
-                        case "AfmuRepairs":
-                            AfmuRepairsInfo afmuRepairsInfo = e.ToObject<AfmuRepairsInfo>();
-                            break;
-    
-                        case "AppliedToSquadron":
-                            AppliedToSquadronInfo appliedToSquadronInfo = e.ToObject<AppliedToSquadronInfo>();
-                            break;
-    
-                        case "AsteroidCracked":
-                            AsteroidCrackedInfo asteroidCrackedInfo = e.ToObject<AsteroidCrackedInfo>();
-                            break;
-    
-                        case "Bounty":
-                            BountyInfo bountyInfo = e.ToObject<BountyInfo>();
-                            break;
-    
-                        case "CargoDepot":
-                            CargoDepotInfo cargoDepotInfo = e.ToObject<CargoDepotInfo>();
-                            break;
-    
-                        case "Cargo":
-                            CargoInfo cargoInfo = e.ToObject<CargoInfo>();
-                            break;
-    
-                        case "ChangeCrewRole":
-                            ChangeCrewRoleInfo changeCrewRoleInfo = e.ToObject<ChangeCrewRoleInfo>();
-                            break;
-    
-                        case "CockpitBreached":
-                            CockpitBreachedInfo cockpitBreachedInfo = e.ToObject<CockpitBreachedInfo>();
-                            break;
-    
-                        case "CodexEntry":
-                            CodexEntryInfo codexEntryInfo = e.ToObject<CodexEntryInfo>();
-                            break;
-    
-                        case "CollectCargo":
-                            CollectCargoInfo collectCargoInfo = e.ToObject<CollectCargoInfo>();
-                            break;
-    
-                        case "CommitCrime":
-                            CommitCrimeInfo commitCrimeInfo = e.ToObject<CommitCrimeInfo>();
-                            break;
-    
-                        case "CommunityGoalDiscard":
-                            CommunityGoalDiscardInfo communityGoalDiscardInfo = e.ToObject<CommunityGoalDiscardInfo>();
-                            break;
-    
-                        case "CommunityGoal":
-                            CommunityGoalInfo communityGoalInfo = e.ToObject<CommunityGoalInfo>();
-                            break;
-    
-                        case "CommunityGoalJoin":
-                            CommunityGoalJoinInfo communityGoalJoinInfo = e.ToObject<CommunityGoalJoinInfo>();
-                            break;
-    
-                        case "CommunityGoalReward":
-                            CommunityGoalRewardInfo communityGoalRewardInfo = e.ToObject<CommunityGoalRewardInfo>();
-                            break;
-    
-                        case "CrewAssign":
-                            CrewAssignInfo crewAssignInfo = e.ToObject<CrewAssignInfo>();
-                            break;
-    
-                        case "CrewFire":
-                            CrewFireInfo crewFireInfo = e.ToObject<CrewFireInfo>();
-                            break;
-    
-                        case "CrewHire":
-                            CrewHireInfo crewHireInfo = e.ToObject<CrewHireInfo>();
-                            break;
-    
-                        case "CrewLaunchFighter":
-                            CrewLaunchFighterInfo crewLaunchFighterInfo = e.ToObject<CrewLaunchFighterInfo>();
-                            break;
-    
-                        case "CrewMemberJoins":
-                            CrewMemberJoinsInfo crewMemberJoinsInfo = e.ToObject<CrewMemberJoinsInfo>();
-                            break;
-    
-                        case "CrewMemberQuits":
-                            CrewMemberQuitsInfo crewMemberQuitsInfo = e.ToObject<CrewMemberQuitsInfo>();
-                            break;
-    
-                        case "CrewMemberRoleChange":
-                            CrewMemberRoleChangeInfo crewMemberRoleChangeInfo = e.ToObject<CrewMemberRoleChangeInfo>();
-                            break;
-    
-                        case "CrimeVictim":
-                            CrimeVictimInfo crimeVictimInfo = e.ToObject<CrimeVictimInfo>();
-                            break;
-    
-                        case "DatalinkScan":
-                            DatalinkScanInfo datalinkScanInfo = e.ToObject<DatalinkScanInfo>();
-                            break;
-    
-                        case "DatalinkVoucher":
-                            DatalinkVoucherInfo datalinkVoucherInfo = e.ToObject<DatalinkVoucherInfo>();
-                            break;
-    
-                        case "DataScanned":
-                            DataScannedInfo dataScannedInfo = e.ToObject<DataScannedInfo>();
-                            break;
-    
-                        case "Died":
-                            DiedInfo diedInfo = e.ToObject<DiedInfo>();
-                            break;
-    
-                        case "DisbandedSquadron":
-                            DisbandedSquadronInfo disbandedSquadronInfo = e.ToObject<DisbandedSquadronInfo>();
-                            break;
-    
-                        case "DiscoveryScan":
-                            DiscoveryScanInfo discoveryScanInfo = e.ToObject<DiscoveryScanInfo>();
-                            break;
-    
-                        case "DockFighter":
-                            DockFighterInfo dockFighterInfo = e.ToObject<DockFighterInfo>();
-                            break;
-    
-                        case "DockingCancelled":
-                            DockingCancelledInfo dockingCancelledInfo = e.ToObject<DockingCancelledInfo>();
-                            break;
-    
-                        case "DockingDenied":
-                            DockingDeniedInfo dockingDeniedInfo = e.ToObject<DockingDeniedInfo>();
-                            break;
-    
-                        case "DockingTimeout":
-                            DockingTimeoutInfo dockingTimeoutInfo = e.ToObject<DockingTimeoutInfo>();
-                            break;
-    
-                        case "DockSRV":
-                            DockSRVInfo dockSRVInfo = e.ToObject<DockSRVInfo>();
-                            break;
-    
-                        case "EjectCargo":
-                            EjectCargoInfo ejectCargoInfo = e.ToObject<EjectCargoInfo>();
-                            break;
-    
-                        case "EndCrewSession":
-                            EndCrewSessionInfo endCrewSessionInfo = e.ToObject<EndCrewSessionInfo>();
-                            break;
-    
-                        case "EngineerApply":
-                            EngineerApplyInfo engineerApplyInfo = e.ToObject<EngineerApplyInfo>();
-                            break;
-    
-                        case "EngineerContribution":
-                            EngineerContributionInfo engineerContributionInfo = e.ToObject<EngineerContributionInfo>();
-                            break;
-    
-                        case "EngineerCraft":
-                            EngineerCraftInfo engineerCraftInfo = e.ToObject<EngineerCraftInfo>();
-                            break;
-    
-                        case "EngineerProgress":
-                            EngineerProgressInfo engineerProgressInfo = e.ToObject<EngineerProgressInfo>();
-                            break;
-    
-                        case "EscapeInterdiction":
-                            EscapeInterdictionInfo escapeInterdictionInfo = e.ToObject<EscapeInterdictionInfo>();
-                            break;
-    
-                        case "FactionKillBond":
-                            FactionKillBondInfo factionKillBondInfo = e.ToObject<FactionKillBondInfo>();
-                            break;
-    
-                        case "FetchRemoteModule":
-                            FetchRemoteModuleInfo fetchRemoteModuleInfo = e.ToObject<FetchRemoteModuleInfo>();
-                            break;
-    
-                        case "FighterDestroyed":
-                            FighterDestroyedInfo fighterDestroyedInfo = e.ToObject<FighterDestroyedInfo>();
-                            break;
-    
-                        case "FighterRebuilt":
-                            FighterRebuiltInfo fighterRebuiltInfo = e.ToObject<FighterRebuiltInfo>();
-                            break;
-    
-                        case "Friends":
-                            FriendsInfo friendsInfo = e.ToObject<FriendsInfo>();
-                            break;
-    
-                        case "FSSAllBodiesFound":
-                            FSSAllBodiesFoundInfo fSSAllBodiesFoundInfo = e.ToObject<FSSAllBodiesFoundInfo>();
-                            break;
-    
-                        case "FSSDiscoveryScan":
-                            FSSDiscoveryScanInfo fSSDiscoveryScanInfo = e.ToObject<FSSDiscoveryScanInfo>();
-                            break;
-    
-                        case "FSSSignalDiscovered":
-                            FSSSignalDiscoveredInfo fSSSignalDiscoveredInfo = e.ToObject<FSSSignalDiscoveredInfo>();
-                            break;
-    
-                        case "JetConeBoost":
-                            JetConeBoostInfo jetConeBoostInfo = e.ToObject<JetConeBoostInfo>();
-                            break;
-    
-                        case "JetConeDamage":
-                            JetConeDamageInfo jetConeDamageInfo = e.ToObject<JetConeDamageInfo>();
-                            break;
-    
-                        case "JoinACrew":
-                            JoinACrewInfo joinACrewInfo = e.ToObject<JoinACrewInfo>();
-                            break;
-    
-                        case "JoinedSquadron":
-                            JoinedSquadronInfo joinedSquadronInfo = e.ToObject<JoinedSquadronInfo>();
-                            break;
-    
-                        case "KickCrewMember":
-                            KickCrewMemberInfo kickCrewMemberInfo = e.ToObject<KickCrewMemberInfo>();
-                            break;
-    
-                        case "LaunchDrone":
-                            LaunchDroneInfo launchDroneInfo = e.ToObject<LaunchDroneInfo>();
-                            break;
-    
-                        case "LaunchFighter":
-                            LaunchFighterInfo launchFighterInfo = e.ToObject<LaunchFighterInfo>();
-                            break;
-    
-                        case "LaunchSRV":
-                            LaunchSRVInfo launchSRVInfo = e.ToObject<LaunchSRVInfo>();
-                            break;
-    
-                        case "LeftSquadron":
-                            LeftSquadronInfo leftSquadronInfo = e.ToObject<LeftSquadronInfo>();
-                            break;
-    
-                        case "Liftoff":
-                            LiftoffInfo liftoffInfo = e.ToObject<LiftoffInfo>();
-                            break;
-    
-                        case "MarketBuy":
-                            MarketBuyInfo marketBuyInfo = e.ToObject<MarketBuyInfo>();
-                            break;
-    
-                        case "Market":
-                            MarketInfo marketInfo = e.ToObject<MarketInfo>();
-                            break;
-    
-                        case "MarketSell":
-                            MarketSellInfo marketSellInfo = e.ToObject<MarketSellInfo>();
-                            break;
-    
-                        case "MassModuleStore":
-                            MassModuleStoreInfo massModuleStoreInfo = e.ToObject<MassModuleStoreInfo>();
-                            break;
-    
-                        case "MaterialDiscovered":
-                            MaterialDiscoveredInfo materialDiscoveredInfo = e.ToObject<MaterialDiscoveredInfo>();
-                            break;
-    
-                        case "MiningRefined":
-                            MiningRefinedInfo miningRefinedInfo = e.ToObject<MiningRefinedInfo>();
-                            break;
-    
-                        case "MissionAbandoned":
-                            MissionAbandonedInfo missionAbandonedInfo = e.ToObject<MissionAbandonedInfo>();
-                            break;
-    
-                        case "MissionAccepted":
-                            MissionAcceptedInfo missionAcceptedInfo = e.ToObject<MissionAcceptedInfo>();
-                            break;
-    
-                        case "MissionCompleted":
-                            MissionCompletedInfo missionCompletedInfo = e.ToObject<MissionCompletedInfo>();
-                            break;
-    
-                        case "MissionFailed":
-                            MissionFailedInfo missionFailedInfo = e.ToObject<MissionFailedInfo>();
-                            break;
-    
-                        case "MissionRedirected":
-                            MissionRedirectedInfo missionRedirectedInfo = e.ToObject<MissionRedirectedInfo>();
-                            break;
-    
-                        case "Missions":
-                            MissionsInfo missionsInfo = e.ToObject<MissionsInfo>();
-                            break;
-    
-                        case "ModuleBuy":
-                            ModuleBuyInfo moduleBuyInfo = e.ToObject<ModuleBuyInfo>();
-                            break;
-    
-                        case "ModuleRetrieve":
-                            ModuleRetrieveInfo moduleRetrieveInfo = e.ToObject<ModuleRetrieveInfo>();
-                            break;
-    
-                        case "ModuleSell":
-                            ModuleSellInfo moduleSellInfo = e.ToObject<ModuleSellInfo>();
-                            break;
-    
-                        case "ModuleSellRemote":
-                            ModuleSellRemoteInfo moduleSellRemoteInfo = e.ToObject<ModuleSellRemoteInfo>();
-                            break;
-    
-                        case "ModuleStore":
-                            ModuleStoreInfo moduleStoreInfo = e.ToObject<ModuleStoreInfo>();
-                            break;
-    
-                        case "ModuleSwap":
-                            ModuleSwapInfo moduleSwapInfo = e.ToObject<ModuleSwapInfo>();
-                            break;
-    
-                        case "MultiSellExplorationData":
-                            MultiSellExplorationDataInfo multiSellExplorationDataInfo =
-                                e.ToObject<MultiSellExplorationDataInfo>();
-                            break;
-    
-                        case "NavBeaconScan":
-                            NavBeaconScanInfo navBeaconScanInfo = e.ToObject<NavBeaconScanInfo>();
-                            break;
-    
-                        case "NewCommander":
-                            NewCommanderInfo newCommanderInfo = e.ToObject<NewCommanderInfo>();
-                            break;
-    
-                        case "NpcCrewPaidWage":
-                            NpcCrewPaidWageInfo npcCrewPaidWageInfo = e.ToObject<NpcCrewPaidWageInfo>();
-                            break;
-    
-                        case "Outfitting":
-                            OutfittingInfo outfittingInfo = e.ToObject<OutfittingInfo>();
-                            break;
-    
-                        case "Passengers":
-                            PassengersInfo passengersInfo = e.ToObject<PassengersInfo>();
-                            break;
-    
-                        case "PayBounties":
-                            PayBountiesInfo payBountiesInfo = e.ToObject<PayBountiesInfo>();
-                            break;
-    
-                        case "PayFines":
-                            PayFinesInfo payFinesInfo = e.ToObject<PayFinesInfo>();
-                            break;
-    
-                        case "PayLegacyFines":
-                            PayLegacyFinesInfo payLegacyFinesInfo = e.ToObject<PayLegacyFinesInfo>();
-                            break;
-    
-                        case "PowerplayCollect":
-                            PowerplayCollectInfo powerplayCollectInfo = e.ToObject<PowerplayCollectInfo>();
-                            break;
-    
-                        case "PowerplayDefect":
-                            PowerplayDefectInfo powerplayDefectInfo = e.ToObject<PowerplayDefectInfo>();
-                            break;
-    
-                        case "PowerplayDeliver":
-                            PowerplayDeliverInfo powerplayDeliverInfo = e.ToObject<PowerplayDeliverInfo>();
-                            break;
-    
-                        case "PowerplayFastTrack":
-                            PowerplayFastTrackInfo powerplayFastTrackInfo = e.ToObject<PowerplayFastTrackInfo>();
-                            break;
-    
-                        case "Powerplay":
-                            PowerplayInfo powerplayInfo = e.ToObject<PowerplayInfo>();
-                            break;
-    
-                        case "PowerplayJoin":
-                            PowerplayJoinInfo powerplayJoinInfo = e.ToObject<PowerplayJoinInfo>();
-                            break;
-    
-                        case "PowerplayLeave":
-                            PowerplayLeaveInfo powerplayLeaveInfo = e.ToObject<PowerplayLeaveInfo>();
-                            break;
-    
-                        case "PowerplaySalary":
-                            PowerplaySalaryInfo powerplaySalaryInfo = e.ToObject<PowerplaySalaryInfo>();
-                            break;
-    
-                        case "PowerplayVote":
-                            PowerplayVoteInfo powerplayVoteInfo = e.ToObject<PowerplayVoteInfo>();
-                            break;
-    
-                        case "PowerplayVoucher":
-                            PowerplayVoucherInfo powerplayVoucherInfo = e.ToObject<PowerplayVoucherInfo>();
-                            break;
-    
-                        case "Promotion":
-                            PromotionInfo promotionInfo = e.ToObject<PromotionInfo>();
-                            break;
-    
-                        case "ProspectedAsteroid":
-                            ProspectedAsteroidInfo prospectedAsteroidInfo = e.ToObject<ProspectedAsteroidInfo>();
-                            break;
-    
-                        case "PVPKill":
-                            PVPKillInfo pVPKillInfo = e.ToObject<PVPKillInfo>();
-                            break;
-    
-                        case "QuitACrew":
-                            QuitACrewInfo quitACrewInfo = e.ToObject<QuitACrewInfo>();
-                            break;
-    
-                        case "RebootRepair":
-                            RebootRepairInfo rebootRepairInfo = e.ToObject<RebootRepairInfo>();
-                            break;
-    
-                        case "RedeemVoucher":
-                            RedeemVoucherInfo redeemVoucherInfo = e.ToObject<RedeemVoucherInfo>();
-                            break;
-    
-                        case "RepairDrone":
-                            RepairDroneInfo repairDroneInfo = e.ToObject<RepairDroneInfo>();
-                            break;
-    
-                        case "ReservoirReplenished":
-                            ReservoirReplenishedInfo reservoirReplenishedInfo = e.ToObject<ReservoirReplenishedInfo>();
-                            break;
-    
-                        case "RestockVehicle":
-                            RestockVehicleInfo restockVehicleInfo = e.ToObject<RestockVehicleInfo>();
-                            break;
-    
-                        case "Resurrect":
-                            ResurrectInfo resurrectInfo = e.ToObject<ResurrectInfo>();
-                            break;
-    
-                        case "SAAScanComplete":
-                            SAAScanCompleteInfo sAAScanCompleteInfo = e.ToObject<SAAScanCompleteInfo>();
-                            break;
-    
-                        case "ScientificResearch":
-                            ScientificResearchInfo scientificResearchInfo = e.ToObject<ScientificResearchInfo>();
-                            break;
-    
-                        case "Screenshot":
-                            ScreenshotInfo screenshotInfo = e.ToObject<ScreenshotInfo>();
-                            break;
-    
-                        case "SearchAndRescue":
-                            SearchAndRescueInfo searchAndRescueInfo = e.ToObject<SearchAndRescueInfo>();
-                            break;
-    
-                        case "SelfDestruct":
-                            SelfDestructInfo selfDestructInfo = e.ToObject<SelfDestructInfo>();
-                            break;
-    
-                        case "SellDrones":
-                            SellDronesInfo sellDronesInfo = e.ToObject<SellDronesInfo>();
-                            break;
-    
-                        case "SellExplorationData":
-                            SellExplorationDataInfo sellExplorationDataInfo = e.ToObject<SellExplorationDataInfo>();
-                            break;
-    
-                        case "SendText":
-                            SendTextInfo sendTextInfo = e.ToObject<SendTextInfo>();
-                            break;
-    
-                        case "ShipyardBuy":
-                            ShipyardBuyInfo shipyardBuyInfo = e.ToObject<ShipyardBuyInfo>();
-                            break;
-    
-                        case "Shipyard":
-                            ShipyardInfo shipyardInfo = e.ToObject<ShipyardInfo>();
-                            break;
-    
-                        case "ShipyardNew":
-                            ShipyardNewInfo shipyardNewInfo = e.ToObject<ShipyardNewInfo>();
-                            break;
-    
-                        case "ShipyardSell":
-                            ShipyardSellInfo shipyardSellInfo = e.ToObject<ShipyardSellInfo>();
-                            break;
-    
-                        case "ShipyardSwap":
-                            ShipyardSwapInfo shipyardSwapInfo = e.ToObject<ShipyardSwapInfo>();
-                            break;
-    
-                        case "ShipyardTransfer":
-                            ShipyardTransferInfo shipyardTransferInfo = e.ToObject<ShipyardTransferInfo>();
-                            break;
-    
-                        case "SquadronCreated":
-                            SquadronCreatedInfo squadronCreatedInfo = e.ToObject<SquadronCreatedInfo>();
-                            break;
-    
-                        case "SquadronStartup":
-                            SquadronStartupInfo squadronStartupInfo = e.ToObject<SquadronStartupInfo>();
-                            break;
-    
-                        case "SRVDestroyed":
-                            SRVDestroyedInfo sRVDestroyedInfo = e.ToObject<SRVDestroyedInfo>();
-                            break;
-    
-                        case "StoredModules":
-                            StoredModulesInfo storedModulesInfo = e.ToObject<StoredModulesInfo>();
-                            break;
-    
-                        case "StoredShips":
-                            StoredShipsInfo storedShipsInfo = e.ToObject<StoredShipsInfo>();
-                            break;
-    
-                        case "TechnologyBroker":
-                            TechnologyBrokerInfo technologyBrokerInfo = e.ToObject<TechnologyBrokerInfo>();
-                            break;
-    
-                        case "Touchdown":
-                            TouchdownInfo touchdownInfo = e.ToObject<TouchdownInfo>();
-                            break;
-    
-                        case "USSDrop":
-                            USSDropInfo uSSDropInfo = e.ToObject<USSDropInfo>();
-                            break;
-    
-                        case "VehicleSwitch":
-                            VehicleSwitchInfo vehicleSwitchInfo = e.ToObject<VehicleSwitchInfo>();
-                            break;
-    
-                        case "WingAdd":
-                            WingAddInfo wingAddInfo = e.ToObject<WingAddInfo>();
-                            break;
-    
-                        case "WingInvite":
-                            WingInviteInfo wingInviteInfo = e.ToObject<WingInviteInfo>();
-                            break;
-    
-                        case "WingJoin":
-                            WingJoinInfo wingJoinInfo = e.ToObject<WingJoinInfo>();
-                            break;
-    
-                        case "WingLeave":
-                            WingLeaveInfo wingLeaveInfo = e.ToObject<WingLeaveInfo>();
-                            break;
-    
-                        */
+                        /*
+
+                            //---------------- MATERIAL 
+
+                            case "Materials":
+                                MaterialsInfo materialsInfo = e.ToObject<MaterialsInfo>();
+                                break;
+
+                            case "MaterialCollected":
+                                MaterialCollectedInfo materialCollectedInfo = e.ToObject<MaterialCollectedInfo>();
+                                break;
+
+                            case "MaterialDiscarded":
+                                MaterialDiscardedInfo materialDiscardedInfo = e.ToObject<MaterialDiscardedInfo>();
+                                break;
+
+                            case "MaterialTrade":
+                                MaterialTradeInfo materialTradeInfo = e.ToObject<MaterialTradeInfo>();
+                                break;
+
+                            case "Synthesis":
+                                SynthesisInfo synthesisInfo = e.ToObject<SynthesisInfo>();
+                                break;
+
+                            //------------------
+
+                            case "ShieldState": // no longer works ?
+
+                                ShieldStateInfo shieldStateInfo = e.ToObject<ShieldStateInfo>();
+                                //shieldStateInfo.ShieldsUp
+
+                                break;
+
+
+                            case "Fileheader":
+                                FileheaderInfo fileheaderInfo = e.ToObject<FileheaderInfo>();
+                                //TabLCDStartElite.Create();
+                                break;
+
+                            case "Shutdown":
+                                ShutdownInfo shutdownInfo = e.ToObject<ShutdownInfo>();
+                                //EDLCD.Instance = new Instance();
+                                //TabLCDStartup.Create();
+                                break;
+
+                            case "Scan":
+                                ScanInfo scanInfo = e.ToObject<ScanInfo>();
+                                //scanInfo.AxialTilt
+                                //scanInfo.RotationPeriod
+                                //scanInfo.OrbitalPeriod
+                                //scanInfo.Periapsis
+                                //scanInfo.OrbitalInclination
+                                //scanInfo.Eccentricity
+                                //scanInfo.SemiMajorAxis
+                                //scanInfo.Composition
+                                //scanInfo.Materials
+                                //scanInfo.Landable
+                                //scanInfo.SurfacePressure
+                                //scanInfo.SurfaceTemperature
+                                //scanInfo.SurfaceGravity
+                                //scanInfo.Rings
+                                //scanInfo.Radius
+                                //scanInfo.Volcanism
+                                //scanInfo.AtmosphereType
+                                //scanInfo.Atmosphere
+                                //scanInfo.PlanetClass
+                                //scanInfo.TerraformState
+                                //scanInfo.TidalLock
+                                //scanInfo.DistanceFromArrivalLs
+                                //scanInfo.Parents
+                                //scanInfo.BodyId
+                                //scanInfo.BodyName
+                                //scanInfo.ScanType
+                                //scanInfo.MassEm
+                                //scanInfo.ReserveLevel
+
+                                break;
+
+                            case "AfmuRepairs":
+                                AfmuRepairsInfo afmuRepairsInfo = e.ToObject<AfmuRepairsInfo>();
+                                break;
+
+                            case "AppliedToSquadron":
+                                AppliedToSquadronInfo appliedToSquadronInfo = e.ToObject<AppliedToSquadronInfo>();
+                                break;
+
+                            case "AsteroidCracked":
+                                AsteroidCrackedInfo asteroidCrackedInfo = e.ToObject<AsteroidCrackedInfo>();
+                                break;
+
+                            case "Bounty":
+                                BountyInfo bountyInfo = e.ToObject<BountyInfo>();
+                                break;
+
+                            case "CargoDepot":
+                                CargoDepotInfo cargoDepotInfo = e.ToObject<CargoDepotInfo>();
+                                break;
+
+                            case "Cargo":
+                                CargoInfo cargoInfo = e.ToObject<CargoInfo>();
+                                break;
+
+                            case "ChangeCrewRole":
+                                ChangeCrewRoleInfo changeCrewRoleInfo = e.ToObject<ChangeCrewRoleInfo>();
+                                break;
+
+                            case "CockpitBreached":
+                                CockpitBreachedInfo cockpitBreachedInfo = e.ToObject<CockpitBreachedInfo>();
+                                break;
+
+                            case "CodexEntry":
+                                CodexEntryInfo codexEntryInfo = e.ToObject<CodexEntryInfo>();
+                                break;
+
+                            case "CollectCargo":
+                                CollectCargoInfo collectCargoInfo = e.ToObject<CollectCargoInfo>();
+                                break;
+
+                            case "CommitCrime":
+                                CommitCrimeInfo commitCrimeInfo = e.ToObject<CommitCrimeInfo>();
+                                break;
+
+                            case "CommunityGoalDiscard":
+                                CommunityGoalDiscardInfo communityGoalDiscardInfo = e.ToObject<CommunityGoalDiscardInfo>();
+                                break;
+
+                            case "CommunityGoal":
+                                CommunityGoalInfo communityGoalInfo = e.ToObject<CommunityGoalInfo>();
+                                break;
+
+                            case "CommunityGoalJoin":
+                                CommunityGoalJoinInfo communityGoalJoinInfo = e.ToObject<CommunityGoalJoinInfo>();
+                                break;
+
+                            case "CommunityGoalReward":
+                                CommunityGoalRewardInfo communityGoalRewardInfo = e.ToObject<CommunityGoalRewardInfo>();
+                                break;
+
+                            case "CrewAssign":
+                                CrewAssignInfo crewAssignInfo = e.ToObject<CrewAssignInfo>();
+                                break;
+
+                            case "CrewFire":
+                                CrewFireInfo crewFireInfo = e.ToObject<CrewFireInfo>();
+                                break;
+
+                            case "CrewHire":
+                                CrewHireInfo crewHireInfo = e.ToObject<CrewHireInfo>();
+                                break;
+
+                            case "CrewLaunchFighter":
+                                CrewLaunchFighterInfo crewLaunchFighterInfo = e.ToObject<CrewLaunchFighterInfo>();
+                                break;
+
+                            case "CrewMemberJoins":
+                                CrewMemberJoinsInfo crewMemberJoinsInfo = e.ToObject<CrewMemberJoinsInfo>();
+                                break;
+
+                            case "CrewMemberQuits":
+                                CrewMemberQuitsInfo crewMemberQuitsInfo = e.ToObject<CrewMemberQuitsInfo>();
+                                break;
+
+                            case "CrewMemberRoleChange":
+                                CrewMemberRoleChangeInfo crewMemberRoleChangeInfo = e.ToObject<CrewMemberRoleChangeInfo>();
+                                break;
+
+                            case "CrimeVictim":
+                                CrimeVictimInfo crimeVictimInfo = e.ToObject<CrimeVictimInfo>();
+                                break;
+
+                            case "DatalinkScan":
+                                DatalinkScanInfo datalinkScanInfo = e.ToObject<DatalinkScanInfo>();
+                                break;
+
+                            case "DatalinkVoucher":
+                                DatalinkVoucherInfo datalinkVoucherInfo = e.ToObject<DatalinkVoucherInfo>();
+                                break;
+
+                            case "DataScanned":
+                                DataScannedInfo dataScannedInfo = e.ToObject<DataScannedInfo>();
+                                break;
+
+                            case "Died":
+                                DiedInfo diedInfo = e.ToObject<DiedInfo>();
+                                break;
+
+                            case "DisbandedSquadron":
+                                DisbandedSquadronInfo disbandedSquadronInfo = e.ToObject<DisbandedSquadronInfo>();
+                                break;
+
+                            case "DiscoveryScan":
+                                DiscoveryScanInfo discoveryScanInfo = e.ToObject<DiscoveryScanInfo>();
+                                break;
+
+                            case "DockFighter":
+                                DockFighterInfo dockFighterInfo = e.ToObject<DockFighterInfo>();
+                                break;
+
+                            case "DockingCancelled":
+                                DockingCancelledInfo dockingCancelledInfo = e.ToObject<DockingCancelledInfo>();
+                                break;
+
+                            case "DockingDenied":
+                                DockingDeniedInfo dockingDeniedInfo = e.ToObject<DockingDeniedInfo>();
+                                break;
+
+                            case "DockingTimeout":
+                                DockingTimeoutInfo dockingTimeoutInfo = e.ToObject<DockingTimeoutInfo>();
+                                break;
+
+                            case "DockSRV":
+                                DockSRVInfo dockSRVInfo = e.ToObject<DockSRVInfo>();
+                                break;
+
+                            case "EjectCargo":
+                                EjectCargoInfo ejectCargoInfo = e.ToObject<EjectCargoInfo>();
+                                break;
+
+                            case "EndCrewSession":
+                                EndCrewSessionInfo endCrewSessionInfo = e.ToObject<EndCrewSessionInfo>();
+                                break;
+
+                            case "EngineerApply":
+                                EngineerApplyInfo engineerApplyInfo = e.ToObject<EngineerApplyInfo>();
+                                break;
+
+                            case "EngineerContribution":
+                                EngineerContributionInfo engineerContributionInfo = e.ToObject<EngineerContributionInfo>();
+                                break;
+
+                            case "EngineerCraft":
+                                EngineerCraftInfo engineerCraftInfo = e.ToObject<EngineerCraftInfo>();
+                                break;
+
+                            case "EngineerProgress":
+                                EngineerProgressInfo engineerProgressInfo = e.ToObject<EngineerProgressInfo>();
+                                break;
+
+                            case "EscapeInterdiction":
+                                EscapeInterdictionInfo escapeInterdictionInfo = e.ToObject<EscapeInterdictionInfo>();
+                                break;
+
+                            case "FactionKillBond":
+                                FactionKillBondInfo factionKillBondInfo = e.ToObject<FactionKillBondInfo>();
+                                break;
+
+                            case "MultiSellExplorationData":
+                                MultiSellExplorationDataInfo multiSellExplorationDataInfo =
+                                    e.ToObject<MultiSellExplorationDataInfo>();
+                                break;
+
+
+                            case "FighterDestroyed":
+                                FighterDestroyedInfo fighterDestroyedInfo = e.ToObject<FighterDestroyedInfo>();
+                                break;
+
+                            case "FighterRebuilt":
+                                FighterRebuiltInfo fighterRebuiltInfo = e.ToObject<FighterRebuiltInfo>();
+                                break;
+
+                            case "Friends":
+                                FriendsInfo friendsInfo = e.ToObject<FriendsInfo>();
+                                break;
+
+                            case "FSSAllBodiesFound":
+                                FSSAllBodiesFoundInfo fSSAllBodiesFoundInfo = e.ToObject<FSSAllBodiesFoundInfo>();
+                                break;
+
+                            case "FSSDiscoveryScan":
+                                FSSDiscoveryScanInfo fSSDiscoveryScanInfo = e.ToObject<FSSDiscoveryScanInfo>();
+                                break;
+
+                            case "FSSSignalDiscovered":
+                                FSSSignalDiscoveredInfo fSSSignalDiscoveredInfo = e.ToObject<FSSSignalDiscoveredInfo>();
+                                break;
+
+                            case "JetConeBoost":
+                                JetConeBoostInfo jetConeBoostInfo = e.ToObject<JetConeBoostInfo>();
+                                break;
+
+                            case "JetConeDamage":
+                                JetConeDamageInfo jetConeDamageInfo = e.ToObject<JetConeDamageInfo>();
+                                break;
+
+                            case "JoinACrew":
+                                JoinACrewInfo joinACrewInfo = e.ToObject<JoinACrewInfo>();
+                                break;
+
+                            case "JoinedSquadron":
+                                JoinedSquadronInfo joinedSquadronInfo = e.ToObject<JoinedSquadronInfo>();
+                                break;
+
+                            case "KickCrewMember":
+                                KickCrewMemberInfo kickCrewMemberInfo = e.ToObject<KickCrewMemberInfo>();
+                                break;
+
+                            case "LaunchDrone":
+                                LaunchDroneInfo launchDroneInfo = e.ToObject<LaunchDroneInfo>();
+                                break;
+
+                            case "LaunchFighter":
+                                LaunchFighterInfo launchFighterInfo = e.ToObject<LaunchFighterInfo>();
+                                break;
+
+                            case "LaunchSRV":
+                                LaunchSRVInfo launchSRVInfo = e.ToObject<LaunchSRVInfo>();
+                                break;
+
+                            case "LeftSquadron":
+                                LeftSquadronInfo leftSquadronInfo = e.ToObject<LeftSquadronInfo>();
+                                break;
+
+                            case "Liftoff":
+                                LiftoffInfo liftoffInfo = e.ToObject<LiftoffInfo>();
+                                break;
+
+                            case "MarketBuy":
+                                MarketBuyInfo marketBuyInfo = e.ToObject<MarketBuyInfo>();
+                                break;
+
+                            case "Market":
+                                MarketInfo marketInfo = e.ToObject<MarketInfo>();
+                                break;
+
+                            case "MarketSell":
+                                MarketSellInfo marketSellInfo = e.ToObject<MarketSellInfo>();
+                                break;
+
+                            case "MaterialDiscovered":
+                                MaterialDiscoveredInfo materialDiscoveredInfo = e.ToObject<MaterialDiscoveredInfo>();
+                                break;
+
+                            case "MiningRefined":
+                                MiningRefinedInfo miningRefinedInfo = e.ToObject<MiningRefinedInfo>();
+                                break;
+
+                            case "MissionAbandoned":
+                                MissionAbandonedInfo missionAbandonedInfo = e.ToObject<MissionAbandonedInfo>();
+                                break;
+
+                            case "MissionAccepted":
+                                MissionAcceptedInfo missionAcceptedInfo = e.ToObject<MissionAcceptedInfo>();
+                                break;
+
+                            case "MissionCompleted":
+                                MissionCompletedInfo missionCompletedInfo = e.ToObject<MissionCompletedInfo>();
+                                break;
+
+                            case "MissionFailed":
+                                MissionFailedInfo missionFailedInfo = e.ToObject<MissionFailedInfo>();
+                                break;
+
+                            case "MissionRedirected":
+                                MissionRedirectedInfo missionRedirectedInfo = e.ToObject<MissionRedirectedInfo>();
+                                break;
+
+                            case "Missions":
+                                MissionsInfo missionsInfo = e.ToObject<MissionsInfo>();
+                                break;
+
+
+                            case "NavBeaconScan":
+                                NavBeaconScanInfo navBeaconScanInfo = e.ToObject<NavBeaconScanInfo>();
+                                break;
+
+                            case "NewCommander":
+                                NewCommanderInfo newCommanderInfo = e.ToObject<NewCommanderInfo>();
+                                break;
+
+                            case "NpcCrewPaidWage":
+                                NpcCrewPaidWageInfo npcCrewPaidWageInfo = e.ToObject<NpcCrewPaidWageInfo>();
+                                break;
+
+                            case "Outfitting":
+                                OutfittingInfo outfittingInfo = e.ToObject<OutfittingInfo>();
+                                break;
+
+                            case "Passengers":
+                                PassengersInfo passengersInfo = e.ToObject<PassengersInfo>();
+                                break;
+
+                            case "PayBounties":
+                                PayBountiesInfo payBountiesInfo = e.ToObject<PayBountiesInfo>();
+                                break;
+
+                            case "PayFines":
+                                PayFinesInfo payFinesInfo = e.ToObject<PayFinesInfo>();
+                                break;
+
+                            case "PayLegacyFines":
+                                PayLegacyFinesInfo payLegacyFinesInfo = e.ToObject<PayLegacyFinesInfo>();
+                                break;
+
+                            case "PowerplayCollect":
+                                PowerplayCollectInfo powerplayCollectInfo = e.ToObject<PowerplayCollectInfo>();
+                                break;
+
+                            case "PowerplayDefect":
+                                PowerplayDefectInfo powerplayDefectInfo = e.ToObject<PowerplayDefectInfo>();
+                                break;
+
+                            case "PowerplayDeliver":
+                                PowerplayDeliverInfo powerplayDeliverInfo = e.ToObject<PowerplayDeliverInfo>();
+                                break;
+
+                            case "PowerplayFastTrack":
+                                PowerplayFastTrackInfo powerplayFastTrackInfo = e.ToObject<PowerplayFastTrackInfo>();
+                                break;
+
+                            case "Powerplay":
+                                PowerplayInfo powerplayInfo = e.ToObject<PowerplayInfo>();
+                                break;
+
+                            case "PowerplayJoin":
+                                PowerplayJoinInfo powerplayJoinInfo = e.ToObject<PowerplayJoinInfo>();
+                                break;
+
+                            case "PowerplayLeave":
+                                PowerplayLeaveInfo powerplayLeaveInfo = e.ToObject<PowerplayLeaveInfo>();
+                                break;
+
+                            case "PowerplaySalary":
+                                PowerplaySalaryInfo powerplaySalaryInfo = e.ToObject<PowerplaySalaryInfo>();
+                                break;
+
+                            case "PowerplayVote":
+                                PowerplayVoteInfo powerplayVoteInfo = e.ToObject<PowerplayVoteInfo>();
+                                break;
+
+                            case "PowerplayVoucher":
+                                PowerplayVoucherInfo powerplayVoucherInfo = e.ToObject<PowerplayVoucherInfo>();
+                                break;
+
+                            case "Promotion":
+                                PromotionInfo promotionInfo = e.ToObject<PromotionInfo>();
+                                break;
+
+                            case "ProspectedAsteroid":
+                                ProspectedAsteroidInfo prospectedAsteroidInfo = e.ToObject<ProspectedAsteroidInfo>();
+                                break;
+
+                            case "PVPKill":
+                                PVPKillInfo pVPKillInfo = e.ToObject<PVPKillInfo>();
+                                break;
+
+                            case "QuitACrew":
+                                QuitACrewInfo quitACrewInfo = e.ToObject<QuitACrewInfo>();
+                                break;
+
+                            case "RebootRepair":
+                                RebootRepairInfo rebootRepairInfo = e.ToObject<RebootRepairInfo>();
+                                break;
+
+                            case "RedeemVoucher":
+                                RedeemVoucherInfo redeemVoucherInfo = e.ToObject<RedeemVoucherInfo>();
+                                break;
+
+                            case "RepairDrone":
+                                RepairDroneInfo repairDroneInfo = e.ToObject<RepairDroneInfo>();
+                                break;
+
+                            case "ReservoirReplenished":
+                                ReservoirReplenishedInfo reservoirReplenishedInfo = e.ToObject<ReservoirReplenishedInfo>();
+                                break;
+
+                            case "RestockVehicle":
+                                RestockVehicleInfo restockVehicleInfo = e.ToObject<RestockVehicleInfo>();
+                                break;
+
+                            case "Resurrect":
+                                ResurrectInfo resurrectInfo = e.ToObject<ResurrectInfo>();
+                                break;
+
+                            case "SAAScanComplete":
+                                SAAScanCompleteInfo sAAScanCompleteInfo = e.ToObject<SAAScanCompleteInfo>();
+                                break;
+
+                            case "ScientificResearch":
+                                ScientificResearchInfo scientificResearchInfo = e.ToObject<ScientificResearchInfo>();
+                                break;
+
+                            case "Screenshot":
+                                ScreenshotInfo screenshotInfo = e.ToObject<ScreenshotInfo>();
+                                break;
+
+                            case "SearchAndRescue":
+                                SearchAndRescueInfo searchAndRescueInfo = e.ToObject<SearchAndRescueInfo>();
+                                break;
+
+                            case "SelfDestruct":
+                                SelfDestructInfo selfDestructInfo = e.ToObject<SelfDestructInfo>();
+                                break;
+
+                            case "SellDrones":
+                                SellDronesInfo sellDronesInfo = e.ToObject<SellDronesInfo>();
+                                break;
+
+                            case "SellExplorationData":
+                                SellExplorationDataInfo sellExplorationDataInfo = e.ToObject<SellExplorationDataInfo>();
+                                break;
+
+                            case "SendText":
+                                SendTextInfo sendTextInfo = e.ToObject<SendTextInfo>();
+                                break;
+
+                            case "ShipyardBuy":
+                                ShipyardBuyInfo shipyardBuyInfo = e.ToObject<ShipyardBuyInfo>();
+                                break;
+
+                            case "Shipyard":
+                                ShipyardInfo shipyardInfo = e.ToObject<ShipyardInfo>();
+                                break;
+
+                            case "ShipyardNew":
+                                ShipyardNewInfo shipyardNewInfo = e.ToObject<ShipyardNewInfo>();
+                                break;
+
+                            case "ShipyardSell":
+                                ShipyardSellInfo shipyardSellInfo = e.ToObject<ShipyardSellInfo>();
+                                break;
+
+                            case "ShipyardSwap":
+                                ShipyardSwapInfo shipyardSwapInfo = e.ToObject<ShipyardSwapInfo>();
+                                break;
+
+                            case "ShipyardTransfer":
+                                ShipyardTransferInfo shipyardTransferInfo = e.ToObject<ShipyardTransferInfo>();
+                                break;
+
+                            case "SquadronCreated":
+                                SquadronCreatedInfo squadronCreatedInfo = e.ToObject<SquadronCreatedInfo>();
+                                break;
+
+                            case "SquadronStartup":
+                                SquadronStartupInfo squadronStartupInfo = e.ToObject<SquadronStartupInfo>();
+                                break;
+
+                            case "SRVDestroyed":
+                                SRVDestroyedInfo sRVDestroyedInfo = e.ToObject<SRVDestroyedInfo>();
+                                break;
+
+                            case "StoredShips":
+                                StoredShipsInfo storedShipsInfo = e.ToObject<StoredShipsInfo>();
+                                break;
+
+                            case "TechnologyBroker":
+                                TechnologyBrokerInfo technologyBrokerInfo = e.ToObject<TechnologyBrokerInfo>();
+                                break;
+
+                            case "Touchdown":
+                                TouchdownInfo touchdownInfo = e.ToObject<TouchdownInfo>();
+                                break;
+
+                            case "USSDrop":
+                                USSDropInfo uSSDropInfo = e.ToObject<USSDropInfo>();
+                                break;
+
+                            case "VehicleSwitch":
+                                VehicleSwitchInfo vehicleSwitchInfo = e.ToObject<VehicleSwitchInfo>();
+                                break;
+
+                            case "WingAdd":
+                                WingAddInfo wingAddInfo = e.ToObject<WingAddInfo>();
+                                break;
+
+                            case "WingInvite":
+                                WingInviteInfo wingInviteInfo = e.ToObject<WingInviteInfo>();
+                                break;
+
+                            case "WingJoin":
+                                WingJoinInfo wingJoinInfo = e.ToObject<WingJoinInfo>();
+                                break;
+
+                            case "WingLeave":
+                                WingLeaveInfo wingLeaveInfo = e.ToObject<WingLeaveInfo>();
+                                break;
+
+                            case "ModuleSwap":
+                                ModuleSwapInfo moduleSwapInfo = e.ToObject<ModuleSwapInfo>();
+                                break;
+
+                            case "StoredModules":
+                                StoredModulesInfo storedModulesInfo = e.ToObject<StoredModulesInfo>();
+                                break;
+
+                            case "FetchRemoteModule":
+                                FetchRemoteModuleInfo fetchRemoteModuleInfo = e.ToObject<FetchRemoteModuleInfo>();
+                                break;
+
+                            case "ModuleSellRemote":
+                                ModuleSellRemoteInfo moduleSellRemoteInfo = e.ToObject<ModuleSellRemoteInfo>();
+                                break;
+                            */
+               
 
                 }
             }
