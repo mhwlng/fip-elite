@@ -751,6 +751,20 @@ namespace Elite
             }
         }
 
+        private int UpdateCargoCapacity(string item, int addremove)
+        {
+            if (item?.Contains("_cargorack_") == true)
+            {
+
+                var size = item.Substring(item.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
+
+                size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+
+                return addremove * Convert.ToInt32(size);
+            }
+
+            return 0;
+        }
 
         private void HandleEliteEvents(object sender, dynamic e)
         {
@@ -831,6 +845,7 @@ namespace Elite
                         //loadoutInfo.ModulesValue
                         //loadoutInfo.Rebuy
                         //loadoutInfo.ShipIdent
+                        //Ship:Python, Ident:MH-08P, Modules:31, Hull Health:100,0%, Hull:55.323.684 cr, Modules:32.315.494 cr, Rebuy:4.381.497 cr
 
                         ShipExtra.Name = loadoutInfo.ShipName;
                         ShipExtra.Type = loadoutInfo.Ship;
@@ -839,12 +854,7 @@ namespace Elite
 
                         foreach (var m in loadoutInfo.Modules.Where(x => x.Item.Contains("_cargorack_")))
                         {
-                            // "int_cargorack_size3_class1"
-                            var size = m.Item.Substring(m.Item.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
-                                
-                            size = size.Substring(0,size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
-
-                            ShipExtra.CargoCapacity += Convert.ToInt32(size);
+                            ShipExtra.CargoCapacity += UpdateCargoCapacity(m.Item, 1);
                         }
 
                         break;
@@ -852,70 +862,29 @@ namespace Elite
                     case "ModuleBuy":
                         ModuleBuyInfo moduleBuyInfo = e.ToObject<ModuleBuyInfo>();
 
-                        if (moduleBuyInfo.BuyItem?.Contains("_cargorack_") == true)
-                        {
-                            // "int_cargorack_size3_class1"
-                            var size = moduleBuyInfo.BuyItem.Substring(moduleBuyInfo.BuyItem.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
-
-                            size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
-
-                            ShipExtra.CargoCapacity += Convert.ToInt32(size);
-                        }
-
-                        if (moduleBuyInfo.SellItem?.Contains("_cargorack_") == true)
-                        {
-                            // "int_cargorack_size3_class1"
-                            var size = moduleBuyInfo.SellItem.Substring(moduleBuyInfo.SellItem.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
-
-                            size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
-
-                            ShipExtra.CargoCapacity -= Convert.ToInt32(size);
-                        }
+                        ShipExtra.CargoCapacity += UpdateCargoCapacity(moduleBuyInfo.BuyItem, 1);
+                        ShipExtra.CargoCapacity += UpdateCargoCapacity(moduleBuyInfo.SellItem, -1);
 
                         break;
 
                     case "ModuleSell":
                         ModuleSellInfo moduleSellInfo = e.ToObject<ModuleSellInfo>();
 
-                        if (moduleSellInfo.SellItem?.Contains("_cargorack_") == true)
-                        {
-                            // "int_cargorack_size3_class1"
-                            var size = moduleSellInfo.SellItem.Substring(moduleSellInfo.SellItem.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
-
-                            size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
-
-                            ShipExtra.CargoCapacity -= Convert.ToInt32(size);
-                        }
+                        ShipExtra.CargoCapacity += UpdateCargoCapacity(moduleSellInfo.SellItem, -1);
 
                         break;
 
                     case "ModuleStore":
                         ModuleStoreInfo moduleStoreInfo = e.ToObject<ModuleStoreInfo>();
 
-                        if (moduleStoreInfo.StoredItem?.Contains("_cargorack_") == true)
-                        {
-                            // "int_cargorack_size3_class1"
-                            var size = moduleStoreInfo.StoredItem.Substring(moduleStoreInfo.StoredItem.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
-
-                            size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
-
-                            ShipExtra.CargoCapacity -= Convert.ToInt32(size);
-                        }
+                        ShipExtra.CargoCapacity += UpdateCargoCapacity(moduleStoreInfo.StoredItem, -1);
 
                         break;
 
                     case "ModuleRetrieve":
                         ModuleRetrieveInfo moduleRetrieveInfo = e.ToObject<ModuleRetrieveInfo>();
 
-                        if (moduleRetrieveInfo.RetrievedItem?.Contains("_cargorack_") == true)
-                        {
-                            // "int_cargorack_size3_class1"
-                            var size = moduleRetrieveInfo.RetrievedItem.Substring(moduleRetrieveInfo.RetrievedItem.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
-
-                            size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
-
-                            ShipExtra.CargoCapacity += Convert.ToInt32(size);
-                        }
+                        ShipExtra.CargoCapacity += UpdateCargoCapacity(moduleRetrieveInfo.RetrievedItem, 1);
 
                         break;
 
@@ -924,17 +893,7 @@ namespace Elite
 
                         foreach (var i in massModuleStoreInfo.Items)
                         {
-                            if (i.Name?.Contains("_cargorack_") == true)
-                            {
-                                // "int_cargorack_size3_class1"
-                                var size = i.Name.Substring(
-                                    i.Name.IndexOf("_size", StringComparison.OrdinalIgnoreCase) +
-                                    5);
-
-                                size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
-
-                                ShipExtra.CargoCapacity -= Convert.ToInt32(size);
-                            }
+                            ShipExtra.CargoCapacity += UpdateCargoCapacity(i.Name, -1);
                         }
                         break;
 
