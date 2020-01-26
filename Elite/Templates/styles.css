@@ -15,6 +15,10 @@
     text-align: right;
 }
 
+.center {
+    text-align: center;
+}
+
 div.main {
     font-family: 'Arial Unicode MS';
     font-size: 15px;

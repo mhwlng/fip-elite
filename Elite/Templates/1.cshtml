@@ -45,6 +45,9 @@
             <tr>
                 <td class="divider" colspan="3">&nbsp;</td>
             </tr>
+            <tr>
+                <td class="caption center" colspan="3">RANK</td>
+            </tr>
 
             <tr>
                 <td class="caption">Federation</td>
@@ -80,6 +83,40 @@
                 </tr>
             }
 
+            <tr>
+                <td class="divider" colspan="3">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="caption center" colspan="3">REPUTATION</td>
+            </tr>
+
+            @if (Model.FederationReputation >= -100 && Model.FederationReputation <= 100)
+            {
+
+                <tr>
+                    <td class="caption">Federation</td>
+                    <td class="data">@Model.FederationReputationState</td>
+                    <td class="data right">@Model.FederationReputation.ToString("N0") %</td>
+                </tr>
+            }
+            @if (Model.EmpireReputation >= -100 && Model.EmpireReputation <= 100)
+            {
+
+                <tr>
+                    <td class="caption">Empire</td>
+                    <td class="data">@Model.EmpireReputationState</td>
+                    <td class="data right">@Model.EmpireReputation.ToString("N0") %</td>
+                </tr>
+            }
+            @if (Model.AllianceReputation >= -100 && Model.AllianceReputation <= 100)
+            {
+
+                <tr>
+                    <td class="caption">Alliance</td>
+                    <td class="data">@Model.AllianceReputationState</td>
+                    <td class="data right">@Model.AllianceReputation.ToString("N0") %</td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>

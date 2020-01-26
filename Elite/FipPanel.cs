@@ -42,6 +42,15 @@ namespace Elite
         public string Name { get; set; } = "";
         public uint Credits { get; set; } = 0;
         public long Rebuy { get; set; } = 0;
+
+
+        public double FederationReputation { get; set; } = -99999;
+        public double AllianceReputation { get; set; } = -99999;
+        public double EmpireReputation { get; set; } = -99999;
+        public string FederationReputationState { get; set; }
+        public string AllianceReputationState { get; set; }
+        public string EmpireReputationState { get; set; }
+
     }
 
     public class Dock
@@ -454,7 +463,15 @@ namespace Elite
 
                                         CqcRankProgress = App.EliteApi.Commander.CqcRankProgress,
 
-                                    });
+                                        FederationReputation = CommanderData.FederationReputation,
+                                        AllianceReputation = CommanderData.AllianceReputation,
+                                        EmpireReputation = CommanderData.EmpireReputation,
+
+                                        FederationReputationState = CommanderData.FederationReputationState,
+                                        AllianceReputationState = CommanderData.AllianceReputationState,
+                                        EmpireReputationState = CommanderData.EmpireReputationState
+
+                                });
 
                                 /*
                                 App.EliteApi.Commander.Statistics.BankAccount
@@ -811,6 +828,36 @@ namespace Elite
             return 0;
         }
 
+        private string UpdateReputationState(double reputation)
+        {
+            if (reputation >= -100 && reputation <= -91)
+            {
+               return "Hostile";
+            }
+            if (reputation >= -90 && reputation <= -36)
+            {
+                return "Unfriendly";
+            }
+            if (reputation >= -35 && reputation <= 3)
+            {
+                return "Neutral";
+            }
+            if (reputation >= 4 && reputation <= 34)
+            {
+                return "Cordial";
+            }
+            if (reputation >= 35 && reputation <= 89)
+            {
+                return "Friendly";
+            }
+            if (reputation >= 90 && reputation <= 100)
+            {
+                return "Allied";
+            }
+
+            return "";
+        }
+
         private void HandleEliteEvents(object sender, dynamic e)
         {
 
@@ -957,14 +1004,17 @@ namespace Elite
                     case "Reputation":
 
                         ReputationInfo reputationInfo = e.ToObject<ReputationInfo>();
-                        //reputationInfo.Alliance
-                        //reputationInfo.Empire
-                        //reputationInfo.Federation
+
                         //reputationInfo.Independent
 
-                        //Ranks.FederationReputation = Convert.ToInt32(reputationInfo.Federation);
-                        //Ranks.EmpireReputation = Convert.ToInt32(reputationInfo.Empire);
-                        //Ranks.AllianceReputation = Convert.ToInt32(reputationInfo.Alliance);
+                        CommanderData.FederationReputation = reputationInfo.Federation;
+                        CommanderData.AllianceReputation = reputationInfo.Alliance;
+                        CommanderData.EmpireReputation = reputationInfo.Empire;
+
+                        CommanderData.FederationReputationState = UpdateReputationState(CommanderData.FederationReputation);
+                        CommanderData.AllianceReputationState = UpdateReputationState(CommanderData.AllianceReputation);
+                        CommanderData.EmpireReputationState = UpdateReputationState(CommanderData.EmpireReputation);
+
                         break;
 
 
