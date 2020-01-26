@@ -310,7 +310,10 @@ namespace Elite
                             SetTab(LCDTab.Navigation);
                             break;
                         case 256:
-                            SetTab(LCDTab.Target);
+                            if (TargetData.TargetLocked)
+                            {
+                                SetTab(LCDTab.Target);
+                            }
                             break;
                         case 512:
                             
@@ -406,7 +409,9 @@ namespace Elite
                         var menustr =
                             Engine.Razor.Run("menu.cshtml", null, new
                             {
-                                CurrentTab = (int)_currenttab
+                                CurrentTab = (int)_currenttab,
+
+                                TargetLocked = TargetData.TargetLocked
                             });
 
                         var str = "";
@@ -502,7 +507,7 @@ namespace Elite
                                             Convert.ToInt32(100 / App.EliteApi.Status.Fuel.MaxFuel *
                                                             App.EliteApi.Status.Fuel.FuelMain),
 
-                                        JumpRange = App.EliteApi.Status.JumpRange,
+                                        LastJump = App.EliteApi.Status.JumpRange,
 
                                         Cargo = App.EliteApi.Status.Cargo,
 

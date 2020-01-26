@@ -1,5 +1,5 @@
 <div class="menu">
-    
+
     <table>
         <tbody>
             <tr>
@@ -12,7 +12,16 @@
                 <td><div class="@(Model.CurrentTab == 3 ? "highlight" : "")">NAV</div></td>
             </tr>
             <tr>
-                <td><div class="@(Model.CurrentTab == 4 ? "highlight" : "")">TARGET</div></td>
+                <td>
+                    @if (Model.TargetLocked)
+                    {
+                        <div class="@(Model.CurrentTab == 4 ? "highlight" : "")">TARGET</div>
+                    }
+                    else
+                    {
+                        <div>&nbsp;</div>
+                    }
+                <td>
             </tr>
             <tr>
                 <td><div>&nbsp;</div></td>
