@@ -1452,7 +1452,11 @@ namespace Elite
                         TargetData.TargetLocked = shipTargetedInfo.TargetLocked;
                         TargetData.SubsystemHealth = shipTargetedInfo.SubsystemHealth;
 
-                        SetTab(LCDTab.Target);
+
+                        if (TargetData.TargetLocked)
+                            SetTab(LCDTab.Target);
+                        else
+                            SetTab(LCDTab.Navigation);
 
                         break;
 
