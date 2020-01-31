@@ -440,6 +440,8 @@ namespace Elite
 
                                         ShipType = ShipData.Type,
 
+                                        LegalState = App.EliteApi.Status.LegalState,
+
                                         Credits = CommanderData.Credits.ToString("N0"),
 
                                         Rebuy = CommanderData.Rebuy.ToString("N0"),

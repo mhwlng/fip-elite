@@ -12,6 +12,13 @@
                     <td class="data" colspan="2">@Model.Commander</td>
                 </tr>
             }
+            @if (!string.IsNullOrEmpty(Model.LegalState))
+            {
+                <tr>
+                    <td class="caption">Legal State</td>
+                    <td class="data @(Model.LegalState!="Clean" ? "alarm" : "")" colspan="2">@Model.LegalState</td>
+                </tr>
+            }
             @if (!string.IsNullOrEmpty(Model.ShipName))
             {
                 <tr>
@@ -33,7 +40,6 @@
                     <td class="data" colspan="2">@Model.Credits CR</td>
                 </tr>
             }
-
             @if (Model.Rebuy != "0")
             {
                 <tr>
@@ -41,7 +47,6 @@
                     <td class="data" colspan="2">@Model.Rebuy CR</td>
                 </tr>
             }
-
             <tr>
                 <td class="divider" colspan="3">&nbsp;</td>
             </tr>

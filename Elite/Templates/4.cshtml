@@ -14,6 +14,13 @@
                         <td class="data">@Model.Ship</td>
                     </tr>
                 }
+                if (!string.IsNullOrEmpty(Model.LegalStatus))
+                {
+                    <tr>
+                        <td class="caption">Legal Status</td>
+                        <td class="data @(Model.LegalStatus=="Wanted" ? "alarm" : "")">@Model.LegalStatus</td>
+                    </tr>
+                }
                 if (!string.IsNullOrEmpty(Model.PilotNameLocalised))
                 {
                     <tr>
@@ -33,13 +40,6 @@
                     <tr>
                         <td class="caption">Faction</td>
                         <td class="data">@Model.Faction</td>
-                    </tr>
-                }
-                if (!string.IsNullOrEmpty(Model.LegalStatus))
-                {
-                    <tr>
-                        <td class="caption">Legal Status</td>
-                        <td class="data">@Model.LegalStatus</td>
                     </tr>
                 }
                 if (!string.IsNullOrEmpty(Model.SubsystemLocalised))

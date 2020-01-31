@@ -19,6 +19,11 @@
     text-align: center;
 }
 
+.alarm  {
+    background-color: red;
+    color: white;
+}
+
 div.main {
     font-family: 'Arial Unicode MS';
     font-size: 15px;
