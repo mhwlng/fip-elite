@@ -63,6 +63,7 @@ div.menu {
 
 .main table {
     border-spacing: 5px;
+    max-width: 100%;
 }
 
 

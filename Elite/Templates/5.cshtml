@@ -1,7 +1,60 @@
+@using System.Collections.Generic
+@using Elite
+@using System.Linq
+@using System.Security.Cryptography.X509Certificates
 @{
     Layout = "layout.cshtml";
 }
 
 <div class="main">
-    template 5
+    <table>
+        <tbody>
+            @foreach (var m in Model.MissionData)
+            {
+                if (!string.IsNullOrEmpty(m.Name))
+                {
+                    <tr>
+                        <td class="caption">Mission</td>
+                        <td class="data">@m.Name</td>
+                    </tr>
+                }
+                if (!string.IsNullOrEmpty(m.System))
+                {
+                    <tr>
+                        <td class="caption">System</td>
+                        <td class="data">@m.System</td>
+                    </tr>
+                }
+                if (m.Reward > 0)
+                {
+                    <tr>
+                        <td class="caption">Reward</td>
+                        <td class="data">@m.Reward.ToString("N0") CR</td>
+                    </tr>
+                }
+                if (m.Expires != null)
+                {
+                    <tr>
+                        <td class="caption">Expires</td>
+                        <td class="data">@m.Expires.ToString()</td>
+                    </tr>
+                }
+                if (m.Passengers > 0)
+                {
+                    <tr>
+                        <td class="caption">Passengers</td>
+                        <td class="data">@m.Passengers</td>
+                    </tr>
+                }
+
+                if (!((List<Mission>)Model.MissionData).Last().Equals((Mission)m))
+                {
+                    <tr>
+                        <td class="divider" colspan="2">&nbsp;</td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
 </div>

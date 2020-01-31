@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows;
+using System.Windows.Documents;
 using EliteAPI;
 using Hardcodet.Wpf.TaskbarNotification;
 using log4net;
@@ -51,9 +53,16 @@ namespace Elite
             {
                 TemplateManager = new ResolvePathTemplateManager(new[] { "Templates" }),
                 DisableTempFileLocking = true,
-                BaseTemplateType = typeof(HtmlSupportTemplateBase<>)
+                BaseTemplateType = typeof(HtmlSupportTemplateBase<>)/*,
+                Namespaces = new HashSet<string>(){
+                    "System",
+                    "System.Linq",
+                    "System.Collections",
+                    "System.Collections.Generic"
+                    }*/
 
-        };
+
+            };
 
             Engine.Razor = RazorEngineService.Create(config);
 

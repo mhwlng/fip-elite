@@ -16,7 +16,7 @@
             {
                 <tr>
                     <td class="caption">Legal State</td>
-                    <td class="data @(Model.LegalState!="Clean" ? "alarm" : "")" colspan="2">@Model.LegalState</td>
+                    <td class="data @(Model.LegalState!="Clean" ? "alarm" : "")" colspan="2">@Model.LegalState.Trim()</td>
                 </tr>
             }
             @if (!string.IsNullOrEmpty(Model.ShipName))

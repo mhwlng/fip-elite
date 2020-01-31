@@ -34,6 +34,7 @@ namespace Elite
         Ship = 2,
         Navigation = 3,
         Target = 4,
+        Missions = 5,
         Events = 6
     }
 
@@ -76,6 +77,22 @@ namespace Elite
         public long CargoCapacity { get; set; }
 
         public double HullHealth { get; set; } = -1;
+
+    }
+
+    public class Mission
+    {
+        public long MissionId { get; set; }
+        public string Name { get; set; }
+        public bool PassengerMission { get; set; }
+        public DateTime? Expires { get; set; } 
+
+        public string System { get; set; }
+        public long Reward { get; set; }
+        public long Passengers { get; set; }
+
+
+
 
     }
 
@@ -190,6 +207,9 @@ namespace Elite
         private Commander CommanderData = new Commander();
         private Ship ShipData = new Ship();
         private Target TargetData = new Target();
+
+        private List<Mission> MissionData = new List<Mission>();
+
         private Location LocationData = new Location();
         private Dock DockData = new Dock();
 
@@ -325,7 +345,10 @@ namespace Elite
                             }
                             break;
                         case 512:
-                            
+                            if (MissionData.Count > 0)
+                            {
+                                SetTab(LCDTab.Missions);
+                            }
                             break;
                         case 1024:
                             SetTab(LCDTab.Events);
@@ -411,6 +434,15 @@ namespace Elite
         {
             lock (_refreshDevicePageLock)
             {
+                if (MissionData.Count == 0 && _currenttab == LCDTab.Missions)
+                {
+                    SetTab(LCDTab.Navigation);
+                }
+                else if (!TargetData.TargetLocked && _currenttab == LCDTab.Target)
+                {
+                    SetTab(LCDTab.Navigation);
+                }
+
                 using (var fipImage = new Bitmap(320, 240))
                 {
                     using (var graphics = Graphics.FromImage(fipImage))
@@ -420,7 +452,9 @@ namespace Elite
                             {
                                 CurrentTab = (int)_currenttab,
 
-                                TargetLocked = TargetData.TargetLocked
+                                TargetLocked = TargetData.TargetLocked,
+
+                                MissionCount = MissionData.Count
                             });
 
                         var str = "";
@@ -700,7 +734,7 @@ namespace Elite
 
                                 //approachSettlementInfo.Latitude
                                 //approachSettlementInfo.Longitude
-
+                                
                                 break;
 
                             case LCDTab.Target:
@@ -725,6 +759,18 @@ namespace Elite
                                         HullHealth = TargetData.HullHealth,
                                         ShieldHealth = TargetData.ShieldHealth,
 
+                                    });
+
+                                break;
+
+                            case LCDTab.Missions:
+
+                                str =
+                                    Engine.Razor.Run("5.cshtml", null, new
+                                    {
+                                        CurrentTab = (int)_currenttab,
+
+                                        MissionData = MissionData
                                     });
 
                                 break;
@@ -911,6 +957,7 @@ namespace Elite
                         CommanderInfo commanderInfo = e.ToObject<CommanderInfo>();
 
                         CommanderData.Name = commanderInfo.Name;
+
                         SetTab(LCDTab.Commander);
                         break;
 
@@ -1111,17 +1158,11 @@ namespace Elite
                         LocationInfo locationInfo = e.ToObject<LocationInfo>();
 
                         LocationData.SystemAllegiance = locationInfo.SystemAllegiance;
-
                         LocationData.SystemFaction = locationInfo.SystemFaction?.Name;
-
                         LocationData.SystemSecurity = locationInfo.SystemSecurityLocalised;
-
                         LocationData.SystemEconomy = locationInfo.SystemEconomyLocalised;
-
                         LocationData.SystemGovernment = locationInfo.SystemGovernmentLocalised;
-
                         LocationData.Population = locationInfo.Population;
-
                         LocationData.Body = locationInfo.Body;
                         LocationData.BodyType = locationInfo.BodyType;
 
@@ -1236,15 +1277,10 @@ namespace Elite
                         LocationData.JumpType = "";
 
                         LocationData.SystemAllegiance = fsdJumpInfo.SystemAllegiance;
-
                         LocationData.SystemFaction = fsdJumpInfo.SystemFaction?.Name;
-
                         LocationData.SystemSecurity = fsdJumpInfo.SystemSecurityLocalised;
-
                         LocationData.SystemEconomy = fsdJumpInfo.SystemEconomyLocalised;
-
                         LocationData.SystemGovernment = fsdJumpInfo.SystemGovernmentLocalised;
-
                         LocationData.Population = fsdJumpInfo.Population;
 
                         //fsdJumpInfo.JumpDist
@@ -1269,6 +1305,9 @@ namespace Elite
                         LocationData.JumpToSystem = startJumpInfo.StarSystem;
                         LocationData.JumpToStarClass = startJumpInfo.StarClass;
 
+                        LocationData.Body = "";
+                        LocationData.BodyType = "";
+
                         break;
 
                     case "Status.FsdCooldown":
@@ -1285,6 +1324,8 @@ namespace Elite
                         LocationData.FsdTargetName = fSdTargetInfo.Name;
 
                         LocationData.RemainingJumpsInRoute = fSdTargetInfo.RemainingJumpsInRoute;
+
+                        SetTab(LCDTab.Navigation);
 
                         break;
 
@@ -1509,11 +1550,10 @@ namespace Elite
                         TargetData.TargetLocked = shipTargetedInfo.TargetLocked;
                         TargetData.SubsystemHealth = shipTargetedInfo.SubsystemHealth;
 
-
                         if (TargetData.TargetLocked)
+                        {
                             SetTab(LCDTab.Target);
-                        else
-                            SetTab(LCDTab.Navigation);
+                        }
 
                         break;
 
@@ -1540,6 +1580,200 @@ namespace Elite
                         //scannedInfo.ScanType
                         break;
 
+                    case "Cargo":
+                        //When written: at startup
+                        CargoInfo cargoInfo = e.ToObject<CargoInfo>();
+                        //cargoInfo.Vessel // Ship or SRV
+                        //cargoInfo.Count
+                        //cargoInfo.Inventory[0].Count
+                        //cargoInfo.Inventory[0].NameLocalised
+                        //cargoInfo.Inventory[0].Stolen
+                        //cargoInfo.Inventory[0].MissionId  // missing in API !!!
+                        break;
+
+                    case "CollectCargo":
+                        //When Written: when scooping cargo from space or planet surface 
+                        CollectCargoInfo collectCargoInfo = e.ToObject<CollectCargoInfo>();
+                        //collectCargoInfo.Stolen
+                        //collectCargoInfo.TypeLocalised
+                        //collectCargoInfo.MissionId // missing in API !!!
+                        break;
+
+                    case "EjectCargo":
+                        EjectCargoInfo ejectCargoInfo = e.ToObject<EjectCargoInfo>();
+                        //ejectCargoInfo.Abandoned
+                        //ejectCargoInfo.Count
+                        //ejectCargoInfo.TypeLocalised
+                        //ejectCargoInfo.MissionId // missing in API !!!
+
+                        break;
+
+                    case "CargoDepot":
+                        //When written: when collecting or delivering cargo for a wing mission
+                        CargoDepotInfo cargoDepotInfo = e.ToObject<CargoDepotInfo>();
+                        //cargoDepotInfo.CargoTypeLocalised
+                        //cargoDepotInfo.Count
+                        //cargoDepotInfo.EndMarketId
+                        //cargoDepotInfo.ItemsCollected
+                        //cargoDepotInfo.ItemsDelivered
+                        //cargoDepotInfo.MissionId
+                        //cargoDepotInfo.Progress
+                        //cargoDepotInfo.StartMarketId
+                        //cargoDepotInfo.TotalItemsToDeliver
+                        //cargoDepotInfo.UpdateType "Collect", "Deliver", "WingUpdate"
+                        break;
+
+                    case "Passengers":
+                        //When written: at startup
+                        PassengersInfo passengersInfo = e.ToObject<PassengersInfo>();
+                        //passengersInfo.Manifest[0].MissionId
+                        //passengersInfo.Manifest[0].Count
+                        //passengersInfo.Manifest[0].Type
+                        //passengersInfo.Manifest[0].Vip
+                        //passengersInfo.Manifest[0].Wanted
+                        break;
+
+                    case "Missions":
+                        //When written: at startup
+                        MissionsInfo missionsInfo = e.ToObject<MissionsInfo>();
+
+                        if (missionsInfo.Active?.Count > 0)
+                        {
+                            MissionData = missionsInfo.Active.Select(x => new Mission
+                            {
+                                MissionId = x.MissionId,
+                                PassengerMission = x.PassengerMission,
+                                Expires = (DateTime?)null,
+                                Name = x.Name
+                            }).ToList();
+
+                        }
+
+                        //missionsInfo.Failed[0].MissionId
+                        //missionsInfo.Failed[0].Name
+                        //missionsInfo.Failed[0].PassengerMission
+                        //missionsInfo.Failed[0].Expires time left in seconds 
+
+                        //missionsInfo.Complete[0].MissionId
+                        //missionsInfo.Complete[0].Name
+                        //missionsInfo.Complete[0].PassengerMission
+                        //missionsInfo.Complete[0].Expires
+
+                        break;
+
+                    case "MissionAccepted":
+                        //When Written: when starting a mission 
+                        MissionAcceptedInfo missionAcceptedInfo = e.ToObject<MissionAcceptedInfo>();
+                        //missionAcceptedInfo.LocalisedName
+                        //missionAcceptedInfo.MissionId
+                        //missionAcceptedInfo.Faction
+                        //missionAcceptedInfo.Influence    None/Low/Med/High
+                        //missionAcceptedInfo.Reputation  None/Low/Med/High
+                        //missionAcceptedInfo.Reward
+                        //missionAcceptedInfo.Wing  not in API ???
+
+                        //missionAcceptedInfo.CommodityLocalised
+                        //missionAcceptedInfo.Count
+                        //missionAcceptedInfo.Donation not in API???
+                        //missionAcceptedInfo.Donated not in API???
+
+                        //missionAcceptedInfo.Target
+                        //missionAcceptedInfo.TargetType
+                        //missionAcceptedInfo.TargetFaction
+                        //missionAcceptedInfo.KillCount
+
+                        //missionAcceptedInfo.Expiry
+
+                        //missionAcceptedInfo.DestinationSystem
+                        //missionAcceptedInfo.DestinationStation // does not exist in API ???
+                        //missionAcceptedInfo.NewDestinationSystem
+                        //missionAcceptedInfo.NewDestinationStation
+
+                        //missionAcceptedInfo.PassengerCount
+                        //missionAcceptedInfo.PassengerViPs
+                        //missionAcceptedInfo.PassengerWanted
+                        //missionAcceptedInfo.PassengerType  Tourist, Soldier, Explorer,... 
+
+                        MissionData.RemoveAll(x => x.MissionId == missionAcceptedInfo.MissionId);
+
+                        MissionData.Add(new Mission
+                        {
+                            MissionId = missionAcceptedInfo.MissionId,
+                            Name = missionAcceptedInfo.LocalisedName,
+                            Expires = missionAcceptedInfo.Expiry,
+                            PassengerMission = missionAcceptedInfo.PassengerCount > 0,
+                            System = missionAcceptedInfo.DestinationSystem,
+                            //Station = missionAcceptedInfo.DestinationStation,
+                            Reward = missionAcceptedInfo.Reward,
+                            Passengers  = missionAcceptedInfo.PassengerCount
+
+                        });
+
+                        break;
+
+                    case "MissionRedirected":
+                        //When written: when a mission is updated with a new destination 
+
+                        MissionRedirectedInfo missionRedirectedInfo = e.ToObject<MissionRedirectedInfo>();
+                        //missionRedirectedInfo.Name
+                        //missionRedirectedInfo.MissionId
+                        //missionRedirectedInfo.NewDestinationStation
+                        //missionRedirectedInfo.NewDestinationSystem
+                        //missionRedirectedInfo.OldDestinationStation
+                        //missionRedirectedInfo.OldDestinationSystem
+
+                        break;
+
+                    case "MissionCompleted":
+                        //When Written: when a mission is completed
+
+                        MissionCompletedInfo missionCompletedInfo = e.ToObject<MissionCompletedInfo>();
+                        //missionCompletedInfo.Name
+                        //missionCompletedInfo.Faction
+                        //missionCompletedInfo.MissionId
+
+                        //missionCompletedInfo.Target
+                        //missionCompletedInfo.TargetTypeLocalised
+                        //missionCompletedInfo.TargetFaction
+                        //missionCompletedInfo.Reward
+
+                        //missionCompletedInfo.Donation
+                        //missionCompletedInfo.Donated
+                        //missionCompletedInfo.PermitsAwarded
+                        //missionCompletedInfo.CommodityReward
+                        //missionCompletedInfo.MaterialsReward
+
+                        //missionCompletedInfo.FactionEffects
+
+                        //missionCompletedInfo.DestinationStation
+                        //missionCompletedInfo.NewDestinationStation
+                        //missionCompletedInfo.DestinationSystem
+                        //missionCompletedInfo.NewDestinationSystem
+
+                        MissionData.RemoveAll(x => x.MissionId == missionCompletedInfo.MissionId);
+
+                        break;
+                    case "MissionAbandoned":
+                        //When Written: when a mission has been abandoned 
+
+                        MissionAbandonedInfo missionAbandonedInfo = e.ToObject<MissionAbandonedInfo>();
+                        //missionAbandonedInfo.Name
+                        //missionAbandonedInfo.MissionId
+                        //missionAbandonedInfo.Fine // not in API
+
+                        MissionData.RemoveAll(x => x.MissionId == missionAbandonedInfo.MissionId);
+
+                        break;
+                    case "MissionFailed":
+                        //When Written: when a mission has failed 
+
+                        MissionFailedInfo missionFailedInfo = e.ToObject<MissionFailedInfo>();
+                        //missionFailedInfo.Name
+                        //missionFailedInfo.MissionId
+
+                        MissionData.RemoveAll(x => x.MissionId == missionFailedInfo.MissionId);
+
+                        break;
                         /*
 
                             //---------------- MATERIAL 
@@ -1634,14 +1868,6 @@ namespace Elite
                                 BountyInfo bountyInfo = e.ToObject<BountyInfo>();
                                 break;
 
-                            case "CargoDepot":
-                                CargoDepotInfo cargoDepotInfo = e.ToObject<CargoDepotInfo>();
-                                break;
-
-                            case "Cargo":
-                                CargoInfo cargoInfo = e.ToObject<CargoInfo>();
-                                break;
-
                             case "ChangeCrewRole":
                                 ChangeCrewRoleInfo changeCrewRoleInfo = e.ToObject<ChangeCrewRoleInfo>();
                                 break;
@@ -1654,9 +1880,6 @@ namespace Elite
                                 CodexEntryInfo codexEntryInfo = e.ToObject<CodexEntryInfo>();
                                 break;
 
-                            case "CollectCargo":
-                                CollectCargoInfo collectCargoInfo = e.ToObject<CollectCargoInfo>();
-                                break;
 
                             case "CommitCrime":
                                 CommitCrimeInfo commitCrimeInfo = e.ToObject<CommitCrimeInfo>();
@@ -1754,9 +1977,6 @@ namespace Elite
                                 DockSRVInfo dockSRVInfo = e.ToObject<DockSRVInfo>();
                                 break;
 
-                            case "EjectCargo":
-                                EjectCargoInfo ejectCargoInfo = e.ToObject<EjectCargoInfo>();
-                                break;
 
                             case "EndCrewSession":
                                 EndCrewSessionInfo endCrewSessionInfo = e.ToObject<EndCrewSessionInfo>();
@@ -1876,29 +2096,6 @@ namespace Elite
                                 MiningRefinedInfo miningRefinedInfo = e.ToObject<MiningRefinedInfo>();
                                 break;
 
-                            case "MissionAbandoned":
-                                MissionAbandonedInfo missionAbandonedInfo = e.ToObject<MissionAbandonedInfo>();
-                                break;
-
-                            case "MissionAccepted":
-                                MissionAcceptedInfo missionAcceptedInfo = e.ToObject<MissionAcceptedInfo>();
-                                break;
-
-                            case "MissionCompleted":
-                                MissionCompletedInfo missionCompletedInfo = e.ToObject<MissionCompletedInfo>();
-                                break;
-
-                            case "MissionFailed":
-                                MissionFailedInfo missionFailedInfo = e.ToObject<MissionFailedInfo>();
-                                break;
-
-                            case "MissionRedirected":
-                                MissionRedirectedInfo missionRedirectedInfo = e.ToObject<MissionRedirectedInfo>();
-                                break;
-
-                            case "Missions":
-                                MissionsInfo missionsInfo = e.ToObject<MissionsInfo>();
-                                break;
 
 
                             case "NavBeaconScan":
@@ -1917,9 +2114,6 @@ namespace Elite
                                 OutfittingInfo outfittingInfo = e.ToObject<OutfittingInfo>();
                                 break;
 
-                            case "Passengers":
-                                PassengersInfo passengersInfo = e.ToObject<PassengersInfo>();
-                                break;
 
                             case "PayBounties":
                                 PayBountiesInfo payBountiesInfo = e.ToObject<PayBountiesInfo>();
@@ -2133,7 +2327,7 @@ namespace Elite
                                 ModuleSellRemoteInfo moduleSellRemoteInfo = e.ToObject<ModuleSellRemoteInfo>();
                                 break;
                             */
-               
+
 
                 }
             }

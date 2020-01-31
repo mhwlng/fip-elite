@@ -24,7 +24,16 @@
                 <td>
             </tr>
             <tr>
-                <td><div>&nbsp;</div></td>
+                <td>
+                @if (Model.MissionCount > 0)
+                {
+                    <div class="@(Model.CurrentTab == 5 ? "highlight" : "")">MISSION</div>
+                }
+                else
+                {
+                    <div>&nbsp;</div>
+                }
+                <td>
             </tr>
             <tr>
                 <td><div class="@(Model.CurrentTab == 6 ? "highlight" : "")">EVENTS</div></td>
