@@ -91,8 +91,16 @@ namespace Elite
         public long Reward { get; set; }
         public long Passengers { get; set; }
 
+        public string Faction { get; set; }
+        public string Influence { get; set; } //    None/Low/Med/High
+        public string Reputation { get; set; } //  None/Low/Med/High
 
+        public string CommodityLocalised { get; set; }
+        public long Count { get; set; }
 
+        public bool PassengerViPs { get; set; }
+        public bool PassengerWanted { get; set; }
+        public string PassengerType { get; set; }
 
     }
 
@@ -800,7 +808,7 @@ namespace Elite
                         {
                             var htmlSize = HtmlRender.Measure(graphics, str, 320, App.cssData);
 
-                            CurrentLCDHeight = (int)htmlSize.Height;
+                            CurrentLCDHeight = (int)htmlSize.Height + 20;
 
                             CheckLcdOffset();
 
@@ -1664,35 +1672,6 @@ namespace Elite
                     case "MissionAccepted":
                         //When Written: when starting a mission 
                         MissionAcceptedInfo missionAcceptedInfo = e.ToObject<MissionAcceptedInfo>();
-                        //missionAcceptedInfo.LocalisedName
-                        //missionAcceptedInfo.MissionId
-                        //missionAcceptedInfo.Faction
-                        //missionAcceptedInfo.Influence    None/Low/Med/High
-                        //missionAcceptedInfo.Reputation  None/Low/Med/High
-                        //missionAcceptedInfo.Reward
-                        //missionAcceptedInfo.Wing  not in API ???
-
-                        //missionAcceptedInfo.CommodityLocalised
-                        //missionAcceptedInfo.Count
-                        //missionAcceptedInfo.Donation not in API???
-                        //missionAcceptedInfo.Donated not in API???
-
-                        //missionAcceptedInfo.Target
-                        //missionAcceptedInfo.TargetType
-                        //missionAcceptedInfo.TargetFaction
-                        //missionAcceptedInfo.KillCount
-
-                        //missionAcceptedInfo.Expiry
-
-                        //missionAcceptedInfo.DestinationSystem
-                        //missionAcceptedInfo.DestinationStation // does not exist in API ???
-                        //missionAcceptedInfo.NewDestinationSystem
-                        //missionAcceptedInfo.NewDestinationStation
-
-                        //missionAcceptedInfo.PassengerCount
-                        //missionAcceptedInfo.PassengerViPs
-                        //missionAcceptedInfo.PassengerWanted
-                        //missionAcceptedInfo.PassengerType  Tourist, Soldier, Explorer,... 
 
                         MissionData.RemoveAll(x => x.MissionId == missionAcceptedInfo.MissionId);
 
@@ -1703,9 +1682,31 @@ namespace Elite
                             Expires = missionAcceptedInfo.Expiry,
                             PassengerMission = missionAcceptedInfo.PassengerCount > 0,
                             System = missionAcceptedInfo.DestinationSystem,
-                            //Station = missionAcceptedInfo.DestinationStation,
                             Reward = missionAcceptedInfo.Reward,
-                            Passengers  = missionAcceptedInfo.PassengerCount
+                            Passengers  = missionAcceptedInfo.PassengerCount,
+
+                            Faction =missionAcceptedInfo.Faction,
+                            Influence = missionAcceptedInfo.Influence, //    None/Low/Med/High
+                            Reputation = missionAcceptedInfo.Reputation, //  None/Low/Med/High
+
+                            CommodityLocalised = missionAcceptedInfo.CommodityLocalised,
+                            Count = missionAcceptedInfo.Count,
+
+                            PassengerViPs = missionAcceptedInfo.PassengerViPs,
+                            PassengerWanted = missionAcceptedInfo.PassengerWanted,
+                            PassengerType = missionAcceptedInfo.PassengerType,
+
+                            //Station = missionAcceptedInfo.DestinationStation,// does not exist in API ???
+                            //NewDestinationSystem = missionAcceptedInfo.NewDestinationSystem,
+                            //NewDestinationStation = missionAcceptedInfo.NewDestinationStation,
+                            //Wing = missionAcceptedInfo.Wing, //  not in API ???
+                            //Donation = missionAcceptedInfo.Donation, // not in API???
+                            //Donated = missionAcceptedInfo.Donated, // not in API???
+                            //Target = missionAcceptedInfo.Target,
+                            //TargetType = missionAcceptedInfo.TargetType,
+                            //TargetFaction = missionAcceptedInfo.TargetFaction,
+                            //KillCount = missionAcceptedInfo.KillCount,
+
 
                         });
 

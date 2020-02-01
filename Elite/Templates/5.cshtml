@@ -1,3 +1,4 @@
+@using System
 @using System.Collections.Generic
 @using Elite
 @using System.Linq
@@ -15,7 +16,7 @@
                 {
                     <tr>
                         <td class="caption">Mission</td>
-                        <td class="data">@m.Name</td>
+                        <td class="data">@m.Name.Replace("_name", " ").Replace("Mission_", " ").Replace("_EXPANSION", " ").Replace("_", " ")</td>
                     </tr>
                 }
                 if (!string.IsNullOrEmpty(m.System))
@@ -25,6 +26,7 @@
                         <td class="data">@m.System</td>
                     </tr>
                 }
+
                 if (m.Reward > 0)
                 {
                     <tr>
@@ -36,16 +38,79 @@
                 {
                     <tr>
                         <td class="caption">Expires</td>
-                        <td class="data">@m.Expires.ToString()</td>
+                        <td class="data">@(((DateTime)m.Expires - DateTime.Now.ToUniversalTime()).TotalHours.ToString("N1")) hours</td>
                     </tr>
                 }
+
+                if (!string.IsNullOrEmpty(m.Faction))
+                {
+                    <tr>
+                        <td class="caption">Faction</td>
+                        <td class="data">@m.Faction</td>
+                    </tr>
+                }
+
+                if (!string.IsNullOrEmpty(m.Influence))
+                {
+                    <tr>
+                        <td class="caption">Influence</td>
+                        <td class="data">@m.Influence</td>
+                    </tr>
+                }
+
+                if (!string.IsNullOrEmpty(m.Reputation))
+                {
+                    <tr>
+                        <td class="caption">Reputation</td>
+                        <td class="data">@m.Reputation</td>
+                    </tr>
+                }
+
                 if (m.Passengers > 0)
                 {
                     <tr>
                         <td class="caption">Passengers</td>
-                        <td class="data">@m.Passengers</td>
+                        <td class="data">@m.Passengers.ToString("N0")</td>
                     </tr>
+
+                    if (!string.IsNullOrEmpty(m.PassengerType))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.PassengerType</td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <td class="caption">VIP</td>
+                        <td class="data">@m.PassengerViPs</td>
+                    </tr>
+
+                    <tr>
+                        <td class="caption">Wanted</td>
+                        <td class="data  @(m.PassengerWanted ? "alarm" : "")">@m.PassengerWanted</td>
+                    </tr>
+
                 }
+                else
+                {
+                    if (!string.IsNullOrEmpty(m.CommodityLocalised))
+                    {
+                        <tr>
+                            <td class="caption">Commodity</td>
+                            <td class="data">@m.CommodityLocalised</td>
+                        </tr>
+                    }
+
+                    if (m.Count > 0)
+                    {
+                        <tr>
+                            <td class="caption">Count</td>
+                            <td class="data">@m.Count.ToString("N0")</td>
+                        </tr>
+                    }
+                }
+
 
                 if (!((List<Mission>)Model.MissionData).Last().Equals((Mission)m))
                 {

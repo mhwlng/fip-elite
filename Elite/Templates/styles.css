@@ -28,7 +28,7 @@ div.main {
     font-family: 'Arial Unicode MS';
     font-size: 15px;
     color: white;
-    white-space: nowrap;
+    /*white-space: nowrap;*/
 }
 
 div.menu {
