@@ -29,6 +29,8 @@ namespace Elite
 {
     public enum LCDTab
     {
+        Init=-1,
+
         None = 0,
         Commander = 1,
         Ship = 2,
@@ -178,7 +180,7 @@ namespace Elite
 
 
         private LCDTab _currenttab = LCDTab.None;
-        private LCDTab _lasttab = LCDTab.None;
+        private LCDTab _lasttab = LCDTab.Init;
         private int CurrentLCDYOffset = 0;
         private int CurrentLCDHeight = 0;
 
@@ -294,12 +296,19 @@ namespace Elite
 
         }
 
-        private void SetTab(LCDTab tab)
+        private bool SetTab(LCDTab tab)
         {
-            _lasttab = _currenttab;
-            _currenttab = tab;
+            if (_currenttab != tab)
+            {
+                _lasttab = _currenttab;
+                _currenttab = tab;
 
-            CurrentLCDYOffset = 0;
+                CurrentLCDYOffset = 0;
+
+                return true;
+            }
+
+            return false;
         }
 
         private void PageCallback(IntPtr device, IntPtr page, byte bActivated, IntPtr context)
@@ -316,53 +325,71 @@ namespace Elite
 
         private void SoftButtonCallback(IntPtr device, IntPtr buttons, IntPtr context)
         {
-            if (device == FipDevicePointer & (uint)buttons != _prevButtons)
+            if (device == FipDevicePointer & (uint) buttons != _prevButtons)
             {
-                uint button = (uint)buttons ^ _prevButtons;
-                bool state = ((uint)buttons & button) == button;
-                _prevButtons = (uint)buttons;
+                uint button = (uint) buttons ^ _prevButtons;
+                bool state = ((uint) buttons & button) == button;
+                _prevButtons = (uint) buttons;
 
                 //Console.WriteLine($"button {button}  state {state}");
 
-                if (state)
+                bool mustRefresh = false;
+
+                switch (button)
                 {
-                    switch (button)
-                    {
-                        case 8: // scroll clockwise
-                        case 2: // scroll clockwise
-                            CurrentLCDYOffset+=20;
-                            break;
-                        case 16: // scroll anti-clockwise
-                        case 4: // scroll anti-clockwise
-                            CurrentLCDYOffset-=20;
-                            break;
+                    case 8: // scroll clockwise
+                    case 2: // scroll clockwise
+                        if (state)
+                        {
+                            CurrentLCDYOffset += 50;
 
-                        case 32:
-                            SetTab(LCDTab.Commander);
-                            break;
-                        case 64:
-                            SetTab(LCDTab.Ship);
-                            break;
-                        case 128:
-                            SetTab(LCDTab.Navigation);
-                            break;
-                        case 256:
-                            if (TargetData.TargetLocked)
-                            {
-                                SetTab(LCDTab.Target);
-                            }
-                            break;
-                        case 512:
-                            if (MissionData.Count > 0)
-                            {
-                                SetTab(LCDTab.Missions);
-                            }
-                            break;
-                        case 1024:
-                            SetTab(LCDTab.Events);
-                            break;
-                    }
+                            mustRefresh = true;
+                        }
+                        break;
+                    case 16: // scroll anti-clockwise
+                    case 4: // scroll anti-clockwise
 
+                        if (CurrentLCDYOffset == 0) return;
+
+                        if (state)
+                        {
+                            CurrentLCDYOffset -= 50;
+                            if (CurrentLCDYOffset < 0)
+                            {
+                                CurrentLCDYOffset = 0;
+                            }
+
+                            mustRefresh = true;
+                        }
+                        break;
+                    case 32:
+                        mustRefresh = SetTab(LCDTab.Commander);
+                        break;
+                    case 64:
+                        mustRefresh = SetTab(LCDTab.Ship);
+                        break;
+                    case 128:
+                        mustRefresh = SetTab(LCDTab.Navigation);
+                        break;
+                    case 256:
+                        if (TargetData.TargetLocked)
+                        {
+                            mustRefresh = SetTab(LCDTab.Target);
+                        }
+                        break;
+                    case 512:
+                        if (MissionData.Count > 0)
+                        {
+                            mustRefresh = SetTab(LCDTab.Missions);
+                        }
+                        break;
+                    case 1024:
+                        mustRefresh = SetTab(LCDTab.Events);
+                        break;
+                }
+
+                if (mustRefresh)
+                {
                     RefreshDevicePage(_currentPage);
                 }
 
@@ -808,7 +835,7 @@ namespace Elite
                         {
                             var htmlSize = HtmlRender.Measure(graphics, str, 320, App.cssData);
 
-                            CurrentLCDHeight = (int)htmlSize.Height + 20;
+                            CurrentLCDHeight = (int)htmlSize.Height + 60; // workaround for problem where Measure returns the wrong height in cas of word wrapping long lines
 
                             CheckLcdOffset();
 
@@ -1729,6 +1756,9 @@ namespace Elite
                         //When Written: when a mission is completed
 
                         MissionCompletedInfo missionCompletedInfo = e.ToObject<MissionCompletedInfo>();
+
+                        CommanderData.Credits += Convert.ToUInt32(missionCompletedInfo.Reward);
+
                         //missionCompletedInfo.Name
                         //missionCompletedInfo.Faction
                         //missionCompletedInfo.MissionId
@@ -1736,7 +1766,6 @@ namespace Elite
                         //missionCompletedInfo.Target
                         //missionCompletedInfo.TargetTypeLocalised
                         //missionCompletedInfo.TargetFaction
-                        //missionCompletedInfo.Reward
 
                         //missionCompletedInfo.Donation
                         //missionCompletedInfo.Donated
