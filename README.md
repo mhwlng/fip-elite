@@ -3,12 +3,12 @@ Logitech Flight Instrument Panel application for Elite Dangerous
 
 ![Logitech Flight Instrument Panel with Elgato Stream Deck](https://i.imgur.com/HTcbXx9.jpg)
 
-![Screenshot 1](https://i.imgur.com/kGf11OK.png)
-![Screenshot 2](https://i.imgur.com/PQzEya1.png)
-![Screenshot 3](https://i.imgur.com/1F3aQzU.png)
-![Screenshot 4](https://i.imgur.com/kMkOC2w.png)
+![Screenshot 1](https://i.imgur.com/gmZVF4P.png)
+![Screenshot 2](https://i.imgur.com/9xoj8d8.png)
+![Screenshot 3](https://i.imgur.com/iJnHuOV.png)
+![Screenshot 4](https://i.imgur.com/16pc2zo.png)
 ![Screenshot 5](https://i.imgur.com/z6gq2Ok.png)
-![Screenshot 6](https://i.imgur.com/o220wkq.png)
+![Screenshot 6](https://i.imgur.com/2u2T2CN.png)
 
 
 This application displays data from Elite Dangerous on Logitech Flight Instrument Panels
@@ -39,3 +39,5 @@ https://github.com/EliteAPI/EliteAPI
 https://github.com/Filtik/EliteDangerousLCD
 
 https://github.com/jdahlblom/DCSFIPS
+
+DaftMav for POI list [see here](https://www.reddit.com/r/EliteDangerous/comments/9mfiug/edison_a_tool_which_helps_getting_to_planet/)

@@ -86,7 +86,7 @@
                         <td class="data">@Model.Station</td>
                     </tr>
                 }
-                else if (!string.IsNullOrEmpty(@Model.BodyType) && Model.Body != Model.FsdTargetName && !string.IsNullOrEmpty(Model.Body))
+                else if (!string.IsNullOrEmpty(@Model.BodyType) && !string.IsNullOrEmpty(Model.Body) && Model.Body != Model.FsdTargetName && Model.Body != Model.StarSystem)
                 {
                     <tr>
                         <td class="divider" colspan="2">&nbsp;</td>
@@ -127,7 +127,7 @@
                 {
                     <tr>
                         <td class="caption">&nbsp;&nbsp;&nbsp;Dist.</td>
-                        <td class="data">@Model.DistFromStarLs.ToString("N1") LS</td>
+                        <td class="data">@Model.DistFromStarLs.ToString("N1") Ls</td>
                     </tr>
                 }
 

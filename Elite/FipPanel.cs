@@ -37,7 +37,7 @@ namespace Elite
         Navigation = 3,
         Target = 4,
         Missions = 5,
-        Events = 6
+        POI = 6
     }
 
     public class Commander
@@ -223,6 +223,7 @@ namespace Elite
         private Location LocationData = new Location();
         private Dock DockData = new Dock();
 
+        private List<PoiItem> _currentPois = new List<PoiItem>();
 
 
         public FipPanel(IntPtr devicePtr) 
@@ -384,7 +385,11 @@ namespace Elite
                         }
                         break;
                     case 1024:
-                        mustRefresh = SetTab(LCDTab.Events);
+                        if (_currentPois?.Count > 0)
+                        {
+                            mustRefresh = SetTab(LCDTab.POI);
+                        }
+
                         break;
                 }
 
@@ -477,6 +482,10 @@ namespace Elite
                 {
                     SetTab(LCDTab.Navigation);
                 }
+                if (!(_currentPois?.Count > 0) && _currenttab == LCDTab.POI)
+                {
+                    SetTab(LCDTab.Navigation);
+                }
 
                 using (var fipImage = new Bitmap(320, 240))
                 {
@@ -489,7 +498,9 @@ namespace Elite
 
                                 TargetLocked = TargetData.TargetLocked,
 
-                                MissionCount = MissionData.Count
+                                MissionCount = MissionData.Count,
+
+                                PoiCount = _currentPois?.Count ?? 0
                             });
 
                         var str = "";
@@ -809,6 +820,22 @@ namespace Elite
                                     });
 
                                 break;
+
+                            case LCDTab.POI:
+
+                                str =
+                                    Engine.Razor.Run("6.cshtml", null, new
+                                    {
+                                        CurrentTab = (int)_currenttab,
+
+                                        CurrentPois = _currentPois
+
+                                        
+                                    });
+
+                                break; 
+
+                            /*
                             case LCDTab.Events:
 
                                 var eventlist = "";
@@ -825,7 +852,8 @@ namespace Elite
                                         EventList = eventlist
                                     });
 
-                                break;
+                                break;*/
+
                         }
 
 
@@ -1192,6 +1220,9 @@ namespace Elite
 
                         LocationInfo locationInfo = e.ToObject<LocationInfo>();
 
+                        App.PoiItems?.TryGetValue(locationInfo.StarSystem?.ToLower() ?? "???",
+                            out _currentPois);
+
                         LocationData.SystemAllegiance = locationInfo.SystemAllegiance;
                         LocationData.SystemFaction = locationInfo.SystemFaction?.Name;
                         LocationData.SystemSecurity = locationInfo.SystemSecurityLocalised;
@@ -1213,6 +1244,9 @@ namespace Elite
                     case "ApproachBody":
 
                         ApproachBodyInfo approachBodyInfo = e.ToObject<ApproachBodyInfo>();
+
+                        App.PoiItems?.TryGetValue(approachBodyInfo.StarSystem?.ToLower() ?? "???",
+                            out _currentPois);
 
                         LocationData.Body = approachBodyInfo.Body;
                         LocationData.BodyType = "Planet"; 
@@ -1239,6 +1273,9 @@ namespace Elite
                     case "LeaveBody":
 
                         LeaveBodyInfo leaveBodyInfo = e.ToObject<LeaveBodyInfo>();
+
+                        App.PoiItems?.TryGetValue(leaveBodyInfo.StarSystem?.ToLower() ?? "???",
+                            out _currentPois);
 
                         LocationData.Body = "";
                         LocationData.BodyType = "";
@@ -1305,6 +1342,9 @@ namespace Elite
                     case "FSDJump":
 
                         FSDJumpInfo fsdJumpInfo = e.ToObject<FSDJumpInfo>();
+
+                        App.PoiItems?.TryGetValue(fsdJumpInfo.StarSystem?.ToLower() ?? "???",
+                            out _currentPois);
 
                         LocationData.StartJump = false;
                         LocationData.JumpToSystem = "";
@@ -2363,10 +2403,12 @@ namespace Elite
             }
 
             // scroll to the end
+            /*
             if (_currenttab == LCDTab.Events && CurrentLCDYOffset > 0)
             {
                 CurrentLCDYOffset = 99999999;
-            }
+            }*/
+
 
             RefreshDevicePage(_currentPage);
             // _autoResetEvent.Set();

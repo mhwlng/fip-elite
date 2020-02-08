@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Windows;
 using System.Windows.Documents;
+using CsvHelper;
+using CsvHelper.Configuration;
+using CsvHelper.Configuration.Attributes;
+using CsvHelper.TypeConversion;
 using EliteAPI;
 using Hardcodet.Wpf.TaskbarNotification;
 using log4net;
@@ -16,6 +22,7 @@ using TheArtOfDev.HtmlRenderer.Core;
 
 namespace Elite
 {
+
     /// <summary>
     /// Simple application. Check the XAML for comments.
     /// </summary>
@@ -29,10 +36,13 @@ namespace Elite
 
         private static FipHandler fipHandler = new FipHandler();
 
-        public static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public static readonly ILog log =
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static CssData cssData;
-        
+
+        public static Dictionary<string,List<PoiItem>> PoiItems = null;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             const string appName = "Fip-Elite";
@@ -51,15 +61,15 @@ namespace Elite
 
             var config = new TemplateServiceConfiguration
             {
-                TemplateManager = new ResolvePathTemplateManager(new[] { "Templates" }),
+                TemplateManager = new ResolvePathTemplateManager(new[] {"Templates"}),
                 DisableTempFileLocking = true,
-                BaseTemplateType = typeof(HtmlSupportTemplateBase<>)/*,
-                Namespaces = new HashSet<string>(){
-                    "System",
-                    "System.Linq",
-                    "System.Collections",
-                    "System.Collections.Generic"
-                    }*/
+                BaseTemplateType = typeof(HtmlSupportTemplateBase<>) /*,
+                    Namespaces = new HashSet<string>(){
+                        "System",
+                        "System.Linq",
+                        "System.Collections",
+                        "System.Collections.Generic"
+                        }*/
 
 
             };
@@ -76,17 +86,21 @@ namespace Elite
             Engine.Razor.Compile("5.cshtml", null);
             Engine.Razor.Compile("6.cshtml", null);
 
-            cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(File.ReadAllText("Templates\\styles.css"), true);
+            cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
+                File.ReadAllText("Templates\\styles.css"), true);
+
+            PoiItems = Poi.GetPoiItems()?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
 
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             notifyIcon = (TaskbarIcon) FindResource("NotifyIcon");
-
+            
             EliteApi.Start(false);
 
             if (!fipHandler.Initialize())
             {
                 Application.Current.Shutdown();
             }
+
 
             log.Info("Fip-Elite started");
 
