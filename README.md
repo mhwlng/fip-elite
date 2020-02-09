@@ -8,7 +8,7 @@ Logitech Flight Instrument Panel application for Elite Dangerous
 ![Screenshot 3](https://i.imgur.com/iJnHuOV.png)
 ![Screenshot 4](https://i.imgur.com/16pc2zo.png)
 ![Screenshot 5](https://i.imgur.com/z6gq2Ok.png)
-![Screenshot 6](https://i.imgur.com/2u2T2CN.png)
+![Screenshot 6](https://i.imgur.com/DI1diFM.png)
 
 
 This application displays data from Elite Dangerous on Logitech Flight Instrument Panels
