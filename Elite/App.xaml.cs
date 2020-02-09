@@ -41,7 +41,7 @@ namespace Elite
 
         public static CssData cssData;
 
-        public static Dictionary<string,List<PoiItem>> PoiItems = null;
+        public static List<PoiItem> PoiItems = null;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -89,7 +89,7 @@ namespace Elite
             cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
                 File.ReadAllText("Templates\\styles.css"), true);
 
-            PoiItems = Poi.GetPoiItems()?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
+            PoiItems = Poi.GetPoiItems(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
 
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             notifyIcon = (TaskbarIcon) FindResource("NotifyIcon");

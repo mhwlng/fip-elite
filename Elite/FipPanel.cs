@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -154,6 +155,8 @@ namespace Elite
         public long Population { get; set; }
 
         public bool HideBody { get; set; } = false;
+
+        public List<double> StarPos { get; set; } // array[x, y, z], in light years
     }
 
     public class MyHtmlHelper
@@ -1088,6 +1091,34 @@ namespace Elite
 
             return 0;
         }
+        
+        private List<PoiItem> GetNearestPoiItems(string starSystem)
+        {
+            foreach (var poiItem in App.PoiItems)
+            {
+                if (LocationData.StarPos.Count == 3)
+                {
+                    var Xs = LocationData.StarPos[0];
+                    var Ys = LocationData.StarPos[1];
+                    var Zs = LocationData.StarPos[2];
+
+                    var Xd = poiItem.GalacticX;
+                    var Yd = poiItem.GalacticY;
+                    var Zd = poiItem.GalacticZ;
+
+                    double deltaX = Xs - Xd;
+                    double deltaY = Ys - Yd;
+                    double deltaZ = Zs - Zd;
+
+                    poiItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                }
+                else 
+                    poiItem.Distance = -1;
+            }
+
+            return App.PoiItems.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+
+        }
 
         private string UpdateReputationState(double reputation)
         {
@@ -1377,8 +1408,9 @@ namespace Elite
 
                         LocationInfo locationInfo = e.ToObject<LocationInfo>();
 
-                        App.PoiItems?.TryGetValue(locationInfo.StarSystem?.ToLower() ?? "???",
-                            out _currentPois);
+                        LocationData.StarPos = locationInfo.StarPos.ToList();
+
+                        _currentPois = GetNearestPoiItems(locationInfo.StarSystem?.ToLower());
 
                         LocationData.SystemAllegiance = locationInfo.SystemAllegiance;
                         LocationData.SystemFaction = locationInfo.SystemFaction?.Name;
@@ -1402,8 +1434,7 @@ namespace Elite
 
                         ApproachBodyInfo approachBodyInfo = e.ToObject<ApproachBodyInfo>();
 
-                        App.PoiItems?.TryGetValue(approachBodyInfo.StarSystem?.ToLower() ?? "???",
-                            out _currentPois);
+                        _currentPois = GetNearestPoiItems(approachBodyInfo.StarSystem?.ToLower());
 
                         LocationData.Body = approachBodyInfo.Body;
                         LocationData.BodyType = "Planet"; 
@@ -1431,8 +1462,7 @@ namespace Elite
 
                         LeaveBodyInfo leaveBodyInfo = e.ToObject<LeaveBodyInfo>();
 
-                        App.PoiItems?.TryGetValue(leaveBodyInfo.StarSystem?.ToLower() ?? "???",
-                            out _currentPois);
+                        _currentPois = GetNearestPoiItems(leaveBodyInfo.StarSystem?.ToLower());
 
                         LocationData.Body = "";
                         LocationData.BodyType = "";
@@ -1500,8 +1530,9 @@ namespace Elite
 
                         FSDJumpInfo fsdJumpInfo = e.ToObject<FSDJumpInfo>();
 
-                        App.PoiItems?.TryGetValue(fsdJumpInfo.StarSystem?.ToLower() ?? "???",
-                            out _currentPois);
+                        _currentPois = GetNearestPoiItems(fsdJumpInfo.StarSystem?.ToLower());
+
+                        LocationData.StarPos = fsdJumpInfo.StarPos.ToList();
 
                         LocationData.StartJump = false;
                         LocationData.JumpToSystem = "";

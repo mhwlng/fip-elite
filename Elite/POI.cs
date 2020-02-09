@@ -58,6 +58,8 @@ namespace Elite
         [Name("Galactic Y")] public double GalacticY { get; set; }
         [Name("Galactic Z")] public double GalacticZ { get; set; }
         [Name("X/Y/Z")] public string XYZ { get; set; }
+
+        public double Distance { get; set; }
     }
 
     public class CustomPercentConverter : DoubleConverter
