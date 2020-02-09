@@ -1014,9 +1014,9 @@ namespace Elite
 
                         if (_currenttab > 0)
                         {
-                            var htmlSize = HtmlRender.Measure(graphics, str, 320, App.cssData);
+                            var htmlSize = HtmlRender.Measure(graphics, str, HtmlWindowWidth, App.cssData);
 
-                            CurrentLCDHeight = (int)htmlSize.Height + 60; // workaround for problem where Measure returns the wrong height in cas of word wrapping long lines
+                            CurrentLCDHeight = (int)htmlSize.Height; 
 
                             CheckLcdOffset();
 

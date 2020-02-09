@@ -48,13 +48,13 @@
                         <td class="data">@m.SubCategory</td>
                     </tr>
                 }
-                @*if (!string.IsNullOrEmpty(m.Notable))
+                if (!string.IsNullOrEmpty(m.Notable))
                 {
                     <tr>
                         <td class="caption">Note</td>
                         <td class="data">@m.Notable</td>
                     </tr>
-                }*@
+                }
                 if (!string.IsNullOrEmpty(m.Body))
                 {
                     <tr>
