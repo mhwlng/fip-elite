@@ -176,6 +176,156 @@ namespace Elite
 
     class FipPanel
     {
+
+        private Dictionary<string, string> ShipsByEliteID = new Dictionary<string, string>()
+        {
+            {
+                "sidewinder", "Sidewinder"
+            },
+            {
+                "eagle", "Eagle"
+            },
+            {
+                "hauler", "Hauler"
+            },
+            {
+                "adder", "Adder"
+            },
+            {
+                "viper", "Viper Mk III"
+            },
+            {
+                "cobramkiii", "Cobra Mk III"
+            },
+            {
+                "type6", "Type-6 Transporter"
+            },
+            {
+                "dolphin", "Dolphin"
+            },
+            {
+                "type7", "Type-7 Transporter"
+            },
+            {
+                "asp", "Asp Explorer"
+            },
+            {
+                "vulture", "Vulture"
+            },
+            {
+                "empire_trader", "Imperial Clipper"
+            },
+            {
+                "federation_dropship", "Federal Dropship"
+            },
+            {
+                "orca", "Orca"
+            },
+            {
+                "type9", "Type-9 Heavy"
+            },
+            {
+                "type9_military", "Type-10 Defender"
+            },
+            {
+                "python", "Python"
+            },
+            {
+                "belugaliner", "Beluga Liner"
+            },
+            {
+                "ferdelance", "Fer-de-Lance"
+            },
+            {
+                "anaconda", "Anaconda"
+            },
+            {
+                "federation_corvette", "Federal Corvette"
+            },
+            {
+                "cutter", "Imperial Cutter"
+            },
+            {
+                "diamondback", "Diamondback Scout"
+            },
+            {
+                "empire_courier", "Imperial Courier"
+            },
+            {
+                "diamondbackxl", "Diamondback Explorer"
+            },
+            {
+                "empire_eagle", "Imperial Eagle"
+            },
+            {
+                "federation_dropship_mkii", "Federal Assault Ship"
+            },
+            {
+                "federation_gunship", "Federal Gunship"
+            },
+            {
+                "viper_mkiv", "Viper Mk IV"
+            },
+            {
+                "cobramkiv", "Cobra Mk IV"
+            },
+            {
+                "independant_trader", "Keelback"
+            },
+            {
+                "asp_scout", "Asp Scout"
+            },
+            {
+                "testbuggy", "SRV"
+            },
+            {
+                "typex", "Alliance Chieftain"
+            },
+            {
+                "typex_2", "Alliance Crusader"
+            },
+            {
+                "typex_3", "Alliance Challenger"
+            },
+            {
+                "krait_mkii", "Krait Mk II"
+            },
+            {
+                "krait_light", "Krait Phantom"
+            },
+            {
+                "mamba", "Mamba"
+            },
+            {
+                "empire_fighter", "Imperial Fighter"
+            },
+            {
+                "federation_fighter", "F63 Condor"
+            },
+            {
+                "independent_fighter", "Taipan Fighter"
+            },
+            {
+                "gdn_hybrid_fighter_v1", "Trident"
+            },
+            {
+                "gdn_hybrid_fighter_v2", "Javelin"
+            },
+            {
+                "gdn_hybrid_fighter_v3", "Lance"
+            },
+            {
+                "unknown", "Unknown"
+            },
+            {
+                "unknown (crew)", "Unknown (crew)"
+            },
+            {
+                "unknown (captain)", "Unknown (captain)"
+            }
+        };
+
+
         private readonly object _refreshDevicePageLock = new object();
 
 
@@ -195,7 +345,7 @@ namespace Elite
         private Pen scrollPen = new Pen(Color.FromArgb(0xff,0xFF,0xB0,0x00));
         private SolidBrush scrollBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xB0, 0x00));
         
-        private const int HtmlMenuWindowWidth = 66;
+        private const int HtmlMenuWindowWidth = 69;
 
         private const int HtmlWindowHeight = 240;
 
@@ -518,7 +668,7 @@ namespace Elite
 
                                         ShipName = ShipData.Name?.Trim(),
 
-                                        ShipType = ShipData.Type,
+                                        ShipType = ShipData.Type?.Trim(),
 
                                         LegalState = App.EliteApi.Status.LegalState,
 
@@ -1006,7 +1156,9 @@ namespace Elite
                         //loadGameInfo.Ship
 
                         ShipData.Name = loadGameInfo.ShipName;
-                        ShipData.Type = loadGameInfo.Ship;
+
+                        ShipsByEliteID.TryGetValue(loadGameInfo.Ship?.ToLower() ?? "???", out var ship);
+                        ShipData.Type = ship ?? loadGameInfo.Ship;
 
                         CommanderData.Name = loadGameInfo.Commander;
                         CommanderData.Credits = Convert.ToUInt32(loadGameInfo.Credits);
@@ -1031,7 +1183,10 @@ namespace Elite
                         //setUserShipNameInfo.UserShipId
 
                         ShipData.Name = setUserShipNameInfo.UserShipName;
-                        ShipData.Type = setUserShipNameInfo.Ship;
+
+                        ShipsByEliteID.TryGetValue(setUserShipNameInfo.Ship?.ToLower() ?? "???", out var tgtShip);
+                        ShipData.Type = tgtShip ?? setUserShipNameInfo.Ship;
+
                         break;
 
                     case "Loadout":
@@ -1058,7 +1213,9 @@ namespace Elite
                         //Rebuy:4.381.497 cr
 
                         ShipData.Name = loadoutInfo.ShipName;
-                        ShipData.Type = loadoutInfo.Ship;
+
+                        ShipsByEliteID.TryGetValue(loadoutInfo.Ship?.ToLower() ?? "???", out var loadShip);
+                        ShipData.Type = loadShip ?? loadoutInfo.Ship;
 
                         ShipData.CargoCapacity = 0;
 
@@ -1620,7 +1777,11 @@ namespace Elite
                         TargetData.PilotRank = shipTargetedInfo.PilotRank;
                         TargetData.ScanStage = shipTargetedInfo.ScanStage;
                         TargetData.ShieldHealth = shipTargetedInfo.ShieldHealth;
-                        TargetData.Ship = shipTargetedInfo.ShipLocalised ?? shipTargetedInfo.Ship;
+
+                        ShipsByEliteID.TryGetValue(shipTargetedInfo.Ship?.ToLower() ?? "???", out var targetShip);
+
+                        TargetData.Ship = shipTargetedInfo.ShipLocalised ?? targetShip ?? shipTargetedInfo.Ship;
+
                         TargetData.SubsystemLocalised = shipTargetedInfo.SubsystemLocalised;
                         TargetData.TargetLocked = shipTargetedInfo.TargetLocked;
                         TargetData.SubsystemHealth = shipTargetedInfo.SubsystemHealth;
