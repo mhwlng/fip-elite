@@ -1094,29 +1094,34 @@ namespace Elite
         
         private List<PoiItem> GetNearestPoiItems(string starSystem)
         {
-            foreach (var poiItem in App.PoiItems)
+            if (App.PoiItems != null)
             {
-                if (LocationData.StarPos.Count == 3)
+                foreach (var poiItem in App.PoiItems)
                 {
-                    var Xs = LocationData.StarPos[0];
-                    var Ys = LocationData.StarPos[1];
-                    var Zs = LocationData.StarPos[2];
+                    if (LocationData.StarPos.Count == 3)
+                    {
+                        var Xs = LocationData.StarPos[0];
+                        var Ys = LocationData.StarPos[1];
+                        var Zs = LocationData.StarPos[2];
 
-                    var Xd = poiItem.GalacticX;
-                    var Yd = poiItem.GalacticY;
-                    var Zd = poiItem.GalacticZ;
+                        var Xd = poiItem.GalacticX;
+                        var Yd = poiItem.GalacticY;
+                        var Zd = poiItem.GalacticZ;
 
-                    double deltaX = Xs - Xd;
-                    double deltaY = Ys - Yd;
-                    double deltaZ = Zs - Zd;
+                        double deltaX = Xs - Xd;
+                        double deltaY = Ys - Yd;
+                        double deltaZ = Zs - Zd;
 
-                    poiItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                        poiItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                    }
+                    else
+                        poiItem.Distance = -1;
                 }
-                else 
-                    poiItem.Distance = -1;
+
+                return App.PoiItems.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
             }
 
-            return App.PoiItems.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+            return null;
 
         }
 
@@ -1434,8 +1439,6 @@ namespace Elite
 
                         ApproachBodyInfo approachBodyInfo = e.ToObject<ApproachBodyInfo>();
 
-                        _currentPois = GetNearestPoiItems(approachBodyInfo.StarSystem?.ToLower());
-
                         LocationData.Body = approachBodyInfo.Body;
                         LocationData.BodyType = "Planet"; 
 
@@ -1461,8 +1464,6 @@ namespace Elite
                     case "LeaveBody":
 
                         LeaveBodyInfo leaveBodyInfo = e.ToObject<LeaveBodyInfo>();
-
-                        _currentPois = GetNearestPoiItems(leaveBodyInfo.StarSystem?.ToLower());
 
                         LocationData.Body = "";
                         LocationData.BodyType = "";
@@ -1530,9 +1531,9 @@ namespace Elite
 
                         FSDJumpInfo fsdJumpInfo = e.ToObject<FSDJumpInfo>();
 
-                        _currentPois = GetNearestPoiItems(fsdJumpInfo.StarSystem?.ToLower());
-
                         LocationData.StarPos = fsdJumpInfo.StarPos.ToList();
+
+                        _currentPois = GetNearestPoiItems(fsdJumpInfo.StarSystem?.ToLower());
 
                         LocationData.StartJump = false;
                         LocationData.JumpToSystem = "";
