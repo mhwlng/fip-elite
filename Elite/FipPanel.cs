@@ -180,7 +180,7 @@ namespace Elite
     class FipPanel
     {
 
-        private Dictionary<string, string> ShipsByEliteID = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> ShipsByEliteID = new Dictionary<string, string>()
         {
             {
                 "sidewinder", "Sidewinder"
@@ -332,8 +332,12 @@ namespace Elite
         private readonly object _refreshDevicePageLock = new object();
 
 
-        private LCDTab _currenttab = LCDTab.None;
-        private LCDTab _lasttab = LCDTab.Init;
+        private LCDTab _currentTab = LCDTab.None;
+        private LCDTab _lastTab = LCDTab.Init;
+
+        private int[] _currentCard = new int[10];
+
+
         private int CurrentLCDYOffset = 0;
         private int CurrentLCDHeight = 0;
 
@@ -345,8 +349,8 @@ namespace Elite
 
         private List<uint> _pageList = new List<uint>();
 
-        private Pen scrollPen = new Pen(Color.FromArgb(0xff,0xFF,0xB0,0x00));
-        private SolidBrush scrollBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xB0, 0x00));
+        private readonly Pen _scrollPen = new Pen(Color.FromArgb(0xff,0xFF,0xB0,0x00));
+        private readonly SolidBrush _scrollBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xB0, 0x00));
         
         private const int HtmlMenuWindowWidth = 69;
 
@@ -365,19 +369,23 @@ namespace Elite
 
         protected EventHandler<dynamic> HandleEliteEventsDelegate;
 
-        private RingBuffer<string> EventHistory = new RingBuffer<string>(50, true);
+        private RingBuffer<string> _eventHistory = new RingBuffer<string>(50, true);
 
-        private Commander CommanderData = new Commander();
-        private Ship ShipData = new Ship();
-        private Target TargetData = new Target();
-
-        private List<Mission> MissionData = new List<Mission>();
-
-        private Location LocationData = new Location();
-        private Dock DockData = new Dock();
+        private Commander _commanderData = new Commander();
+        private Ship _shipData = new Ship();
+        private Target _targetData = new Target();
+        private List<Mission> _missionData = new List<Mission>();
+        private Location _locationData = new Location();
+        private Dock _dockData = new Dock();
 
         private List<PoiItem> _currentPois = new List<PoiItem>();
 
+        private List<StationData> _currentInterStellarFactors = new List<StationData>();
+        private List<StationData> _currentRawMaterialTraders = new List<StationData>();
+        private List<StationData> _currentManufacturedMaterialTraders = new List<StationData>();
+        private List<StationData> _currentEncodedDataTraders = new List<StationData>();
+        private List<StationData> _currentHumanTechnologyBrokers = new List<StationData>();
+        private List<StationData> _currentGuardianTechnologyBrokers = new List<StationData>();
 
         public FipPanel(IntPtr devicePtr) 
         {
@@ -412,8 +420,9 @@ namespace Elite
 
 
             AddPage(DEFAULT_PAGE, true);
+            //AddPage(1, false);
 
-            RefreshDevicePage(0);
+            RefreshDevicePage(DEFAULT_PAGE);
 
             App.EliteApi.Events.AllEvent += HandleEliteEventsDelegate;
 
@@ -452,10 +461,10 @@ namespace Elite
 
         private bool SetTab(LCDTab tab)
         {
-            if (_currenttab != tab)
+            if (_currentTab != tab)
             {
-                _lasttab = _currenttab;
-                _currenttab = tab;
+                _lastTab = _currentTab;
+                _currentTab = tab;
 
                 CurrentLCDYOffset = 0;
 
@@ -492,6 +501,24 @@ namespace Elite
                 switch (button)
                 {
                     case 8: // scroll clockwise
+                        if (state)
+                        {
+                            _currentCard[(int)_currentTab]++;
+                            CurrentLCDYOffset = 0;
+
+                            mustRefresh = true;
+                        }
+                        break;
+                    case 16: // scroll anti-clockwise
+
+                        if (state)
+                        {
+                            _currentCard[(int)_currentTab]--;
+                            CurrentLCDYOffset = 0;
+
+                            mustRefresh = true;
+                        }
+                        break;
                     case 2: // scroll clockwise
                         if (state)
                         {
@@ -500,7 +527,6 @@ namespace Elite
                             mustRefresh = true;
                         }
                         break;
-                    case 16: // scroll anti-clockwise
                     case 4: // scroll anti-clockwise
 
                         if (CurrentLCDYOffset == 0) return;
@@ -526,22 +552,19 @@ namespace Elite
                         mustRefresh = SetTab(LCDTab.Navigation);
                         break;
                     case 256:
-                        if (TargetData.TargetLocked)
+                        if (_targetData.TargetLocked)
                         {
                             mustRefresh = SetTab(LCDTab.Target);
                         }
                         break;
                     case 512:
-                        if (MissionData.Count > 0)
+                        if (_missionData.Count > 0)
                         {
                             mustRefresh = SetTab(LCDTab.Missions);
                         }
                         break;
                     case 1024:
-                        if (_currentPois?.Count > 0)
-                        {
-                            mustRefresh = SetTab(LCDTab.POI);
-                        }
+                        mustRefresh = SetTab(LCDTab.POI);
 
                         break;
                 }
@@ -627,15 +650,11 @@ namespace Elite
         {
             lock (_refreshDevicePageLock)
             {
-                if (MissionData.Count == 0 && _currenttab == LCDTab.Missions)
+                if (_missionData.Count == 0 && _currentTab == LCDTab.Missions)
                 {
                     SetTab(LCDTab.Navigation);
                 }
-                else if (!TargetData.TargetLocked && _currenttab == LCDTab.Target)
-                {
-                    SetTab(LCDTab.Navigation);
-                }
-                if (!(_currentPois?.Count > 0) && _currenttab == LCDTab.POI)
+                else if (!_targetData.TargetLocked && _currentTab == LCDTab.Target)
                 {
                     SetTab(LCDTab.Navigation);
                 }
@@ -647,37 +666,35 @@ namespace Elite
                         var menustr =
                             Engine.Razor.Run("menu.cshtml", null, new
                             {
-                                CurrentTab = (int)_currenttab,
+                                CurrentTab = (int)_currentTab,
 
-                                TargetLocked = TargetData.TargetLocked,
+                                TargetLocked = _targetData.TargetLocked,
 
-                                MissionCount = MissionData.Count,
-
-                                PoiCount = _currentPois?.Count ?? 0
+                                MissionCount = _missionData.Count
                             });
 
                         var str = "";
 
-                        switch (_currenttab)
+                        switch (_currentTab)
                         {
                             case LCDTab.Commander:
 
                                 str =
                                     Engine.Razor.Run("1.cshtml", null, new
                                     {
-                                        CurrentTab = (int) _currenttab,
+                                        CurrentTab = (int) _currentTab,
 
-                                        Commander = CommanderData.Name,
+                                        Commander = _commanderData.Name,
 
-                                        ShipName = ShipData.Name?.Trim(),
+                                        ShipName = _shipData.Name?.Trim(),
 
-                                        ShipType = ShipData.Type?.Trim(),
+                                        ShipType = _shipData.Type?.Trim(),
 
                                         LegalState = App.EliteApi.Status.LegalState,
 
-                                        Credits = CommanderData.Credits.ToString("N0"),
+                                        Credits = _commanderData.Credits.ToString("N0"),
 
-                                        Rebuy = CommanderData.Rebuy.ToString("N0"),
+                                        Rebuy = _commanderData.Rebuy.ToString("N0"),
 
                                         FederationRank = App.EliteApi.Commander.FederationRankLocalised,
                                         FederationRankProgress = App.EliteApi.Commander.FederationRankProgress,
@@ -698,13 +715,13 @@ namespace Elite
 
                                         CqcRankProgress = App.EliteApi.Commander.CqcRankProgress,
 
-                                        FederationReputation = CommanderData.FederationReputation,
-                                        AllianceReputation = CommanderData.AllianceReputation,
-                                        EmpireReputation = CommanderData.EmpireReputation,
+                                        FederationReputation = _commanderData.FederationReputation,
+                                        AllianceReputation = _commanderData.AllianceReputation,
+                                        EmpireReputation = _commanderData.EmpireReputation,
 
-                                        FederationReputationState = CommanderData.FederationReputationState,
-                                        AllianceReputationState = CommanderData.AllianceReputationState,
-                                        EmpireReputationState = CommanderData.EmpireReputationState
+                                        FederationReputationState = _commanderData.FederationReputationState,
+                                        AllianceReputationState = _commanderData.AllianceReputationState,
+                                        EmpireReputationState = _commanderData.EmpireReputationState
 
                                 });
 
@@ -739,13 +756,13 @@ namespace Elite
                                 str =
                                     Engine.Razor.Run("2.cshtml", null, new
                                     {
-                                        CurrentTab = (int) _currenttab,
+                                        CurrentTab = (int) _currentTab,
 
-                                        ShipName = ShipData.Name?.Trim(),
+                                        ShipName = _shipData.Name?.Trim(),
 
-                                        ShipType = ShipData.Type,
+                                        ShipType = _shipData.Type,
 
-                                        AutomaticDocking = ShipData.AutomaticDocking,
+                                        AutomaticDocking = _shipData.AutomaticDocking,
 
                                         Docked = App.EliteApi.Status.Docked,
 
@@ -763,9 +780,9 @@ namespace Elite
 
                                         Cargo = App.EliteApi.Status.Cargo,
 
-                                        CargoCapacity = ShipData.CargoCapacity,
+                                        CargoCapacity = _shipData.CargoCapacity,
 
-                                        HullHealth = ShipData.HullHealth
+                                        HullHealth = _shipData.HullHealth
 
                                     });
 
@@ -850,12 +867,12 @@ namespace Elite
                                 str =
                                     Engine.Razor.Run("3.cshtml", null, new
                                     {
-                                        CurrentTab = (int) _currenttab,
+                                        CurrentTab = (int) _currentTab,
 
                                         StarSystem = App.EliteApi.Location.StarSystem,
 
-                                        Body = !string.IsNullOrEmpty(LocationData.BodyType) && !string.IsNullOrEmpty(LocationData.Body)
-                                            ? LocationData.Body
+                                        Body = !string.IsNullOrEmpty(_locationData.BodyType) && !string.IsNullOrEmpty(_locationData.Body)
+                                            ? _locationData.Body
                                             : null, 
 
                                         /*
@@ -867,56 +884,56 @@ namespace Elite
                                         "AsteroidCluster"                                         
                                          */
 
-                                        BodyType = LocationData.BodyType,
+                                        BodyType = _locationData.BodyType,
 
-                                        Station = LocationData.BodyType == "Station" &&
-                                                  !string.IsNullOrEmpty(LocationData.Body)
-                                            ? LocationData.Body
+                                        Station = _locationData.BodyType == "Station" &&
+                                                  !string.IsNullOrEmpty(_locationData.Body)
+                                            ? _locationData.Body
                                             : App.EliteApi.Location.Station,
 
                                         Docked = App.EliteApi.Status.Docked,
 
-                                        LandingPad = DockData.LandingPad,
+                                        LandingPad = _dockData.LandingPad,
 
-                                        StartJump = LocationData.StartJump,
+                                        StartJump = _locationData.StartJump,
 
-                                        JumpType = LocationData.JumpType,
+                                        JumpType = _locationData.JumpType,
 
-                                        JumpToSystem = LocationData.JumpToSystem,
+                                        JumpToSystem = _locationData.JumpToSystem,
 
-                                        JumpToStarClass = LocationData.JumpToStarClass,
+                                        JumpToStarClass = _locationData.JumpToStarClass,
 
-                                        RemainingJumpsInRoute = LocationData.RemainingJumpsInRoute,
+                                        RemainingJumpsInRoute = _locationData.RemainingJumpsInRoute,
 
-                                        FsdTargetName = LocationData.FsdTargetName,
+                                        FsdTargetName = _locationData.FsdTargetName,
 
-                                        Settlement = LocationData.Settlement,
+                                        Settlement = _locationData.Settlement,
 
-                                        HideBody = LocationData.HideBody,
+                                        HideBody = _locationData.HideBody,
 
-                                        StationType = DockData.Type,
+                                        StationType = _dockData.Type,
 
-                                        Government = DockData.Government,
+                                        Government = _dockData.Government,
 
-                                        Allegiance = DockData.Allegiance,
+                                        Allegiance = _dockData.Allegiance,
 
-                                        Faction = DockData.Faction,
+                                        Faction = _dockData.Faction,
 
-                                        Economy = DockData.Economy,
+                                        Economy = _dockData.Economy,
 
-                                        DistFromStarLs = DockData.DistFromStarLs,
+                                        DistFromStarLs = _dockData.DistFromStarLs,
 
-                                        SystemAllegiance = LocationData.SystemAllegiance,
+                                        SystemAllegiance = _locationData.SystemAllegiance,
 
-                                        SystemFaction = LocationData.SystemFaction,
+                                        SystemFaction = _locationData.SystemFaction,
 
-                                        SystemSecurity = LocationData.SystemSecurity,
+                                        SystemSecurity = _locationData.SystemSecurity,
 
-                                        SystemEconomy = LocationData.SystemEconomy,
+                                        SystemEconomy = _locationData.SystemEconomy,
 
-                                        SystemGovernment = LocationData.SystemGovernment,
+                                        SystemGovernment = _locationData.SystemGovernment,
 
-                                        Population = LocationData.Population
+                                        Population = _locationData.Population
 
                                     });
 
@@ -941,22 +958,22 @@ namespace Elite
                                 str =
                                     Engine.Razor.Run("4.cshtml", null, new
                                     {
-                                        CurrentTab = (int) _currenttab,
+                                        CurrentTab = (int) _currentTab,
 
-                                        TargetLocked = TargetData.TargetLocked,
-                                        ScanStage = TargetData.ScanStage,
+                                        TargetLocked = _targetData.TargetLocked,
+                                        ScanStage = _targetData.ScanStage,
 
-                                        Bounty = TargetData.Bounty,
-                                        Faction = TargetData.Faction,
-                                        LegalStatus = TargetData.LegalStatus,
-                                        PilotNameLocalised = TargetData.PilotNameLocalised,
-                                        PilotRank = TargetData.PilotRank,
-                                        Ship = TargetData.Ship,
-                                        SubsystemLocalised = TargetData.SubsystemLocalised,
+                                        Bounty = _targetData.Bounty,
+                                        Faction = _targetData.Faction,
+                                        LegalStatus = _targetData.LegalStatus,
+                                        PilotNameLocalised = _targetData.PilotNameLocalised,
+                                        PilotRank = _targetData.PilotRank,
+                                        Ship = _targetData.Ship,
+                                        SubsystemLocalised = _targetData.SubsystemLocalised,
 
-                                        SubsystemHealth = TargetData.SubsystemHealth,
-                                        HullHealth = TargetData.HullHealth,
-                                        ShieldHealth = TargetData.ShieldHealth,
+                                        SubsystemHealth = _targetData.SubsystemHealth,
+                                        HullHealth = _targetData.HullHealth,
+                                        ShieldHealth = _targetData.ShieldHealth,
 
                                     });
 
@@ -967,24 +984,42 @@ namespace Elite
                                 str =
                                     Engine.Razor.Run("5.cshtml", null, new
                                     {
-                                        CurrentTab = (int)_currenttab,
+                                        CurrentTab = (int)_currentTab,
 
-                                        MissionData = MissionData
+                                        MissionData = _missionData
                                     });
 
                                 break;
 
                             case LCDTab.POI:
 
+                                if (_currentCard[(int) _currentTab] < 0)
+                                {
+                                    _currentCard[(int) _currentTab] = 6;
+                                }
+                                else
+                                if (_currentCard[(int)_currentTab] > 6)
+                                {
+                                    _currentCard[(int)_currentTab] = 0;
+                                }
+
                                 str =
                                     Engine.Razor.Run("6.cshtml", null, new
                                     {
-                                        CurrentTab = (int)_currenttab,
+                                        CurrentTab = (int)_currentTab,
 
-                                        CurrentPois = _currentPois
+                                        CurrentCard = _currentCard[(int)_currentTab],
 
-                                        
-                                    });
+                                        CurrentPois = _currentPois, // 0
+
+                                        CurrentInterStellarFactors= _currentInterStellarFactors, // 1
+                                        CurrentRawMaterialTraders= _currentRawMaterialTraders, // 2
+                                        CurrentManufacturedMaterialTraders= _currentManufacturedMaterialTraders, // 3
+                                        CurrentEncodedDataTraders= _currentEncodedDataTraders, // 4
+                                        CurrentHumanTechnologyBrokers= _currentHumanTechnologyBrokers, // 5
+                                        CurrentGuardianTechnologyBrokers= _currentGuardianTechnologyBrokers // 6
+
+                                });
 
                                 break; 
 
@@ -1012,7 +1047,7 @@ namespace Elite
 
                         graphics.Clear(Color.Black);
 
-                        if (_currenttab > 0)
+                        if (_currentTab > 0)
                         {
                             var htmlSize = HtmlRender.Measure(graphics, str, HtmlWindowWidth, App.cssData);
 
@@ -1040,10 +1075,10 @@ namespace Elite
                                 double scrollThumbYOffset = (double)CurrentLCDYOffset / (double)CurrentLCDHeight * scrollBarHeight;
 
 
-                                graphics.DrawRectangle(scrollPen, new Rectangle(new Point(320-9, 2),
+                                graphics.DrawRectangle(_scrollPen, new Rectangle(new Point(320-9, 2),
                                                                    new Size(5, (int)scrollBarHeight)));
 
-                                graphics.FillRectangle(scrollBrush, new Rectangle(new Point(320 - 9, 2 + (int)scrollThumbYOffset),
+                                graphics.FillRectangle(_scrollBrush, new Rectangle(new Point(320 - 9, 2 + (int)scrollThumbYOffset),
                                     new Size(5, 1 + (int)scrollThumbHeight)));
 
                             }
@@ -1056,20 +1091,20 @@ namespace Elite
                         graphics.DrawImage(menuimage, 0,0);
 
 #if DEBUG
-                        fipImage.Save(@"screenshot"+(int)_currenttab+".png", ImageFormat.Png);
+                        fipImage.Save(@"screenshot"+(int)_currentTab+"_"+ _currentCard[(int)_currentTab] + ".png", ImageFormat.Png);
 #endif
 
                         fipImage.RotateFlip(RotateFlipType.Rotate180FlipX);
                         SetImage(page, fipImage);
 
-                        if (_lasttab > 0)
+                        if (_lastTab > 0)
                         {
-                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint) _lasttab, false);
+                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint) _lastTab, false);
                         }
 
-                        if (_currenttab > 0)
+                        if (_currentTab > 0)
                         {
-                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint) _currenttab, true);
+                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint) _currentTab, true);
                         }
 
                     }
@@ -1092,38 +1127,6 @@ namespace Elite
             return 0;
         }
         
-        private List<PoiItem> GetNearestPoiItems(string starSystem)
-        {
-            if (App.PoiItems != null)
-            {
-                foreach (var poiItem in App.PoiItems)
-                {
-                    if (LocationData.StarPos.Count == 3)
-                    {
-                        var Xs = LocationData.StarPos[0];
-                        var Ys = LocationData.StarPos[1];
-                        var Zs = LocationData.StarPos[2];
-
-                        var Xd = poiItem.GalacticX;
-                        var Yd = poiItem.GalacticY;
-                        var Zd = poiItem.GalacticZ;
-
-                        double deltaX = Xs - Xd;
-                        double deltaY = Ys - Yd;
-                        double deltaZ = Zs - Zd;
-
-                        poiItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-                    }
-                    else
-                        poiItem.Distance = -1;
-                }
-
-                return App.PoiItems.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
-            }
-
-            return null;
-
-        }
 
         private string UpdateReputationState(double reputation)
         {
@@ -1169,7 +1172,7 @@ namespace Elite
 
                 if (evt != "FSSSignalDiscovered" && evt != "FSSDiscoveryScan")
                 {
-                    EventHistory.Put(DateTime.Now.ToLongTimeString() + " : " + evt);
+                    _eventHistory.Put(DateTime.Now.ToLongTimeString() + " : " + evt);
                 }
 
                 switch (evt)
@@ -1191,15 +1194,15 @@ namespace Elite
                         //loadGameInfo.ShipIdent
                         //loadGameInfo.Ship
 
-                        ShipData.Name = loadGameInfo.ShipName;
+                        _shipData.Name = loadGameInfo.ShipName;
 
                         ShipsByEliteID.TryGetValue(loadGameInfo.Ship?.ToLower() ?? "???", out var ship);
-                        ShipData.Type = ship ?? loadGameInfo.Ship;
+                        _shipData.Type = ship ?? loadGameInfo.Ship;
 
-                        CommanderData.Name = loadGameInfo.Commander;
-                        CommanderData.Credits = Convert.ToUInt32(loadGameInfo.Credits);
+                        _commanderData.Name = loadGameInfo.Commander;
+                        _commanderData.Credits = Convert.ToUInt32(loadGameInfo.Credits);
 
-                        LocationData.Settlement = "";
+                        _locationData.Settlement = "";
 
                         break;
 
@@ -1207,7 +1210,7 @@ namespace Elite
 
                         CommanderInfo commanderInfo = e.ToObject<CommanderInfo>();
 
-                        CommanderData.Name = commanderInfo.Name;
+                        _commanderData.Name = commanderInfo.Name;
 
                         SetTab(LCDTab.Commander);
                         break;
@@ -1218,10 +1221,10 @@ namespace Elite
 
                         //setUserShipNameInfo.UserShipId
 
-                        ShipData.Name = setUserShipNameInfo.UserShipName;
+                        _shipData.Name = setUserShipNameInfo.UserShipName;
 
                         ShipsByEliteID.TryGetValue(setUserShipNameInfo.Ship?.ToLower() ?? "???", out var tgtShip);
-                        ShipData.Type = tgtShip ?? setUserShipNameInfo.Ship;
+                        _shipData.Type = tgtShip ?? setUserShipNameInfo.Ship;
 
                         break;
 
@@ -1229,9 +1232,9 @@ namespace Elite
 
                         LoadoutInfo loadoutInfo = e.ToObject<LoadoutInfo>();
 
-                        ShipData.HullHealth = loadoutInfo.HullHealth * 100.0;
+                        _shipData.HullHealth = loadoutInfo.HullHealth * 100.0;
 
-                        CommanderData.Rebuy = loadoutInfo.Rebuy;
+                        _commanderData.Rebuy = loadoutInfo.Rebuy;
 
                         //loadoutInfo.Hot
                         //loadoutInfo.HullValue
@@ -1248,16 +1251,16 @@ namespace Elite
                         //Modules:32.315.494 cr,
                         //Rebuy:4.381.497 cr
 
-                        ShipData.Name = loadoutInfo.ShipName;
+                        _shipData.Name = loadoutInfo.ShipName;
 
                         ShipsByEliteID.TryGetValue(loadoutInfo.Ship?.ToLower() ?? "???", out var loadShip);
-                        ShipData.Type = loadShip ?? loadoutInfo.Ship;
+                        _shipData.Type = loadShip ?? loadoutInfo.Ship;
 
-                        ShipData.CargoCapacity = 0;
+                        _shipData.CargoCapacity = 0;
 
                         foreach (var m in loadoutInfo.Modules.Where(x => x.Item.Contains("_cargorack_")))
                         {
-                            ShipData.CargoCapacity += UpdateCargoCapacity(m.Item, 1);
+                            _shipData.CargoCapacity += UpdateCargoCapacity(m.Item, 1);
                         }
 
                         break;
@@ -1265,29 +1268,29 @@ namespace Elite
                     case "ModuleBuy":
                         ModuleBuyInfo moduleBuyInfo = e.ToObject<ModuleBuyInfo>();
 
-                        ShipData.CargoCapacity += UpdateCargoCapacity(moduleBuyInfo.BuyItem, 1);
-                        ShipData.CargoCapacity += UpdateCargoCapacity(moduleBuyInfo.SellItem, -1);
+                        _shipData.CargoCapacity += UpdateCargoCapacity(moduleBuyInfo.BuyItem, 1);
+                        _shipData.CargoCapacity += UpdateCargoCapacity(moduleBuyInfo.SellItem, -1);
 
                         break;
 
                     case "ModuleSell":
                         ModuleSellInfo moduleSellInfo = e.ToObject<ModuleSellInfo>();
 
-                        ShipData.CargoCapacity += UpdateCargoCapacity(moduleSellInfo.SellItem, -1);
+                        _shipData.CargoCapacity += UpdateCargoCapacity(moduleSellInfo.SellItem, -1);
 
                         break;
 
                     case "ModuleStore":
                         ModuleStoreInfo moduleStoreInfo = e.ToObject<ModuleStoreInfo>();
 
-                        ShipData.CargoCapacity += UpdateCargoCapacity(moduleStoreInfo.StoredItem, -1);
+                        _shipData.CargoCapacity += UpdateCargoCapacity(moduleStoreInfo.StoredItem, -1);
 
                         break;
 
                     case "ModuleRetrieve":
                         ModuleRetrieveInfo moduleRetrieveInfo = e.ToObject<ModuleRetrieveInfo>();
 
-                        ShipData.CargoCapacity += UpdateCargoCapacity(moduleRetrieveInfo.RetrievedItem, 1);
+                        _shipData.CargoCapacity += UpdateCargoCapacity(moduleRetrieveInfo.RetrievedItem, 1);
 
                         break;
 
@@ -1296,7 +1299,7 @@ namespace Elite
 
                         foreach (var i in massModuleStoreInfo.Items)
                         {
-                            ShipData.CargoCapacity += UpdateCargoCapacity(i.Name, -1);
+                            _shipData.CargoCapacity += UpdateCargoCapacity(i.Name, -1);
                         }
                         break;
 
@@ -1312,13 +1315,13 @@ namespace Elite
 
                         //reputationInfo.Independent
 
-                        CommanderData.FederationReputation = reputationInfo.Federation;
-                        CommanderData.AllianceReputation = reputationInfo.Alliance;
-                        CommanderData.EmpireReputation = reputationInfo.Empire;
+                        _commanderData.FederationReputation = reputationInfo.Federation;
+                        _commanderData.AllianceReputation = reputationInfo.Alliance;
+                        _commanderData.EmpireReputation = reputationInfo.Empire;
 
-                        CommanderData.FederationReputationState = UpdateReputationState(CommanderData.FederationReputation);
-                        CommanderData.AllianceReputationState = UpdateReputationState(CommanderData.AllianceReputation);
-                        CommanderData.EmpireReputationState = UpdateReputationState(CommanderData.EmpireReputation);
+                        _commanderData.FederationReputationState = UpdateReputationState(_commanderData.FederationReputation);
+                        _commanderData.AllianceReputationState = UpdateReputationState(_commanderData.AllianceReputation);
+                        _commanderData.EmpireReputationState = UpdateReputationState(_commanderData.EmpireReputation);
 
                         break;
 
@@ -1356,14 +1359,14 @@ namespace Elite
                         RefuelAllInfo refuelAllInfo = e.ToObject<RefuelAllInfo>();
                         //refuelAllInfo.Amount
 
-                        CommanderData.Credits -= Convert.ToUInt32(refuelAllInfo.Cost);
+                        _commanderData.Credits -= Convert.ToUInt32(refuelAllInfo.Cost);
                         break;
 
                     case "RepairAll":
 
                         RepairAllInfo repairAllInfo = e.ToObject<RepairAllInfo>();
 
-                        CommanderData.Credits -= Convert.ToUInt32(repairAllInfo.Cost);
+                        _commanderData.Credits -= Convert.ToUInt32(repairAllInfo.Cost);
                         break;
 
                     case "Repair":
@@ -1371,7 +1374,7 @@ namespace Elite
                         RepairInfo repairInfo = e.ToObject<RepairInfo>();
                         //repairInfo.Item
 
-                        CommanderData.Credits -= Convert.ToUInt32(repairInfo.Cost);
+                        _commanderData.Credits -= Convert.ToUInt32(repairInfo.Cost);
                         break;
 
                     case "BuyTradeData":
@@ -1379,7 +1382,7 @@ namespace Elite
                         BuyTradeDataInfo buyTradeDataInfo = e.ToObject<BuyTradeDataInfo>();
                         //buyTradeDataInfo.System
 
-                        CommanderData.Credits -= Convert.ToUInt32(buyTradeDataInfo.Cost);
+                        _commanderData.Credits -= Convert.ToUInt32(buyTradeDataInfo.Cost);
                         break;
 
                     case "BuyExplorationData":
@@ -1387,7 +1390,7 @@ namespace Elite
                         BuyExplorationDataInfo buyExplorationDataInfo = e.ToObject<BuyExplorationDataInfo>();
                         //buyExplorationDataInfo.System
 
-                        CommanderData.Credits -= Convert.ToUInt32(buyExplorationDataInfo.Cost);
+                        _commanderData.Credits -= Convert.ToUInt32(buyExplorationDataInfo.Cost);
                         break;
 
                     case "BuyDrones":
@@ -1397,14 +1400,14 @@ namespace Elite
                         //buyDronesInfo.Count
                         //buyDronesInfo.Type
 
-                        CommanderData.Credits -= Convert.ToUInt32(buyDronesInfo.TotalCost);
+                        _commanderData.Credits -= Convert.ToUInt32(buyDronesInfo.TotalCost);
                         break;
 
                     case "BuyAmmo":
 
                         BuyAmmoInfo buyAmmoInfo = e.ToObject<BuyAmmoInfo>();
 
-                        CommanderData.Credits -= Convert.ToUInt32(buyAmmoInfo.Cost);
+                        _commanderData.Credits -= Convert.ToUInt32(buyAmmoInfo.Cost);
                         break;
 
                     //------------- LOCATION
@@ -1413,20 +1416,27 @@ namespace Elite
 
                         LocationInfo locationInfo = e.ToObject<LocationInfo>();
 
-                        LocationData.StarPos = locationInfo.StarPos.ToList();
+                        _locationData.StarPos = locationInfo.StarPos.ToList();
 
-                        _currentPois = GetNearestPoiItems(locationInfo.StarSystem?.ToLower());
+                        _currentPois = Poi.GetNearestPoiItems(_locationData.StarPos);
 
-                        LocationData.SystemAllegiance = locationInfo.SystemAllegiance;
-                        LocationData.SystemFaction = locationInfo.SystemFaction?.Name;
-                        LocationData.SystemSecurity = locationInfo.SystemSecurityLocalised;
-                        LocationData.SystemEconomy = locationInfo.SystemEconomyLocalised;
-                        LocationData.SystemGovernment = locationInfo.SystemGovernmentLocalised;
-                        LocationData.Population = locationInfo.Population;
-                        LocationData.Body = locationInfo.Body;
-                        LocationData.BodyType = locationInfo.BodyType;
+                        _currentInterStellarFactors = Station.GetNearestStationItems(_locationData.StarPos,App.InterStellarFactors);
+                        _currentRawMaterialTraders = Station.GetNearestStationItems(_locationData.StarPos, App.RawMaterialTraders);
+                        _currentManufacturedMaterialTraders = Station.GetNearestStationItems(_locationData.StarPos, App.ManufacturedMaterialTraders);
+                        _currentEncodedDataTraders = Station.GetNearestStationItems(_locationData.StarPos, App.EncodedDataTraders);
+                        _currentHumanTechnologyBrokers = Station.GetNearestStationItems(_locationData.StarPos, App.HumanTechnologyBrokers);
+                        _currentGuardianTechnologyBrokers = Station.GetNearestStationItems(_locationData.StarPos, App.GuardianTechnologyBrokers);
 
-                        LocationData.HideBody = false;
+                        _locationData.SystemAllegiance = locationInfo.SystemAllegiance;
+                        _locationData.SystemFaction = locationInfo.SystemFaction?.Name;
+                        _locationData.SystemSecurity = locationInfo.SystemSecurityLocalised;
+                        _locationData.SystemEconomy = locationInfo.SystemEconomyLocalised;
+                        _locationData.SystemGovernment = locationInfo.SystemGovernmentLocalised;
+                        _locationData.Population = locationInfo.Population;
+                        _locationData.Body = locationInfo.Body;
+                        _locationData.BodyType = locationInfo.BodyType;
+
+                        _locationData.HideBody = false;
 
                         //locationInfo.Docked
                         //locationInfo.Factions
@@ -1439,10 +1449,10 @@ namespace Elite
 
                         ApproachBodyInfo approachBodyInfo = e.ToObject<ApproachBodyInfo>();
 
-                        LocationData.Body = approachBodyInfo.Body;
-                        LocationData.BodyType = "Planet"; 
+                        _locationData.Body = approachBodyInfo.Body;
+                        _locationData.BodyType = "Planet"; 
 
-                        LocationData.HideBody = false;
+                        _locationData.HideBody = false;
 
                         break;
 
@@ -1450,11 +1460,11 @@ namespace Elite
 
                         ApproachSettlementInfo approachSettlementInfo = e.ToObject<ApproachSettlementInfo>();
 
-                        LocationData.Settlement = approachSettlementInfo.Name;
+                        _locationData.Settlement = approachSettlementInfo.Name;
 
-                        LocationData.BodyType = "Planet";
+                        _locationData.BodyType = "Planet";
 
-                        LocationData.HideBody = false;
+                        _locationData.HideBody = false;
 
                         //approachSettlementInfo.Latitude
                         //approachSettlementInfo.Longitude
@@ -1465,10 +1475,10 @@ namespace Elite
 
                         LeaveBodyInfo leaveBodyInfo = e.ToObject<LeaveBodyInfo>();
 
-                        LocationData.Body = "";
-                        LocationData.BodyType = "";
+                        _locationData.Body = "";
+                        _locationData.BodyType = "";
 
-                        LocationData.HideBody = true;
+                        _locationData.HideBody = true;
 
                         break;
 
@@ -1479,10 +1489,10 @@ namespace Elite
                         //undockedInfo.StationName
                         //undockedInfo.StationType
 
-                        DockData = new Dock();
+                        _dockData = new Dock();
 
-                        LocationData.Body = "";
-                        LocationData.BodyType = "";
+                        _locationData.Body = "";
+                        _locationData.BodyType = "";
 
                         break;
 
@@ -1493,19 +1503,19 @@ namespace Elite
                         //dockedInfo.StarSystem
                         //dockedInfo.StationEconomies
 
-                        ShipData.AutomaticDocking = false;
+                        _shipData.AutomaticDocking = false;
 
-                        DockData.Type = dockedInfo.StationType;
+                        _dockData.Type = dockedInfo.StationType;
 
-                        DockData.Government = dockedInfo.StationGovernmentLocalised;
-                        DockData.Allegiance = dockedInfo.StationAllegiance;
-                        DockData.Faction = dockedInfo.StationFaction?.Name;
-                        DockData.Economy = dockedInfo.StationEconomyLocalised;
-                        DockData.DistFromStarLs = dockedInfo.DistFromStarLs;
+                        _dockData.Government = dockedInfo.StationGovernmentLocalised;
+                        _dockData.Allegiance = dockedInfo.StationAllegiance;
+                        _dockData.Faction = dockedInfo.StationFaction?.Name;
+                        _dockData.Economy = dockedInfo.StationEconomyLocalised;
+                        _dockData.DistFromStarLs = dockedInfo.DistFromStarLs;
 
-                        DockData.Services = string.Join(", ", dockedInfo.StationServices);
+                        _dockData.Services = string.Join(", ", dockedInfo.StationServices);
 
-                        DockData.LandingPad = -1;
+                        _dockData.LandingPad = -1;
 
                         break;
 
@@ -1513,39 +1523,46 @@ namespace Elite
 
                         DockingGrantedInfo dockingGrantedInfo = e.ToObject<DockingGrantedInfo>();
 
-                        LocationData.Body = dockingGrantedInfo.StationName;
-                        LocationData.BodyType = "Station";
+                        _locationData.Body = dockingGrantedInfo.StationName;
+                        _locationData.BodyType = "Station";
 
-                        DockData.LandingPad = Convert.ToInt32(dockingGrantedInfo.LandingPad);
+                        _dockData.LandingPad = Convert.ToInt32(dockingGrantedInfo.LandingPad);
                         break;
 
                     case "DockingRequested":
 
                         DockingRequestedInfo dockingRequestedInfo = e.ToObject<DockingRequestedInfo>();
 
-                        LocationData.Body = dockingRequestedInfo.StationName;
-                        LocationData.BodyType = "Station";
+                        _locationData.Body = dockingRequestedInfo.StationName;
+                        _locationData.BodyType = "Station";
                         break;
 
                     case "FSDJump":
 
                         FSDJumpInfo fsdJumpInfo = e.ToObject<FSDJumpInfo>();
 
-                        LocationData.StarPos = fsdJumpInfo.StarPos.ToList();
+                        _locationData.StarPos = fsdJumpInfo.StarPos.ToList();
 
-                        _currentPois = GetNearestPoiItems(fsdJumpInfo.StarSystem?.ToLower());
+                        _currentPois = Poi.GetNearestPoiItems(_locationData.StarPos);
 
-                        LocationData.StartJump = false;
-                        LocationData.JumpToSystem = "";
-                        LocationData.JumpToStarClass = "";
-                        LocationData.JumpType = "";
+                        _currentInterStellarFactors = Station.GetNearestStationItems(_locationData.StarPos, App.InterStellarFactors);
+                        _currentRawMaterialTraders = Station.GetNearestStationItems(_locationData.StarPos, App.RawMaterialTraders);
+                        _currentManufacturedMaterialTraders = Station.GetNearestStationItems(_locationData.StarPos, App.ManufacturedMaterialTraders);
+                        _currentEncodedDataTraders = Station.GetNearestStationItems(_locationData.StarPos, App.EncodedDataTraders);
+                        _currentHumanTechnologyBrokers = Station.GetNearestStationItems(_locationData.StarPos, App.HumanTechnologyBrokers);
+                        _currentGuardianTechnologyBrokers = Station.GetNearestStationItems(_locationData.StarPos, App.GuardianTechnologyBrokers);
 
-                        LocationData.SystemAllegiance = fsdJumpInfo.SystemAllegiance;
-                        LocationData.SystemFaction = fsdJumpInfo.SystemFaction?.Name;
-                        LocationData.SystemSecurity = fsdJumpInfo.SystemSecurityLocalised;
-                        LocationData.SystemEconomy = fsdJumpInfo.SystemEconomyLocalised;
-                        LocationData.SystemGovernment = fsdJumpInfo.SystemGovernmentLocalised;
-                        LocationData.Population = fsdJumpInfo.Population;
+                        _locationData.StartJump = false;
+                        _locationData.JumpToSystem = "";
+                        _locationData.JumpToStarClass = "";
+                        _locationData.JumpType = "";
+
+                        _locationData.SystemAllegiance = fsdJumpInfo.SystemAllegiance;
+                        _locationData.SystemFaction = fsdJumpInfo.SystemFaction?.Name;
+                        _locationData.SystemSecurity = fsdJumpInfo.SystemSecurityLocalised;
+                        _locationData.SystemEconomy = fsdJumpInfo.SystemEconomyLocalised;
+                        _locationData.SystemGovernment = fsdJumpInfo.SystemGovernmentLocalised;
+                        _locationData.Population = fsdJumpInfo.Population;
 
                         //fsdJumpInfo.JumpDist
                         //fsdJumpInfo.FactionState
@@ -1564,13 +1581,13 @@ namespace Elite
 
                         StartJumpInfo startJumpInfo = e.ToObject<StartJumpInfo>();
 
-                        LocationData.StartJump = true;
-                        LocationData.JumpType = startJumpInfo.JumpType;
-                        LocationData.JumpToSystem = startJumpInfo.StarSystem;
-                        LocationData.JumpToStarClass = startJumpInfo.StarClass;
+                        _locationData.StartJump = true;
+                        _locationData.JumpType = startJumpInfo.JumpType;
+                        _locationData.JumpToSystem = startJumpInfo.StarSystem;
+                        _locationData.JumpToStarClass = startJumpInfo.StarClass;
 
-                        LocationData.Body = "";
-                        LocationData.BodyType = "";
+                        _locationData.Body = "";
+                        _locationData.BodyType = "";
 
                         break;
 
@@ -1585,9 +1602,9 @@ namespace Elite
                     case "FSDTarget":
                         FSDTargetInfo fSdTargetInfo = e.ToObject<FSDTargetInfo>();
 
-                        LocationData.FsdTargetName = fSdTargetInfo.Name;
+                        _locationData.FsdTargetName = fSdTargetInfo.Name;
 
-                        LocationData.RemainingJumpsInRoute = fSdTargetInfo.RemainingJumpsInRoute;
+                        _locationData.RemainingJumpsInRoute = fSdTargetInfo.RemainingJumpsInRoute;
 
                         SetTab(LCDTab.Navigation);
 
@@ -1597,12 +1614,12 @@ namespace Elite
 
                         SupercruiseEntryInfo supercruiseEntryInfo = e.ToObject<SupercruiseEntryInfo>();
 
-                        LocationData.JumpToSystem = supercruiseEntryInfo.StarSystem;
+                        _locationData.JumpToSystem = supercruiseEntryInfo.StarSystem;
 
-                        LocationData.Body = "";
-                        LocationData.BodyType = "";
+                        _locationData.Body = "";
+                        _locationData.BodyType = "";
 
-                        LocationData.HideBody = true;
+                        _locationData.HideBody = true;
 
                         break;
 
@@ -1610,15 +1627,15 @@ namespace Elite
 
                         SupercruiseExitInfo supercruiseExitInfo = e.ToObject<SupercruiseExitInfo>();
 
-                        LocationData.StartJump = false;
+                        _locationData.StartJump = false;
 
-                        LocationData.JumpToSystem = "";
-                        LocationData.JumpToStarClass = "";
-                        LocationData.JumpType = "";
+                        _locationData.JumpToSystem = "";
+                        _locationData.JumpToStarClass = "";
+                        _locationData.JumpType = "";
 
-                        LocationData.Body = supercruiseExitInfo.Body;
-                        LocationData.BodyType = supercruiseExitInfo.BodyType;
-                        LocationData.HideBody = false;
+                        _locationData.Body = supercruiseExitInfo.Body;
+                        _locationData.BodyType = supercruiseExitInfo.BodyType;
+                        _locationData.HideBody = false;
 
 
                         break;
@@ -1747,15 +1764,15 @@ namespace Elite
                                 break;
 
                             case "DockingComputer":
-                                ShipData.AutomaticDocking = true;
+                                _shipData.AutomaticDocking = true;
 
                                 //Tab.Refresh(LCDTab.Ship);
                                 break;
 
                             case "NoTrack":
-                                if (ShipData.AutomaticDocking)
+                                if (_shipData.AutomaticDocking)
                                 {
-                                    ShipData.AutomaticDocking = false;
+                                    _shipData.AutomaticDocking = false;
                                     //Tab.Refresh(LCDTab.Ship);
                                 }
                                 break;
@@ -1792,7 +1809,7 @@ namespace Elite
                     case "HullDamage":
                         HullDamageInfo hullDamageInfo = e.ToObject<HullDamageInfo>();
 
-                        ShipData.HullHealth = hullDamageInfo.Health * 100.0;
+                        _shipData.HullHealth = hullDamageInfo.Health * 100.0;
 
                         //hullDamageInfo.Fighter
                         //hullDamageInfo.PlayerPilot
@@ -1801,24 +1818,24 @@ namespace Elite
                     case "ShipTargeted":
                         ShipTargetedInfo shipTargetedInfo = e.ToObject<ShipTargetedInfo>();
 
-                        TargetData.Bounty = shipTargetedInfo.Bounty;
-                        TargetData.Faction = shipTargetedInfo.Faction;
-                        TargetData.HullHealth = shipTargetedInfo.HullHealth;
-                        TargetData.LegalStatus = shipTargetedInfo.LegalStatus;
-                        TargetData.PilotNameLocalised = shipTargetedInfo.PilotNameLocalised;
-                        TargetData.PilotRank = shipTargetedInfo.PilotRank;
-                        TargetData.ScanStage = shipTargetedInfo.ScanStage;
-                        TargetData.ShieldHealth = shipTargetedInfo.ShieldHealth;
+                        _targetData.Bounty = shipTargetedInfo.Bounty;
+                        _targetData.Faction = shipTargetedInfo.Faction;
+                        _targetData.HullHealth = shipTargetedInfo.HullHealth;
+                        _targetData.LegalStatus = shipTargetedInfo.LegalStatus;
+                        _targetData.PilotNameLocalised = shipTargetedInfo.PilotNameLocalised;
+                        _targetData.PilotRank = shipTargetedInfo.PilotRank;
+                        _targetData.ScanStage = shipTargetedInfo.ScanStage;
+                        _targetData.ShieldHealth = shipTargetedInfo.ShieldHealth;
 
                         ShipsByEliteID.TryGetValue(shipTargetedInfo.Ship?.ToLower() ?? "???", out var targetShip);
 
-                        TargetData.Ship = shipTargetedInfo.ShipLocalised ?? targetShip ?? shipTargetedInfo.Ship;
+                        _targetData.Ship = shipTargetedInfo.ShipLocalised ?? targetShip ?? shipTargetedInfo.Ship;
 
-                        TargetData.SubsystemLocalised = shipTargetedInfo.SubsystemLocalised;
-                        TargetData.TargetLocked = shipTargetedInfo.TargetLocked;
-                        TargetData.SubsystemHealth = shipTargetedInfo.SubsystemHealth;
+                        _targetData.SubsystemLocalised = shipTargetedInfo.SubsystemLocalised;
+                        _targetData.TargetLocked = shipTargetedInfo.TargetLocked;
+                        _targetData.SubsystemHealth = shipTargetedInfo.SubsystemHealth;
 
-                        if (TargetData.TargetLocked)
+                        if (_targetData.TargetLocked)
                         {
                             SetTab(LCDTab.Target);
                         }
@@ -1907,7 +1924,7 @@ namespace Elite
 
                         if (missionsInfo.Active?.Count > 0)
                         {
-                            MissionData = missionsInfo.Active.Select(x => new Mission
+                            _missionData = missionsInfo.Active.Select(x => new Mission
                             {
                                 MissionId = x.MissionId,
                                 PassengerMission = x.PassengerMission,
@@ -1933,9 +1950,9 @@ namespace Elite
                         //When Written: when starting a mission 
                         MissionAcceptedInfo missionAcceptedInfo = e.ToObject<MissionAcceptedInfo>();
 
-                        MissionData.RemoveAll(x => x.MissionId == missionAcceptedInfo.MissionId);
+                        _missionData.RemoveAll(x => x.MissionId == missionAcceptedInfo.MissionId);
 
-                        MissionData.Add(new Mission
+                        _missionData.Add(new Mission
                         {
                             MissionId = missionAcceptedInfo.MissionId,
                             Name = missionAcceptedInfo.LocalisedName,
@@ -1990,7 +2007,7 @@ namespace Elite
 
                         MissionCompletedInfo missionCompletedInfo = e.ToObject<MissionCompletedInfo>();
 
-                        CommanderData.Credits += Convert.ToUInt32(missionCompletedInfo.Reward);
+                        _commanderData.Credits += Convert.ToUInt32(missionCompletedInfo.Reward);
 
                         //missionCompletedInfo.Name
                         //missionCompletedInfo.Faction
@@ -2013,7 +2030,7 @@ namespace Elite
                         //missionCompletedInfo.DestinationSystem
                         //missionCompletedInfo.NewDestinationSystem
 
-                        MissionData.RemoveAll(x => x.MissionId == missionCompletedInfo.MissionId);
+                        _missionData.RemoveAll(x => x.MissionId == missionCompletedInfo.MissionId);
 
                         break;
                     case "MissionAbandoned":
@@ -2024,7 +2041,7 @@ namespace Elite
                         //missionAbandonedInfo.MissionId
                         //missionAbandonedInfo.Fine // not in API
 
-                        MissionData.RemoveAll(x => x.MissionId == missionAbandonedInfo.MissionId);
+                        _missionData.RemoveAll(x => x.MissionId == missionAbandonedInfo.MissionId);
 
                         break;
                     case "MissionFailed":
@@ -2034,7 +2051,7 @@ namespace Elite
                         //missionFailedInfo.Name
                         //missionFailedInfo.MissionId
 
-                        MissionData.RemoveAll(x => x.MissionId == missionFailedInfo.MissionId);
+                        _missionData.RemoveAll(x => x.MissionId == missionFailedInfo.MissionId);
 
                         break;
                         /*

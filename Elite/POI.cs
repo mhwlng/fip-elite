@@ -203,7 +203,35 @@ namespace Elite
                 App.log.Error(ex);
             }
 
-            return null;
+            return new List<PoiItem>();
+
+        }
+
+        public static List<PoiItem> GetNearestPoiItems(List<double> starPos)
+        {
+            if (App.PoiItems?.Any() == true && starPos?.Count == 3)
+            {
+                App.PoiItems.ForEach(poiItem =>
+                {
+                    var Xs = starPos[0];
+                    var Ys = starPos[1];
+                    var Zs = starPos[2];
+
+                    var Xd = poiItem.GalacticX;
+                    var Yd = poiItem.GalacticY;
+                    var Zd = poiItem.GalacticZ;
+
+                    double deltaX = Xs - Xd;
+                    double deltaY = Ys - Yd;
+                    double deltaZ = Zs - Zd;
+
+                    poiItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                });
+
+                return App.PoiItems.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+            }
+
+            return new List<PoiItem>(); 
 
         }
     }

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FIP Elite")]
+[assembly: AssemblyTitle("ImportData")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("FIP Elite")]
+[assembly: AssemblyProduct("ImportData")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c0aa3172-a635-43b8-82bb-89eaceebe1ef")]
+[assembly: Guid("aaf1a2e0-a90e-49d5-a881-4a6bedd12e52")]
 
 // Version information for an assembly consists of the following four values:
 //

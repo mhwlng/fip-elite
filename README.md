@@ -3,17 +3,26 @@ Logitech Flight Instrument Panel application for Elite Dangerous
 
 ![Logitech Flight Instrument Panel with Elgato Stream Deck](https://i.imgur.com/HTcbXx9.jpg)
 
+This application displays data from Elite Dangerous on Logitech Flight Instrument Panels
+
+The menu area and each screen can be configured via razor (.cshtml) web page templates.
+
+Use the right rotary encoder to scroll vertically on all tabs.
+
+Use the left rotary encoder to scroll to another card on the POI tab.
+
 ![Screenshot 1](https://i.imgur.com/gmZVF4P.png)
 ![Screenshot 2](https://i.imgur.com/9xoj8d8.png)
 ![Screenshot 3](https://i.imgur.com/iJnHuOV.png)
 ![Screenshot 4](https://i.imgur.com/16pc2zo.png)
 ![Screenshot 5](https://i.imgur.com/z6gq2Ok.png)
-![Screenshot 6](https://i.imgur.com/DI1diFM.png)
-
-
-This application displays data from Elite Dangerous on Logitech Flight Instrument Panels
-
-The menu area and each screen can be configured via razor (.cshtml) web page templates.
+![Screenshot 6](https://i.imgur.com/WJHBVIX.png)
+![Screenshot 7](https://i.imgur.com/SaMQ2H2.png)
+![Screenshot 8](https://i.imgur.com/dHuz0fq.png)
+![Screenshot 9](https://i.imgur.com/5UatgrF.png)
+![Screenshot 10](https://i.imgur.com/F2CjRWi.png)
+![Screenshot 11](https://i.imgur.com/eS2OScl.png)
+![Screenshot 12](https://i.imgur.com/iBhMo4L.png)
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 
@@ -41,3 +50,5 @@ https://github.com/Filtik/EliteDangerousLCD
 https://github.com/jdahlblom/DCSFIPS
 
 DaftMav for POI list [see here](https://www.reddit.com/r/EliteDangerous/comments/9mfiug/edison_a_tool_which_helps_getting_to_planet/)
+
+https://eddb.io/ and https://www.edsm.net/ for station and system data

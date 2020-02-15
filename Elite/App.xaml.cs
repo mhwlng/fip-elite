@@ -19,6 +19,7 @@ using RazorEngine.Templating;
 using Somfic.Logging;
 using Somfic.Logging.Handlers;
 using TheArtOfDev.HtmlRenderer.Core;
+// ReSharper disable StringLiteralTypo
 
 namespace Elite
 {
@@ -42,6 +43,14 @@ namespace Elite
         public static CssData cssData;
 
         public static List<PoiItem> PoiItems = null;
+
+        public static List<StationData> InterStellarFactors = null;
+        public static List<StationData> RawMaterialTraders = null;
+        public static List<StationData> ManufacturedMaterialTraders = null;
+        public static List<StationData> EncodedDataTraders = null;
+        public static List<StationData> HumanTechnologyBrokers = null;
+        public static List<StationData> GuardianTechnologyBrokers = null;
+
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -90,6 +99,13 @@ namespace Elite
                 File.ReadAllText("Templates\\styles.css"), true);
 
             PoiItems = Poi.GetPoiItems(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
+
+            InterStellarFactors = Station.GetStations("interstellarfactors.json");
+            RawMaterialTraders = Station.GetStations("rawmaterialtraders.json");
+            ManufacturedMaterialTraders = Station.GetStations("manufacturedmaterialtraders.json");
+            EncodedDataTraders = Station.GetStations("encodeddatatraders.json");
+            HumanTechnologyBrokers = Station.GetStations("humantechnologybrokers.json");
+            GuardianTechnologyBrokers = Station.GetStations("guardiantechnologybrokers.json");
 
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             notifyIcon = (TaskbarIcon) FindResource("NotifyIcon");
