@@ -38,7 +38,25 @@ namespace Elite
         Navigation = 3,
         Target = 4,
         Missions = 5,
-        POI = 6
+        POI = 6,
+
+        //---------------
+
+        A = 7,
+        B = 8,
+        C = 9,
+        D = 10,
+        E = 11,
+        F = 12,
+
+        //---------------
+
+        G = 13,
+        H = 14,
+        I = 15,
+        J = 16,
+        K = 17,
+        L = 18
     }
 
     public class Commander
@@ -334,8 +352,10 @@ namespace Elite
 
         private LCDTab _currentTab = LCDTab.None;
         private LCDTab _lastTab = LCDTab.Init;
+        const int DEFAULT_PAGE = 0;
+        private uint _currentPage = DEFAULT_PAGE;
 
-        private int[] _currentCard = new int[10];
+        private int[] _currentCard = new int[100];
 
 
         private int CurrentLCDYOffset = 0;
@@ -343,8 +363,6 @@ namespace Elite
 
         public IntPtr FipDevicePointer;
 
-        const int DEFAULT_PAGE = 0;
-        private uint _currentPage = DEFAULT_PAGE;
         private uint _prevButtons;
 
         private List<uint> _pageList = new List<uint>();
@@ -418,9 +436,9 @@ namespace Elite
                 App.log.Error("FipPanel failed to init RegisterSoftButtonCallback. " + returnValues1);
             }
 
-
+            AddPage(1, false);
+            AddPage(2, false);
             AddPage(DEFAULT_PAGE, true);
-            //AddPage(1, false);
 
             RefreshDevicePage(DEFAULT_PAGE);
 
@@ -468,6 +486,8 @@ namespace Elite
 
                 CurrentLCDYOffset = 0;
 
+                _currentPage = ((uint)_currentTab - 1) / 6;
+
                 return true;
             }
 
@@ -480,6 +500,11 @@ namespace Elite
             {
                 if (bActivated != 0)
                 {
+                    _lastTab = LCDTab.Init;
+                    _currentTab = LCDTab.None;
+
+                    CurrentLCDYOffset = 0;
+
                     _currentPage = (uint)page;
                     RefreshDevicePage(_currentPage);
                 }
@@ -542,30 +567,85 @@ namespace Elite
                             mustRefresh = true;
                         }
                         break;
-                    case 32:
-                        mustRefresh = SetTab(LCDTab.Commander);
-                        break;
-                    case 64:
-                        mustRefresh = SetTab(LCDTab.Ship);
-                        break;
-                    case 128:
-                        mustRefresh = SetTab(LCDTab.Navigation);
-                        break;
-                    case 256:
-                        if (_targetData.TargetLocked)
-                        {
-                            mustRefresh = SetTab(LCDTab.Target);
-                        }
-                        break;
-                    case 512:
-                        if (_missionData.Count > 0)
-                        {
-                            mustRefresh = SetTab(LCDTab.Missions);
-                        }
-                        break;
-                    case 1024:
-                        mustRefresh = SetTab(LCDTab.POI);
+                }
 
+                switch (_currentPage)
+                {
+                    case 0:
+                        switch (button)
+                        {
+                            case 32:
+                                mustRefresh = SetTab(LCDTab.Commander);
+                                break;
+                            case 64:
+                                mustRefresh = SetTab(LCDTab.Ship);
+                                break;
+                            case 128:
+                                mustRefresh = SetTab(LCDTab.Navigation);
+                                break;
+                            case 256:
+                                if (_targetData.TargetLocked)
+                                {
+                                    mustRefresh = SetTab(LCDTab.Target);
+                                }
+                                break;
+                            case 512:
+                                if (_missionData.Count > 0)
+                                {
+                                    mustRefresh = SetTab(LCDTab.Missions);
+                                }
+                                break;
+                            case 1024:
+                                mustRefresh = SetTab(LCDTab.POI);
+                                break;
+                        }
+
+                        break;
+                    case 1:
+                        switch (button)
+                        {
+                            case 32:
+                                mustRefresh = SetTab(LCDTab.A);
+                                break;
+                            case 64:
+                                mustRefresh = SetTab(LCDTab.B);
+                                break;
+                            case 128:
+                                mustRefresh = SetTab(LCDTab.C);
+                                break;
+                            case 256:
+                                mustRefresh = SetTab(LCDTab.D);
+                                break;
+                            case 512:
+                                mustRefresh = SetTab(LCDTab.E);
+                                break;
+                            case 1024:
+                                mustRefresh = SetTab(LCDTab.F);
+                                break;
+                        }
+                        break;
+                    case 2:
+                        switch (button)
+                        {
+                            case 32:
+                                mustRefresh = SetTab(LCDTab.G);
+                                break;
+                            case 64:
+                                mustRefresh = SetTab(LCDTab.H);
+                                break;
+                            case 128:
+                                mustRefresh = SetTab(LCDTab.I);
+                                break;
+                            case 256:
+                                mustRefresh = SetTab(LCDTab.J);
+                                break;
+                            case 512:
+                                mustRefresh = SetTab(LCDTab.K);
+                                break;
+                            case 1024:
+                                mustRefresh = SetTab(LCDTab.L);
+                                break;
+                        }
                         break;
                 }
 
@@ -667,6 +747,7 @@ namespace Elite
                             Engine.Razor.Run("menu.cshtml", null, new
                             {
                                 CurrentTab = (int)_currentTab,
+                                CurrentPage = _currentPage,
 
                                 TargetLocked = _targetData.TargetLocked,
 
@@ -683,6 +764,7 @@ namespace Elite
                                     Engine.Razor.Run("1.cshtml", null, new
                                     {
                                         CurrentTab = (int) _currentTab,
+                                        CurrentPage = _currentPage,
 
                                         Commander = _commanderData.Name,
 
@@ -757,6 +839,7 @@ namespace Elite
                                     Engine.Razor.Run("2.cshtml", null, new
                                     {
                                         CurrentTab = (int) _currentTab,
+                                        CurrentPage = _currentPage,
 
                                         ShipName = _shipData.Name?.Trim(),
 
@@ -868,6 +951,7 @@ namespace Elite
                                     Engine.Razor.Run("3.cshtml", null, new
                                     {
                                         CurrentTab = (int) _currentTab,
+                                        CurrentPage = _currentPage,
 
                                         StarSystem = App.EliteApi.Location.StarSystem,
 
@@ -959,6 +1043,7 @@ namespace Elite
                                     Engine.Razor.Run("4.cshtml", null, new
                                     {
                                         CurrentTab = (int) _currentTab,
+                                        CurrentPage = _currentPage,
 
                                         TargetLocked = _targetData.TargetLocked,
                                         ScanStage = _targetData.ScanStage,
@@ -985,6 +1070,7 @@ namespace Elite
                                     Engine.Razor.Run("5.cshtml", null, new
                                     {
                                         CurrentTab = (int)_currentTab,
+                                        CurrentPage = _currentPage,
 
                                         MissionData = _missionData
                                     });
@@ -1007,6 +1093,7 @@ namespace Elite
                                     Engine.Razor.Run("6.cshtml", null, new
                                     {
                                         CurrentTab = (int)_currentTab,
+                                        CurrentPage = _currentPage,
 
                                         CurrentCard = _currentCard[(int)_currentTab],
 
@@ -1021,26 +1108,27 @@ namespace Elite
 
                                 });
 
-                                break; 
+                                break;
 
-                            /*
-                            case LCDTab.Events:
+                                /*
+                                case LCDTab.Events:
 
-                                var eventlist = "";
-                                foreach (var b in EventHistory)
-                                {
-                                    eventlist += b + "<br/>";
-                                }
-
-                                str =
-                                    Engine.Razor.Run("6.cshtml", null, new
+                                    var eventlist = "";
+                                    foreach (var b in EventHistory)
                                     {
-                                        CurrentTab = (int) _currenttab,
+                                        eventlist += b + "<br/>";
+                                    }
 
-                                        EventList = eventlist
-                                    });
+                                    str =
+                                        Engine.Razor.Run("6.cshtml", null, new
+                                        {
+                                            CurrentTab = (int) _currenttab,
+                                            CurrentPage = _currentPage,
 
-                                break;*/
+                                            EventList = eventlist
+                                        });
+
+                                    break;*/
 
                         }
 
@@ -1099,12 +1187,14 @@ namespace Elite
 
                         if (_lastTab > 0)
                         {
-                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint) _lastTab, false);
+                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage,
+                                (uint) _lastTab - ((uint) _lastTab - 1) / 6 * 6, false);
                         }
 
                         if (_currentTab > 0)
                         {
-                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage, (uint) _currentTab, true);
+                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage,
+                                (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, true);
                         }
 
                     }
@@ -1212,7 +1302,10 @@ namespace Elite
 
                         _commanderData.Name = commanderInfo.Name;
 
-                        SetTab(LCDTab.Commander);
+                        if (_currentPage == 0)
+                        {
+                            SetTab(LCDTab.Commander);
+                        }
                         break;
 
                     case "SetUserShipName":
@@ -1606,7 +1699,10 @@ namespace Elite
 
                         _locationData.RemainingJumpsInRoute = fSdTargetInfo.RemainingJumpsInRoute;
 
-                        SetTab(LCDTab.Navigation);
+                        if (_currentPage == 0)
+                        {
+                            SetTab(LCDTab.Navigation);
+                        }
 
                         break;
 
@@ -1766,14 +1862,12 @@ namespace Elite
                             case "DockingComputer":
                                 _shipData.AutomaticDocking = true;
 
-                                //Tab.Refresh(LCDTab.Ship);
                                 break;
 
                             case "NoTrack":
                                 if (_shipData.AutomaticDocking)
                                 {
                                     _shipData.AutomaticDocking = false;
-                                    //Tab.Refresh(LCDTab.Ship);
                                 }
                                 break;
 
@@ -1835,7 +1929,7 @@ namespace Elite
                         _targetData.TargetLocked = shipTargetedInfo.TargetLocked;
                         _targetData.SubsystemHealth = shipTargetedInfo.SubsystemHealth;
 
-                        if (_targetData.TargetLocked)
+                        if (_currentPage == 0 && _targetData.TargetLocked)
                         {
                             SetTab(LCDTab.Target);
                         }

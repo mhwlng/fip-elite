@@ -1,43 +1,97 @@
 <div class="menu">
 
-    <table>
-        <tbody>
+    @if (Model.CurrentPage == 0)
+    {
+
+        <table>
+            <tbody>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == 1 ? "highlight" : "")">CMDR</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == 2 ? "highlight" : "")">SHIP</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == 3 ? "highlight" : "")">NAV</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        @if (Model.TargetLocked)
+                        {
+                            <div class="@(Model.CurrentTab == 4 ? "highlight" : "")">TARGET</div>
+                        }
+                        else
+                        {
+                            <div>&nbsp;</div>
+                        }
+                    <td>
+                </tr>
+                <tr>
+                    <td>
+                        @if (Model.MissionCount > 0)
+                        {
+                            <div class="@(Model.CurrentTab == 5 ? "highlight" : "")">MISSION</div>
+                        }
+                        else
+                        {
+                            <div>&nbsp;</div>
+                        }
+                    <td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == 6 ? "highlight" : "")">POI</div></td>
+                </tr>
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentPage == 1)
+    {
+        <table>
+            <tbody>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == 7 ? "highlight" : "")">A</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == 8 ? "highlight" : "")">B</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == 9 ? "highlight" : "")">C</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == 10 ? "highlight" : "")">D</div><td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == 11 ? "highlight" : "")">E</div><td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == 12 ? "highlight" : "")">F</div></td>
+            </tr>
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentPage == 2)
+    {
+        <table>
+            <tbody>
             <tr>
-                <td><div class="@(Model.CurrentTab == 1 ? "highlight" : "")">CMDR</div></td>
+                <td><div class="@(Model.CurrentTab == 13 ? "highlight" : "")">G</div></td>
             </tr>
             <tr>
-                <td><div class="@(Model.CurrentTab == 2 ? "highlight" : "")">SHIP</div></td>
+                <td><div class="@(Model.CurrentTab == 14 ? "highlight" : "")">H</div></td>
             </tr>
             <tr>
-                <td><div class="@(Model.CurrentTab == 3 ? "highlight" : "")">NAV</div></td>
+                <td><div class="@(Model.CurrentTab == 15 ? "highlight" : "")">I</div></td>
             </tr>
             <tr>
-                <td>
-                    @if (Model.TargetLocked)
-                    {
-                        <div class="@(Model.CurrentTab == 4 ? "highlight" : "")">TARGET</div>
-                    }
-                    else
-                    {
-                        <div>&nbsp;</div>
-                    }
-                <td>
+                <td><div class="@(Model.CurrentTab == 16 ? "highlight" : "")">J</div><td>
             </tr>
             <tr>
-                <td>
-                @if (Model.MissionCount > 0)
-                {
-                    <div class="@(Model.CurrentTab == 5 ? "highlight" : "")">MISSION</div>
-                }
-                else
-                {
-                    <div>&nbsp;</div>
-                }
-                <td>
+                <td><div class="@(Model.CurrentTab == 17 ? "highlight" : "")">K</div><td>
             </tr>
             <tr>
-                <td><div class="@(Model.CurrentTab == 6 ? "highlight" : "")">POI</div></td>
+                <td><div class="@(Model.CurrentTab == 18 ? "highlight" : "")">L</div></td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    }
 </div>

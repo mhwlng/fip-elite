@@ -9,7 +9,7 @@ The menu area and each screen can be configured via razor (.cshtml) web page tem
 
 Use the right rotary encoder to scroll vertically on all tabs.
 
-Use the left rotary encoder to scroll to another card on the POI tab.
+Use the left rotary encoder to show another card on the POI tab.
 
 ![Screenshot 1](https://i.imgur.com/gmZVF4P.png)
 ![Screenshot 2](https://i.imgur.com/9xoj8d8.png)
