@@ -95,6 +95,8 @@ namespace Elite
             Engine.Razor.Compile("5.cshtml", null);
             Engine.Razor.Compile("6.cshtml", null);
 
+            Engine.Razor.Compile("12.cshtml", null);
+
             cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
                 File.ReadAllText("Templates\\styles.css"), true);
 

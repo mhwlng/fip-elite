@@ -75,6 +75,20 @@ namespace Elite
             return (ReturnValues)DirectOutput_GetDeviceType(hDevice, ref pGuidType);
         }
 
+
+        [DllImport(DirectOutputDll, SetLastError = true)]
+        static extern IntPtr DirectOutput_GetSerialNumber(IntPtr hDevice, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszSerialNumber, uint dwSize);
+        internal static ReturnValues GetSerialNumber(IntPtr hDevice, out string serialNumber)
+        {
+            StringBuilder msg = new StringBuilder(16);
+
+            var rv = DirectOutput_GetSerialNumber(hDevice, msg, 16);
+
+            serialNumber = msg.ToString();
+
+            return (ReturnValues) rv;
+        }
+        
         [DllImport(DirectOutputDll, SetLastError = true)]
         static extern IntPtr DirectOutput_RegisterPageCallback(IntPtr hDevice, [MarshalAs(UnmanagedType.FunctionPtr)]PageCallback pfnCallback, IntPtr pvParam);
         internal static ReturnValues RegisterPageCallback(IntPtr hDevice, PageCallback pfnCallback)

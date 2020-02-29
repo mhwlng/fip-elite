@@ -166,6 +166,9 @@
     <None Include="Templates\4.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Templates\12.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\layout.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

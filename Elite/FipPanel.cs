@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -47,7 +48,7 @@ namespace Elite
         C = 9,
         D = 10,
         E = 11,
-        F = 12,
+        Events = 12,
 
         //---------------
 
@@ -353,7 +354,9 @@ namespace Elite
         private LCDTab _currentTab = LCDTab.None;
         private LCDTab _lastTab = LCDTab.Init;
         const int DEFAULT_PAGE = 0;
+        const int NO_PAGES = 2;
         private uint _currentPage = DEFAULT_PAGE;
+        private string _settingsPath;
 
         private int[] _currentCard = new int[100];
 
@@ -436,11 +439,36 @@ namespace Elite
                 App.log.Error("FipPanel failed to init RegisterSoftButtonCallback. " + returnValues1);
             }
 
-            AddPage(1, false);
-            AddPage(2, false);
-            AddPage(DEFAULT_PAGE, true);
+            _currentPage = DEFAULT_PAGE;
 
-            RefreshDevicePage(DEFAULT_PAGE);
+            DirectOutputClass.GetSerialNumber(FipDevicePointer, out var serialNumber);
+
+            App.log.Error("FipPanel Serial Number " + serialNumber);
+            
+            _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\mhwlng\\fip-elite\\" + serialNumber;
+
+            if (File.Exists(_settingsPath))
+            {
+                _currentPage = uint.Parse(File.ReadAllText(_settingsPath));
+            }
+            else
+            {
+                (new FileInfo(_settingsPath)).Directory?.Create();
+
+                File.WriteAllText(_settingsPath, _currentPage.ToString());
+            }
+            
+            for (uint x = 0; x <= NO_PAGES; x++)
+            {
+                if (x != _currentPage)
+                {
+                    AddPage(x, false);
+                }
+            }
+
+            AddPage(_currentPage, true);
+
+            RefreshDevicePage(_currentPage);
 
             App.EliteApi.Events.AllEvent += HandleEliteEventsDelegate;
 
@@ -488,6 +516,8 @@ namespace Elite
 
                 _currentPage = ((uint)_currentTab - 1) / 6;
 
+                File.WriteAllText(_settingsPath, _currentPage.ToString());
+
                 return true;
             }
 
@@ -506,6 +536,10 @@ namespace Elite
                     CurrentLCDYOffset = 0;
 
                     _currentPage = (uint)page;
+
+                    File.WriteAllText(_settingsPath, _currentPage.ToString());
+
+
                     RefreshDevicePage(_currentPage);
                 }
             }
@@ -620,7 +654,7 @@ namespace Elite
                                 mustRefresh = SetTab(LCDTab.E);
                                 break;
                             case 1024:
-                                mustRefresh = SetTab(LCDTab.F);
+                                mustRefresh = SetTab(LCDTab.Events);
                                 break;
                         }
                         break;
@@ -1110,25 +1144,24 @@ namespace Elite
 
                                 break;
 
-                                /*
                                 case LCDTab.Events:
 
                                     var eventlist = "";
-                                    foreach (var b in EventHistory)
+                                    foreach (var b in _eventHistory)
                                     {
                                         eventlist += b + "<br/>";
                                     }
 
                                     str =
-                                        Engine.Razor.Run("6.cshtml", null, new
+                                        Engine.Razor.Run("12.cshtml", null, new
                                         {
-                                            CurrentTab = (int) _currenttab,
+                                            CurrentTab = (int) _currentTab,
                                             CurrentPage = _currentPage,
 
                                             EventList = eventlist
                                         });
 
-                                    break;*/
+                                    break;
 
                         }
 
@@ -1301,11 +1334,11 @@ namespace Elite
                         CommanderInfo commanderInfo = e.ToObject<CommanderInfo>();
 
                         _commanderData.Name = commanderInfo.Name;
-
+                        /*
                         if (_currentPage == 0)
                         {
                             SetTab(LCDTab.Commander);
-                        }
+                        }*/
                         break;
 
                     case "SetUserShipName":
@@ -1699,10 +1732,11 @@ namespace Elite
 
                         _locationData.RemainingJumpsInRoute = fSdTargetInfo.RemainingJumpsInRoute;
 
+                        /*
                         if (_currentPage == 0)
                         {
                             SetTab(LCDTab.Navigation);
-                        }
+                        }*/
 
                         break;
 
@@ -1929,10 +1963,11 @@ namespace Elite
                         _targetData.TargetLocked = shipTargetedInfo.TargetLocked;
                         _targetData.SubsystemHealth = shipTargetedInfo.SubsystemHealth;
 
+                        /*
                         if (_currentPage == 0 && _targetData.TargetLocked)
                         {
                             SetTab(LCDTab.Target);
-                        }
+                        }*/
 
                         break;
 
