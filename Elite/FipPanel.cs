@@ -516,8 +516,6 @@ namespace Elite
 
                 _currentPage = ((uint)_currentTab - 1) / 6;
 
-                File.WriteAllText(_settingsPath, _currentPage.ToString());
-
                 return true;
             }
 
