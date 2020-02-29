@@ -46,10 +46,10 @@ namespace Elite
         //---------------
 
         Map = 7,
-        B = 8,
-        C = 9,
-        D = 10,
-        E = 11,
+        //B = 8,
+        //C = 9,
+        //D = 10,
+        //E = 11,
         Events = 12,
 
         //---------------
@@ -374,7 +374,9 @@ namespace Elite
 
         private readonly Pen _scrollPen = new Pen(Color.FromArgb(0xff,0xFF,0xB0,0x00));
         private readonly SolidBrush _scrollBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xB0, 0x00));
-        
+        private readonly SolidBrush redBrush = new SolidBrush(Color.FromArgb(0xFF, 0x00, 0x00));
+
+
         private const int HtmlMenuWindowWidth = 69;
 
         private const int HtmlWindowHeight = 240;
@@ -641,6 +643,7 @@ namespace Elite
                             case 32:
                                 mustRefresh = SetTab(LCDTab.Map);
                                 break;
+                            /*
                             case 64:
                                 mustRefresh = SetTab(LCDTab.B);
                                 break;
@@ -653,6 +656,7 @@ namespace Elite
                             case 512:
                                 mustRefresh = SetTab(LCDTab.E);
                                 break;
+                                */
                             case 1024:
                                 mustRefresh = SetTab(LCDTab.Events);
                                 break;
@@ -759,11 +763,46 @@ namespace Elite
             }
             return ReturnValues.E_FAIL;
         }
-
-
-        public static void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        
+        private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
         {
-            e.Callback(Image.FromFile("Templates\\" + e.Src));
+            var spaceMinX = -41715.0;
+            var spaceMaxX = 41205.0;
+            var spaceMinY = -19737.0;
+            var spaceMaxY = 68073.0;
+
+            var markerWidth = 40.0;
+            var markerHeight = 40.0;
+
+
+            var image = Image.FromFile("Templates\\" + e.Src);
+
+            using (var graphics = Graphics.FromImage(image))
+            {
+                if (e.Src.ToLower() == "galaxy.png")
+                {
+
+                    if (_locationData?.StarPos?.Count == 3)
+                    {
+                        var spaceX = _locationData.StarPos[0];
+                        var spaceY = _locationData.StarPos[1];
+
+                        var imgX = (spaceX - spaceMinX) / (spaceMaxX - spaceMinX) * image.Width;
+                        var imgY = (spaceMaxY - spaceY) / (spaceMaxY - spaceMinY) * image.Height;
+
+                        imgX -= markerWidth / 2.0;
+                        imgY -= markerHeight / 2.0;
+
+                        graphics.FillEllipse(redBrush, (float) imgX, (float) imgY, (float) markerWidth,
+                            (float) markerWidth);
+                    }
+                }
+
+            }
+
+            e.Callback(image);
+
+
         }
 
 

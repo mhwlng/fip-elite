@@ -11,18 +11,22 @@ Use the right rotary encoder to scroll vertically on all tabs.
 
 Use the left rotary encoder to show another card on the POI tab.
 
-![Screenshot 1](https://i.imgur.com/gmZVF4P.png)
-![Screenshot 2](https://i.imgur.com/9xoj8d8.png)
-![Screenshot 3](https://i.imgur.com/iJnHuOV.png)
-![Screenshot 4](https://i.imgur.com/16pc2zo.png)
-![Screenshot 5](https://i.imgur.com/z6gq2Ok.png)
-![Screenshot 6](https://i.imgur.com/WJHBVIX.png)
-![Screenshot 7](https://i.imgur.com/SaMQ2H2.png)
-![Screenshot 8](https://i.imgur.com/dHuz0fq.png)
-![Screenshot 9](https://i.imgur.com/5UatgrF.png)
-![Screenshot 10](https://i.imgur.com/F2CjRWi.png)
-![Screenshot 11](https://i.imgur.com/eS2OScl.png)
-![Screenshot 12](https://i.imgur.com/iBhMo4L.png)
+
+![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
+![Screenshot 2](https://i.imgur.com/gmZVF4P.png)
+![Screenshot 3](https://i.imgur.com/9xoj8d8.png)
+![Screenshot 4](https://i.imgur.com/iJnHuOV.png)
+![Screenshot 5](https://i.imgur.com/16pc2zo.png)
+![Screenshot 6](https://i.imgur.com/z6gq2Ok.png)
+![Screenshot 7](https://i.imgur.com/WJHBVIX.png)
+![Screenshot 8](https://i.imgur.com/SaMQ2H2.png)
+![Screenshot 9](https://i.imgur.com/dHuz0fq.png)
+![Screenshot 10](https://i.imgur.com/5UatgrF.png)
+![Screenshot 11](https://i.imgur.com/F2CjRWi.png)
+![Screenshot 12](https://i.imgur.com/eS2OScl.png)
+![Screenshot 13](https://i.imgur.com/iBhMo4L.png)
+![Screenshot 14](https://i.imgur.com/Syp0t78.png)
+![Screenshot 15](https://i.imgur.com/wFsMD4t.png)
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 
