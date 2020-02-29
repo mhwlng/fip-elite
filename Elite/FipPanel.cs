@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -19,6 +20,7 @@ using TheArtOfDev.HtmlRenderer.WinForms;
 using RazorEngine;
 using RazorEngine.Templating;
 using RazorEngine.Text;
+using TheArtOfDev.HtmlRenderer.Core.Entities;
 
 // For extension methods.
 
@@ -43,7 +45,7 @@ namespace Elite
 
         //---------------
 
-        A = 7,
+        Map = 7,
         B = 8,
         C = 9,
         D = 10,
@@ -443,7 +445,7 @@ namespace Elite
 
             DirectOutputClass.GetSerialNumber(FipDevicePointer, out var serialNumber);
 
-            App.log.Error("FipPanel Serial Number " + serialNumber);
+            App.log.Info("FipPanel Serial Number " + serialNumber);
             
             _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\mhwlng\\fip-elite\\" + serialNumber;
 
@@ -637,7 +639,7 @@ namespace Elite
                         switch (button)
                         {
                             case 32:
-                                mustRefresh = SetTab(LCDTab.A);
+                                mustRefresh = SetTab(LCDTab.Map);
                                 break;
                             case 64:
                                 mustRefresh = SetTab(LCDTab.B);
@@ -758,6 +760,13 @@ namespace Elite
             return ReturnValues.E_FAIL;
         }
 
+
+        public static void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
+        {
+            e.Callback(Image.FromFile("Templates\\" + e.Src));
+        }
+
+
         public void RefreshDevicePage(uint page)
         {
             lock (_refreshDevicePageLock)
@@ -790,6 +799,20 @@ namespace Elite
 
                         switch (_currentTab)
                         {
+                            //----------------------
+
+                            case LCDTab.None:
+
+                                str =
+                                    Engine.Razor.Run("init.cshtml", null, new
+                                    {
+                                        CurrentTab = (int)_currentTab,
+                                        CurrentPage = _currentPage
+
+                                    });
+
+                                break;
+
                             case LCDTab.Commander:
 
                                 str =
@@ -1142,7 +1165,22 @@ namespace Elite
 
                                 break;
 
-                                case LCDTab.Events:
+                            //----------------------
+
+                            case LCDTab.Map:
+
+
+                                str =
+                                    Engine.Razor.Run("7.cshtml", null, new
+                                    {
+                                        CurrentTab = (int)_currentTab,
+                                        CurrentPage = _currentPage
+
+                                    });
+
+                                break;
+
+                            case LCDTab.Events:
 
                                     var eventlist = "";
                                     foreach (var b in _eventHistory)
@@ -1166,7 +1204,7 @@ namespace Elite
 
                         graphics.Clear(Color.Black);
 
-                        if (_currentTab > 0)
+                        if (_currentTab >= 0)
                         {
                             var htmlSize = HtmlRender.Measure(graphics, str, HtmlWindowWidth, App.cssData);
 
@@ -1177,7 +1215,7 @@ namespace Elite
                             if (CurrentLCDHeight > 0)
                             {
                                 var image = HtmlRender.RenderToImage(str,
-                                    new Size(HtmlWindowWidth, CurrentLCDHeight + 20), Color.Black, App.cssData);
+                                    new Size(HtmlWindowWidth, CurrentLCDHeight + 20), Color.Black, App.cssData,null, OnImageLoad);
 
                                 graphics.DrawImage(image, new Rectangle(new Point(HtmlWindowXOffset,0),
                                                                                    new Size(HtmlWindowWidth, HtmlWindowHeight + 20) ),
@@ -1205,7 +1243,7 @@ namespace Elite
                         }
 
                         var menuimage = HtmlRender.RenderToImage(menustr,
-                            new Size(HtmlMenuWindowWidth, HtmlWindowHeight), Color.Black, App.cssData);
+                            new Size(HtmlMenuWindowWidth, HtmlWindowHeight), Color.Black, App.cssData, null, OnImageLoad);
 
                         graphics.DrawImage(menuimage, 0,0);
 
