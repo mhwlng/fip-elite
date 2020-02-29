@@ -1,7 +1,7 @@
 # fip-elite
 Logitech Flight Instrument Panel application for Elite Dangerous
 
-![Logitech Flight Instrument Panel with Elgato Stream Deck](https://i.imgur.com/HTcbXx9.jpg)
+![Logitech Flight Instrument Panel with Elgato Stream Deck](https://i.imgur.com/bE2ODlF.jpg)
 
 This application displays data from Elite Dangerous on Logitech Flight Instrument Panels
 
