@@ -193,82 +193,82 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
-    <Content Include="Templates\images\Adder.png">
+    <Content Include="Templates\images\ships\Adder.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Alliance Challenger.png">
+    <Content Include="Templates\images\ships\Alliance Challenger.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Alliance Chieftain.png">
+    <Content Include="Templates\images\ships\Alliance Chieftain.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Alliance Crusader.png">
+    <Content Include="Templates\images\ships\Alliance Crusader.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Anaconda.png">
+    <Content Include="Templates\images\ships\Anaconda.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Asp Explorer.png">
+    <Content Include="Templates\images\ships\Asp Explorer.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Asp Scout.png">
+    <Content Include="Templates\images\ships\Asp Scout.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Beluga Liner.png">
+    <Content Include="Templates\images\ships\Beluga Liner.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Cobra Mk III.png">
+    <Content Include="Templates\images\ships\Cobra Mk III.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Cobra Mk IV.png">
+    <Content Include="Templates\images\ships\Cobra Mk IV.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Diamondback Explorer.png">
+    <Content Include="Templates\images\ships\Diamondback Explorer.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Diamondback Scout.png">
+    <Content Include="Templates\images\ships\Diamondback Scout.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Dolphin.png">
+    <Content Include="Templates\images\ships\Dolphin.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Eagle.png">
+    <Content Include="Templates\images\ships\Eagle.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\F63 Condor.png">
+    <Content Include="Templates\images\ships\F63 Condor.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Federal Assault Ship.png">
+    <Content Include="Templates\images\ships\Federal Assault Ship.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Federal Corvette.png">
+    <Content Include="Templates\images\ships\Federal Corvette.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Federal Dropship.png">
+    <Content Include="Templates\images\ships\Federal Dropship.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Federal Gunship.png">
+    <Content Include="Templates\images\ships\Federal Gunship.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Fer-de-Lance.png">
+    <Content Include="Templates\images\ships\Fer-de-Lance.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Hauler.png">
+    <Content Include="Templates\images\ships\Hauler.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Imperial Clipper.png">
+    <Content Include="Templates\images\ships\Imperial Clipper.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Imperial Courier.png">
+    <Content Include="Templates\images\ships\Imperial Courier.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Imperial Cutter.png">
+    <Content Include="Templates\images\ships\Imperial Cutter.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Imperial Eagle.png">
+    <Content Include="Templates\images\ships\Imperial Eagle.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Imperial Fighter.png">
+    <Content Include="Templates\images\ships\Imperial Fighter.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\images\init.png">
@@ -277,49 +277,49 @@
     <Content Include="Templates\images\galaxy.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Keelback.png">
+    <Content Include="Templates\images\ships\Keelback.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Krait Mk II.png">
+    <Content Include="Templates\images\ships\Krait Mk II.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Krait Phantom.png">
+    <Content Include="Templates\images\ships\Krait Phantom.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Mamba.png">
+    <Content Include="Templates\images\ships\Mamba.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Orca.png">
+    <Content Include="Templates\images\ships\Orca.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Python.png">
+    <Content Include="Templates\images\ships\Python.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Sidewinder.png">
+    <Content Include="Templates\images\ships\Sidewinder.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Taipan Fighter.png">
+    <Content Include="Templates\images\ships\Taipan Fighter.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Type-10 Defender.png">
+    <Content Include="Templates\images\ships\Type-10 Defender.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Type-6 Transporter.png">
+    <Content Include="Templates\images\ships\Type-6 Transporter.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Type-7 Transporter.png">
+    <Content Include="Templates\images\ships\Type-7 Transporter.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Type-9 Heavy.png">
+    <Content Include="Templates\images\ships\Type-9 Heavy.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Viper Mk III.png">
+    <Content Include="Templates\images\ships\Viper Mk III.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Viper Mk IV.png">
+    <Content Include="Templates\images\ships\Viper Mk IV.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\Vulture.png">
+    <Content Include="Templates\images\ships\Vulture.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\styles.css">

@@ -9,7 +9,7 @@ The menu area and each screen can be configured via razor (.cshtml) web page tem
 
 Use the right rotary encoder to scroll vertically on all tabs.
 
-Use the left rotary encoder to show another card on the POI tab.
+Use the left rotary encoder to show another card on the POI tab or zoom into the galaxy map.
 
 
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
@@ -56,6 +56,8 @@ https://github.com/jdahlblom/DCSFIPS
 DaftMav for POI list [see here](https://www.reddit.com/r/EliteDangerous/comments/9mfiug/edison_a_tool_which_helps_getting_to_planet/)
 
 https://eddb.io/ and https://www.edsm.net/ for station and system data
+
+https://www.edsm.net/ for the galaxy image
 
 https://edassets.org/ CMDR Qohen Leth and CMDR Nuse for the ship images
 

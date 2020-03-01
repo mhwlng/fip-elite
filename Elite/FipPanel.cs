@@ -361,6 +361,7 @@ namespace Elite
         private string _settingsPath;
 
         private int[] _currentCard = new int[100];
+        private int[] _currentZoomLevel = new int[100];
 
 
         private int CurrentLCDYOffset = 0;
@@ -572,6 +573,7 @@ namespace Elite
                         if (state)
                         {
                             _currentCard[(int)_currentTab]++;
+                            _currentZoomLevel[(int)_currentTab]++;
                             CurrentLCDYOffset = 0;
 
                             mustRefresh = true;
@@ -582,6 +584,7 @@ namespace Elite
                         if (state)
                         {
                             _currentCard[(int)_currentTab]--;
+                            _currentZoomLevel[(int)_currentTab]--;
                             CurrentLCDYOffset = 0;
 
                             mustRefresh = true;
@@ -788,8 +791,17 @@ namespace Elite
 
                 using (var graphics = Graphics.FromImage(image))
                 {
-                    if (e.Src.ToLower() == "galaxy.png")
+                    if (e.Src.ToLower() == "galaxy.png" && _currentTab == LCDTab.Map)
                     {
+                        var zoomLevel = _currentZoomLevel[(int)_currentTab] /2.0 + 1;
+
+                        var zoomedXCenter = image.Width / 2.0;
+                        var zoomedYCenter = image.Height / 2.0;
+
+                        if (zoomLevel > 1)
+                        {
+                            markerWidth /= zoomLevel;
+                        }
 
                         if (_locationData?.StarPos?.Count == 3)
                         {
@@ -804,7 +816,34 @@ namespace Elite
 
                             graphics.FillEllipse(redBrush, (float) imgX, (float) imgY, (float) markerWidth,
                                 (float) markerWidth);
+
+                            zoomedXCenter = imgX;
+                            zoomedYCenter = imgY;
+
                         }
+
+                        if (zoomLevel > 1)
+                        {
+                            var zoomedWidth = image.Width / zoomLevel;
+                            var zoomedHeight = image.Height / zoomLevel;
+
+                            var zoomedXTopLeft = zoomedXCenter - (zoomedWidth / 2.0);
+                            var zoomedYTopLeft = zoomedYCenter - (zoomedHeight / 2.0);
+
+                            if (zoomedXTopLeft + zoomedWidth > image.Width)
+                            {
+                                zoomedXTopLeft = image.Width - zoomedWidth;
+                            }
+
+                            if (zoomedYTopLeft + zoomedHeight > image.Height)
+                            {
+                                zoomedYTopLeft = image.Height - zoomedHeight;
+                            }
+
+                            e.Callback(image, zoomedXTopLeft, zoomedYTopLeft, zoomedWidth, zoomedHeight);
+                            return;
+                        }
+
                     }
 
                 }
@@ -1221,12 +1260,25 @@ namespace Elite
 
                             case LCDTab.Map:
 
+                                
+                                if (_currentZoomLevel[(int)_currentTab] < 0)
+                                {
+                                    _currentZoomLevel[(int)_currentTab] = 0;
+                                }
+                                else
+                                if (_currentZoomLevel[(int)_currentTab] > 4)
+                                {
+                                    _currentZoomLevel[(int)_currentTab] = 4;
+                                }
 
                                 str =
                                     Engine.Razor.Run("7.cshtml", null, new
                                     {
                                         CurrentTab = (int)_currentTab,
-                                        CurrentPage = _currentPage
+                                        CurrentPage = _currentPage,
+
+                                        _currentZoomLevel = _currentZoomLevel[(int)_currentTab],
+
 
                                     });
 
