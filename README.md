@@ -14,7 +14,7 @@ Use the left rotary encoder to show another card on the POI tab.
 
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
 ![Screenshot 2](https://i.imgur.com/gmZVF4P.png)
-![Screenshot 3](https://i.imgur.com/9xoj8d8.png)
+![Screenshot 3](https://i.imgur.com/0jsWGOk.png)
 ![Screenshot 4](https://i.imgur.com/iJnHuOV.png)
 ![Screenshot 5](https://i.imgur.com/16pc2zo.png)
 ![Screenshot 6](https://i.imgur.com/z6gq2Ok.png)
@@ -56,3 +56,6 @@ https://github.com/jdahlblom/DCSFIPS
 DaftMav for POI list [see here](https://www.reddit.com/r/EliteDangerous/comments/9mfiug/edison_a_tool_which_helps_getting_to_planet/)
 
 https://eddb.io/ and https://www.edsm.net/ for station and system data
+
+https://edassets.org/ CMDR Qohen Leth and CMDR Nuse for the ship images
+

@@ -2,41 +2,41 @@
     Layout = "layout.cshtml";
 }
 
-<div class="main">
-    <table>
-        <tbody>
-            @if (!string.IsNullOrEmpty(Model.ShipName))
-            {
+    <div class="main">
+        <table>
+            <tbody>
+                @if (!string.IsNullOrEmpty(Model.ShipName))
+                {
+                    <tr>
+                        <td class="caption">Ship Name</td>
+                        <td class="data">@Model.ShipName</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.ShipType))
+                {
+                    <tr>
+                        <td class="caption">Ship Type</td>
+                        <td class="data">@Model.ShipType</td>
+                    </tr>
+                }
                 <tr>
-                    <td class="caption">Ship Name</td>
-                    <td class="data">@Model.ShipName</td>
+                    <td class="caption">Fuel</td>
+                    <td class="data">@Model.FuelPercent %</td>
                 </tr>
-            }
-            @if (!string.IsNullOrEmpty(Model.ShipType))
-            {
-                <tr>
-                    <td class="caption">Ship Type</td>
-                    <td class="data">@Model.ShipType</td>
-                </tr>
-            }
-            <tr>
-                <td class="caption">Fuel</td>
-                <td class="data">@Model.FuelPercent %</td>
-            </tr>
-            @if (Model.HullHealth >= 0)
-            {
-                <tr>
-                    <td class="caption">Hull Health</td>
-                    <td class="data">@Model.HullHealth.ToString("N0") %</td>
-                </tr>
-            }
-            @if (Model.CargoCapacity > 0 && Model.CargoCapacity >= Model.Cargo)
-            {
-                <tr>
-                    <td class="caption">Cargo</td>
-                    <td class="data">@Model.Cargo of @Model.CargoCapacity T</td>
-                </tr>
-            }
+                @if (Model.HullHealth >= 0)
+                {
+                    <tr>
+                        <td class="caption">Hull Health</td>
+                        <td class="data">@Model.HullHealth.ToString("N0") %</td>
+                    </tr>
+                }
+                @if (Model.CargoCapacity > 0 && Model.CargoCapacity >= Model.Cargo)
+                {
+                    <tr>
+                        <td class="caption">Cargo</td>
+                        <td class="data">@Model.Cargo of @Model.CargoCapacity T</td>
+                    </tr>
+                }
 
             @if (Model.LastJump > 0)
             {
@@ -46,6 +46,10 @@
                 </tr>
             }
 
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+        @if (!string.IsNullOrEmpty(Model.ShipImage))
+        {
+            <img src="@Model.ShipImage" width="236" height="236" />
+        }
+    </div>

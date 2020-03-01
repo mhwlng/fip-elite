@@ -445,34 +445,41 @@ namespace Elite
 
             _currentPage = DEFAULT_PAGE;
 
-            DirectOutputClass.GetSerialNumber(FipDevicePointer, out var serialNumber);
-
-            App.log.Info("FipPanel Serial Number " + serialNumber);
-            
-            _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\mhwlng\\fip-elite\\" + serialNumber;
-
-            if (File.Exists(_settingsPath))
+            var returnValues3 = DirectOutputClass.GetSerialNumber(FipDevicePointer, out var serialNumber);
+            if (returnValues3 != ReturnValues.S_OK)
             {
-                _currentPage = uint.Parse(File.ReadAllText(_settingsPath));
+                App.log.Error("FipPanel failed to get Serial Number. " + returnValues1);
             }
             else
             {
-                (new FileInfo(_settingsPath)).Directory?.Create();
+                App.log.Info("FipPanel Serial Number " + serialNumber);
 
-                File.WriteAllText(_settingsPath, _currentPage.ToString());
-            }
-            
-            for (uint x = 0; x <= NO_PAGES; x++)
-            {
-                if (x != _currentPage)
+                _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                "\\mhwlng\\fip-elite\\" + serialNumber;
+
+                if (File.Exists(_settingsPath))
                 {
-                    AddPage(x, false);
+                    _currentPage = uint.Parse(File.ReadAllText(_settingsPath));
                 }
+                else
+                {
+                    (new FileInfo(_settingsPath)).Directory?.Create();
+
+                    File.WriteAllText(_settingsPath, _currentPage.ToString());
+                }
+
+                for (uint x = 0; x <= NO_PAGES; x++)
+                {
+                    if (x != _currentPage)
+                    {
+                        AddPage(x, false);
+                    }
+                }
+
+                AddPage(_currentPage, true);
+
+                RefreshDevicePage(_currentPage);
             }
-
-            AddPage(_currentPage, true);
-
-            RefreshDevicePage(_currentPage);
 
             App.EliteApi.Events.AllEvent += HandleEliteEventsDelegate;
 
@@ -775,34 +782,41 @@ namespace Elite
             var markerHeight = 40.0;
 
 
-            var image = Image.FromFile("Templates\\" + e.Src);
-
-            using (var graphics = Graphics.FromImage(image))
+            try
             {
-                if (e.Src.ToLower() == "galaxy.png")
+                var image = Image.FromFile("Templates\\images\\" + e.Src);
+
+                using (var graphics = Graphics.FromImage(image))
                 {
-
-                    if (_locationData?.StarPos?.Count == 3)
+                    if (e.Src.ToLower() == "galaxy.png")
                     {
-                        var spaceX = _locationData.StarPos[0];
-                        var spaceY = _locationData.StarPos[1];
 
-                        var imgX = (spaceX - spaceMinX) / (spaceMaxX - spaceMinX) * image.Width;
-                        var imgY = (spaceMaxY - spaceY) / (spaceMaxY - spaceMinY) * image.Height;
+                        if (_locationData?.StarPos?.Count == 3)
+                        {
+                            var spaceX = _locationData.StarPos[0];
+                            var spaceY = _locationData.StarPos[1];
 
-                        imgX -= markerWidth / 2.0;
-                        imgY -= markerHeight / 2.0;
+                            var imgX = (spaceX - spaceMinX) / (spaceMaxX - spaceMinX) * image.Width;
+                            var imgY = (spaceMaxY - spaceY) / (spaceMaxY - spaceMinY) * image.Height;
 
-                        graphics.FillEllipse(redBrush, (float) imgX, (float) imgY, (float) markerWidth,
-                            (float) markerWidth);
+                            imgX -= markerWidth / 2.0;
+                            imgY -= markerHeight / 2.0;
+
+                            graphics.FillEllipse(redBrush, (float) imgX, (float) imgY, (float) markerWidth,
+                                (float) markerWidth);
+                        }
                     }
+
                 }
 
+                e.Callback(image);
             }
+            catch
+            {
+                var image = new Bitmap(1, 1);
 
-            e.Callback(image);
-
-
+                e.Callback(image);
+            }
         }
 
 
@@ -918,9 +932,6 @@ namespace Elite
                                 App.EliteApi.Commander.Statistics.MaterialTraderStats
                                 App.EliteApi.Commander.Statistics.Cqc
 
-                                //reputationInfo.Alliance
-                                //reputationInfo.Empire
-                                //reputationInfo.Federation
                                 //reputationInfo.Independent
 
                                 */
@@ -937,7 +948,9 @@ namespace Elite
 
                                         ShipName = _shipData.Name?.Trim(),
 
-                                        ShipType = _shipData.Type,
+                                        ShipType = _shipData.Type?.Trim(),
+
+                                        ShipImage = _shipData.Type?.Trim() + ".png",
 
                                         AutomaticDocking = _shipData.AutomaticDocking,
 
