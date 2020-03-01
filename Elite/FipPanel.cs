@@ -1199,7 +1199,11 @@ namespace Elite
                                         LegalStatus = _targetData.LegalStatus,
                                         PilotNameLocalised = _targetData.PilotNameLocalised,
                                         PilotRank = _targetData.PilotRank,
-                                        Ship = _targetData.Ship,
+
+                                        Ship = _targetData.Ship?.Trim(),
+
+                                        ShipImage = _targetData.Ship?.Trim() + ".png",
+
                                         SubsystemLocalised = _targetData.SubsystemLocalised,
 
                                         SubsystemHealth = _targetData.SubsystemHealth,
