@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using CsvHelper;
@@ -68,11 +69,20 @@ namespace Elite
 
             log4net.Config.XmlConfigurator.Configure();
 
-            var config = new TemplateServiceConfiguration
+            //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
+            notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+
+            var splashScreen = new SplashScreenWindow();
+            splashScreen.Show();
+
+            Task.Factory.StartNew(() =>
             {
-                TemplateManager = new ResolvePathTemplateManager(new[] {"Templates"}),
-                DisableTempFileLocking = true,
-                BaseTemplateType = typeof(HtmlSupportTemplateBase<>) /*,
+
+                var config = new TemplateServiceConfiguration
+                {
+                    TemplateManager = new ResolvePathTemplateManager(new[] { "Templates" }),
+                    DisableTempFileLocking = true,
+                    BaseTemplateType = typeof(HtmlSupportTemplateBase<>) /*,
                     Namespaces = new HashSet<string>(){
                         "System",
                         "System.Linq",
@@ -81,50 +91,70 @@ namespace Elite
                         }*/
 
 
-            };
+                };
 
-            Engine.Razor = RazorEngineService.Create(config);
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading cshtml templates...");
 
-            Engine.Razor.Compile("menu.cshtml", null);
-            Engine.Razor.Compile("layout.cshtml", null);
-            Engine.Razor.Compile("init.cshtml", null);
+                Engine.Razor = RazorEngineService.Create(config);
 
-            Engine.Razor.Compile("1.cshtml", null);
-            Engine.Razor.Compile("2.cshtml", null);
-            Engine.Razor.Compile("3.cshtml", null);
-            Engine.Razor.Compile("4.cshtml", null);
-            Engine.Razor.Compile("5.cshtml", null);
-            Engine.Razor.Compile("6.cshtml", null);
+                Engine.Razor.Compile("menu.cshtml", null);
+                Engine.Razor.Compile("layout.cshtml", null);
+                Engine.Razor.Compile("init.cshtml", null);
 
-            Engine.Razor.Compile("7.cshtml", null);
-            Engine.Razor.Compile("12.cshtml", null);
+                Engine.Razor.Compile("1.cshtml", null);
+                Engine.Razor.Compile("2.cshtml", null);
+                Engine.Razor.Compile("3.cshtml", null);
+                Engine.Razor.Compile("4.cshtml", null);
+                Engine.Razor.Compile("5.cshtml", null);
+                Engine.Razor.Compile("6.cshtml", null);
 
-            cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
-                File.ReadAllText("Templates\\styles.css"), true);
+                Engine.Razor.Compile("7.cshtml", null);
+                Engine.Razor.Compile("12.cshtml", null);
 
-            PoiItems = Poi.GetPoiItems(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
+                cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
+                    File.ReadAllText("Templates\\styles.css"), true);
 
-            InterStellarFactors = Station.GetStations("interstellarfactors.json");
-            RawMaterialTraders = Station.GetStations("rawmaterialtraders.json");
-            ManufacturedMaterialTraders = Station.GetStations("manufacturedmaterialtraders.json");
-            EncodedDataTraders = Station.GetStations("encodeddatatraders.json");
-            HumanTechnologyBrokers = Station.GetStations("humantechnologybrokers.json");
-            GuardianTechnologyBrokers = Station.GetStations("guardiantechnologybrokers.json");
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
 
-            TravelHistory.GetTravelHistory();
+                PoiItems = Poi.GetPoiItems(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
 
-            //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
-            notifyIcon = (TaskbarIcon) FindResource("NotifyIcon");
-            
-            EliteApi.Start(false);
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Inter Stellar Factors...");
+                InterStellarFactors = Station.GetStations("interstellarfactors.json");
 
-            if (!fipHandler.Initialize())
-            {
-                Application.Current.Shutdown();
-            }
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Raw Material Traders...");
+                RawMaterialTraders = Station.GetStations("rawmaterialtraders.json");
 
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Manufactured Material Traders...");
+                ManufacturedMaterialTraders = Station.GetStations("manufacturedmaterialtraders.json");
 
-            log.Info("Fip-Elite started");
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Encoded Data Traders..");
+                EncodedDataTraders = Station.GetStations("encodeddatatraders.json");
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Human Technology Brokers...");
+                HumanTechnologyBrokers = Station.GetStations("humantechnologybrokers.json");
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Guardian Technology Brokers...");
+                GuardianTechnologyBrokers = Station.GetStations("guardiantechnologybrokers.json");
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Travel History...");
+                TravelHistory.GetTravelHistory();
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite API...");
+                EliteApi.Start(false);
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting FIP...");
+                if (!fipHandler.Initialize())
+                {
+                    Application.Current.Shutdown();
+                }
+
+                log.Info("Fip-Elite started");
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    splashScreen.Close();
+                });
+            });
 
         }
 
