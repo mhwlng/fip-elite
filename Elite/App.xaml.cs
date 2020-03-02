@@ -111,6 +111,8 @@ namespace Elite
             HumanTechnologyBrokers = Station.GetStations("humantechnologybrokers.json");
             GuardianTechnologyBrokers = Station.GetStations("guardiantechnologybrokers.json");
 
+            TravelHistory.GetTravelHistory();
+
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             notifyIcon = (TaskbarIcon) FindResource("NotifyIcon");
             

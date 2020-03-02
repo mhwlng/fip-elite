@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
@@ -374,6 +375,7 @@ namespace Elite
         private List<uint> _pageList = new List<uint>();
 
         private readonly Pen _scrollPen = new Pen(Color.FromArgb(0xff,0xFF,0xB0,0x00));
+        private readonly Pen _whitePen = new Pen(Color.FromArgb(0xff, 0xFF, 0xFF, 0xFF),(float)0.1);
         private readonly SolidBrush _scrollBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xB0, 0x00));
         private readonly SolidBrush redBrush = new SolidBrush(Color.FromArgb(0xFF, 0x00, 0x00));
 
@@ -776,14 +778,8 @@ namespace Elite
         
         private void OnImageLoad(object sender, HtmlImageLoadEventArgs e)
         {
-            var spaceMinX = -41715.0;
-            var spaceMaxX = 41205.0;
-            var spaceMinY = -19737.0;
-            var spaceMaxY = 68073.0;
-
             var markerWidth = 40.0;
             var markerHeight = 40.0;
-
 
             try
             {
@@ -793,23 +789,26 @@ namespace Elite
                 {
                     if (e.Src.ToLower() == "galaxy.png" && _currentTab == LCDTab.Map)
                     {
-                        var zoomLevel = _currentZoomLevel[(int)_currentTab] /2.0 + 1;
+                        graphics.DrawPolygon(_whitePen, TravelHistory.TravelHistoryPoints.ToArray());
 
-                        var zoomedXCenter = image.Width / 2.0;
-                        var zoomedYCenter = image.Height / 2.0;
+                        var zoomLevel = _currentZoomLevel[(int)_currentTab] / 2.0 + 1;
 
                         if (zoomLevel > 1)
                         {
                             markerWidth /= zoomLevel;
+                            markerHeight /= zoomLevel;
                         }
+
+                        var zoomedXCenter = image.Width / 2.0;
+                        var zoomedYCenter = image.Height / 2.0;
 
                         if (_locationData?.StarPos?.Count == 3)
                         {
                             var spaceX = _locationData.StarPos[0];
-                            var spaceY = _locationData.StarPos[1];
+                            var spaceZ = _locationData.StarPos[2];
 
-                            var imgX = (spaceX - spaceMinX) / (spaceMaxX - spaceMinX) * image.Width;
-                            var imgY = (spaceMaxY - spaceY) / (spaceMaxY - spaceMinY) * image.Height;
+                            var imgX = (spaceX - TravelHistory.SpaceMinX) / (TravelHistory.SpaceMaxX - TravelHistory.SpaceMinX) * image.Width;
+                            var imgY = (TravelHistory.SpaceMaxZ - spaceZ) / (TravelHistory.SpaceMaxZ - TravelHistory.SpaceMinZ) * image.Height;
 
                             imgX -= markerWidth / 2.0;
                             imgY -= markerHeight / 2.0;
@@ -1270,9 +1269,9 @@ namespace Elite
                                     _currentZoomLevel[(int)_currentTab] = 0;
                                 }
                                 else
-                                if (_currentZoomLevel[(int)_currentTab] > 4)
+                                if (_currentZoomLevel[(int)_currentTab] > 15)
                                 {
-                                    _currentZoomLevel[(int)_currentTab] = 4;
+                                    _currentZoomLevel[(int)_currentTab] = 15;
                                 }
 
                                 str =
@@ -1814,6 +1813,8 @@ namespace Elite
                         _locationData.StarPos = fsdJumpInfo.StarPos.ToList();
 
                         _currentPois = Poi.GetNearestPoiItems(_locationData.StarPos);
+
+                        TravelHistory.AddTravelPos(_locationData.StarPos);
 
                         _currentInterStellarFactors = Station.GetNearestStationItems(_locationData.StarPos, App.InterStellarFactors);
                         _currentRawMaterialTraders = Station.GetNearestStationItems(_locationData.StarPos, App.RawMaterialTraders);
