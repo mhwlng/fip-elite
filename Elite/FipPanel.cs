@@ -379,6 +379,8 @@ namespace Elite
         private readonly SolidBrush _scrollBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xB0, 0x00));
         private readonly SolidBrush redBrush = new SolidBrush(Color.FromArgb(0xFF, 0x00, 0x00));
 
+        private Image htmlImage = null;
+        private Image menuHtmlImage = null;
 
         private const int HtmlMenuWindowWidth = 69;
 
@@ -569,13 +571,16 @@ namespace Elite
 
                 bool mustRefresh = false;
 
+                bool mustRender = true;
+
                 switch (button)
                 {
                     case 8: // scroll clockwise
-                        if (state)
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Map))
                         {
-                            _currentCard[(int)_currentTab]++;
-                            _currentZoomLevel[(int)_currentTab]++;
+
+                            _currentCard[(int) _currentTab]++;
+                            _currentZoomLevel[(int) _currentTab]++;
                             CurrentLCDYOffset = 0;
 
                             mustRefresh = true;
@@ -583,10 +588,10 @@ namespace Elite
                         break;
                     case 16: // scroll anti-clockwise
 
-                        if (state)
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Map))
                         {
-                            _currentCard[(int)_currentTab]--;
-                            _currentZoomLevel[(int)_currentTab]--;
+                            _currentCard[(int) _currentTab]--;
+                            _currentZoomLevel[(int) _currentTab]--;
                             CurrentLCDYOffset = 0;
 
                             mustRefresh = true;
@@ -596,6 +601,8 @@ namespace Elite
                         if (state)
                         {
                             CurrentLCDYOffset += 50;
+
+                            mustRender = false;
 
                             mustRefresh = true;
                         }
@@ -611,6 +618,8 @@ namespace Elite
                             {
                                 CurrentLCDYOffset = 0;
                             }
+
+                            mustRender = false;
 
                             mustRefresh = true;
                         }
@@ -701,7 +710,7 @@ namespace Elite
 
                 if (mustRefresh)
                 {
-                    RefreshDevicePage(_currentPage);
+                    RefreshDevicePage(_currentPage, mustRender);
                 }
 
             }
@@ -858,7 +867,7 @@ namespace Elite
         }
 
 
-        public void RefreshDevicePage(uint page)
+        public void RefreshDevicePage(uint page, bool mustRender = true)
         {
             lock (_refreshDevicePageLock)
             {
@@ -875,362 +884,31 @@ namespace Elite
                 {
                     using (var graphics = Graphics.FromImage(fipImage))
                     {
-                        var menustr =
-                            Engine.Razor.Run("menu.cshtml", null, new
-                            {
-                                CurrentTab = (int)_currentTab,
-                                CurrentPage = _currentPage,
+                        var menustr = "";
 
-                                TargetLocked = _targetData.TargetLocked,
+                        if (mustRender)
+                        {
+                            menustr =
+                                Engine.Razor.Run("menu.cshtml", null, new
+                                {
+                                    CurrentTab = (int) _currentTab,
+                                    CurrentPage = _currentPage,
 
-                                MissionCount = _missionData.Count
-                            });
+                                    TargetLocked = _targetData.TargetLocked,
+
+                                    MissionCount = _missionData.Count
+                                });
+                        }
 
                         var str = "";
 
                         switch (_currentTab)
                         {
-                            //----------------------
-
-                            case LCDTab.None:
-
-                                str =
-                                    Engine.Razor.Run("init.cshtml", null, new
-                                    {
-                                        CurrentTab = (int)_currentTab,
-                                        CurrentPage = _currentPage
-
-                                    });
-
-                                break;
-
-                            case LCDTab.Commander:
-
-                                str =
-                                    Engine.Razor.Run("1.cshtml", null, new
-                                    {
-                                        CurrentTab = (int) _currentTab,
-                                        CurrentPage = _currentPage,
-
-                                        Commander = _commanderData.Name,
-
-                                        ShipName = _shipData.Name?.Trim(),
-
-                                        ShipType = _shipData.Type?.Trim(),
-
-                                        LegalState = App.EliteApi.Status.LegalState,
-
-                                        Credits = _commanderData.Credits.ToString("N0"),
-
-                                        Rebuy = _commanderData.Rebuy.ToString("N0"),
-
-                                        FederationRank = App.EliteApi.Commander.FederationRankLocalised,
-                                        FederationRankProgress = App.EliteApi.Commander.FederationRankProgress,
-
-                                        EmpireRank = App.EliteApi.Commander.EmpireRankLocalised,
-                                        EmpireRankProgress = App.EliteApi.Commander.EmpireRankProgress,
-
-                                        CombatRank = App.EliteApi.Commander.CombatRankLocalised,
-                                        CombatRankProgress = App.EliteApi.Commander.CombatRankProgress,
-
-                                        TradeRank = App.EliteApi.Commander.TradeRankLocalised,
-                                        TradeRankProgress = App.EliteApi.Commander.TradeRankProgress,
-
-                                        ExplorationRank = App.EliteApi.Commander.ExplorationRankLocalised,
-                                        ExplorationRankProgress = App.EliteApi.Commander.ExplorationRankProgress,
-
-                                        CqcRank = App.EliteApi.Commander.CqcRank.ToString(),
-
-                                        CqcRankProgress = App.EliteApi.Commander.CqcRankProgress,
-
-                                        FederationReputation = _commanderData.FederationReputation,
-                                        AllianceReputation = _commanderData.AllianceReputation,
-                                        EmpireReputation = _commanderData.EmpireReputation,
-
-                                        FederationReputationState = _commanderData.FederationReputationState,
-                                        AllianceReputationState = _commanderData.AllianceReputationState,
-                                        EmpireReputationState = _commanderData.EmpireReputationState
-
-                                });
-
-                                /*
-                                App.EliteApi.Commander.Statistics.BankAccount
-                                App.EliteApi.Commander.Statistics.Combat
-                                App.EliteApi.Commander.Statistics.Crime
-                                App.EliteApi.Commander.Statistics.Smuggling
-                                App.EliteApi.Commander.Statistics.Trading
-                                App.EliteApi.Commander.Statistics.Mining
-                                App.EliteApi.Commander.Statistics.Exploration
-                                App.EliteApi.Commander.Statistics.Passengers
-                                App.EliteApi.Commander.Statistics.SearchAndRescue
-                                App.EliteApi.Commander.Statistics.TgEncounters
-                                App.EliteApi.Commander.Statistics.Crafting
-                                App.EliteApi.Commander.Statistics.Crew
-                                App.EliteApi.Commander.Statistics.Multicrew
-                                App.EliteApi.Commander.Statistics.MaterialTraderStats
-                                App.EliteApi.Commander.Statistics.Cqc
-
-                                //reputationInfo.Independent
-
-                                */
-
-                                break;
-
-                            case LCDTab.Ship:
-
-                                str =
-                                    Engine.Razor.Run("2.cshtml", null, new
-                                    {
-                                        CurrentTab = (int) _currentTab,
-                                        CurrentPage = _currentPage,
-
-                                        ShipName = _shipData.Name?.Trim(),
-
-                                        ShipType = _shipData.Type?.Trim(),
-
-                                        ShipImage = _shipData.Type?.Trim() + ".png",
-
-                                        AutomaticDocking = _shipData.AutomaticDocking,
-
-                                        Docked = App.EliteApi.Status.Docked,
-
-                                        FuelMain = App.EliteApi.Status.Fuel.FuelMain,
-
-                                        FuelReservoir = App.EliteApi.Status.Fuel.FuelReservoir,
-
-                                        MaxFuel = App.EliteApi.Status.Fuel.MaxFuel,
-
-                                        FuelPercent =
-                                            Convert.ToInt32(100 / App.EliteApi.Status.Fuel.MaxFuel *
-                                                            App.EliteApi.Status.Fuel.FuelMain),
-
-                                        LastJump = App.EliteApi.Status.JumpRange,
-
-                                        Cargo = App.EliteApi.Status.Cargo,
-
-                                        CargoCapacity = _shipData.CargoCapacity,
-
-                                        HullHealth = _shipData.HullHealth
-
-                                    });
-
-                                /*
-                                App.EliteApi.Status.Shields
-                                App.EliteApi.Status.LowFuel
-                                App.EliteApi.Status.Overheating
-                                App.EliteApi.Status.FsdCharging
-                                App.EliteApi.Status.FsdCooldown
-                                App.EliteApi.Status.MassLocked
-                                App.EliteApi.Status.InDanger
-                                App.EliteApi.Status.InInterdiction
-                                App.EliteApi.Status.SrvHandbreak
-                                App.EliteApi.Status.SrvNearShip
-                                App.EliteApi.Status.SrvDriveAssist
-                                App.EliteApi.Status.HasLatlong
-                                App.EliteApi.Status.InMothership
-                                App.EliteApi.Status.InFighter
-                                App.EliteApi.Status.InSRV
-                                App.EliteApi.Status.AnalysisMode
-                                App.EliteApi.Status.NightVision
-                                App.EliteApi.Status.InNoFireZone
-                                App.EliteApi.Status.IsRunning
-                                App.EliteApi.Status.SrvTurrent
-                                App.EliteApi.Status.InMainMenu
-                                App.EliteApi.Status.SilentRunning
-                                App.EliteApi.Status.Flags
-                                App.EliteApi.Status.Landed
-                                App.EliteApi.Status.Gear
-                                App.EliteApi.Status.Supercruise
-                                App.EliteApi.Status.FlightAssist
-                                App.EliteApi.Status.Hardpoints
-                                App.EliteApi.Status.Winging
-                                App.EliteApi.Status.Lights
-                                App.EliteApi.Status.CargoScoop
-                                App.EliteApi.Status.Scooping
-
-                                App.EliteApi.Status.LegalState
-                                App.EliteApi.Status.GameMode
-                                App.EliteApi.Status.MusicTrack
-
-                                App.EliteApi.Status.FireGroup
-                                App.EliteApi.Status.GuiFocus
-
-                                App.EliteApi.Status.Pips
-                                */
-
-                                //loadoutInfo.Hot
-                                //loadoutInfo.HullValue
-                                //loadoutInfo.Modules
-                                //loadoutInfo.ModulesValue
-
-                                //fuelScoopInfo.Scooped
-                                //fuelScoopInfo.Total
-
-                                //underAttackInfo.Target
-
-                                //hullDamageInfo.Fighter
-                                //hullDamageInfo.PlayerPilot
-
-                                //interdictedInfo.Faction
-                                //interdictedInfo.InterdictorLocalised
-                                //interdictedInfo.IsPlayer
-                                //interdictedInfo.Submitted
-                                //interdictionInfo.Faction
-                                //interdictionInfo.Interdicted
-                                //interdictionInfo.IsPlayer
-                                //interdictionInfo.Power
-                                //interdictionInfo.Success
-
-                                //scannedInfo.ScanType     
-
-                                //loadGameInfo.ShipIdent
-                                //loadGameInfo.Ship
-                                //setUserShipNameInfo.UserShipId
-                                //loadoutInfo.ShipIdent
-
-                                break;
-
-                            case LCDTab.Navigation:
-
-                                str =
-                                    Engine.Razor.Run("3.cshtml", null, new
-                                    {
-                                        CurrentTab = (int) _currentTab,
-                                        CurrentPage = _currentPage,
-
-                                        StarSystem = App.EliteApi.Location.StarSystem,
-
-                                        Body = !string.IsNullOrEmpty(_locationData.BodyType) && !string.IsNullOrEmpty(_locationData.Body)
-                                            ? _locationData.Body
-                                            : null, 
-
-                                        /*
-                                        "Station"
-                                        "Star"
-                                        "Planet"
-                                        "PlanetaryRing"
-                                        "StellarRing"                                        
-                                        "AsteroidCluster"                                         
-                                         */
-
-                                        BodyType = _locationData.BodyType,
-
-                                        Station = _locationData.BodyType == "Station" &&
-                                                  !string.IsNullOrEmpty(_locationData.Body)
-                                            ? _locationData.Body
-                                            : App.EliteApi.Location.Station,
-
-                                        Docked = App.EliteApi.Status.Docked,
-
-                                        LandingPad = _dockData.LandingPad,
-
-                                        StartJump = _locationData.StartJump,
-
-                                        JumpType = _locationData.JumpType,
-
-                                        JumpToSystem = _locationData.JumpToSystem,
-
-                                        JumpToStarClass = _locationData.JumpToStarClass,
-
-                                        RemainingJumpsInRoute = _locationData.RemainingJumpsInRoute,
-
-                                        FsdTargetName = _locationData.FsdTargetName,
-
-                                        Settlement = _locationData.Settlement,
-
-                                        HideBody = _locationData.HideBody,
-
-                                        StationType = _dockData.Type,
-
-                                        Government = _dockData.Government,
-
-                                        Allegiance = _dockData.Allegiance,
-
-                                        Faction = _dockData.Faction,
-
-                                        Economy = _dockData.Economy,
-
-                                        DistFromStarLs = _dockData.DistFromStarLs,
-
-                                        SystemAllegiance = _locationData.SystemAllegiance,
-
-                                        SystemFaction = _locationData.SystemFaction,
-
-                                        SystemSecurity = _locationData.SystemSecurity,
-
-                                        SystemEconomy = _locationData.SystemEconomy,
-
-                                        SystemGovernment = _locationData.SystemGovernment,
-
-                                        Population = _locationData.Population
-
-                                    });
-
-                                //dockedInfo.StationEconomies
-
-                                //locationInfo.SystemSecondEconomyLocalised
-                                //fsdJumpInfo.SystemSecondEconomyLocalised
-
-                                //fsdJumpInfo.PowerplayState
-                                //fsdJumpInfo.Powers
-                                //fsdJumpInfo.StarPos
-                                //fsdJumpInfo.FactionState
-                                //fsdJumpInfo.Factions
-
-                                //approachSettlementInfo.Latitude
-                                //approachSettlementInfo.Longitude
-                                
-                                break;
-
-                            case LCDTab.Target:
-
-                                str =
-                                    Engine.Razor.Run("4.cshtml", null, new
-                                    {
-                                        CurrentTab = (int) _currentTab,
-                                        CurrentPage = _currentPage,
-
-                                        TargetLocked = _targetData.TargetLocked,
-                                        ScanStage = _targetData.ScanStage,
-
-                                        Bounty = _targetData.Bounty,
-                                        Faction = _targetData.Faction,
-                                        LegalStatus = _targetData.LegalStatus,
-                                        PilotNameLocalised = _targetData.PilotNameLocalised,
-                                        PilotRank = _targetData.PilotRank,
-
-                                        Ship = _targetData.Ship?.Trim(),
-
-                                        ShipImage = _targetData.Ship?.Trim() + ".png",
-
-                                        SubsystemLocalised = _targetData.SubsystemLocalised,
-
-                                        SubsystemHealth = _targetData.SubsystemHealth,
-                                        HullHealth = _targetData.HullHealth,
-                                        ShieldHealth = _targetData.ShieldHealth,
-
-                                    });
-
-                                break;
-
-                            case LCDTab.Missions:
-
-                                str =
-                                    Engine.Razor.Run("5.cshtml", null, new
-                                    {
-                                        CurrentTab = (int)_currentTab,
-                                        CurrentPage = _currentPage,
-
-                                        MissionData = _missionData
-                                    });
-
-                                break;
-
                             case LCDTab.POI:
 
-                                if (_currentCard[(int) _currentTab] < 0)
+                                if (_currentCard[(int)_currentTab] < 0)
                                 {
-                                    _currentCard[(int) _currentTab] = 6;
+                                    _currentCard[(int)_currentTab] = 6;
                                 }
                                 else
                                 if (_currentCard[(int)_currentTab] > 6)
@@ -1238,32 +916,13 @@ namespace Elite
                                     _currentCard[(int)_currentTab] = 0;
                                 }
 
-                                str =
-                                    Engine.Razor.Run("6.cshtml", null, new
-                                    {
-                                        CurrentTab = (int)_currentTab,
-                                        CurrentPage = _currentPage,
-
-                                        CurrentCard = _currentCard[(int)_currentTab],
-
-                                        CurrentPois = _currentPois, // 0
-
-                                        CurrentInterStellarFactors= _currentInterStellarFactors, // 1
-                                        CurrentRawMaterialTraders= _currentRawMaterialTraders, // 2
-                                        CurrentManufacturedMaterialTraders= _currentManufacturedMaterialTraders, // 3
-                                        CurrentEncodedDataTraders= _currentEncodedDataTraders, // 4
-                                        CurrentHumanTechnologyBrokers= _currentHumanTechnologyBrokers, // 5
-                                        CurrentGuardianTechnologyBrokers= _currentGuardianTechnologyBrokers // 6
-
-                                });
-
                                 break;
 
                             //----------------------
 
                             case LCDTab.Map:
 
-                                
+
                                 if (_currentZoomLevel[(int)_currentTab] < 0)
                                 {
                                     _currentZoomLevel[(int)_currentTab] = 0;
@@ -1274,20 +933,395 @@ namespace Elite
                                     _currentZoomLevel[(int)_currentTab] = 15;
                                 }
 
-                                str =
-                                    Engine.Razor.Run("7.cshtml", null, new
-                                    {
-                                        CurrentTab = (int)_currentTab,
-                                        CurrentPage = _currentPage,
-
-                                        _currentZoomLevel = _currentZoomLevel[(int)_currentTab],
-
-
-                                    });
-
                                 break;
 
-                            case LCDTab.Events:
+                        }
+
+                        if (mustRender)
+                        {
+
+                            switch (_currentTab)
+                            {
+                                //----------------------
+
+                                case LCDTab.None:
+
+                                    str =
+                                        Engine.Razor.Run("init.cshtml", null, new
+                                        {
+                                            CurrentTab = (int) _currentTab,
+                                            CurrentPage = _currentPage
+
+                                        });
+
+                                    break;
+
+                                case LCDTab.Commander:
+
+                                    str =
+                                        Engine.Razor.Run("1.cshtml", null, new
+                                        {
+                                            CurrentTab = (int) _currentTab,
+                                            CurrentPage = _currentPage,
+
+                                            Commander = _commanderData.Name,
+
+                                            ShipName = _shipData.Name?.Trim(),
+
+                                            ShipType = _shipData.Type?.Trim(),
+
+                                            LegalState = App.EliteApi.Status.LegalState,
+
+                                            Credits = _commanderData.Credits.ToString("N0"),
+
+                                            Rebuy = _commanderData.Rebuy.ToString("N0"),
+
+                                            FederationRank = App.EliteApi.Commander.FederationRankLocalised,
+                                            FederationRankProgress = App.EliteApi.Commander.FederationRankProgress,
+
+                                            EmpireRank = App.EliteApi.Commander.EmpireRankLocalised,
+                                            EmpireRankProgress = App.EliteApi.Commander.EmpireRankProgress,
+
+                                            CombatRank = App.EliteApi.Commander.CombatRankLocalised,
+                                            CombatRankProgress = App.EliteApi.Commander.CombatRankProgress,
+
+                                            TradeRank = App.EliteApi.Commander.TradeRankLocalised,
+                                            TradeRankProgress = App.EliteApi.Commander.TradeRankProgress,
+
+                                            ExplorationRank = App.EliteApi.Commander.ExplorationRankLocalised,
+                                            ExplorationRankProgress = App.EliteApi.Commander.ExplorationRankProgress,
+
+                                            CqcRank = App.EliteApi.Commander.CqcRank.ToString(),
+
+                                            CqcRankProgress = App.EliteApi.Commander.CqcRankProgress,
+
+                                            FederationReputation = _commanderData.FederationReputation,
+                                            AllianceReputation = _commanderData.AllianceReputation,
+                                            EmpireReputation = _commanderData.EmpireReputation,
+
+                                            FederationReputationState = _commanderData.FederationReputationState,
+                                            AllianceReputationState = _commanderData.AllianceReputationState,
+                                            EmpireReputationState = _commanderData.EmpireReputationState
+
+                                        });
+
+                                    /*
+                                    App.EliteApi.Commander.Statistics.BankAccount
+                                    App.EliteApi.Commander.Statistics.Combat
+                                    App.EliteApi.Commander.Statistics.Crime
+                                    App.EliteApi.Commander.Statistics.Smuggling
+                                    App.EliteApi.Commander.Statistics.Trading
+                                    App.EliteApi.Commander.Statistics.Mining
+                                    App.EliteApi.Commander.Statistics.Exploration
+                                    App.EliteApi.Commander.Statistics.Passengers
+                                    App.EliteApi.Commander.Statistics.SearchAndRescue
+                                    App.EliteApi.Commander.Statistics.TgEncounters
+                                    App.EliteApi.Commander.Statistics.Crafting
+                                    App.EliteApi.Commander.Statistics.Crew
+                                    App.EliteApi.Commander.Statistics.Multicrew
+                                    App.EliteApi.Commander.Statistics.MaterialTraderStats
+                                    App.EliteApi.Commander.Statistics.Cqc
+    
+                                    //reputationInfo.Independent
+    
+                                    */
+
+                                    break;
+
+                                case LCDTab.Ship:
+
+                                    str =
+                                        Engine.Razor.Run("2.cshtml", null, new
+                                        {
+                                            CurrentTab = (int) _currentTab,
+                                            CurrentPage = _currentPage,
+
+                                            ShipName = _shipData.Name?.Trim(),
+
+                                            ShipType = _shipData.Type?.Trim(),
+
+                                            ShipImage = _shipData.Type?.Trim() + ".png",
+
+                                            AutomaticDocking = _shipData.AutomaticDocking,
+
+                                            Docked = App.EliteApi.Status.Docked,
+
+                                            FuelMain = App.EliteApi.Status.Fuel.FuelMain,
+
+                                            FuelReservoir = App.EliteApi.Status.Fuel.FuelReservoir,
+
+                                            MaxFuel = App.EliteApi.Status.Fuel.MaxFuel,
+
+                                            FuelPercent =
+                                                Convert.ToInt32(100 / App.EliteApi.Status.Fuel.MaxFuel *
+                                                                App.EliteApi.Status.Fuel.FuelMain),
+
+                                            LastJump = App.EliteApi.Status.JumpRange,
+
+                                            Cargo = App.EliteApi.Status.Cargo,
+
+                                            CargoCapacity = _shipData.CargoCapacity,
+
+                                            HullHealth = _shipData.HullHealth
+
+                                        });
+
+                                    /*
+                                    App.EliteApi.Status.Shields
+                                    App.EliteApi.Status.LowFuel
+                                    App.EliteApi.Status.Overheating
+                                    App.EliteApi.Status.FsdCharging
+                                    App.EliteApi.Status.FsdCooldown
+                                    App.EliteApi.Status.MassLocked
+                                    App.EliteApi.Status.InDanger
+                                    App.EliteApi.Status.InInterdiction
+                                    App.EliteApi.Status.SrvHandbreak
+                                    App.EliteApi.Status.SrvNearShip
+                                    App.EliteApi.Status.SrvDriveAssist
+                                    App.EliteApi.Status.HasLatlong
+                                    App.EliteApi.Status.InMothership
+                                    App.EliteApi.Status.InFighter
+                                    App.EliteApi.Status.InSRV
+                                    App.EliteApi.Status.AnalysisMode
+                                    App.EliteApi.Status.NightVision
+                                    App.EliteApi.Status.InNoFireZone
+                                    App.EliteApi.Status.IsRunning
+                                    App.EliteApi.Status.SrvTurrent
+                                    App.EliteApi.Status.InMainMenu
+                                    App.EliteApi.Status.SilentRunning
+                                    App.EliteApi.Status.Flags
+                                    App.EliteApi.Status.Landed
+                                    App.EliteApi.Status.Gear
+                                    App.EliteApi.Status.Supercruise
+                                    App.EliteApi.Status.FlightAssist
+                                    App.EliteApi.Status.Hardpoints
+                                    App.EliteApi.Status.Winging
+                                    App.EliteApi.Status.Lights
+                                    App.EliteApi.Status.CargoScoop
+                                    App.EliteApi.Status.Scooping
+    
+                                    App.EliteApi.Status.LegalState
+                                    App.EliteApi.Status.GameMode
+                                    App.EliteApi.Status.MusicTrack
+    
+                                    App.EliteApi.Status.FireGroup
+                                    App.EliteApi.Status.GuiFocus
+    
+                                    App.EliteApi.Status.Pips
+                                    */
+
+                                    //loadoutInfo.Hot
+                                    //loadoutInfo.HullValue
+                                    //loadoutInfo.Modules
+                                    //loadoutInfo.ModulesValue
+
+                                    //fuelScoopInfo.Scooped
+                                    //fuelScoopInfo.Total
+
+                                    //underAttackInfo.Target
+
+                                    //hullDamageInfo.Fighter
+                                    //hullDamageInfo.PlayerPilot
+
+                                    //interdictedInfo.Faction
+                                    //interdictedInfo.InterdictorLocalised
+                                    //interdictedInfo.IsPlayer
+                                    //interdictedInfo.Submitted
+                                    //interdictionInfo.Faction
+                                    //interdictionInfo.Interdicted
+                                    //interdictionInfo.IsPlayer
+                                    //interdictionInfo.Power
+                                    //interdictionInfo.Success
+
+                                    //scannedInfo.ScanType     
+
+                                    //loadGameInfo.ShipIdent
+                                    //loadGameInfo.Ship
+                                    //setUserShipNameInfo.UserShipId
+                                    //loadoutInfo.ShipIdent
+
+                                    break;
+
+                                case LCDTab.Navigation:
+
+                                    str =
+                                        Engine.Razor.Run("3.cshtml", null, new
+                                        {
+                                            CurrentTab = (int) _currentTab,
+                                            CurrentPage = _currentPage,
+
+                                            StarSystem = App.EliteApi.Location.StarSystem,
+
+                                            Body = !string.IsNullOrEmpty(_locationData.BodyType) &&
+                                                   !string.IsNullOrEmpty(_locationData.Body)
+                                                ? _locationData.Body
+                                                : null,
+
+                                            /*
+                                            "Station"
+                                            "Star"
+                                            "Planet"
+                                            "PlanetaryRing"
+                                            "StellarRing"                                        
+                                            "AsteroidCluster"                                         
+                                             */
+
+                                            BodyType = _locationData.BodyType,
+
+                                            Station = _locationData.BodyType == "Station" &&
+                                                      !string.IsNullOrEmpty(_locationData.Body)
+                                                ? _locationData.Body
+                                                : App.EliteApi.Location.Station,
+
+                                            Docked = App.EliteApi.Status.Docked,
+
+                                            LandingPad = _dockData.LandingPad,
+
+                                            StartJump = _locationData.StartJump,
+
+                                            JumpType = _locationData.JumpType,
+
+                                            JumpToSystem = _locationData.JumpToSystem,
+
+                                            JumpToStarClass = _locationData.JumpToStarClass,
+
+                                            RemainingJumpsInRoute = _locationData.RemainingJumpsInRoute,
+
+                                            FsdTargetName = _locationData.FsdTargetName,
+
+                                            Settlement = _locationData.Settlement,
+
+                                            HideBody = _locationData.HideBody,
+
+                                            StationType = _dockData.Type,
+
+                                            Government = _dockData.Government,
+
+                                            Allegiance = _dockData.Allegiance,
+
+                                            Faction = _dockData.Faction,
+
+                                            Economy = _dockData.Economy,
+
+                                            DistFromStarLs = _dockData.DistFromStarLs,
+
+                                            SystemAllegiance = _locationData.SystemAllegiance,
+
+                                            SystemFaction = _locationData.SystemFaction,
+
+                                            SystemSecurity = _locationData.SystemSecurity,
+
+                                            SystemEconomy = _locationData.SystemEconomy,
+
+                                            SystemGovernment = _locationData.SystemGovernment,
+
+                                            Population = _locationData.Population
+
+                                        });
+
+                                    //dockedInfo.StationEconomies
+
+                                    //locationInfo.SystemSecondEconomyLocalised
+                                    //fsdJumpInfo.SystemSecondEconomyLocalised
+
+                                    //fsdJumpInfo.PowerplayState
+                                    //fsdJumpInfo.Powers
+                                    //fsdJumpInfo.StarPos
+                                    //fsdJumpInfo.FactionState
+                                    //fsdJumpInfo.Factions
+
+                                    //approachSettlementInfo.Latitude
+                                    //approachSettlementInfo.Longitude
+
+                                    break;
+
+                                case LCDTab.Target:
+
+                                    str =
+                                        Engine.Razor.Run("4.cshtml", null, new
+                                        {
+                                            CurrentTab = (int) _currentTab,
+                                            CurrentPage = _currentPage,
+
+                                            TargetLocked = _targetData.TargetLocked,
+                                            ScanStage = _targetData.ScanStage,
+
+                                            Bounty = _targetData.Bounty,
+                                            Faction = _targetData.Faction,
+                                            LegalStatus = _targetData.LegalStatus,
+                                            PilotNameLocalised = _targetData.PilotNameLocalised,
+                                            PilotRank = _targetData.PilotRank,
+
+                                            Ship = _targetData.Ship?.Trim(),
+
+                                            ShipImage = _targetData.Ship?.Trim() + ".png",
+
+                                            SubsystemLocalised = _targetData.SubsystemLocalised,
+
+                                            SubsystemHealth = _targetData.SubsystemHealth,
+                                            HullHealth = _targetData.HullHealth,
+                                            ShieldHealth = _targetData.ShieldHealth,
+
+                                        });
+
+                                    break;
+
+                                case LCDTab.Missions:
+
+                                    str =
+                                        Engine.Razor.Run("5.cshtml", null, new
+                                        {
+                                            CurrentTab = (int) _currentTab,
+                                            CurrentPage = _currentPage,
+
+                                            MissionData = _missionData
+                                        });
+
+                                    break;
+
+                                case LCDTab.POI:
+
+                                    str =
+                                        Engine.Razor.Run("6.cshtml", null, new
+                                        {
+                                            CurrentTab = (int) _currentTab,
+                                            CurrentPage = _currentPage,
+
+                                            CurrentCard = _currentCard[(int) _currentTab],
+
+                                            CurrentPois = _currentPois, // 0
+
+                                            CurrentInterStellarFactors = _currentInterStellarFactors, // 1
+                                            CurrentRawMaterialTraders = _currentRawMaterialTraders, // 2
+                                            CurrentManufacturedMaterialTraders =
+                                                _currentManufacturedMaterialTraders, // 3
+                                            CurrentEncodedDataTraders = _currentEncodedDataTraders, // 4
+                                            CurrentHumanTechnologyBrokers = _currentHumanTechnologyBrokers, // 5
+                                            CurrentGuardianTechnologyBrokers = _currentGuardianTechnologyBrokers // 6
+
+                                        });
+
+                                    break;
+
+                                //----------------------
+
+                                case LCDTab.Map:
+
+
+                                    str =
+                                        Engine.Razor.Run("7.cshtml", null, new
+                                        {
+                                            CurrentTab = (int) _currentTab,
+                                            CurrentPage = _currentPage,
+
+                                            _currentZoomLevel = _currentZoomLevel[(int) _currentTab],
+
+
+                                        });
+
+                                    break;
+
+                                case LCDTab.Events:
 
                                     var eventlist = "";
                                     foreach (var b in _eventHistory)
@@ -1306,29 +1340,39 @@ namespace Elite
 
                                     break;
 
+                            }
                         }
-
 
                         graphics.Clear(Color.Black);
 
                         if (_currentTab >= 0)
                         {
-                            var htmlSize = HtmlRender.Measure(graphics, str, HtmlWindowWidth, App.cssData);
 
-                            CurrentLCDHeight = (int)htmlSize.Height; 
+                            if (mustRender)
+                            {
+                                CurrentLCDHeight = (int)HtmlRender.Measure(graphics, str, HtmlWindowWidth, App.cssData).Height;
 
-                            CheckLcdOffset();
+                                CheckLcdOffset();
+                            }
 
                             if (CurrentLCDHeight > 0)
                             {
-                                var image = HtmlRender.RenderToImage(str,
-                                    new Size(HtmlWindowWidth, CurrentLCDHeight + 20), Color.Black, App.cssData,null, OnImageLoad);
 
-                                graphics.DrawImage(image, new Rectangle(new Point(HtmlWindowXOffset,0),
-                                                                                   new Size(HtmlWindowWidth, HtmlWindowHeight + 20) ),
-                                                         new Rectangle(new Point(0, CurrentLCDYOffset),
-                                                             new Size(HtmlWindowWidth, HtmlWindowHeight + 20)),
-                                                         GraphicsUnit.Pixel);
+                                if (mustRender)
+                                {
+                                    htmlImage = HtmlRender.RenderToImage(str,
+                                        new Size(HtmlWindowWidth, CurrentLCDHeight + 20), Color.Black, App.cssData,
+                                        null, OnImageLoad);
+                                }
+
+                                if (htmlImage != null)
+                                {
+                                    graphics.DrawImage(htmlImage, new Rectangle(new Point(HtmlWindowXOffset, 0),
+                                            new Size(HtmlWindowWidth, HtmlWindowHeight + 20)),
+                                        new Rectangle(new Point(0, CurrentLCDYOffset),
+                                            new Size(HtmlWindowWidth, HtmlWindowHeight + 20)),
+                                        GraphicsUnit.Pixel);
+                                }
                             }
 
                             if (CurrentLCDHeight > HtmlWindowHeight)
@@ -1349,13 +1393,21 @@ namespace Elite
 
                         }
 
-                        var menuimage = HtmlRender.RenderToImage(menustr,
-                            new Size(HtmlMenuWindowWidth, HtmlWindowHeight), Color.Black, App.cssData, null, OnImageLoad);
+                        if (mustRender)
+                        {
+                            menuHtmlImage = HtmlRender.RenderToImage(menustr,
+                                new Size(HtmlMenuWindowWidth, HtmlWindowHeight), Color.Black, App.cssData, null,
+                                OnImageLoad);
+                        }
 
-                        graphics.DrawImage(menuimage, 0,0);
+                        if (menuHtmlImage != null)
+                        {
+
+                            graphics.DrawImage(menuHtmlImage, 0, 0);
+                        }
 
 #if DEBUG
-                        fipImage.Save(@"screenshot"+(int)_currentTab+"_"+ _currentCard[(int)_currentTab] + ".png", ImageFormat.Png);
+                        //fipImage.Save(@"screenshot"+(int)_currentTab+"_"+ _currentCard[(int)_currentTab] + ".png", ImageFormat.Png);
 #endif
 
                         fipImage.RotateFlip(RotateFlipType.Rotate180FlipX);

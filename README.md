@@ -32,12 +32,11 @@ Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not 
 
 https://support.logi.com/hc/en-us/articles/360024848713--Downloads-Flight-Instrument-Panel
 
-Software Version: 8.0.124.0
-Last Update: 2017-05-11
+Software Version: 8.0.134.0
+Last Update: 2018-01-05
 64-bit
 
-https://download01.logi.com/web/ftp/pub/techsupport/simulation/Flight_Instrument_Panel_x64_Drivers.exe
-
+https://download01.logi.com/web/ftp/pub/techsupport/simulation/Flight_Instrument_Panel_x64_Drivers_8.0.134.0.exe
 
 Also see companion plugin for Elgato stream deck :
 
