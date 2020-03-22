@@ -343,6 +343,9 @@ namespace Elite
 
         public class Ship
         {
+            public int CurrentShipId { get; set; }
+            public string CurrentShipType { get; set; }
+
             public bool AutomaticDocking { get; set; }
 
             public string Name { get; set; } = "";
@@ -622,7 +625,7 @@ namespace Elite
                 return;
             }
 
-            if (evt != "FSSSignalDiscovered" && evt != "FSSDiscoveryScan")
+            if (evt != "FSSSignalDiscovered" && evt != "FSSDiscoveryScan" && evt != "Music" && evt != "ReceiveText")
             {
                 EventHistory.Put(DateTime.Now.ToLongTimeString() + " : " + evt);
             }
@@ -636,6 +639,11 @@ namespace Elite
 
                     var loadGameInfo = (LoadGameEvent.LoadGameEventArgs) e;
 
+                    ShipData.CurrentShipId = loadGameInfo.ShipID;
+                    ShipData.CurrentShipType = loadGameInfo.Ship?.ToLower();
+
+                    //ShipIdent
+
                     //FID
                     //Horizons
                     //StartLanded
@@ -643,7 +651,7 @@ namespace Elite
                     //GameMode
                     //Group
                     //Loan
-                    //ShipIdent
+
                     //FuelLevel
 
                     ShipData.Name = loadGameInfo.ShipName;
@@ -721,6 +729,8 @@ namespace Elite
 
                     var setUserShipNameInfo = (SetUserShipNameEvent.SetUserShipNameEventArgs) e;
 
+                    //ShipID
+
                     ShipData.Name = setUserShipNameInfo.UserShipName;
 
                     ShipsByEliteID.TryGetValue(setUserShipNameInfo.Ship?.ToLower() ?? "???", out var tgtShip);
@@ -732,6 +742,8 @@ namespace Elite
                     //When written: at startup, or when being resurrected at a station
 
                     var locationInfo = (LocationEvent.LocationEventArgs)e;
+
+                    EliteHistory.HandleShipLocation(locationInfo.Docked, locationInfo.StarSystem, locationInfo.StationName, locationInfo.StarPos.ToList());
 
                     //Docked
                     //Latitude
@@ -752,8 +764,10 @@ namespace Elite
 
                     LocationData.StarPos = locationInfo.StarPos.ToList();
 
-                    CurrentPois = Poi.GetNearestPoiItems(LocationData.StarPos);
+                    EliteHistory.HandleShipDistance(LocationData.StarPos);
 
+                    CurrentPois = Poi.GetNearestPoiItems(LocationData.StarPos);
+                    
                     CurrentInterStellarFactors =
                         Station.GetNearestStationItems(LocationData.StarPos, App.InterStellarFactors);
                     CurrentRawMaterialTraders =
@@ -811,14 +825,6 @@ namespace Elite
 
                     CommanderData.Rebuy = loadoutInfo.Rebuy;
 
-                    //Ship:Python,
-                    //Ident:MH-08P,
-                    //Modules:31,
-                    //Hull Health:100,0%,
-                    //Hull:55.323.684 cr,
-                    //Modules:32.315.494 cr,
-                    //Rebuy:4.381.497 cr
-
                     ShipData.Name = loadoutInfo.ShipName;
 
                     ShipsByEliteID.TryGetValue(loadoutInfo.Ship?.ToLower() ?? "???", out var loadShip);
@@ -844,6 +850,8 @@ namespace Elite
                 case "ModuleBuy":
                     var moduleBuyInfo = (ModuleBuyEvent.ModuleBuyEventArgs) e;
 
+                    //ShipID
+
                     ShipData.CargoCapacity += UpdateCargoCapacity(moduleBuyInfo.BuyItem, 1);
                     ShipData.CargoCapacity += UpdateCargoCapacity(moduleBuyInfo.SellItem, -1);
 
@@ -852,19 +860,44 @@ namespace Elite
                 case "ModuleSell":
                     var moduleSellInfo = (ModuleSellEvent.ModuleSellEventArgs) e;
 
+                    //ShipID
+
                     ShipData.CargoCapacity += UpdateCargoCapacity(moduleSellInfo.SellItem, -1);
+
+                    break;
+
+                case "ModuleSellRemote":
+                    var moduleSellRemoteInfo = (ModuleSellRemoteEvent.ModuleSellRemoteEventArgs)e;
+
+                    //ShipID
+
+                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleSellRemoteInfo.SellItem, -1);
 
                     break;
 
                 case "ModuleStore":
                     var moduleStoreInfo = (ModuleStoreEvent.ModuleStoreEventArgs) e;
 
+                    //ShipID
+
                     ShipData.CargoCapacity += UpdateCargoCapacity(moduleStoreInfo.StoredItem, -1);
+
+                    break;
+
+                case "ModuleSwap":
+                    var moduleSwapInfo = (ModuleSwapEvent.ModuleSwapEventArgs)e;
+
+                    //ShipID
+
+                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleSwapInfo.ToItem, 1);
+                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleSwapInfo.FromItem, -1);
 
                     break;
 
                 case "ModuleRetrieve":
                     var moduleRetrieveInfo = (ModuleRetrieveEvent.ModuleRetrieveEventArgs) e;
+
+                    //ShipID
 
                     ShipData.CargoCapacity += UpdateCargoCapacity(moduleRetrieveInfo.RetrievedItem, 1);
 
@@ -872,6 +905,8 @@ namespace Elite
 
                 case "MassModuleStore":
                     var massModuleStoreInfo = (MassModuleStoreEvent.MassModuleStoreEventArgs) e;
+
+                    //ShipID
 
                     foreach (var i in massModuleStoreInfo.Items)
                     {
@@ -927,6 +962,24 @@ namespace Elite
                     var buyAmmoInfo = (BuyAmmoEvent.BuyAmmoEventArgs) e;
 
                     CommanderData.Credits -= Convert.ToUInt32(buyAmmoInfo.Cost);
+                    break;
+
+                case "PayBounties":
+
+                    var payBountiesInfo = (PayBountiesEvent.PayBountiesEventArgs)e;
+
+                    // shipID
+
+                    CommanderData.Credits -= Convert.ToUInt32(payBountiesInfo.Amount);
+                    break;
+
+                case "PayFines":
+
+                    var payFinesInfo = (PayFinesEvent.PayFinesEventArgs)e;
+
+                    // shipID
+
+                    CommanderData.Credits -= Convert.ToUInt32(payFinesInfo.Amount);
                     break;
 
                 case "ApproachBody":
@@ -995,6 +1048,8 @@ namespace Elite
 
                     var dockedInfo = (DockedEvent.DockedEventArgs) e;
 
+                    EliteHistory.HandleShipDocked(dockedInfo.StarSystem, dockedInfo.StationName);
+
                     //CockpitBreach
                     //StationEconomies
                     //Wanted
@@ -1046,6 +1101,8 @@ namespace Elite
 
                     var fsdJumpInfo = (FSDJumpEvent.FSDJumpEventArgs) e;
 
+                    EliteHistory.HandleShipFsdJump(fsdJumpInfo.StarSystem, fsdJumpInfo.StarPos.ToList());
+
                     //FuelUsed
                     //FuelLevel
                     //BoostUsed
@@ -1065,9 +1122,11 @@ namespace Elite
 
                     LocationData.StarPos = fsdJumpInfo.StarPos.ToList();
 
+                    EliteHistory.HandleShipDistance(LocationData.StarPos);
+
                     CurrentPois = Poi.GetNearestPoiItems(LocationData.StarPos);
 
-                    TravelHistory.AddTravelPos(LocationData.StarPos);
+                    EliteHistory.AddTravelPos(LocationData.StarPos);
 
                     CurrentInterStellarFactors =
                         Station.GetNearestStationItems(LocationData.StarPos, App.InterStellarFactors);
@@ -1245,6 +1304,65 @@ namespace Elite
                     var missionFailedInfo = (MissionFailedEvent.MissionFailedEventArgs) e;
 
                     MissionData.RemoveAll(x => x.MissionID == missionFailedInfo.MissionID);
+
+                    break;
+
+                case "ShipyardBuy":
+                    //When Written: when buying a new ship in the shipyard
+                    //Note: the new ship’s ShipID will be logged in a separate event after the purchase
+
+                    var shipyardBuyInfo = (ShipyardBuyEvent.ShipyardBuyEventArgs)e;
+
+                    EliteHistory.HandleShipyardBuy(shipyardBuyInfo);
+
+                    break;
+
+                case "ShipyardSell":
+                    //When Written: when selling a ship stored in the shipyard
+
+                    var shipyardSellInfo = (ShipyardSellEvent.ShipyardSellEventArgs)e;
+
+                    EliteHistory.HandleShipyardSell(shipyardSellInfo);
+
+                    break;
+
+                case "ShipyardNew":
+                    //When written: after a new ship has been purchased
+                    var shipyardNewInfo = (ShipyardNewEvent.ShipyardNewEventArgs)e;
+
+                    EliteHistory.HandleShipyardNew(shipyardNewInfo);
+
+                    ShipData.CurrentShipId = shipyardNewInfo.NewShipID;
+                    ShipData.CurrentShipType = shipyardNewInfo.ShipType;
+
+                    break;
+
+                case "ShipyardSwap":
+                    //When Written: when switching to another ship already stored at this station
+                    var shipyardSwapInfo = (ShipyardSwapEvent.ShipyardSwapEventArgs)e;
+
+                    EliteHistory.HandleShipyardSwap(shipyardSwapInfo);
+
+                    ShipData.CurrentShipId = shipyardSwapInfo.ShipID;
+                    ShipData.CurrentShipType = shipyardSwapInfo.ShipType;
+
+                    break;
+
+                case "ShipyardTransfer":
+                    //When Written: when requesting a ship at another station be transported to this station
+                    var shipyardTransferInfo = (ShipyardTransferEvent.ShipyardTransferEventArgs)e;
+
+                    //ShipID
+
+                    break;
+
+                case "StoredShips":
+                    //    When written: when visiting shipyard
+                    var storedShipsInfo = (StoredShipsEvent.StoredShipsEventArgs)e;
+
+                    //ShipID
+
+                    EliteHistory.HandleStoredShips(storedShipsInfo);
 
                     break;
 

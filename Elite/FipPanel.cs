@@ -279,7 +279,7 @@ namespace Elite
                 switch (button)
                 {
                     case 8: // scroll clockwise
-                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Map))
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
                         {
 
                             _currentCard[(int) _currentTab]++;
@@ -291,7 +291,7 @@ namespace Elite
                         break;
                     case 16: // scroll anti-clockwise
 
-                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Map))
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
                         {
                             _currentCard[(int) _currentTab]--;
                             _currentZoomLevel[(int) _currentTab]--;
@@ -501,7 +501,7 @@ namespace Elite
                 {
                     if (e.Src.ToLower() == "galaxy.png" && _currentTab == LCDTab.Map)
                     {
-                        graphics.DrawPolygon(_whitePen, TravelHistory.TravelHistoryPoints.ToArray());
+                        graphics.DrawPolygon(_whitePen, EliteHistory.TravelHistoryPoints.ToArray());
 
                         var zoomLevel = _currentZoomLevel[(int)_currentTab] / 2.0 + 1;
 
@@ -519,8 +519,8 @@ namespace Elite
                             var spaceX = EliteData.LocationData.StarPos[0];
                             var spaceZ = EliteData.LocationData.StarPos[2];
 
-                            var imgX = (spaceX - TravelHistory.SpaceMinX) / (TravelHistory.SpaceMaxX - TravelHistory.SpaceMinX) * image.Width;
-                            var imgY = (TravelHistory.SpaceMaxZ - spaceZ) / (TravelHistory.SpaceMaxZ - TravelHistory.SpaceMinZ) * image.Height;
+                            var imgX = (spaceX - EliteHistory.SpaceMinX) / (EliteHistory.SpaceMaxX - EliteHistory.SpaceMinX) * image.Width;
+                            var imgY = (EliteHistory.SpaceMaxZ - spaceZ) / (EliteHistory.SpaceMaxZ - EliteHistory.SpaceMinZ) * image.Height;
 
                             imgX -= markerWidth / 2.0;
                             imgY -= markerHeight / 2.0;
@@ -607,6 +607,20 @@ namespace Elite
 
                         switch (_currentTab)
                         {
+                            case LCDTab.Ship:
+
+                                if (_currentCard[(int)_currentTab] < 0)
+                                {
+                                    _currentCard[(int)_currentTab] = 1;
+                                }
+                                else
+                                if (_currentCard[(int)_currentTab] > 1)
+                                {
+                                    _currentCard[(int)_currentTab] = 0;
+                                }
+
+                                break;
+
                             case LCDTab.POI:
 
                                 if (_currentCard[(int)_currentTab] < 0)
@@ -620,8 +634,6 @@ namespace Elite
                                 }
 
                                 break;
-
-                            //----------------------
 
                             case LCDTab.Map:
 
@@ -720,6 +732,8 @@ namespace Elite
                                             CurrentTab = (int) _currentTab,
                                             CurrentPage = _currentPage,
 
+                                            CurrentCard = _currentCard[(int)_currentTab],
+
                                             ShipName = EliteData.ShipData.Name?.Trim(),
 
                                             ShipType = EliteData.ShipData.Type?.Trim(),
@@ -754,7 +768,9 @@ namespace Elite
                                             UnladenMass= EliteData.ShipData.UnladenMass,
                                             MaxJumpRange= EliteData.ShipData.MaxJumpRange,
 
-                                            Hot = EliteData.ShipData.Hot
+                                            Hot = EliteData.ShipData.Hot,
+
+                                            StoredShips = EliteHistory.ShipsList.Where(x => x.Stored == true).OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
 
                                         });
                                     
@@ -1006,7 +1022,7 @@ namespace Elite
                         }
 
 #if DEBUG
-                        //fipImage.Save(@"screenshot"+(int)_currentTab+"_"+ _currentCard[(int)_currentTab] + ".png", ImageFormat.Png);
+                        fipImage.Save(@"screenshot"+(int)_currentTab+"_"+ _currentCard[(int)_currentTab] + ".png", ImageFormat.Png);
 #endif
 
                         fipImage.RotateFlip(RotateFlipType.Rotate180FlipX);

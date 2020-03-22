@@ -1,55 +1,129 @@
+@using System
+@using System.Collections.Generic
+@using Elite
+@using System.Linq
+
 @{
     Layout = "layout.cshtml";
 }
 
     <div class="main">
-        <table>
-            <tbody>
-                @if (!string.IsNullOrEmpty(Model.ShipName))
-                {
-                    <tr>
-                        <td class="caption">Ship Name</td>
-                        <td class="data">@Model.ShipName</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.ShipType))
-                {
-                    <tr>
-                        <td class="caption">Ship Type</td>
-                        <td class="data">@Model.ShipType</td>
-                    </tr>
-                }
-                <tr>
-                    <td class="caption">Fuel</td>
-                    <td class="data">@Model.FuelPercent %</td>
-                </tr>
-                @if (Model.HullHealth >= 0)
-                {
-                    <tr>
-                        <td class="caption">Hull Health</td>
-                        <td class="data">@Model.HullHealth.ToString("N0") %</td>
-                    </tr>
-                }
-                @if (Model.CargoCapacity > 0 && Model.CargoCapacity >= Model.Cargo)
-                {
-                    <tr>
-                        <td class="caption">Cargo</td>
-                        <td class="data">@Model.Cargo of @Model.CargoCapacity T</td>
-                    </tr>
-                }
 
-            @if (Model.LastJump > 0)
+        @if (Model.CurrentCard == 0)
+        {
+            <div class="cardcaption">&#x25c0; Current Ship &#x25b6;</div>
+
+            <table>
+                <tbody>
+                    @if (!string.IsNullOrEmpty(Model.ShipName))
+                    {
+                        <tr>
+                            <td class="caption">Ship Name</td>
+                            <td class="data">@Model.ShipName</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ShipType))
+                    {
+                        <tr>
+                            <td class="caption">Ship Type</td>
+                            <td class="data">@Model.ShipType</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="caption">Fuel</td>
+                        <td class="data">@Model.FuelPercent %</td>
+                    </tr>
+                    @if (Model.HullHealth >= 0)
+                    {
+                        <tr>
+                            <td class="caption">Hull Health</td>
+                            <td class="data">@Model.HullHealth.ToString("N0") %</td>
+                        </tr>
+                    }
+                    @if (Model.CargoCapacity > 0 && Model.CargoCapacity >= Model.Cargo)
+                    {
+                        <tr>
+                            <td class="caption">Cargo</td>
+                            <td class="data">@Model.Cargo of @Model.CargoCapacity T</td>
+                        </tr>
+                    }
+
+                    @if (Model.LastJump > 0)
+                    {
+                        <tr>
+                            <td class="caption">Last Jump</td>
+                            <td class="data">@Model.LastJump.ToString("N1") LY</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+            if (!string.IsNullOrEmpty(Model.ShipImage))
             {
-                <tr>
-                    <td class="caption">Last Jump</td>
-                    <td class="data">@Model.LastJump.ToString("N1") LY</td>
-                </tr>
+                <img src="ships\@Model.ShipImage" width="236" height="236" />
             }
 
-            </tbody>
-        </table>
-        @if (!string.IsNullOrEmpty(Model.ShipImage))
-        {
-            <img src="ships\@Model.ShipImage" width="236" height="236" />
         }
+        else if (Model.CurrentCard == 1)
+        {
+            <div class="cardcaption">&#x25c0; Stored Ships &#x25b6;</div>
+
+            foreach (var m in Model.StoredShips)
+            {
+                <table>
+                    <tbody>
+
+                        @if (!string.IsNullOrEmpty(m.ShipTypeFull))
+                        {
+                            <tr>
+                                <td class="caption">Ship Type</td>
+                                <td class="data">@m.ShipTypeFull (@m.ShipID)</td>
+                            </tr>
+                        }
+                        @if (!string.IsNullOrEmpty(m.StarSystem))
+                        {
+                            <tr>
+                                <td class="caption">In System</td>
+                                <td class="data">@m.StarSystem</td>
+                            </tr>
+                        }
+                        @if (!string.IsNullOrEmpty(m.StationName))
+                        {
+                            <tr>
+                                <td class="caption">On Station</td>
+                                <td class="data">@m.StationName</td>
+                            </tr>
+                        }
+                        @if (m.Distance > 0)
+                        {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+                if (!string.IsNullOrEmpty(m.ShipImage))
+                {
+                    <img src="ships\@m.ShipImage" width="236" height="236" />
+                }
+
+                if (!((List<EliteHistory.ShipData>)Model.StoredShips).Last().Equals((EliteHistory.ShipData)m))
+                {
+                    <table>
+                        <tbody>
+
+                            <tr>
+                                <td class="divider" colspan="2">&nbsp;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                }
+
+            }
+        }
+
     </div>

@@ -139,8 +139,8 @@ namespace Elite
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Guardian Technology Brokers...");
                 GuardianTechnologyBrokers = Station.GetStations("guardiantechnologybrokers.json");
 
-                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Travel History...");
-                var path = TravelHistory.GetTravelHistory();
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading History...");
+                var path = EliteHistory.GetEliteHistory();
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Status Watcher...");
                 statusWatcher = new StatusWatcher(path);

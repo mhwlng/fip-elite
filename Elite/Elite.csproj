@@ -123,7 +123,7 @@
     </Compile>
     <Compile Include="Station.cs" />
     <Compile Include="EliteData.cs" />
-    <Compile Include="TravelHistory.cs" />
+    <Compile Include="EliteHistory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
