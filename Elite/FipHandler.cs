@@ -10,11 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using log4net.Appender;
 using Microsoft.Win32;
-using Somfic.Logging;
 
 namespace Elite
 {
-    class FipHandler
+    public class FipHandler
     {
         private List<FipPanel> _fipPanels = new List<FipPanel>();
 
@@ -87,6 +86,16 @@ namespace Elite
             {
                 App.log.Error(ex);
             }
+        }
+
+
+        public void RefreshDevicePages()
+        {
+            foreach (var fipPanel in _fipPanels)
+            {
+                fipPanel.RefreshDevicePage();
+            }
+
         }
 
         private bool IsFipDevice(IntPtr device)

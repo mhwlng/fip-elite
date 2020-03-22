@@ -26,6 +26,13 @@
                         <td class="data">@m.System</td>
                     </tr>
                 }
+                if (!string.IsNullOrEmpty(m.Station))
+                {
+                    <tr>
+                        <td class="caption">Station</td>
+                        <td class="data">@m.Station</td>
+                    </tr>
+                }
 
                 if (m.Reward > 0)
                 {
@@ -47,22 +54,6 @@
                     <tr>
                         <td class="caption">Faction</td>
                         <td class="data">@m.Faction</td>
-                    </tr>
-                }
-
-                if (!string.IsNullOrEmpty(m.Influence))
-                {
-                    <tr>
-                        <td class="caption">Influence</td>
-                        <td class="data">@m.Influence</td>
-                    </tr>
-                }
-
-                if (!string.IsNullOrEmpty(m.Reputation))
-                {
-                    <tr>
-                        <td class="caption">Reputation</td>
-                        <td class="data">@m.Reputation</td>
                     </tr>
                 }
 
@@ -92,6 +83,37 @@
                     </tr>
 
                 }
+                else if (m.KillCount > 0)
+                {
+                    if (!string.IsNullOrEmpty(m.Target))
+                    {
+                        <tr>
+                            <td class="caption">Target</td>
+                            <td class="data">@m.Target</td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <td class="caption">Kill Count</td>
+                        <td class="data">@m.KillCount.ToString("N0")</td>
+                    </tr>
+
+                    if (!string.IsNullOrEmpty(m.TargetType))
+                    {
+                        <tr>
+                            <td class="caption">Target Type</td>
+                            <td class="data">@m.TargetType</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.TargetFaction))
+                    {
+                        <tr>
+                            <td class="caption">Target Faction</td>
+                            <td class="data">@m.TargetFaction</td>
+                        </tr>
+                    }
+                }
                 else
                 {
                     if (!string.IsNullOrEmpty(m.CommodityLocalised))
@@ -109,10 +131,25 @@
                             <td class="data">@m.Count.ToString("N0")</td>
                         </tr>
                     }
+
+                    if (!string.IsNullOrEmpty(m.Donation))
+                    {
+                        <tr>
+                            <td class="caption">Donation</td>
+                            <td class="data">@m.Donation</td>
+                        </tr>
+                    }
+
+                    if (m.Donated > 0)
+                    {
+                        <tr>
+                            <td class="caption">Donated</td>
+                            <td class="data">@m.Donated.ToString("N0")</td>
+                        </tr>
+                    }
                 }
 
-
-                if (!((List<Mission>)Model.MissionData).Last().Equals((Mission)m))
+                if (!((List<EliteData.Mission>)Model.MissionData).Last().Equals((EliteData.Mission)m))
                 {
                     <tr>
                         <td class="divider" colspan="2">&nbsp;</td>

@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using EliteAPI.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -78,14 +77,14 @@ namespace Elite
             }
         }
 
-        public static void GetTravelHistory()
+        public static string GetTravelHistory()
         {
             var journalDirectory = StandardDirectory;
 
             if (!Directory.Exists(journalDirectory.FullName))
             {
                 App.log.Error($"Directory {journalDirectory.FullName} not found.");
-                return;
+                return null;
             }
 
             try
@@ -133,6 +132,7 @@ namespace Elite
                 App.log.Error(ex);
             }
 
+            return journalDirectory.FullName;
         }
 
     }

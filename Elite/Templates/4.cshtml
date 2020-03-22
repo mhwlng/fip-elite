@@ -42,6 +42,13 @@
                             <td class="data">@Model.Faction</td>
                         </tr>
                     }
+                    if (!string.IsNullOrEmpty(Model.Power))
+                    {
+                        <tr>
+                            <td class="caption">Power</td>
+                            <td class="data">@Model.Power</td>
+                        </tr>
+                    }
                     if (!string.IsNullOrEmpty(Model.SubsystemLocalised))
                     {
                         <tr>

@@ -11,15 +11,16 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using CsvHelper.TypeConversion;
-using EliteAPI;
 using Hardcodet.Wpf.TaskbarNotification;
 using log4net;
 using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
-using Somfic.Logging;
-using Somfic.Logging.Handlers;
 using TheArtOfDev.HtmlRenderer.Core;
+using EliteJournalReader;
+using EliteJournalReader.Events;
+
+
 // ReSharper disable StringLiteralTypo
 
 namespace Elite
@@ -34,9 +35,11 @@ namespace Elite
 
         private TaskbarIcon notifyIcon;
 
-        public static EliteDangerousAPI EliteApi = new EliteDangerousAPI();
+        public static FipHandler fipHandler = new FipHandler();
 
-        private static FipHandler fipHandler = new FipHandler();
+        public static JournalWatcher watcher;
+
+        public static StatusWatcher statusWatcher;
 
         public static readonly ILog log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -53,7 +56,7 @@ namespace Elite
         public static List<StationData> GuardianTechnologyBrokers = null;
 
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs evtArgs)
         {
             const string appName = "Fip-Elite";
 
@@ -65,7 +68,7 @@ namespace Elite
                 Application.Current.Shutdown();
             }
 
-            base.OnStartup(e);
+            base.OnStartup(evtArgs);
 
             log4net.Config.XmlConfigurator.Configure();
 
@@ -137,10 +140,21 @@ namespace Elite
                 GuardianTechnologyBrokers = Station.GetStations("guardiantechnologybrokers.json");
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Travel History...");
-                TravelHistory.GetTravelHistory();
+                var path = TravelHistory.GetTravelHistory();
 
-                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite API...");
-                EliteApi.Start(false);
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Status Watcher...");
+                statusWatcher = new StatusWatcher(path);
+
+                statusWatcher.StatusUpdated += EliteData.HandleStatusEvents;
+
+                statusWatcher.StartWatching();
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Watcher...");
+                watcher = new JournalWatcher(path);
+
+                watcher.AllEventHandler += EliteData.HandleEliteEvents;
+
+                watcher.StartWatching().Wait();
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting FIP...");
                 if (!fipHandler.Initialize())
@@ -160,7 +174,13 @@ namespace Elite
 
         protected override void OnExit(ExitEventArgs e)
         {
-            EliteApi.Stop();
+            statusWatcher.StatusUpdated -= EliteData.HandleStatusEvents;
+
+            statusWatcher.StopWatching();
+
+            watcher.AllEventHandler -= EliteData.HandleEliteEvents;
+
+            watcher.StopWatching();
 
             fipHandler.Close();
 

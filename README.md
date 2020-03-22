@@ -46,7 +46,7 @@ Thanks to :
 
 https://github.com/EDCD/EDDI
 
-https://github.com/EliteAPI/EliteAPI
+https://github.com/MagicMau/EliteJournalReader
 
 https://github.com/Filtik/EliteDangerousLCD
 
