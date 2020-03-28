@@ -101,6 +101,7 @@ namespace Elite
                 Engine.Razor = RazorEngineService.Create(config);
 
                 Engine.Razor.Compile("menu.cshtml", null);
+                Engine.Razor.Compile("cardcaption.cshtml", null);
                 Engine.Razor.Compile("layout.cshtml", null);
                 Engine.Razor.Compile("init.cshtml", null);
 

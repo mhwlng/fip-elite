@@ -115,6 +115,7 @@ namespace Elite
 
         private Image htmlImage = null;
         private Image menuHtmlImage = null;
+        private Image cardcaptionHtmlImage = null;
 
         private const int HtmlMenuWindowWidth = 69;
 
@@ -587,22 +588,6 @@ namespace Elite
                 {
                     using (var graphics = Graphics.FromImage(fipImage))
                     {
-                        var menustr = "";
-
-                        if (mustRender)
-                        {
-                            menustr =
-                                Engine.Razor.Run("menu.cshtml", null, new
-                                {
-                                    CurrentTab = (int) _currentTab,
-                                    CurrentPage = _currentPage,
-
-                                    TargetLocked = EliteData.TargetData.TargetLocked,
-
-                                    MissionCount = EliteData.MissionData.Count
-                                });
-                        }
-
                         var str = "";
 
                         switch (_currentTab)
@@ -731,7 +716,6 @@ namespace Elite
                                         {
                                             CurrentTab = (int) _currentTab,
                                             CurrentPage = _currentPage,
-
                                             CurrentCard = _currentCard[(int)_currentTab],
 
                                             ShipName = EliteData.ShipData.Name?.Trim(),
@@ -1010,6 +994,17 @@ namespace Elite
 
                         if (mustRender)
                         {
+                            var menustr =
+                                Engine.Razor.Run("menu.cshtml", null, new
+                                {
+                                    CurrentTab = (int)_currentTab,
+                                    CurrentPage = _currentPage,
+
+                                    TargetLocked = EliteData.TargetData.TargetLocked,
+
+                                    MissionCount = EliteData.MissionData.Count
+                                });
+
                             menuHtmlImage = HtmlRender.RenderToImage(menustr,
                                 new Size(HtmlMenuWindowWidth, HtmlWindowHeight), Color.Black, App.cssData, null,
                                 OnImageLoad);
@@ -1017,8 +1012,30 @@ namespace Elite
 
                         if (menuHtmlImage != null)
                         {
-
                             graphics.DrawImage(menuHtmlImage, 0, 0);
+                        }
+
+                        if (_currentTab == LCDTab.Ship || _currentTab == LCDTab.POI)
+                        {
+                            if (mustRender)
+                            {
+                                var cardcaptionstr =
+                                    Engine.Razor.Run("cardcaption.cshtml", null, new
+                                    {
+                                        CurrentTab = (int)_currentTab,
+                                        CurrentPage = _currentPage,
+                                        CurrentCard = _currentCard[(int)_currentTab]
+                                    });
+
+                                cardcaptionHtmlImage = HtmlRender.RenderToImage(cardcaptionstr,
+                                    new Size(HtmlWindowWidth, 26), Color.Black, App.cssData, null,
+                                    null);
+                            }
+
+                            if (cardcaptionHtmlImage != null)
+                            {
+                                graphics.DrawImage(cardcaptionHtmlImage, HtmlWindowXOffset, 0);
+                            }
                         }
 
 #if DEBUG

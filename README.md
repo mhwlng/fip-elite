@@ -15,8 +15,8 @@ Use the up/down arrow buttons to switch pages.
 
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
 ![Screenshot 2](https://i.imgur.com/gmZVF4P.png)
-![Screenshot 3](https://i.imgur.com/0jsWGOk.png)
-![Screenshot 4](https://i.imgur.com/gx3Yjzh.png)
+![Screenshot 3](https://i.imgur.com/cGRZX5F.png)
+![Screenshot 4](https://i.imgur.com/TLWL3Fx.png)
 ![Screenshot 5](https://i.imgur.com/iJnHuOV.png)
 ![Screenshot 6](https://i.imgur.com/16pc2zo.png)
 ![Screenshot 7](https://i.imgur.com/z6gq2Ok.png)

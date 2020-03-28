@@ -181,6 +181,9 @@
     <None Include="Templates\layout.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Templates\cardcaption.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\menu.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

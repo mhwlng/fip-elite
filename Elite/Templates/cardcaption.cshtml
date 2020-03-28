@@ -1,0 +1,61 @@
+@using System
+@using System.Collections.Generic
+@using Elite
+@using System.Linq
+
+@{
+    Layout = "layout.cshtml";
+}
+
+<div class="main">
+
+    @if (Model.CurrentTab == 2)
+    {
+
+        if (Model.CurrentCard == 0)
+        {
+            <div class="cardcaption">&#x25c0; Current Ship &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 1)
+        {
+            <div class="cardcaption">&#x25c0; Stored Ships &#x25b6;</div>
+        }
+    }
+    else if (Model.CurrentTab == 6)
+    { 
+
+        if (Model.CurrentCard == 0)
+        {
+            <div class="cardcaption">&#x25c0; Points of Interest &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 1)
+        {
+            <div class="cardcaption">&#x25c0; Interstellar Factors &#x25b6;</div>
+
+        }
+        else if (Model.CurrentCard == 2)
+        {
+            <div class="cardcaption">&#x25c0; Raw Material Traders &#x25b6;</div>
+
+        }
+        else if (Model.CurrentCard == 3)
+        {
+            <div class="cardcaption">&#x25c0; Manuf. Material Traders &#x25b6;</div>
+
+        }
+        else if (Model.CurrentCard == 4)
+        {
+            <div class="cardcaption">&#x25c0; Encoded Data Traders &#x25b6;</div>
+
+        }
+        else if (Model.CurrentCard == 5)
+        {
+            <div class="cardcaption">&#x25c0; Human Tech. Brokers &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 6)
+        {
+            <div class="cardcaption">&#x25c0; Guardian Tech. Brokers &#x25b6;</div>
+        }
+    }
+
+</div>
