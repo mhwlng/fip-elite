@@ -965,7 +965,7 @@ namespace Elite
 
                             if (mustRender)
                             {
-                                var measureData =HtmlRender.Measure(graphics, str, HtmlWindowWidth, App.cssData);
+                                var measureData =HtmlRender.Measure(graphics, str, HtmlWindowWidth, App.cssData,null, OnImageLoad);
 
                                 CurrentLCDHeight = (int)measureData.Height;
                             }

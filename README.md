@@ -11,7 +11,7 @@ Use the right rotary encoder to scroll vertically on all tabs.
 
 Use the left rotary encoder to show another card on the POI or SHIP tab or zoom into the galaxy map.
 
-use the up/down arrow buttons to switch pages
+Use the up/down arrow buttons to switch pages.
 
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
 ![Screenshot 2](https://i.imgur.com/gmZVF4P.png)

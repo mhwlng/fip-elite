@@ -60,7 +60,7 @@
             </table>
             if (!string.IsNullOrEmpty(Model.ShipImage))
             {
-                <img src="ships\@Model.ShipImage" width="236" height="236" />
+                <img src="ships\@Model.ShipImage" />
             }
 
         }
@@ -107,7 +107,7 @@
 
                 if (!string.IsNullOrEmpty(m.ShipImage))
                 {
-                    <img src="ships\@m.ShipImage" width="236" height="236" />
+                    <img src="ships\@m.ShipImage"  />
                 }
 
                 if (!((List<EliteHistory.ShipData>)Model.StoredShips).Last().Equals((EliteHistory.ShipData)m))
