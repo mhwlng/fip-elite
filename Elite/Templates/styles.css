@@ -67,6 +67,11 @@ div.menu {
     background-color: #FFB000;
 }
 
+.menu table td div.disabled {
+    color: #303030;
+    background-color: black;
+}
+
 
 .main table {
     border-spacing: 5px;
