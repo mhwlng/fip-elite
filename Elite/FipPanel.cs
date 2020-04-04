@@ -749,6 +749,15 @@ namespace Elite
 
                                             Hot = EliteData.ShipData.Hot,
 
+                                            Bulkhead = EliteData.ShipData.Bulkhead,
+                                            PowerPlant = EliteData.ShipData.PowerPlant,
+                                            Engine = EliteData.ShipData.Engine,
+                                            PowerDistributor = EliteData.ShipData.PowerDistributor,
+                                            FrameShiftDrive = EliteData.ShipData.FrameShiftDrive,
+                                            LifeSupport = EliteData.ShipData.LifeSupport,
+                                            Sensors = EliteData.ShipData.Sensors,
+                                            GuardianFSDBooster = EliteData.ShipData.GuardianFSDBooster,
+
                                             StoredShips = EliteHistory.ShipsList.Where(x => x.Stored == true).OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
 
                                         });

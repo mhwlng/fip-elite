@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using Elite.RingBuffer;
 using EliteJournalReader;
 using EliteJournalReader.Events;
+using Module = EliteJournalReader.Module;
 
 
 namespace Elite
@@ -366,6 +367,17 @@ namespace Elite
 
             public bool Hot { get; set; }
 
+            //hardpoints = new List<Hardpoint>();
+            //compartments = new List<Compartment>();
+            //launchbays = new List<LaunchBay>();
+            public string Bulkhead { get; set; }
+            public string PowerPlant { get; set; }
+            public string Engine { get; set; }
+            public string PowerDistributor { get; set; }
+            public string FrameShiftDrive { get; set; }
+            public string LifeSupport { get; set; }
+            public string Sensors { get; set; }
+            public string GuardianFSDBooster { get; set; }
         }
 
         public class Mission
@@ -803,23 +815,6 @@ namespace Elite
                 case "Loadout":
                     //When written: at startup, when loading from main menu, or when switching ships, 
 
-                    // ship : The ship model
-                    // shipid : The ID of the ship
-                    // shipname : The name of the ship
-                    // shipident : The identification string of the ship
-                    // hullvalue : The value of the ship's hull (less modules)
-                    // modulesvalue : The value of the ship's modules (less hull)
-                    // value : The total value of the ship (hull + modules)
-                    // hullhealth : The health of the ship's hull
-                    // unladenmass : The unladen mass of the ship
-                    // maxjumprange : The max unlaiden jump range of the ship
-                    // optimalmass : The optimal mass value of the frame shift drive
-                    // rebuy : The rebuy value of the ship
-                    // hot : True if the ship is `hot`
-                    // paintjob : The paintjob of the ship
-                    // compartments : The compartments of the ship
-                    // hardpoints : The hardpoints of the ship
-
                     var loadoutInfo = (LoadoutEvent.LoadoutEventArgs)e;
 
                     EliteHistory.HandleLoadout(loadoutInfo);
@@ -844,11 +839,53 @@ namespace Elite
                     ShipData.CargoCapacity = 0;
                     ShipData.FuelCapacity = 0;
 
+                    ShipData.Bulkhead = null;
+                    ShipData.PowerPlant = null;
+                    ShipData.Engine = null;
+                    ShipData.PowerDistributor = null;
+                    ShipData.FrameShiftDrive = null;
+                    ShipData.LifeSupport = null;
+                    ShipData.Sensors = null;
+                    ShipData.GuardianFSDBooster = null;
+
                     foreach (var m in loadoutInfo.Modules)
                     {
                         ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(m.Item);
                         ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(m.Item);
+
+                        ShipData.Bulkhead = EliteHistory.UpdateArmour(m.Item, ShipData.Bulkhead, false);
+                        ShipData.Bulkhead = EliteHistory.UpdateArmour(m.Item, ShipData.Bulkhead,false);
+                        ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(m.Item, ShipData.PowerPlant, false);
+                        ShipData.Engine = EliteHistory.UpdateEngine(m.Item, ShipData.Engine, false);
+                        ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(m.Item, ShipData.PowerDistributor, false);
+                        ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(m.Item, ShipData.FrameShiftDrive, false);
+                        ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(m.Item, ShipData.LifeSupport, false);
+                        ShipData.Sensors = EliteHistory.UpdateSensors(m.Item, ShipData.Sensors, false);
+                        ShipData.GuardianFSDBooster = EliteHistory.UpdateGuardianFSDBooster(m.Item, ShipData.GuardianFSDBooster, false);
                     }
+
+                    break;
+
+                case "ModuleRetrieve":
+                    //When Written: when fetching a previously stored module
+                    var moduleRetrieveInfo = (ModuleRetrieveEvent.ModuleRetrieveEventArgs)e;
+
+                    EliteHistory.HandleModuleRetrieve(moduleRetrieveInfo);
+
+                    //ShipID
+
+                    ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(moduleRetrieveInfo.RetrievedItem);
+                    ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(moduleRetrieveInfo.RetrievedItem);
+
+                    ShipData.Bulkhead = EliteHistory.UpdateArmour(moduleRetrieveInfo.RetrievedItem, ShipData.Bulkhead, false);
+                    ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleRetrieveInfo.RetrievedItem, ShipData.PowerPlant, false);
+                    ShipData.Engine = EliteHistory.UpdateEngine(moduleRetrieveInfo.RetrievedItem, ShipData.Engine, false);
+                    ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleRetrieveInfo.RetrievedItem, ShipData.PowerDistributor, false);
+                    ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleRetrieveInfo.RetrievedItem, ShipData.FrameShiftDrive, false);
+                    ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleRetrieveInfo.RetrievedItem, ShipData.LifeSupport, false);
+                    ShipData.Sensors = EliteHistory.UpdateSensors(moduleRetrieveInfo.RetrievedItem, ShipData.Sensors, false);
+                    ShipData.GuardianFSDBooster = EliteHistory.UpdateGuardianFSDBooster(moduleRetrieveInfo.RetrievedItem, ShipData.GuardianFSDBooster, false);
+
 
                     break;
 
@@ -860,11 +897,64 @@ namespace Elite
 
                     EliteHistory.HandleModuleBuy(moduleBuyInfo);
 
-                    ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(moduleBuyInfo.BuyItem);
                     ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleBuyInfo.SellItem);
-
-                    ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(moduleBuyInfo.BuyItem);
                     ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleBuyInfo.SellItem);
+
+                    ShipData.Bulkhead = EliteHistory.UpdateArmour(moduleBuyInfo.SellItem, ShipData.Bulkhead, true);
+                    ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleBuyInfo.SellItem, ShipData.PowerPlant, true);
+                    ShipData.Engine = EliteHistory.UpdateEngine(moduleBuyInfo.SellItem, ShipData.Engine, true);
+                    ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleBuyInfo.SellItem, ShipData.PowerDistributor, true);
+                    ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleBuyInfo.SellItem, ShipData.FrameShiftDrive, true);
+                    ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleBuyInfo.SellItem, ShipData.LifeSupport, true);
+                    ShipData.Sensors = EliteHistory.UpdateSensors(moduleBuyInfo.SellItem, ShipData.Sensors, true);
+                    ShipData.GuardianFSDBooster = EliteHistory.UpdateGuardianFSDBooster(moduleBuyInfo.SellItem, ShipData.GuardianFSDBooster, true);
+
+                    ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(moduleBuyInfo.BuyItem);
+                    ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(moduleBuyInfo.BuyItem);
+
+                    ShipData.Bulkhead = EliteHistory.UpdateArmour(moduleBuyInfo.BuyItem, ShipData.Bulkhead, false);
+                    ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleBuyInfo.BuyItem, ShipData.PowerPlant, false);
+                    ShipData.Engine = EliteHistory.UpdateEngine(moduleBuyInfo.BuyItem, ShipData.Engine, false);
+                    ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleBuyInfo.BuyItem, ShipData.PowerDistributor, false);
+                    ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleBuyInfo.BuyItem, ShipData.FrameShiftDrive, false);
+                    ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleBuyInfo.BuyItem, ShipData.LifeSupport, false);
+                    ShipData.Sensors = EliteHistory.UpdateSensors(moduleBuyInfo.BuyItem, ShipData.Sensors, false);
+                    ShipData.GuardianFSDBooster = EliteHistory.UpdateGuardianFSDBooster(moduleBuyInfo.BuyItem, ShipData.GuardianFSDBooster, false);
+
+                    break;
+
+                case "ModuleSwap":
+                    //When Written: when moving a module to a different slot on the ship
+                    var moduleSwapInfo = (ModuleSwapEvent.ModuleSwapEventArgs)e;
+
+                    EliteHistory.HandleModuleSwap(moduleSwapInfo);
+
+                    //ShipID
+
+                    ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleSwapInfo.FromItem);
+                    ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleSwapInfo.FromItem);
+
+                    ShipData.Bulkhead = EliteHistory.UpdateArmour(moduleSwapInfo.FromItem, ShipData.Bulkhead, true);
+                    ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleSwapInfo.FromItem, ShipData.PowerPlant, true);
+                    ShipData.Engine = EliteHistory.UpdateEngine(moduleSwapInfo.FromItem, ShipData.Engine, true);
+                    ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleSwapInfo.FromItem, ShipData.PowerDistributor, true);
+                    ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleSwapInfo.FromItem, ShipData.FrameShiftDrive, true);
+                    ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleSwapInfo.FromItem, ShipData.LifeSupport, true);
+                    ShipData.Sensors = EliteHistory.UpdateSensors(moduleSwapInfo.FromItem, ShipData.Sensors, true);
+                    ShipData.GuardianFSDBooster = EliteHistory.UpdateGuardianFSDBooster(moduleSwapInfo.FromItem, ShipData.GuardianFSDBooster, true);
+
+                    ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(moduleSwapInfo.ToItem);
+                    ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(moduleSwapInfo.ToItem);
+
+                    ShipData.Bulkhead = EliteHistory.UpdateArmour(moduleSwapInfo.ToItem, ShipData.Bulkhead, false);
+                    ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleSwapInfo.ToItem, ShipData.PowerPlant, false);
+                    ShipData.Engine = EliteHistory.UpdateEngine(moduleSwapInfo.ToItem, ShipData.Engine, false);
+                    ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleSwapInfo.ToItem, ShipData.PowerDistributor, false);
+                    ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleSwapInfo.ToItem, ShipData.FrameShiftDrive, false);
+                    ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleSwapInfo.ToItem, ShipData.LifeSupport, false);
+                    ShipData.Sensors = EliteHistory.UpdateSensors(moduleSwapInfo.ToItem, ShipData.Sensors, false);
+                    ShipData.GuardianFSDBooster = EliteHistory.UpdateGuardianFSDBooster(moduleSwapInfo.ToItem, ShipData.GuardianFSDBooster, false);
+
 
                     break;
 
@@ -877,8 +967,16 @@ namespace Elite
                     //ShipID
 
                     ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleSellInfo.SellItem);
-
                     ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleSellInfo.SellItem);
+
+                    ShipData.Bulkhead = EliteHistory.UpdateArmour(moduleSellInfo.SellItem, ShipData.Bulkhead, true);
+                    ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleSellInfo.SellItem, ShipData.PowerPlant, true);
+                    ShipData.Engine = EliteHistory.UpdateEngine(moduleSellInfo.SellItem, ShipData.Engine, true);
+                    ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleSellInfo.SellItem, ShipData.PowerDistributor, true);
+                    ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleSellInfo.SellItem, ShipData.FrameShiftDrive, true);
+                    ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleSellInfo.SellItem, ShipData.LifeSupport, true);
+                    ShipData.Sensors = EliteHistory.UpdateSensors(moduleSellInfo.SellItem, ShipData.Sensors, true);
+                    ShipData.GuardianFSDBooster = EliteHistory.UpdateGuardianFSDBooster(moduleSellInfo.SellItem, ShipData.GuardianFSDBooster, true);
 
                     break;
 
@@ -891,8 +989,16 @@ namespace Elite
                     //ShipID
 
                     ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleSellRemoteInfo.SellItem);
-
                     ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleSellRemoteInfo.SellItem);
+
+                    ShipData.Bulkhead = EliteHistory.UpdateArmour(moduleSellRemoteInfo.SellItem, ShipData.Bulkhead, true);
+                    ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleSellRemoteInfo.SellItem, ShipData.PowerPlant, true);
+                    ShipData.Engine = EliteHistory.UpdateEngine(moduleSellRemoteInfo.SellItem, ShipData.Engine, true);
+                    ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleSellRemoteInfo.SellItem, ShipData.PowerDistributor, true);
+                    ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleSellRemoteInfo.SellItem, ShipData.FrameShiftDrive, true);
+                    ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleSellRemoteInfo.SellItem, ShipData.LifeSupport, true);
+                    ShipData.Sensors = EliteHistory.UpdateSensors(moduleSellRemoteInfo.SellItem, ShipData.Sensors, true);
+                    ShipData.GuardianFSDBooster = EliteHistory.UpdateGuardianFSDBooster(moduleSellRemoteInfo.SellItem, ShipData.GuardianFSDBooster, true);
 
                     break;
 
@@ -905,44 +1011,22 @@ namespace Elite
                     //ShipID
 
                     ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleStoreInfo.StoredItem);
-
                     ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleStoreInfo.StoredItem);
 
-                    break;
-
-                case "ModuleSwap":
-                    //When Written: when moving a module to a different slot on the ship
-                    var moduleSwapInfo = (ModuleSwapEvent.ModuleSwapEventArgs)e;
-
-                    EliteHistory.HandleModuleSwap(moduleSwapInfo);
-
-                    //ShipID
-
-                    ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(moduleSwapInfo.ToItem);
-                    ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleSwapInfo.FromItem);
-
-                    ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(moduleSwapInfo.ToItem);
-                    ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleSwapInfo.FromItem);
-
-                    break;
-
-                case "ModuleRetrieve":
-                    //When Written: when fetching a previously stored module
-                    var moduleRetrieveInfo = (ModuleRetrieveEvent.ModuleRetrieveEventArgs) e;
-
-                    EliteHistory.HandleModuleRetrieve(moduleRetrieveInfo);
-
-                    //ShipID
-
-                    ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(moduleRetrieveInfo.RetrievedItem);
-
-                    ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(moduleRetrieveInfo.RetrievedItem);
+                    ShipData.Bulkhead = EliteHistory.UpdateArmour(moduleStoreInfo.StoredItem, ShipData.Bulkhead, true);
+                    ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleStoreInfo.StoredItem, ShipData.PowerPlant, true);
+                    ShipData.Engine = EliteHistory.UpdateEngine(moduleStoreInfo.StoredItem, ShipData.Engine, true);
+                    ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleStoreInfo.StoredItem, ShipData.PowerDistributor, true);
+                    ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleStoreInfo.StoredItem, ShipData.FrameShiftDrive, true);
+                    ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleStoreInfo.StoredItem, ShipData.LifeSupport, true);
+                    ShipData.Sensors = EliteHistory.UpdateSensors(moduleStoreInfo.StoredItem, ShipData.Sensors, true);
+                    ShipData.GuardianFSDBooster = EliteHistory.UpdateGuardianFSDBooster(moduleStoreInfo.StoredItem, ShipData.GuardianFSDBooster, true);
 
                     break;
 
                 case "MassModuleStore":
                     //When written: when putting multiple modules into storage
-                    var massModuleStoreInfo = (MassModuleStoreEvent.MassModuleStoreEventArgs) e;
+                    var massModuleStoreInfo = (MassModuleStoreEvent.MassModuleStoreEventArgs)e;
 
                     EliteHistory.HandleMassModuleStore(massModuleStoreInfo);
 
@@ -951,8 +1035,16 @@ namespace Elite
                     foreach (var i in massModuleStoreInfo.Items)
                     {
                         ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(i.Name);
-
                         ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(i.Name);
+
+                        ShipData.Bulkhead = EliteHistory.UpdateArmour(i.Name, ShipData.Bulkhead, true);
+                        ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(i.Name, ShipData.PowerPlant, true);
+                        ShipData.Engine = EliteHistory.UpdateEngine(i.Name, ShipData.Engine, true);
+                        ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(i.Name, ShipData.PowerDistributor, true);
+                        ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(i.Name, ShipData.FrameShiftDrive, true);
+                        ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(i.Name, ShipData.LifeSupport, true);
+                        ShipData.Sensors = EliteHistory.UpdateSensors(i.Name, ShipData.Sensors, true);
+                        ShipData.GuardianFSDBooster = EliteHistory.UpdateGuardianFSDBooster(i.Name, ShipData.GuardianFSDBooster, true);
                     }
 
                     break;

@@ -68,6 +68,14 @@
                         <td class="data">@Model.Cargo of @Model.CargoCapacity T</td>
                     </tr>
                 }
+                else
+                {
+                    <tr>
+                        <td class="caption">Cargo Capacity</td>
+                        <td class="data alarm">NONE</td>
+                    </tr>
+                }
+
                 @if (Model.UnladenMass > 0)
                 {
                     <tr>
@@ -89,6 +97,57 @@
                         <td class="data">@Model.LastJump.ToString("N1") LY</td>
                     </tr>
                 }
+            
+                @if (!string.IsNullOrEmpty(Model.Bulkhead))
+                {
+                    <tr>
+                        <td class="caption">Bulkhead</td>
+                        <td class="data">@Model.Bulkhead</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.PowerPlant))
+                {
+                    <tr>
+                        <td class="caption">Powerplant</td>
+                        <td class="data">@Model.PowerPlant</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.Engine))
+                {
+                    <tr>
+                        <td class="caption">Engine</td>
+                        <td class="data">@Model.Engine</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.PowerDistributor))
+                {
+                    <tr>
+                        <td class="caption">Power Distr.</td>
+                        <td class="data">@Model.PowerDistributor</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.FrameShiftDrive))
+                {
+                    <tr>
+                        <td class="caption">FSD</td>
+                        <td class="data">@Model.FrameShiftDrive@Model.GuardianFSDBooster</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.LifeSupport))
+                {
+                    <tr>
+                        <td class="caption">Life Support</td>
+                        <td class="data">@Model.LifeSupport</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.Sensors))
+                {
+                    <tr>
+                        <td class="caption">Sensors</td>
+                        <td class="data">@Model.Sensors</td>
+                    </tr>
+                }
+
 
             </tbody>
         </table>
@@ -177,6 +236,14 @@
                             <td class="data">@m.CargoCapacity T</td>
                         </tr>
                     }
+                    else
+                    {
+                        <tr>
+                            <td class="caption">Cargo Capacity</td>
+                            <td class="data alarm">NONE</td>
+                        </tr>
+                    }
+
                     @if (m.UnladenMass > 0)
                     {
                         <tr>
@@ -191,6 +258,57 @@
                             <td class="data">@m.MaxJumpRange.ToString("N1") LY</td>
                         </tr>
                     }
+
+                    @if (!string.IsNullOrEmpty(m.Bulkhead))
+                    {
+                        <tr>
+                            <td class="caption">Bulkhead</td>
+                            <td class="data">@m.Bulkhead</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.PowerPlant))
+                    {
+                        <tr>
+                            <td class="caption">Powerplant</td>
+                            <td class="data">@m.PowerPlant</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.Engine))
+                    {
+                        <tr>
+                            <td class="caption">Engine</td>
+                            <td class="data">@m.Engine</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.PowerDistributor))
+                    {
+                        <tr>
+                            <td class="caption">Power Distr.</td>
+                            <td class="data">@m.PowerDistributor</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.FrameShiftDrive))
+                    {
+                        <tr>
+                            <td class="caption">FSD</td>
+                            <td class="data">@m.FrameShiftDrive@m.GuardianFSDBooster</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.LifeSupport))
+                    {
+                        <tr>
+                            <td class="caption">Life Support</td>
+                            <td class="data">@m.LifeSupport</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.Sensors))
+                    {
+                        <tr>
+                            <td class="caption">Sensors</td>
+                            <td class="data">@m.Sensors</td>
+                        </tr>
+                    }
+
                 </tbody>
             </table>
 
