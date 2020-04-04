@@ -1,4 +1,4 @@
-.divider {
+td.divider {
     font-size: 2px;
     border-bottom: 1px solid #FFB000;
 }
@@ -76,6 +76,12 @@ div.menu {
 .main table {
     border-spacing: 5px;
     max-width: 100%;
+}
+
+
+.main table.divider {
+    border-spacing: 5px;
+    width: 100%;
 }
 
 

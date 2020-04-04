@@ -19,32 +19,11 @@
                     <td class="data @(Model.LegalState!="Clean" ? "alarm" : "")" colspan="2">@Model.LegalState.Trim()</td>
                 </tr>
             }
-            @if (!string.IsNullOrEmpty(Model.ShipName))
-            {
-                <tr>
-                    <td class="caption">Ship Name</td>
-                    <td class="data" colspan="2">@Model.ShipName</td>
-                </tr>
-            }
-            @if (!string.IsNullOrEmpty(Model.ShipType))
-            {
-                <tr>
-                    <td class="caption">Ship Type</td>
-                    <td class="data" colspan="2">@Model.ShipType</td>
-                </tr>
-            }
-            @if (Model.Credits != "0")
+            @if (Model.Credits > 0)
             {
                 <tr>
                     <td class="caption">Credits</td>
-                    <td class="data" colspan="2">@Model.Credits CR</td>
-                </tr>
-            }
-            @if (Model.Rebuy != "0")
-            {
-                <tr>
-                    <td class="caption">Rebuy</td>
-                    <td class="data" colspan="2">@Model.Rebuy CR</td>
+                    <td class="data" colspan="2">@Model.Credits.ToString("N0") CR</td>
                 </tr>
             }
             <tr>

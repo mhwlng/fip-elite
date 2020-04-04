@@ -29,15 +29,36 @@
                         <td class="data">@Model.ShipType</td>
                     </tr>
                 }
-                <tr>
-                    <td class="caption">Fuel</td>
-                    <td class="data">@Model.FuelPercent %</td>
-                </tr>
-                @if (Model.HullHealth >= 0)
+                @if (Model.HullValue + Model.ModulesValue > 0)
+                {
+                    <tr>
+                        <td class="caption">Value</td>
+                        <td class="data">@((Model.HullValue + Model.ModulesValue).ToString("N0")) CR</td>
+                    </tr>
+                }
+                @if (Model.Rebuy > 0)
+                {
+                    <tr>
+                        <td class="caption">Rebuy</td>
+                        <td class="data">@Model.Rebuy.ToString("N0") CR</td>
+                    </tr>
+                }
+                @if (Model.FuelCapacity > 0)
+                {
+                    <tr>
+                        <td class="caption">Fuel Capacity</td>
+                        <td class="data">@Model.FuelCapacity.ToString("N0") T</td>
+                    </tr>
+                    <tr>
+                        <td class="caption">Fuel</td>
+                        <td class="data">@Model.FuelPercent %</td>
+                    </tr>
+                }
+                @if (Model.HullHealth >= 0 && Model.HullHealth < 100)
                 {
                     <tr>
                         <td class="caption">Hull Health</td>
-                        <td class="data">@Model.HullHealth.ToString("N0") %</td>
+                        <td class="data alarm">@Model.HullHealth.ToString("N0") %</td>
                     </tr>
                 }
                 @if (Model.CargoCapacity > 0 && Model.CargoCapacity >= Model.Cargo)
@@ -47,7 +68,20 @@
                         <td class="data">@Model.Cargo of @Model.CargoCapacity T</td>
                     </tr>
                 }
-
+                @if (Model.UnladenMass > 0)
+                {
+                    <tr>
+                        <td class="caption">Mass</td>
+                        <td class="data">@Model.UnladenMass.ToString("N0") T</td>
+                    </tr>
+                }
+                @if (Model.MaxJumpRange > 0)
+                {
+                    <tr>
+                        <td class="caption">Jump Range</td>
+                        <td class="data">@Model.MaxJumpRange.ToString("N1") LY</td>
+                    </tr>
+                }
                 @if (Model.LastJump > 0)
                 {
                     <tr>
@@ -87,6 +121,13 @@
                             <td class="data">@m.StarSystem</td>
                         </tr>
                     }
+                    @if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
                     @if (!string.IsNullOrEmpty(m.StationName))
                     {
                         <tr>
@@ -94,14 +135,55 @@
                             <td class="data">@m.StationName</td>
                         </tr>
                     }
-                    @if (m.Distance > 0)
+                    @if (m.HullValue + m.ModulesValue > 0)
                     {
-                    <tr>
-                        <td class="caption">Distance</td>
-                        <td class="data">@m.Distance.ToString("N0") Ly</td>
-                    </tr>
+                        <tr>
+                            <td class="caption">Value</td>
+                            <td class="data">@((m.HullValue + m.ModulesValue).ToString("N0")) CR</td>
+                        </tr>
                     }
-
+                    @if (m.Rebuy > 0)
+                    {
+                        <tr>
+                            <td class="caption">Rebuy</td>
+                            <td class="data">@m.Rebuy.ToString("N0") CR</td>
+                        </tr>
+                    }
+                    @if (m.Hot)
+                    {
+                        <tr>
+                            <td class="caption">Hot</td>
+                            <td class="data alarm">YES</td>
+                        </tr>
+                    }
+                    @if (m.HullHealth >= 0 && m.HullHealth < 100)
+                    {
+                        <tr>
+                            <td class="caption">Hull Health</td>
+                            <td class="data alarm">@m.HullHealth.ToString("N0") %</td>
+                        </tr>
+                    }
+                    @if (m.FuelCapacity > 0)
+                    {
+                        <tr>
+                            <td class="caption">Fuel Capacity</td>
+                            <td class="data">@m.FuelCapacity.ToString("N0") T</td>
+                        </tr>
+                    }
+                    @if (m.UnladenMass > 0)
+                    {
+                        <tr>
+                            <td class="caption">Mass</td>
+                            <td class="data">@m.UnladenMass.ToString("N0") T</td>
+                        </tr>
+                    }
+                    @if (m.MaxJumpRange > 0)
+                    {
+                        <tr>
+                            <td class="caption">Jump Range</td>
+                            <td class="data">@m.MaxJumpRange.ToString("N1") LY</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
 
@@ -112,11 +194,10 @@
 
             if (!((List<EliteHistory.ShipData>)Model.StoredShips).Last().Equals((EliteHistory.ShipData)m))
             {
-                <table>
+                <table class="divider">
                     <tbody>
-
                         <tr>
-                            <td class="divider" colspan="2">&nbsp;</td>
+                            <td class="divider">&nbsp;</td>
                         </tr>
                     </tbody>
                 </table>

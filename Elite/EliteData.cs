@@ -305,7 +305,6 @@ namespace Elite
         {
             public string Name { get; set; } = "";
             public uint Credits { get; set; } = 0;
-            public long Rebuy { get; set; } = 0;
 
             public double FederationReputation { get; set; } = -99999;
             public double AllianceReputation { get; set; } = -99999;
@@ -345,6 +344,8 @@ namespace Elite
         {
             public int CurrentShipId { get; set; }
             public string CurrentShipType { get; set; }
+
+            public long Rebuy { get; set; } = 0;
 
             public bool AutomaticDocking { get; set; }
 
@@ -816,14 +817,31 @@ namespace Elite
                 case "Loadout":
                     //When written: at startup, when loading from main menu, or when switching ships, 
 
+                    // ship : The ship model
+                    // shipid : The ID of the ship
+                    // shipname : The name of the ship
+                    // shipident : The identification string of the ship
+                    // hullvalue : The value of the ship's hull (less modules)
+                    // modulesvalue : The value of the ship's modules (less hull)
+                    // value : The total value of the ship (hull + modules)
+                    // hullhealth : The health of the ship's hull
+                    // unladenmass : The unladen mass of the ship
+                    // maxjumprange : The max unlaiden jump range of the ship
+                    // optimalmass : The optimal mass value of the frame shift drive
+                    // rebuy : The rebuy value of the ship
+                    // hot : True if the ship is `hot`
+                    // paintjob : The paintjob of the ship
+                    // compartments : The compartments of the ship
+                    // hardpoints : The hardpoints of the ship
+
                     var loadoutInfo = (LoadoutEvent.LoadoutEventArgs)e;
+
+                    EliteHistory.HandleLoadout(loadoutInfo);
 
                     //ShipID
                     //ShipIdent
 
                     ShipData.HullHealth = loadoutInfo.HullHealth * 100.0;
-
-                    CommanderData.Rebuy = loadoutInfo.Rebuy;
 
                     ShipData.Name = loadoutInfo.ShipName;
 
@@ -832,6 +850,7 @@ namespace Elite
 
                     StatusData.FuelCapacity = loadoutInfo.FuelCapacity.Main;
 
+                    ShipData.Rebuy = loadoutInfo.Rebuy;
                     ShipData.HullValue = loadoutInfo.HullValue; 
                     ShipData.ModulesValue = loadoutInfo.ModulesValue;
                     ShipData.UnladenMass = loadoutInfo.UnladenMass;
@@ -848,6 +867,7 @@ namespace Elite
                     break;
 
                 case "ModuleBuy":
+                    //When Written: when buying a module in outfitting
                     var moduleBuyInfo = (ModuleBuyEvent.ModuleBuyEventArgs) e;
 
                     //ShipID
@@ -858,6 +878,7 @@ namespace Elite
                     break;
 
                 case "ModuleSell":
+                    //When Written: when selling a module in outfitting
                     var moduleSellInfo = (ModuleSellEvent.ModuleSellEventArgs) e;
 
                     //ShipID
@@ -867,6 +888,7 @@ namespace Elite
                     break;
 
                 case "ModuleSellRemote":
+                    //When Written: when selling a module in outfitting
                     var moduleSellRemoteInfo = (ModuleSellRemoteEvent.ModuleSellRemoteEventArgs)e;
 
                     //ShipID
@@ -876,6 +898,7 @@ namespace Elite
                     break;
 
                 case "ModuleStore":
+                    //When Written: when fetching a previously stored module
                     var moduleStoreInfo = (ModuleStoreEvent.ModuleStoreEventArgs) e;
 
                     //ShipID
@@ -885,6 +908,7 @@ namespace Elite
                     break;
 
                 case "ModuleSwap":
+                    //When Written: when moving a module to a different slot on the ship
                     var moduleSwapInfo = (ModuleSwapEvent.ModuleSwapEventArgs)e;
 
                     //ShipID
@@ -895,6 +919,7 @@ namespace Elite
                     break;
 
                 case "ModuleRetrieve":
+                    //When Written: when fetching a previously stored module
                     var moduleRetrieveInfo = (ModuleRetrieveEvent.ModuleRetrieveEventArgs) e;
 
                     //ShipID
@@ -904,6 +929,7 @@ namespace Elite
                     break;
 
                 case "MassModuleStore":
+                    //When written: when putting multiple modules into storage
                     var massModuleStoreInfo = (MassModuleStoreEvent.MassModuleStoreEventArgs) e;
 
                     //ShipID
@@ -916,56 +942,56 @@ namespace Elite
                     break;
 
                 case "RefuelAll":
-
+                    //When Written: when refuelling (full tank)
                     var refuelAllInfo = (RefuelAllEvent.RefuelAllEventArgs) e;
 
                     CommanderData.Credits -= Convert.ToUInt32(refuelAllInfo.Cost);
                     break;
 
                 case "RepairAll":
-
+                    //When Written: when repairing the ship
                     var repairAllInfo = (RepairAllEvent.RepairAllEventArgs) e;
 
                     CommanderData.Credits -= Convert.ToUInt32(repairAllInfo.Cost);
                     break;
 
                 case "Repair":
-
+                    //When Written: when repairing the ship
                     var repairInfo = (RepairEvent.RepairEventArgs) e;
 
                     CommanderData.Credits -= Convert.ToUInt32(repairInfo.Cost);
                     break;
 
                 case "BuyTradeData":
-
+                    //When Written: when buying trade data in the galaxy map
                     var buyTradeDataInfo = (BuyTradeDataEvent.BuyTradeDataEventArgs) e;
 
                     CommanderData.Credits -= Convert.ToUInt32(buyTradeDataInfo.Cost);
                     break;
 
                 case "BuyExplorationData":
-
+                    //When Written: when buying system data via the galaxy map
                     var buyExplorationDataInfo = (BuyExplorationDataEvent.BuyExplorationDataEventArgs) e;
 
                     CommanderData.Credits -= Convert.ToUInt32(buyExplorationDataInfo.Cost);
                     break;
 
                 case "BuyDrones":
-
+                    //When Written: when purchasing drones
                     var buyDronesInfo = (BuyDronesEvent.BuyDronesEventArgs) e;
 
                     CommanderData.Credits -= Convert.ToUInt32(buyDronesInfo.TotalCost);
                     break;
 
                 case "BuyAmmo":
-
+                    //When Written: when purchasing ammunition
                     var buyAmmoInfo = (BuyAmmoEvent.BuyAmmoEventArgs) e;
 
                     CommanderData.Credits -= Convert.ToUInt32(buyAmmoInfo.Cost);
                     break;
 
                 case "PayBounties":
-
+                    //When written: when paying off bounties
                     var payBountiesInfo = (PayBountiesEvent.PayBountiesEventArgs)e;
 
                     // shipID
@@ -974,7 +1000,7 @@ namespace Elite
                     break;
 
                 case "PayFines":
-
+                    //When Written: when paying fines
                     var payFinesInfo = (PayFinesEvent.PayFinesEventArgs)e;
 
                     // shipID
@@ -983,7 +1009,7 @@ namespace Elite
                     break;
 
                 case "ApproachBody":
-
+                    //    When written: when in Supercruise, and distance from planet drops to within the 'Orbital Cruise' zone
                     var approachBodyInfo = (ApproachBodyEvent.ApproachBodyEventArgs) e;
 
                     LocationData.StarSystem = approachBodyInfo.StarSystem;
@@ -996,7 +1022,7 @@ namespace Elite
                     break;
 
                 case "ApproachSettlement":
-
+                    //When written: when approaching a planetary settlement
                     var approachSettlementInfo = (ApproachSettlementEvent.ApproachSettlementEventArgs) e;
 
                     //Latitude
@@ -1016,7 +1042,7 @@ namespace Elite
                     break;
 
                 case "LeaveBody":
-
+                    //When written: when flying away from a planet, and distance increases above the 'Orbital Cruise' altitude
                     var leaveBodyInfo = (LeaveBodyEvent.LeaveBodyEventArgs) e;
 
                     //Body
@@ -1031,7 +1057,7 @@ namespace Elite
                     break;
 
                 case "Undocked":
-
+                    //When written: liftoff from a landing pad in a station, outpost or settlement
                     var undockedInfo = (UndockedEvent.UndockedEventArgs) e;
 
                     //StationName
@@ -1045,7 +1071,7 @@ namespace Elite
                     break;
 
                 case "Docked":
-
+                    //    When written: when landing at landing pad in a space station, outpost, or surface settlement
                     var dockedInfo = (DockedEvent.DockedEventArgs) e;
 
                     EliteHistory.HandleShipDocked(dockedInfo.StarSystem, dockedInfo.StationName);
@@ -1076,7 +1102,7 @@ namespace Elite
                     break;
 
                 case "DockingGranted":
-
+                    //When written: when a docking request is granted
                     var dockingGrantedInfo = (DockingGrantedEvent.DockingGrantedEventArgs) e;
 
                     DockData.Type = dockingGrantedInfo.StationType;
@@ -1089,6 +1115,7 @@ namespace Elite
 
                 case "DockingRequested":
 
+                    //When written: when the player requests docking at a station
                     var dockingRequestedInfo = (DockingRequestedEvent.DockingRequestedEventArgs) e;
 
                     LocationData.Station = dockingRequestedInfo.StationName;
@@ -1098,7 +1125,7 @@ namespace Elite
                     break;
 
                 case "FSDJump":
-
+                    //When written: when jumping from one star system to another
                     var fsdJumpInfo = (FSDJumpEvent.FSDJumpEventArgs) e;
 
                     EliteHistory.HandleShipFsdJump(fsdJumpInfo.StarSystem, fsdJumpInfo.StarPos.ToList());
@@ -1170,6 +1197,7 @@ namespace Elite
                     break;
 
                 case "FSDTarget":
+                    //When written: when selecting a star system to jump to
                     var fSdTargetInfo = (FSDTargetEvent.FSDTargetEventArgs) e;
 
                     LocationData.FsdTargetName = fSdTargetInfo.Name;
@@ -1180,6 +1208,7 @@ namespace Elite
 
                 case "SupercruiseEntry":
 
+                    //When written: entering supercruise from normal space
                     var supercruiseEntryInfo = (SupercruiseEntryEvent.SupercruiseEntryEventArgs) e;
 
                     LocationData.JumpToSystem = supercruiseEntryInfo.StarSystem;
@@ -1192,7 +1221,7 @@ namespace Elite
                     break;
 
                 case "SupercruiseExit":
-
+                    //When written: leaving supercruise for normal space
                     var supercruiseExitInfo = (SupercruiseExitEvent.SupercruiseExitEventArgs) e;
 
                     LocationData.StarSystem = supercruiseExitInfo.StarSystem; 
@@ -1210,6 +1239,7 @@ namespace Elite
                     break;
 
                 case "HullDamage":
+                    //When written: player was HullDamage by player or npc
                     var hullDamageInfo = (HullDamageEvent.HullDamageEventArgs) e;
 
                     ShipData.HullHealth = hullDamageInfo.Health * 100.0;
@@ -1217,6 +1247,7 @@ namespace Elite
                     break;
 
                 case "ShipTargeted":
+                    //    When written: when the current player selects a new target
                     var shipTargetedInfo = (ShipTargetedEvent.ShipTargetedEventArgs) e;
 
                     TargetData.Bounty = shipTargetedInfo.Bounty;

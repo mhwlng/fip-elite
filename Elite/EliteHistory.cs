@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using EliteJournalReader.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Module = EliteJournalReader.Module;
 
 namespace Elite
 {
@@ -65,6 +66,19 @@ namespace Elite
             public List<double> StarPos { get; set; } = new List<double>();
 
             public double Distance { get; set; }
+
+            public int HullValue { get; set; }
+            public int ModulesValue { get; set; }
+            public double HullHealth { get; set; }
+            public double UnladenMass { get; set; }
+            public double FuelCapacity { get; set; }
+            public int CargoCapacity { get; set; }
+            public double MaxJumpRange { get; set; }
+            public int Rebuy { get; set; }
+            public bool Hot { get; set; }
+            public Module[] Modules { get; set; }
+
+
         }
 
         public static List<ShipData> ShipsList = new List<ShipData>();
@@ -308,6 +322,26 @@ namespace Elite
             }
         }
 
+        public static void HandleLoadout(LoadoutEvent.LoadoutEventArgs info)
+        {
+            var ship = ShipsList.FirstOrDefault(x =>
+                x.Stored == false);
+
+            if (ship != null)
+            {
+                ship.HullValue = info.HullValue;
+                ship.ModulesValue = info.ModulesValue;
+                ship.HullHealth = info.HullHealth * 100.0;
+                ship.UnladenMass = info.UnladenMass;
+                ship.FuelCapacity = info.FuelCapacity.Main;
+
+                ship.CargoCapacity = info.CargoCapacity;
+                ship.MaxJumpRange = info.MaxJumpRange;
+                ship.Rebuy = info.Rebuy;
+                ship.Hot = info.Hot;
+                ship.Modules = info.Modules?.Select(m => m.Clone()).ToArray();
+            }
+        }
 
         public static string GetEliteHistory()
         {
@@ -397,6 +431,12 @@ namespace Elite
                                     {
                                         var info = JsonConvert.DeserializeObject<ShipyardTransferEvent.ShipyardTransferEventArgs>(json);
                                     }*/
+                                    else if (json?.Contains("\"event\":\"Loadout\",") == true)
+                                    {
+                                        var info = JsonConvert.DeserializeObject<LoadoutEvent.LoadoutEventArgs>(json);
+
+                                        HandleLoadout(info);
+                                    }
 
 
                                 }

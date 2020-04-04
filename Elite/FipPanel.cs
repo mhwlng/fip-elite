@@ -666,15 +666,9 @@ namespace Elite
 
                                             Commander = EliteData.CommanderData.Name,
 
-                                            ShipName = EliteData.ShipData.Name?.Trim(),
-
-                                            ShipType = EliteData.ShipData.Type?.Trim(),
-
                                             LegalState = EliteData.StatusData.LegalState,
 
-                                            Credits = EliteData.CommanderData.Credits.ToString("N0"),
-
-                                            Rebuy = EliteData.CommanderData.Rebuy.ToString("N0"),
+                                            Credits = EliteData.CommanderData.Credits,
 
                                             FederationRank = EliteData.CommanderData.FederationRank,
                                             FederationRankProgress = EliteData.CommanderData.FederationRankProgress,
@@ -724,6 +718,8 @@ namespace Elite
 
                                             ShipImage = EliteData.ShipData.Type?.Trim() + ".png",
 
+                                            Rebuy = EliteData.ShipData.Rebuy,
+
                                             AutomaticDocking = EliteData.ShipData.AutomaticDocking,
 
                                             Docked = EliteData.StatusData.Docked,
@@ -741,7 +737,6 @@ namespace Elite
                                             LastJump = EliteData.StatusData.JumpRange,
 
                                             Cargo = EliteData.StatusData.Cargo,
-
                                             CargoCapacity = EliteData.ShipData.CargoCapacity,
 
                                             HullHealth = EliteData.ShipData.HullHealth,
