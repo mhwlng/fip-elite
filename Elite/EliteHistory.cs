@@ -34,7 +34,7 @@ namespace Elite
 
         {
             //"Docked":true, "StationName":"Jameson Memorial", "StarSystem":"Shinrarta Dezhra",  "StarPos":[55.71875,17.59375,27.15625], 
-                
+
             public bool Docked { get; set; }
             public string StationName { get; set; }
             public string StarSystem { get; set; }
@@ -86,13 +86,14 @@ namespace Elite
 
         public static Dictionary<string, List<double>> VisitedSystemList = new Dictionary<string, List<double>>();
 
-        public static double ImageWidth  { get; set; }
+        public static double ImageWidth { get; set; }
         public static double ImageHeight { get; set; }
 
         private class UnsafeNativeMethods
         {
             [DllImport("Shell32.dll")]
-            public static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)]Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr ppszPath);
+            public static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags,
+                IntPtr hToken, out IntPtr ppszPath);
         }
 
 
@@ -103,11 +104,19 @@ namespace Elite
         {
             get
             {
-                int result = UnsafeNativeMethods.SHGetKnownFolderPath(new Guid("4C5C32FF-BB9D-43B0-B5B4-2D72E54EAAA4"), 0, new IntPtr(0), out IntPtr path);
+                int result = UnsafeNativeMethods.SHGetKnownFolderPath(new Guid("4C5C32FF-BB9D-43B0-B5B4-2D72E54EAAA4"),
+                    0, new IntPtr(0), out IntPtr path);
                 if (result >= 0)
                 {
-                    try { return new DirectoryInfo(Marshal.PtrToStringUni(path) + @"\Frontier Developments\Elite Dangerous"); }
-                    catch { return new DirectoryInfo(Directory.GetCurrentDirectory()); }
+                    try
+                    {
+                        return new DirectoryInfo(Marshal.PtrToStringUni(path) +
+                                                 @"\Frontier Developments\Elite Dangerous");
+                    }
+                    catch
+                    {
+                        return new DirectoryInfo(Directory.GetCurrentDirectory());
+                    }
                 }
                 else
                 {
@@ -129,13 +138,20 @@ namespace Elite
 
                 TravelHistoryPoints.Add(new PointF
                 {
-                    X = (float)imgX,
-                    Y = (float)imgY
+                    X = (float) imgX,
+                    Y = (float) imgY
                 });
             }
         }
 
-        public static void AddShip(int shipId,string shipType, string starSystem, string stationName, List<double> starPos, bool stored)
+        public static ShipData GetCurrentShip()
+        {
+            return ShipsList.FirstOrDefault(x => x.Stored == false);
+        }
+
+
+        public static void AddShip(int shipId, string shipType, string starSystem, string stationName,
+            List<double> starPos, bool stored)
         {
             if (shipType == "testbuggy") return;
 
@@ -152,7 +168,7 @@ namespace Elite
                     ShipTypeFull = shipTypeFull,
                     ShipImage = shipTypeFull?.Trim() + ".png",
 
-                    StarSystem =  starSystem,
+                    StarSystem = starSystem,
                     StationName = stationName,
                     StarPos = starPos,
                     Stored = stored
@@ -172,8 +188,9 @@ namespace Elite
                 ShipsList.Remove(ship);
             }
         }
-        
-        public static void SetCurrentShip(int shipId, string shipType, string starSystem, string stationName, List<double> starPos)
+
+        public static void SetCurrentShip(int shipId, string shipType, string starSystem, string stationName,
+            List<double> starPos)
         {
             if (shipType == "testbuggy") return;
 
@@ -206,7 +223,7 @@ namespace Elite
                     double deltaY = Ys - Yd;
                     double deltaZ = Zs - Zd;
 
-                    item.Distance = (double)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                    item.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
             }
@@ -218,45 +235,6 @@ namespace Elite
             if (!VisitedSystemList.ContainsKey(starSystem))
             {
                 VisitedSystemList.Add(starSystem, starPos);
-            }
-        }
-
-        public static void HandleShipLocation(bool docked, string starSystem, string stationName, List<double> starPos)
-        {
-            var ship = ShipsList.FirstOrDefault(x =>
-                x.Stored == false);
-
-            if (docked && ship != null)
-            {
-                ship.StarSystem = starSystem;
-                ship.StationName = stationName;
-                ship.StarPos = starPos;
-            }
-        }
-
-        public static void HandleShipDocked(string starSystem, string stationName)
-        {
-            VisitedSystemList.TryGetValue(starSystem, out var starPos);
-
-            var ship = ShipsList.FirstOrDefault(x =>
-                x.Stored == false);
-
-            if (ship != null && starPos != null)
-            {
-                ship.StarSystem = starSystem;
-                ship.StationName = stationName;
-                ship.StarPos = starPos;
-            }
-        }
-
-        public static void HandleShipyardNew(ShipyardNewEvent.ShipyardNewEventArgs info)
-        {
-            var ship = ShipsList.FirstOrDefault(x =>
-                x.Stored == false);
-
-            if (ship != null)
-            {
-                AddShip(info.NewShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos, true);
             }
         }
 
@@ -272,36 +250,8 @@ namespace Elite
         {
             if (info.SellShipID != null && !string.IsNullOrEmpty(info.SellOldShip))
             {
-                RemoveShip((int)info.SellShipID, info.SellOldShip.ToLower());
+                RemoveShip((int) info.SellShipID, info.SellOldShip.ToLower());
             }
-        }
-
-        public static void HandleShipyardSwap(ShipyardSwapEvent.ShipyardSwapEventArgs info)
-        {
-            var ship = ShipsList.FirstOrDefault(x =>
-                x.Stored == false);
-
-            if (ship != null)
-            {
-                if (info.SellShipID != null && !string.IsNullOrEmpty(info.SellOldShip))
-                {
-                    RemoveShip((int) info.SellShipID, info.SellOldShip.ToLower());
-                }
-
-                if (info.StoreShipID != null && !ShipsList.Any(x =>
-                        x.ShipType == info.StoreOldShip.ToLower() && x.ShipID == info.StoreShipID))
-                {
-                    AddShip((int) info.StoreShipID, info.StoreOldShip.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos, true);
-                }
-
-                if (!ShipsList.Any(x => x.ShipType == info.ShipType.ToLower() && x.ShipID == info.ShipID))
-                {
-                    AddShip(info.ShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos, false);
-                }
-
-                SetCurrentShip(info.ShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos);
-            }
-
         }
 
         public static void HandleStoredShips(StoredShipsEvent.StoredShipsEventArgs info)
@@ -322,10 +272,103 @@ namespace Elite
             }
         }
 
+        public static void HandleShipyardSwap(ShipyardSwapEvent.ShipyardSwapEventArgs info)
+        {
+            var ship = GetCurrentShip();
+
+            if (ship != null)
+            {
+                if (info.SellShipID != null && !string.IsNullOrEmpty(info.SellOldShip))
+                {
+                    RemoveShip((int) info.SellShipID, info.SellOldShip.ToLower());
+                }
+
+                if (info.StoreShipID != null && !ShipsList.Any(x =>
+                    x.ShipType == info.StoreOldShip.ToLower() && x.ShipID == info.StoreShipID))
+                {
+                    AddShip((int) info.StoreShipID, info.StoreOldShip.ToLower(), ship.StarSystem, ship.StationName,
+                        ship.StarPos, true);
+                }
+
+                if (!ShipsList.Any(x => x.ShipType == info.ShipType.ToLower() && x.ShipID == info.ShipID))
+                {
+                    AddShip(info.ShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos,
+                        false);
+                }
+
+                SetCurrentShip(info.ShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos);
+            }
+
+        }
+
+        public static void HandleShipyardNew(ShipyardNewEvent.ShipyardNewEventArgs info)
+        {
+            var ship = GetCurrentShip();
+
+            if (ship != null)
+            {
+                AddShip(info.NewShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos, true);
+            }
+        }
+
+        public static void HandleShipDocked(string starSystem, string stationName)
+        {
+            VisitedSystemList.TryGetValue(starSystem, out var starPos);
+
+            var ship = GetCurrentShip();
+
+            if (ship != null && starPos != null)
+            {
+                ship.StarSystem = starSystem;
+                ship.StationName = stationName;
+                ship.StarPos = starPos;
+            }
+        }
+
+        public static void HandleShipLocation(bool docked, string starSystem, string stationName, List<double> starPos)
+        {
+            var ship = GetCurrentShip();
+
+            if (docked && ship != null)
+            {
+                ship.StarSystem = starSystem;
+                ship.StationName = stationName;
+                ship.StarPos = starPos;
+            }
+        }
+
+
+        public static int UpdateFuelCapacity(string item)
+        {
+            if (item?.Contains("fueltank_") == true)
+            {
+                var size = item.Substring(item.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
+
+                size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+
+                return Convert.ToInt32(Math.Pow(2, Convert.ToInt32(size)));
+            }
+
+            return 0;
+        }
+
+        public static int UpdateCargoCapacity(string item)
+        {
+            if (item?.Contains("cargorack_") == true)
+            {
+                var size = item.Substring(item.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
+
+                size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+
+                return Convert.ToInt32(Math.Pow(2, Convert.ToInt32(size)));
+            }
+
+            return 0;
+        }
+
         public static void HandleLoadout(LoadoutEvent.LoadoutEventArgs info)
         {
-            var ship = ShipsList.FirstOrDefault(x =>
-                x.Stored == false);
+            var ship = GetCurrentShip();
 
             if (ship != null)
             {
@@ -333,13 +376,126 @@ namespace Elite
                 ship.ModulesValue = info.ModulesValue;
                 ship.HullHealth = info.HullHealth * 100.0;
                 ship.UnladenMass = info.UnladenMass;
-                ship.FuelCapacity = info.FuelCapacity.Main;
 
-                ship.CargoCapacity = info.CargoCapacity;
+
                 ship.MaxJumpRange = info.MaxJumpRange;
                 ship.Rebuy = info.Rebuy;
                 ship.Hot = info.Hot;
-                ship.Modules = info.Modules?.Select(m => m.Clone()).ToArray();
+
+                //ship.CargoCapacity = info.CargoCapacity;
+                //ship.FuelCapacity = info.FuelCapacity.Main;
+                ship.CargoCapacity = 0;
+                ship.FuelCapacity = 0;
+
+                if (info.Modules != null)
+                {
+                    ship.Modules = info.Modules?.Select(m => m.Clone()).ToArray();
+
+                    foreach (var m in info.Modules)
+                    {
+                        ship.CargoCapacity += UpdateCargoCapacity(m.Item);
+
+                        ship.FuelCapacity += UpdateFuelCapacity(m.Item);
+                    }
+                }
+            }
+        }
+
+        public static void HandleModuleBuy(ModuleBuyEvent.ModuleBuyEventArgs info)
+        {
+            var ship = GetCurrentShip();
+
+            if (ship != null)
+            {
+                ship.CargoCapacity += UpdateCargoCapacity(info.BuyItem);
+                ship.CargoCapacity -= UpdateCargoCapacity(info.SellItem);
+
+                ship.FuelCapacity += UpdateFuelCapacity(info.BuyItem);
+                ship.FuelCapacity -= UpdateFuelCapacity(info.SellItem);
+            }
+        }
+
+
+        public static void HandleModuleSell(ModuleSellEvent.ModuleSellEventArgs info)
+        {
+            var ship = GetCurrentShip();
+
+            if (ship != null)
+            {
+                ship.CargoCapacity -= UpdateCargoCapacity(info.SellItem);
+
+                ship.FuelCapacity -= UpdateFuelCapacity(info.SellItem);
+            }
+        }
+
+        public static void HandleModuleSellRemote(ModuleSellRemoteEvent.ModuleSellRemoteEventArgs info)
+        {
+            var ship = GetCurrentShip();
+
+            if (ship != null)
+            {
+                ship.CargoCapacity -= UpdateCargoCapacity(info.SellItem);
+
+                ship.FuelCapacity -= UpdateFuelCapacity(info.SellItem);
+            }
+        }
+
+        public static void HandleModuleStore(ModuleStoreEvent.ModuleStoreEventArgs info)
+        {
+            var ship = GetCurrentShip();
+
+            if (ship != null)
+            {
+                ship.CargoCapacity -= UpdateCargoCapacity(info.StoredItem);
+
+                ship.FuelCapacity -= UpdateFuelCapacity(info.StoredItem);
+            }
+        }
+
+        public static void HandleModuleSwap(ModuleSwapEvent.ModuleSwapEventArgs info)
+        {
+            var ship = GetCurrentShip();
+
+            if (ship != null)
+            {
+                ship.CargoCapacity += UpdateCargoCapacity(info.ToItem);
+                ship.CargoCapacity -= UpdateCargoCapacity(info.FromItem);
+
+                ship.FuelCapacity += UpdateFuelCapacity(info.ToItem);
+                ship.FuelCapacity -= UpdateFuelCapacity(info.FromItem);
+            }
+        }
+
+        public static void HandleModuleRetrieve(ModuleRetrieveEvent.ModuleRetrieveEventArgs info)
+        {
+            var ship = GetCurrentShip();
+
+            if (ship != null)
+            {
+
+
+                ship.CargoCapacity +=
+                    UpdateCargoCapacity(info.RetrievedItem);
+
+                ship.FuelCapacity +=
+                    UpdateFuelCapacity(info.RetrievedItem);
+            }
+
+        }
+
+        public static void HandleMassModuleStore(MassModuleStoreEvent.MassModuleStoreEventArgs info)
+        {
+            var ship = GetCurrentShip();
+
+            if (ship != null)
+            {
+
+                foreach (var i in info.Items)
+                {
+                    ship.CargoCapacity -= UpdateCargoCapacity(i.Name);
+
+                    ship.FuelCapacity -= UpdateFuelCapacity(i.Name);
+                }
             }
         }
 
@@ -389,7 +545,8 @@ namespace Elite
                                     {
                                         var info = JsonConvert.DeserializeObject<LocationInfo>(json);
 
-                                        HandleShipLocation(info.Docked, info.StarSystem, info.StationName, info.StarPos);
+                                        HandleShipLocation(info.Docked, info.StarSystem, info.StationName,
+                                            info.StarPos);
                                     }
                                     else if (json?.Contains("\"event\":\"Docked\",") == true)
                                     {
@@ -399,31 +556,39 @@ namespace Elite
                                     }
                                     else if (json?.Contains("\"event\":\"ShipyardNew\",") == true)
                                     {
-                                        var info = JsonConvert.DeserializeObject<ShipyardNewEvent.ShipyardNewEventArgs>(json);
+                                        var info =
+                                            JsonConvert.DeserializeObject<ShipyardNewEvent.ShipyardNewEventArgs>(
+                                                json);
 
                                         HandleShipyardNew(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ShipyardBuy\",") == true)
                                     {
-                                        var info = JsonConvert.DeserializeObject<ShipyardBuyEvent.ShipyardBuyEventArgs>(json);
+                                        var info =
+                                            JsonConvert.DeserializeObject<ShipyardBuyEvent.ShipyardBuyEventArgs>(
+                                                json);
 
                                         HandleShipyardBuy(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ShipyardSell\",") == true)
                                     {
-                                        var info = JsonConvert.DeserializeObject<ShipyardSellEvent.ShipyardSellEventArgs>(json);
+                                        var info = JsonConvert
+                                            .DeserializeObject<ShipyardSellEvent.ShipyardSellEventArgs>(json);
 
                                         HandleShipyardSell(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ShipyardSwap\",") == true)
                                     {
-                                        var info = JsonConvert.DeserializeObject<ShipyardSwapEvent.ShipyardSwapEventArgs>(json);
+                                        var info = JsonConvert
+                                            .DeserializeObject<ShipyardSwapEvent.ShipyardSwapEventArgs>(json);
 
                                         HandleShipyardSwap(info);
                                     }
                                     else if (json?.Contains("\"event\":\"StoredShips\",") == true)
                                     {
-                                        var info = JsonConvert.DeserializeObject<StoredShipsEvent.StoredShipsEventArgs>(json);
+                                        var info =
+                                            JsonConvert.DeserializeObject<StoredShipsEvent.StoredShipsEventArgs>(
+                                                json);
 
                                         HandleStoredShips(info);
                                     }
@@ -433,11 +598,61 @@ namespace Elite
                                     }*/
                                     else if (json?.Contains("\"event\":\"Loadout\",") == true)
                                     {
-                                        var info = JsonConvert.DeserializeObject<LoadoutEvent.LoadoutEventArgs>(json);
+                                        var info =
+                                            JsonConvert.DeserializeObject<LoadoutEvent.LoadoutEventArgs>(json);
 
                                         HandleLoadout(info);
                                     }
+                                    else if (json?.Contains("\"event\":\"ModuleBuy\",") == true)
+                                    {
+                                        var info =
+                                            JsonConvert.DeserializeObject<ModuleBuyEvent.ModuleBuyEventArgs>(json);
 
+                                        HandleModuleBuy(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"ModuleSell\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<ModuleSellEvent.ModuleSellEventArgs>(json);
+
+                                        HandleModuleSell(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"ModuleSellRemote\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<ModuleSellRemoteEvent.ModuleSellRemoteEventArgs>(
+                                                json);
+
+                                        HandleModuleSellRemote(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"ModuleStore\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<ModuleStoreEvent.ModuleStoreEventArgs>(json);
+
+                                        HandleModuleStore(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"ModuleSwap\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<ModuleSwapEvent.ModuleSwapEventArgs>(json);
+
+                                        HandleModuleSwap(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"ModuleRetrieve\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<ModuleRetrieveEvent.ModuleRetrieveEventArgs>(json);
+
+                                        HandleModuleRetrieve(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"MassModuleStore\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<MassModuleStoreEvent.MassModuleStoreEventArgs>(json);
+
+                                        HandleMassModuleStore(info);
+                                    }
 
                                 }
                                 catch (Exception ex)
@@ -456,6 +671,6 @@ namespace Elite
 
             return journalDirectory.FullName;
         }
-
     }
 }
+

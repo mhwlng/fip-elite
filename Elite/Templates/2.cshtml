@@ -170,6 +170,13 @@
                             <td class="data">@m.FuelCapacity.ToString("N0") T</td>
                         </tr>
                     }
+                    @if (m.CargoCapacity > 0)
+                    {
+                        <tr>
+                            <td class="caption">Cargo Capacity</td>
+                            <td class="data">@m.CargoCapacity T</td>
+                        </tr>
+                    }
                     @if (m.UnladenMass > 0)
                     {
                         <tr>

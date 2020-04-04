@@ -728,10 +728,10 @@ namespace Elite
 
                                             FuelReservoir = EliteData.StatusData.Fuel.FuelReservoir,
 
-                                            FuelCapacity = EliteData.StatusData.FuelCapacity,
+                                            FuelCapacity = EliteData.ShipData.FuelCapacity,
 
-                                            FuelPercent = EliteData.StatusData.FuelCapacity >  0 ?
-                                                Convert.ToInt32(100 / EliteData.StatusData.FuelCapacity *
+                                            FuelPercent = EliteData.ShipData.FuelCapacity >  0 ?
+                                                Convert.ToInt32(100 / EliteData.ShipData.FuelCapacity *
                                                                 EliteData.StatusData.Fuel.FuelMain) : 0,
 
                                             LastJump = EliteData.StatusData.JumpRange,

@@ -352,6 +352,8 @@ namespace Elite
             public string Name { get; set; } = "";
             public string Type { get; set; } = "";
 
+            public double FuelCapacity { get; set; }
+
             public long CargoCapacity { get; set; }
 
             public double HullHealth { get; set; } = -1;
@@ -493,7 +495,6 @@ namespace Elite
 
             public StatusFuel Fuel { get; set; } = new StatusFuel();
 
-            public double FuelCapacity { get; set; }
         
             public double Cargo { get; set; }
             public string LegalState { get; set; }
@@ -573,19 +574,6 @@ namespace Elite
             App.fipHandler.RefreshDevicePages();
         }
 
-        private static int UpdateCargoCapacity(string item, int addremove)
-        {
-            if (item?.Contains("_cargorack_") == true)
-            {
-                var size = item.Substring(item.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
-
-                size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
-
-                return addremove * Convert.ToInt32(size);
-            }
-
-            return 0;
-        }
 
         private static string UpdateReputationState(double reputation)
         {
@@ -662,8 +650,6 @@ namespace Elite
 
                     CommanderData.Name = loadGameInfo.Commander;
                     CommanderData.Credits = Convert.ToUInt32(loadGameInfo.Credits);
-
-                    StatusData.FuelCapacity = loadGameInfo.FuelCapacity;
 
                     LocationData.Settlement = "";
 
@@ -848,8 +834,6 @@ namespace Elite
                     ShipsByEliteID.TryGetValue(loadoutInfo.Ship?.ToLower() ?? "???", out var loadShip);
                     ShipData.Type = loadShip ?? loadoutInfo.Ship;
 
-                    StatusData.FuelCapacity = loadoutInfo.FuelCapacity.Main;
-
                     ShipData.Rebuy = loadoutInfo.Rebuy;
                     ShipData.HullValue = loadoutInfo.HullValue; 
                     ShipData.ModulesValue = loadoutInfo.ModulesValue;
@@ -858,10 +842,12 @@ namespace Elite
                     ShipData.Hot = loadoutInfo.Hot;
 
                     ShipData.CargoCapacity = 0;
+                    ShipData.FuelCapacity = 0;
 
-                    foreach (var m in loadoutInfo.Modules.Where(x => x.Item.Contains("_cargorack_")))
+                    foreach (var m in loadoutInfo.Modules)
                     {
-                        ShipData.CargoCapacity += UpdateCargoCapacity(m.Item, 1);
+                        ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(m.Item);
+                        ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(m.Item);
                     }
 
                     break;
@@ -872,8 +858,13 @@ namespace Elite
 
                     //ShipID
 
-                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleBuyInfo.BuyItem, 1);
-                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleBuyInfo.SellItem, -1);
+                    EliteHistory.HandleModuleBuy(moduleBuyInfo);
+
+                    ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(moduleBuyInfo.BuyItem);
+                    ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleBuyInfo.SellItem);
+
+                    ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(moduleBuyInfo.BuyItem);
+                    ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleBuyInfo.SellItem);
 
                     break;
 
@@ -881,9 +872,13 @@ namespace Elite
                     //When Written: when selling a module in outfitting
                     var moduleSellInfo = (ModuleSellEvent.ModuleSellEventArgs) e;
 
+                    EliteHistory.HandleModuleSell(moduleSellInfo);
+
                     //ShipID
 
-                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleSellInfo.SellItem, -1);
+                    ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleSellInfo.SellItem);
+
+                    ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleSellInfo.SellItem);
 
                     break;
 
@@ -891,9 +886,13 @@ namespace Elite
                     //When Written: when selling a module in outfitting
                     var moduleSellRemoteInfo = (ModuleSellRemoteEvent.ModuleSellRemoteEventArgs)e;
 
+                    EliteHistory.HandleModuleSellRemote(moduleSellRemoteInfo);
+
                     //ShipID
 
-                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleSellRemoteInfo.SellItem, -1);
+                    ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleSellRemoteInfo.SellItem);
+
+                    ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleSellRemoteInfo.SellItem);
 
                     break;
 
@@ -901,9 +900,13 @@ namespace Elite
                     //When Written: when fetching a previously stored module
                     var moduleStoreInfo = (ModuleStoreEvent.ModuleStoreEventArgs) e;
 
+                    EliteHistory.HandleModuleStore(moduleStoreInfo);
+
                     //ShipID
 
-                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleStoreInfo.StoredItem, -1);
+                    ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleStoreInfo.StoredItem);
+
+                    ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleStoreInfo.StoredItem);
 
                     break;
 
@@ -911,10 +914,15 @@ namespace Elite
                     //When Written: when moving a module to a different slot on the ship
                     var moduleSwapInfo = (ModuleSwapEvent.ModuleSwapEventArgs)e;
 
+                    EliteHistory.HandleModuleSwap(moduleSwapInfo);
+
                     //ShipID
 
-                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleSwapInfo.ToItem, 1);
-                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleSwapInfo.FromItem, -1);
+                    ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(moduleSwapInfo.ToItem);
+                    ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(moduleSwapInfo.FromItem);
+
+                    ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(moduleSwapInfo.ToItem);
+                    ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(moduleSwapInfo.FromItem);
 
                     break;
 
@@ -922,9 +930,13 @@ namespace Elite
                     //When Written: when fetching a previously stored module
                     var moduleRetrieveInfo = (ModuleRetrieveEvent.ModuleRetrieveEventArgs) e;
 
+                    EliteHistory.HandleModuleRetrieve(moduleRetrieveInfo);
+
                     //ShipID
 
-                    ShipData.CargoCapacity += UpdateCargoCapacity(moduleRetrieveInfo.RetrievedItem, 1);
+                    ShipData.CargoCapacity += EliteHistory.UpdateCargoCapacity(moduleRetrieveInfo.RetrievedItem);
+
+                    ShipData.FuelCapacity += EliteHistory.UpdateFuelCapacity(moduleRetrieveInfo.RetrievedItem);
 
                     break;
 
@@ -932,11 +944,15 @@ namespace Elite
                     //When written: when putting multiple modules into storage
                     var massModuleStoreInfo = (MassModuleStoreEvent.MassModuleStoreEventArgs) e;
 
+                    EliteHistory.HandleMassModuleStore(massModuleStoreInfo);
+
                     //ShipID
 
                     foreach (var i in massModuleStoreInfo.Items)
                     {
-                        ShipData.CargoCapacity += UpdateCargoCapacity(i.Name, -1);
+                        ShipData.CargoCapacity -= EliteHistory.UpdateCargoCapacity(i.Name);
+
+                        ShipData.FuelCapacity -= EliteHistory.UpdateFuelCapacity(i.Name);
                     }
 
                     break;
@@ -1532,6 +1548,5 @@ namespace Elite
             App.fipHandler.RefreshDevicePages();
 
         }
-
     }
 }
