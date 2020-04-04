@@ -50,7 +50,7 @@
                         <td class="data">@Model.FuelCapacity.ToString("N0") T</td>
                     </tr>
                     <tr>
-                        <td class="caption">Fuel</td>
+                        <td class="caption">Fuel Level</td>
                         <td class="data">@Model.FuelPercent %</td>
                     </tr>
                 }
@@ -124,6 +124,13 @@
                     <tr>
                         <td class="caption">Power Distr.</td>
                         <td class="data">@Model.PowerDistributor</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.ShieldGenerator))
+                {
+                    <tr>
+                        <td class="caption">Shield Gen.</td>
+                        <td class="data">@Model.ShieldGenerator</td>
                     </tr>
                 }
                 @if (!string.IsNullOrEmpty(Model.FrameShiftDrive))
@@ -285,6 +292,13 @@
                         <tr>
                             <td class="caption">Power Distr.</td>
                             <td class="data">@m.PowerDistributor</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.ShieldGenerator))
+                    {
+                        <tr>
+                            <td class="caption">Shield Gen.</td>
+                            <td class="data">@m.ShieldGenerator</td>
                         </tr>
                     }
                     @if (!string.IsNullOrEmpty(m.FrameShiftDrive))

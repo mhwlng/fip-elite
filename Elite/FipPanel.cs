@@ -757,6 +757,7 @@ namespace Elite
                                             LifeSupport = EliteData.ShipData.LifeSupport,
                                             Sensors = EliteData.ShipData.Sensors,
                                             GuardianFSDBooster = EliteData.ShipData.GuardianFSDBooster,
+                                            ShieldGenerator = EliteData.ShipData.ShieldGenerator,
 
                                             StoredShips = EliteHistory.ShipsList.Where(x => x.Stored == true).OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
 

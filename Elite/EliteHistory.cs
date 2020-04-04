@@ -90,6 +90,7 @@ namespace Elite
             public string LifeSupport { get; set; }
             public string Sensors { get; set; }
             public string GuardianFSDBooster { get; set; }
+            public string ShieldGenerator { get; set; }
 
         }
 
@@ -442,6 +443,11 @@ namespace Elite
                 var size = GetModuleSize(item);
                 var cl = GetModuleClass(item);
 
+                if (item?.Contains("guardian") == true)
+                {
+                    cl += " guardian";
+                }
+
                 return size.ToString() + cl;
             }
 
@@ -456,6 +462,35 @@ namespace Elite
 
                 var size = GetModuleSize(item);
                 var cl = GetModuleClass(item);
+
+                if (item?.Contains("guardian") == true)
+                {
+                    cl += " guardian";
+                }
+
+                return size.ToString() + cl;
+            }
+
+            return data;
+        }
+
+        public static string UpdateShieldGenerator(string item, string data, bool remove)
+        {
+            if (item?.Contains("_shieldgenerator_") == true)
+            {
+                if (remove) return null;
+
+                var size = GetModuleSize(item);
+                var cl = GetModuleClass(item);
+
+                if (item?.Contains("strong") == true)
+                {
+                    cl += " prismatic";
+                }
+                else if (item?.Contains("fast") == true)
+                {
+                    cl += " bi-weave";
+                }
 
                 return size.ToString() + cl;
             }
@@ -579,6 +614,7 @@ namespace Elite
                 ship.LifeSupport = null;
                 ship.Sensors = null;
                 ship.GuardianFSDBooster = null;
+                ship.ShieldGenerator = null;
 
                 if (info.Modules != null)
                 {
@@ -593,6 +629,7 @@ namespace Elite
                         ship.PowerPlant = UpdatePowerPlant(m.Item, ship.PowerPlant, false);
                         ship.Engine = UpdateEngine(m.Item, ship.Engine, false);
                         ship.PowerDistributor = UpdatePowerDistributor(m.Item, ship.PowerDistributor, false);
+                        ship.ShieldGenerator = UpdateShieldGenerator(m.Item, ship.ShieldGenerator, false);
                         ship.FrameShiftDrive = UpdateFrameShiftDrive(m.Item, ship.FrameShiftDrive, false);
                         ship.LifeSupport = UpdateLifeSupport(m.Item, ship.LifeSupport, false);
                         ship.Sensors = UpdateSensors(m.Item, ship.Sensors, false);
@@ -615,6 +652,7 @@ namespace Elite
                 ship.PowerPlant = UpdatePowerPlant(info.RetrievedItem, ship.PowerPlant, false);
                 ship.Engine = UpdateEngine(info.RetrievedItem, ship.Engine, false);
                 ship.PowerDistributor = UpdatePowerDistributor(info.RetrievedItem, ship.PowerDistributor, false);
+                ship.ShieldGenerator = UpdateShieldGenerator(info.RetrievedItem, ship.ShieldGenerator, false);
                 ship.FrameShiftDrive = UpdateFrameShiftDrive(info.RetrievedItem, ship.FrameShiftDrive, false);
                 ship.LifeSupport = UpdateLifeSupport(info.RetrievedItem, ship.LifeSupport, false);
                 ship.Sensors = UpdateSensors(info.RetrievedItem, ship.Sensors, false);
@@ -635,6 +673,7 @@ namespace Elite
                 ship.PowerPlant = UpdatePowerPlant(info.SellItem, ship.PowerPlant, true);
                 ship.Engine = UpdateEngine(info.SellItem, ship.Engine, true);
                 ship.PowerDistributor = UpdatePowerDistributor(info.SellItem, ship.PowerDistributor, true);
+                ship.ShieldGenerator = UpdateShieldGenerator(info.SellItem, ship.ShieldGenerator, true);
                 ship.FrameShiftDrive = UpdateFrameShiftDrive(info.SellItem, ship.FrameShiftDrive, true);
                 ship.LifeSupport = UpdateLifeSupport(info.SellItem, ship.LifeSupport, true);
                 ship.Sensors = UpdateSensors(info.SellItem, ship.Sensors, true);
@@ -647,6 +686,7 @@ namespace Elite
                 ship.PowerPlant = UpdatePowerPlant(info.BuyItem, ship.PowerPlant, false);
                 ship.Engine = UpdateEngine(info.BuyItem, ship.Engine, false);
                 ship.PowerDistributor = UpdatePowerDistributor(info.BuyItem, ship.PowerDistributor, false);
+                ship.ShieldGenerator = UpdateShieldGenerator(info.BuyItem, ship.ShieldGenerator, false);
                 ship.FrameShiftDrive = UpdateFrameShiftDrive(info.BuyItem, ship.FrameShiftDrive, false);
                 ship.LifeSupport = UpdateLifeSupport(info.BuyItem, ship.LifeSupport, false);
                 ship.Sensors = UpdateSensors(info.BuyItem, ship.Sensors, false);
@@ -667,6 +707,7 @@ namespace Elite
                 ship.PowerPlant = UpdatePowerPlant(info.FromItem, ship.PowerPlant, true);
                 ship.Engine = UpdateEngine(info.FromItem, ship.Engine, true);
                 ship.PowerDistributor = UpdatePowerDistributor(info.FromItem, ship.PowerDistributor, true);
+                ship.ShieldGenerator = UpdateShieldGenerator(info.FromItem, ship.ShieldGenerator, true);
                 ship.FrameShiftDrive = UpdateFrameShiftDrive(info.FromItem, ship.FrameShiftDrive, true);
                 ship.LifeSupport = UpdateLifeSupport(info.FromItem, ship.LifeSupport, true);
                 ship.Sensors = UpdateSensors(info.FromItem, ship.Sensors, true);
@@ -679,6 +720,7 @@ namespace Elite
                 ship.PowerPlant = UpdatePowerPlant(info.ToItem, ship.PowerPlant, false);
                 ship.Engine = UpdateEngine(info.ToItem, ship.Engine, false);
                 ship.PowerDistributor = UpdatePowerDistributor(info.ToItem, ship.PowerDistributor, false);
+                ship.ShieldGenerator = UpdateShieldGenerator(info.ToItem, ship.ShieldGenerator, false);
                 ship.FrameShiftDrive = UpdateFrameShiftDrive(info.ToItem, ship.FrameShiftDrive, false);
                 ship.LifeSupport = UpdateLifeSupport(info.ToItem, ship.LifeSupport, false);
                 ship.Sensors = UpdateSensors(info.ToItem, ship.Sensors, false);
@@ -700,6 +742,7 @@ namespace Elite
                 ship.PowerPlant = UpdatePowerPlant(info.SellItem, ship.PowerPlant, true);
                 ship.Engine = UpdateEngine(info.SellItem, ship.Engine, true);
                 ship.PowerDistributor = UpdatePowerDistributor(info.SellItem, ship.PowerDistributor, true);
+                ship.ShieldGenerator = UpdateShieldGenerator(info.SellItem, ship.ShieldGenerator, true);
                 ship.FrameShiftDrive = UpdateFrameShiftDrive(info.SellItem, ship.FrameShiftDrive, true);
                 ship.LifeSupport = UpdateLifeSupport(info.SellItem, ship.LifeSupport, true);
                 ship.Sensors = UpdateSensors(info.SellItem, ship.Sensors, true);
@@ -720,6 +763,7 @@ namespace Elite
                 ship.PowerPlant = UpdatePowerPlant(info.SellItem, ship.PowerPlant, true);
                 ship.Engine = UpdateEngine(info.SellItem, ship.Engine, true);
                 ship.PowerDistributor = UpdatePowerDistributor(info.SellItem, ship.PowerDistributor, true);
+                ship.ShieldGenerator = UpdateShieldGenerator(info.SellItem, ship.ShieldGenerator, true);
                 ship.FrameShiftDrive = UpdateFrameShiftDrive(info.SellItem, ship.FrameShiftDrive, true);
                 ship.LifeSupport = UpdateLifeSupport(info.SellItem, ship.LifeSupport, true);
                 ship.Sensors = UpdateSensors(info.SellItem, ship.Sensors, true);
@@ -740,6 +784,7 @@ namespace Elite
                 ship.PowerPlant = UpdatePowerPlant(info.StoredItem, ship.PowerPlant, true);
                 ship.Engine = UpdateEngine(info.StoredItem, ship.Engine, true);
                 ship.PowerDistributor = UpdatePowerDistributor(info.StoredItem, ship.PowerDistributor, true);
+                ship.ShieldGenerator = UpdateShieldGenerator(info.StoredItem, ship.ShieldGenerator, true);
                 ship.FrameShiftDrive = UpdateFrameShiftDrive(info.StoredItem, ship.FrameShiftDrive, true);
                 ship.LifeSupport = UpdateLifeSupport(info.StoredItem, ship.LifeSupport, true);
                 ship.Sensors = UpdateSensors(info.StoredItem, ship.Sensors, true);
@@ -762,6 +807,7 @@ namespace Elite
                     ship.PowerPlant = UpdatePowerPlant(i.Name, ship.PowerPlant, true);
                     ship.Engine = UpdateEngine(i.Name, ship.Engine, true);
                     ship.PowerDistributor = UpdatePowerDistributor(i.Name, ship.PowerDistributor, true);
+                    ship.ShieldGenerator = UpdateShieldGenerator(i.Name, ship.ShieldGenerator, true);
                     ship.FrameShiftDrive = UpdateFrameShiftDrive(i.Name, ship.FrameShiftDrive, true);
                     ship.LifeSupport = UpdateLifeSupport(i.Name, ship.LifeSupport, true);
                     ship.Sensors = UpdateSensors(i.Name, ship.Sensors, true);

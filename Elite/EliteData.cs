@@ -378,6 +378,7 @@ namespace Elite
             public string LifeSupport { get; set; }
             public string Sensors { get; set; }
             public string GuardianFSDBooster { get; set; }
+            public string ShieldGenerator { get; set; }
         }
 
         public class Mission
@@ -847,6 +848,7 @@ namespace Elite
                     ShipData.LifeSupport = null;
                     ShipData.Sensors = null;
                     ShipData.GuardianFSDBooster = null;
+                    ShipData.ShieldGenerator = null;
 
                     foreach (var m in loadoutInfo.Modules)
                     {
@@ -858,6 +860,7 @@ namespace Elite
                         ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(m.Item, ShipData.PowerPlant, false);
                         ShipData.Engine = EliteHistory.UpdateEngine(m.Item, ShipData.Engine, false);
                         ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(m.Item, ShipData.PowerDistributor, false);
+                        ShipData.ShieldGenerator = EliteHistory.UpdateShieldGenerator(m.Item, ShipData.ShieldGenerator, false);
                         ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(m.Item, ShipData.FrameShiftDrive, false);
                         ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(m.Item, ShipData.LifeSupport, false);
                         ShipData.Sensors = EliteHistory.UpdateSensors(m.Item, ShipData.Sensors, false);
@@ -881,6 +884,7 @@ namespace Elite
                     ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleRetrieveInfo.RetrievedItem, ShipData.PowerPlant, false);
                     ShipData.Engine = EliteHistory.UpdateEngine(moduleRetrieveInfo.RetrievedItem, ShipData.Engine, false);
                     ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleRetrieveInfo.RetrievedItem, ShipData.PowerDistributor, false);
+                    ShipData.ShieldGenerator = EliteHistory.UpdateShieldGenerator(moduleRetrieveInfo.RetrievedItem, ShipData.ShieldGenerator, false);
                     ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleRetrieveInfo.RetrievedItem, ShipData.FrameShiftDrive, false);
                     ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleRetrieveInfo.RetrievedItem, ShipData.LifeSupport, false);
                     ShipData.Sensors = EliteHistory.UpdateSensors(moduleRetrieveInfo.RetrievedItem, ShipData.Sensors, false);
@@ -904,6 +908,7 @@ namespace Elite
                     ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleBuyInfo.SellItem, ShipData.PowerPlant, true);
                     ShipData.Engine = EliteHistory.UpdateEngine(moduleBuyInfo.SellItem, ShipData.Engine, true);
                     ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleBuyInfo.SellItem, ShipData.PowerDistributor, true);
+                    ShipData.ShieldGenerator = EliteHistory.UpdateShieldGenerator(moduleBuyInfo.SellItem, ShipData.ShieldGenerator, true);
                     ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleBuyInfo.SellItem, ShipData.FrameShiftDrive, true);
                     ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleBuyInfo.SellItem, ShipData.LifeSupport, true);
                     ShipData.Sensors = EliteHistory.UpdateSensors(moduleBuyInfo.SellItem, ShipData.Sensors, true);
@@ -916,6 +921,7 @@ namespace Elite
                     ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleBuyInfo.BuyItem, ShipData.PowerPlant, false);
                     ShipData.Engine = EliteHistory.UpdateEngine(moduleBuyInfo.BuyItem, ShipData.Engine, false);
                     ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleBuyInfo.BuyItem, ShipData.PowerDistributor, false);
+                    ShipData.ShieldGenerator = EliteHistory.UpdateShieldGenerator(moduleBuyInfo.BuyItem, ShipData.ShieldGenerator, false);
                     ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleBuyInfo.BuyItem, ShipData.FrameShiftDrive, false);
                     ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleBuyInfo.BuyItem, ShipData.LifeSupport, false);
                     ShipData.Sensors = EliteHistory.UpdateSensors(moduleBuyInfo.BuyItem, ShipData.Sensors, false);
@@ -938,6 +944,7 @@ namespace Elite
                     ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleSwapInfo.FromItem, ShipData.PowerPlant, true);
                     ShipData.Engine = EliteHistory.UpdateEngine(moduleSwapInfo.FromItem, ShipData.Engine, true);
                     ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleSwapInfo.FromItem, ShipData.PowerDistributor, true);
+                    ShipData.ShieldGenerator = EliteHistory.UpdateShieldGenerator(moduleSwapInfo.FromItem, ShipData.ShieldGenerator, true);
                     ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleSwapInfo.FromItem, ShipData.FrameShiftDrive, true);
                     ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleSwapInfo.FromItem, ShipData.LifeSupport, true);
                     ShipData.Sensors = EliteHistory.UpdateSensors(moduleSwapInfo.FromItem, ShipData.Sensors, true);
@@ -950,6 +957,7 @@ namespace Elite
                     ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleSwapInfo.ToItem, ShipData.PowerPlant, false);
                     ShipData.Engine = EliteHistory.UpdateEngine(moduleSwapInfo.ToItem, ShipData.Engine, false);
                     ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleSwapInfo.ToItem, ShipData.PowerDistributor, false);
+                    ShipData.ShieldGenerator = EliteHistory.UpdateShieldGenerator(moduleSwapInfo.ToItem, ShipData.ShieldGenerator, false);
                     ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleSwapInfo.ToItem, ShipData.FrameShiftDrive, false);
                     ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleSwapInfo.ToItem, ShipData.LifeSupport, false);
                     ShipData.Sensors = EliteHistory.UpdateSensors(moduleSwapInfo.ToItem, ShipData.Sensors, false);
@@ -973,6 +981,7 @@ namespace Elite
                     ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleSellInfo.SellItem, ShipData.PowerPlant, true);
                     ShipData.Engine = EliteHistory.UpdateEngine(moduleSellInfo.SellItem, ShipData.Engine, true);
                     ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleSellInfo.SellItem, ShipData.PowerDistributor, true);
+                    ShipData.ShieldGenerator = EliteHistory.UpdateShieldGenerator(moduleSellInfo.SellItem, ShipData.ShieldGenerator, true);
                     ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleSellInfo.SellItem, ShipData.FrameShiftDrive, true);
                     ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleSellInfo.SellItem, ShipData.LifeSupport, true);
                     ShipData.Sensors = EliteHistory.UpdateSensors(moduleSellInfo.SellItem, ShipData.Sensors, true);
@@ -995,6 +1004,7 @@ namespace Elite
                     ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleSellRemoteInfo.SellItem, ShipData.PowerPlant, true);
                     ShipData.Engine = EliteHistory.UpdateEngine(moduleSellRemoteInfo.SellItem, ShipData.Engine, true);
                     ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleSellRemoteInfo.SellItem, ShipData.PowerDistributor, true);
+                    ShipData.ShieldGenerator = EliteHistory.UpdateShieldGenerator(moduleSellRemoteInfo.SellItem, ShipData.ShieldGenerator, true);
                     ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleSellRemoteInfo.SellItem, ShipData.FrameShiftDrive, true);
                     ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleSellRemoteInfo.SellItem, ShipData.LifeSupport, true);
                     ShipData.Sensors = EliteHistory.UpdateSensors(moduleSellRemoteInfo.SellItem, ShipData.Sensors, true);
@@ -1017,6 +1027,7 @@ namespace Elite
                     ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(moduleStoreInfo.StoredItem, ShipData.PowerPlant, true);
                     ShipData.Engine = EliteHistory.UpdateEngine(moduleStoreInfo.StoredItem, ShipData.Engine, true);
                     ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(moduleStoreInfo.StoredItem, ShipData.PowerDistributor, true);
+                    ShipData.ShieldGenerator = EliteHistory.UpdateShieldGenerator(moduleStoreInfo.StoredItem, ShipData.ShieldGenerator, true);
                     ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(moduleStoreInfo.StoredItem, ShipData.FrameShiftDrive, true);
                     ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(moduleStoreInfo.StoredItem, ShipData.LifeSupport, true);
                     ShipData.Sensors = EliteHistory.UpdateSensors(moduleStoreInfo.StoredItem, ShipData.Sensors, true);
@@ -1041,6 +1052,7 @@ namespace Elite
                         ShipData.PowerPlant = EliteHistory.UpdatePowerPlant(i.Name, ShipData.PowerPlant, true);
                         ShipData.Engine = EliteHistory.UpdateEngine(i.Name, ShipData.Engine, true);
                         ShipData.PowerDistributor = EliteHistory.UpdatePowerDistributor(i.Name, ShipData.PowerDistributor, true);
+                        ShipData.ShieldGenerator = EliteHistory.UpdateShieldGenerator(i.Name, ShipData.ShieldGenerator, true);
                         ShipData.FrameShiftDrive = EliteHistory.UpdateFrameShiftDrive(i.Name, ShipData.FrameShiftDrive, true);
                         ShipData.LifeSupport = EliteHistory.UpdateLifeSupport(i.Name, ShipData.LifeSupport, true);
                         ShipData.Sensors = EliteHistory.UpdateSensors(i.Name, ShipData.Sensors, true);
