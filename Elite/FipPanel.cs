@@ -741,6 +741,8 @@ namespace Elite
                                             Cargo = EliteData.StatusData.Cargo,
                                             CargoCapacity = shipData.CargoCapacity,
 
+                                            Cabins = shipData.Cabins,
+
                                             HullHealth = shipData.HullHealth,
 
                                             HullValue = shipData.HullValue, 

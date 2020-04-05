@@ -154,6 +154,13 @@
                         <td class="data">@Model.Sensors</td>
                     </tr>
                 }
+                @if (!string.IsNullOrEmpty(Model.Cabins))
+                {
+                    <tr>
+                        <td class="caption">Cabins</td>
+                        <td class="data">@Model.Cabins</td>
+                    </tr>
+                }
 
 
             </tbody>
@@ -326,6 +333,13 @@
                         <tr>
                             <td class="caption">Sensors</td>
                             <td class="data">@m.Sensors</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.Cabins))
+                    {
+                        <tr>
+                            <td class="caption">Cabins</td>
+                            <td class="data">@m.Cabins</td>
                         </tr>
                     }
 

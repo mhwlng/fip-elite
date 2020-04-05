@@ -189,6 +189,12 @@ namespace Elite
             public double UnladenMass { get; set; }
             public double FuelCapacity { get; set; }
             public int CargoCapacity { get; set; }
+
+            public int EconomyClassPassengerCabinCapacity { get; set; }
+            public int BusinessClassPassengerCabinCapacity { get; set; }
+            public int FirstClassPassengerCabinCapacity { get; set; }
+            public int LuxuryClassPassengerCabinCapacity { get; set; }
+
             public double MaxJumpRange { get; set; }
             public int Rebuy { get; set; }
             public bool Hot { get; set; }
@@ -206,6 +212,35 @@ namespace Elite
             public string Sensors { get; set; }
             public string GuardianFSDBooster { get; set; }
             public string ShieldGenerator { get; set; }
+
+            public string Cabins
+            {
+                get
+                {
+                    var c = new List<string>();
+                    if (this.EconomyClassPassengerCabinCapacity > 0)
+                    {
+                        c.Add("E=" + this.EconomyClassPassengerCabinCapacity);
+                    }
+
+                    if (this.BusinessClassPassengerCabinCapacity > 0)
+                    {
+                        c.Add("B=" + this.BusinessClassPassengerCabinCapacity);
+                    }
+
+                    if (this.FirstClassPassengerCabinCapacity > 0)
+                    {
+                        c.Add("F=" + this.FirstClassPassengerCabinCapacity);
+                    }
+
+                    if (this.LuxuryClassPassengerCabinCapacity > 0)
+                    {
+                        c.Add("L=" + this.LuxuryClassPassengerCabinCapacity);
+                    }
+
+                    return string.Join("+", c);
+                }
+            }
         }
 
         public static List<ShipData> ShipsList = new List<ShipData>();
@@ -288,7 +323,7 @@ namespace Elite
                     double deltaY = Ys - Yd;
                     double deltaZ = Zs - Zd;
 
-                    item.Distance = (double)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                    item.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
             }
         }
@@ -313,7 +348,7 @@ namespace Elite
         {
             if (info.SellShipID != null && !String.IsNullOrEmpty(info.SellOldShip))
             {
-                RemoveShip((int)info.SellShipID, info.SellOldShip.ToLower());
+                RemoveShip((int) info.SellShipID, info.SellOldShip.ToLower());
             }
         }
 
@@ -343,13 +378,13 @@ namespace Elite
             {
                 if (info.SellShipID != null && !String.IsNullOrEmpty(info.SellOldShip))
                 {
-                    RemoveShip((int)info.SellShipID, info.SellOldShip.ToLower());
+                    RemoveShip((int) info.SellShipID, info.SellOldShip.ToLower());
                 }
 
                 if (info.StoreShipID != null && !EliteShips.ShipsList.Any(x =>
                     x.ShipType == info.StoreOldShip.ToLower() && x.ShipID == info.StoreShipID))
                 {
-                    AddShip((int)info.StoreShipID, info.StoreOldShip.ToLower(), ship.StarSystem, ship.StationName,
+                    AddShip((int) info.StoreShipID, info.StoreOldShip.ToLower(), ship.StarSystem, ship.StationName,
                         ship.StarPos, true);
                 }
 
@@ -372,7 +407,7 @@ namespace Elite
                 AddShip(info.NewShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos, true);
             }
         }
-        
+
         public static int GetModuleSize(string item)
         {
             var size = item.Substring(item.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
@@ -411,18 +446,22 @@ namespace Elite
             {
                 return "Lightweight Alloy";
             }
+
             if (item.IndexOf("_grade2", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return "Reinforced Alloy";
             }
+
             if (item.IndexOf("_grade3", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return "Military Grade Composite";
             }
+
             if (item.IndexOf("_mirrored", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return "Mirrored Surface Composite";
             }
+
             if (item.IndexOf("_reactive", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return "Reactive Surface Composite";
@@ -452,6 +491,92 @@ namespace Elite
                 var cl = GetModuleClass(item);
 
                 return Convert.ToInt32(Math.Pow(2, size));
+            }
+
+            return 0;
+        }
+
+        public static int UpdateEconomyClassPassengerCabinCapacity(string item)
+        {
+            if (item?.Contains("_passengercabin_") == true)
+            {
+                var size = GetModuleSize(item);
+                var cl = GetModuleClass(item);
+
+                if (cl == "E")
+                {
+                    switch (size)
+                    {
+                        case 2: return 2;
+                        case 3: return 4;
+                        case 4: return 8;
+                        case 5: return 16;
+                        case 6: return 32;
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        public static int UpdateBusinessClassPassengerCabinCapacity(string item)
+        {
+            if (item?.Contains("_passengercabin_") == true)
+            {
+                var size = GetModuleSize(item);
+                var cl = GetModuleClass(item);
+
+                if (cl == "D")
+                {
+                    switch (size)
+                    {
+                        case 3: return 3;
+                        case 4: return 6;
+                        case 5: return 10;
+                        case 6: return 16;
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        public static int UpdateFirstClassPassengerCabinCapacity(string item)
+        {
+            if (item?.Contains("_passengercabin_") == true)
+            {
+                var size = GetModuleSize(item);
+                var cl = GetModuleClass(item);
+
+                if (cl == "C")
+                {
+                    switch (size)
+                    {
+                        case 4: return 3;
+                        case 5: return 6;
+                        case 6: return 12;
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        public static int UpdateLuxuryClassPassengerCabinCapacity(string item)
+        {
+            if (item?.Contains("_passengercabin_") == true)
+            {
+                var size = GetModuleSize(item);
+                var cl = GetModuleClass(item);
+
+                if (cl == "B")
+                {
+                    switch (size)
+                    {
+                        case 5: return 4;
+                        case 6: return 8;
+                    }
+                }
             }
 
             return 0;
@@ -667,6 +792,42 @@ namespace Elite
             }
         }
 
+        public static void HandleModules(ShipData ship, string item, bool remove)
+        {
+            if (remove)
+            {
+                ship.CargoCapacity -= UpdateCargoCapacity(item);
+                ship.FuelCapacity -= UpdateFuelCapacity(item);
+
+                ship.EconomyClassPassengerCabinCapacity -= UpdateEconomyClassPassengerCabinCapacity(item);
+                ship.BusinessClassPassengerCabinCapacity -= UpdateBusinessClassPassengerCabinCapacity(item);
+                ship.FirstClassPassengerCabinCapacity -= UpdateFirstClassPassengerCabinCapacity(item);
+                ship.LuxuryClassPassengerCabinCapacity -= UpdateLuxuryClassPassengerCabinCapacity(item);
+            }
+            else
+            {
+                ship.CargoCapacity += UpdateCargoCapacity(item);
+                ship.FuelCapacity += UpdateFuelCapacity(item);
+
+                ship.EconomyClassPassengerCabinCapacity += UpdateEconomyClassPassengerCabinCapacity(item);
+                ship.BusinessClassPassengerCabinCapacity += UpdateBusinessClassPassengerCabinCapacity(item);
+                ship.FirstClassPassengerCabinCapacity += UpdateFirstClassPassengerCabinCapacity(item);
+                ship.LuxuryClassPassengerCabinCapacity += UpdateLuxuryClassPassengerCabinCapacity(item);
+
+            }
+
+            ship.Bulkhead = UpdateArmour(item, ship.Bulkhead, remove);
+            ship.PowerPlant = UpdatePowerPlant(item, ship.PowerPlant, remove);
+            ship.Engine = UpdateEngine(item, ship.Engine, remove);
+            ship.PowerDistributor = UpdatePowerDistributor(item, ship.PowerDistributor, remove);
+            ship.ShieldGenerator = UpdateShieldGenerator(item, ship.ShieldGenerator, remove);
+            ship.FrameShiftDrive = UpdateFrameShiftDrive(item, ship.FrameShiftDrive, remove);
+            ship.LifeSupport = UpdateLifeSupport(item, ship.LifeSupport, remove);
+            ship.Sensors = UpdateSensors(item, ship.Sensors, remove);
+            ship.GuardianFSDBooster = UpdateGuardianFSDBooster(item, ship.GuardianFSDBooster, remove);
+        }
+
+
         public static void HandleLoadout(LoadoutEvent.LoadoutEventArgs info)
         {
             var ship = GetCurrentShip();
@@ -691,6 +852,11 @@ namespace Elite
 
                 ship.CargoCapacity = 0;
                 ship.FuelCapacity = 0;
+                ship.EconomyClassPassengerCabinCapacity = 0;
+                ship.BusinessClassPassengerCabinCapacity = 0;
+                ship.FirstClassPassengerCabinCapacity = 0;
+                ship.LuxuryClassPassengerCabinCapacity = 0;
+
                 ship.Bulkhead = null;
                 ship.PowerPlant = null;
                 ship.Engine = null;
@@ -707,18 +873,7 @@ namespace Elite
 
                     foreach (var m in info.Modules)
                     {
-                        ship.CargoCapacity += UpdateCargoCapacity(m.Item);
-                        ship.FuelCapacity += UpdateFuelCapacity(m.Item);
-
-                        ship.Bulkhead = UpdateArmour(m.Item, ship.Bulkhead, false);
-                        ship.PowerPlant = UpdatePowerPlant(m.Item, ship.PowerPlant, false);
-                        ship.Engine = UpdateEngine(m.Item, ship.Engine, false);
-                        ship.PowerDistributor = UpdatePowerDistributor(m.Item, ship.PowerDistributor, false);
-                        ship.ShieldGenerator = UpdateShieldGenerator(m.Item, ship.ShieldGenerator, false);
-                        ship.FrameShiftDrive = UpdateFrameShiftDrive(m.Item, ship.FrameShiftDrive, false);
-                        ship.LifeSupport = UpdateLifeSupport(m.Item, ship.LifeSupport, false);
-                        ship.Sensors = UpdateSensors(m.Item, ship.Sensors, false);
-                        ship.GuardianFSDBooster = UpdateGuardianFSDBooster(m.Item, ship.GuardianFSDBooster, false);
+                        HandleModules(ship, m.Item, false);
                     }
                 }
 
@@ -732,18 +887,7 @@ namespace Elite
 
             if (ship != null)
             {
-                ship.CargoCapacity += UpdateCargoCapacity(info.RetrievedItem);
-                ship.FuelCapacity += UpdateFuelCapacity(info.RetrievedItem);
-
-                ship.Bulkhead = UpdateArmour(info.RetrievedItem, ship.Bulkhead, false);
-                ship.PowerPlant = UpdatePowerPlant(info.RetrievedItem, ship.PowerPlant, false);
-                ship.Engine = UpdateEngine(info.RetrievedItem, ship.Engine, false);
-                ship.PowerDistributor = UpdatePowerDistributor(info.RetrievedItem, ship.PowerDistributor, false);
-                ship.ShieldGenerator = UpdateShieldGenerator(info.RetrievedItem, ship.ShieldGenerator, false);
-                ship.FrameShiftDrive = UpdateFrameShiftDrive(info.RetrievedItem, ship.FrameShiftDrive, false);
-                ship.LifeSupport = UpdateLifeSupport(info.RetrievedItem, ship.LifeSupport, false);
-                ship.Sensors = UpdateSensors(info.RetrievedItem, ship.Sensors, false);
-                ship.GuardianFSDBooster = UpdateGuardianFSDBooster(info.RetrievedItem, ship.GuardianFSDBooster, false);
+                HandleModules(ship, info.RetrievedItem, false);
             }
         }
 
@@ -753,31 +897,9 @@ namespace Elite
 
             if (ship != null)
             {
-                ship.CargoCapacity -= UpdateCargoCapacity(info.SellItem);
-                ship.FuelCapacity -= UpdateFuelCapacity(info.SellItem);
+                HandleModules(ship, info.SellItem, true);
 
-                ship.Bulkhead = UpdateArmour(info.SellItem, ship.Bulkhead, true);
-                ship.PowerPlant = UpdatePowerPlant(info.SellItem, ship.PowerPlant, true);
-                ship.Engine = UpdateEngine(info.SellItem, ship.Engine, true);
-                ship.PowerDistributor = UpdatePowerDistributor(info.SellItem, ship.PowerDistributor, true);
-                ship.ShieldGenerator = UpdateShieldGenerator(info.SellItem, ship.ShieldGenerator, true);
-                ship.FrameShiftDrive = UpdateFrameShiftDrive(info.SellItem, ship.FrameShiftDrive, true);
-                ship.LifeSupport = UpdateLifeSupport(info.SellItem, ship.LifeSupport, true);
-                ship.Sensors = UpdateSensors(info.SellItem, ship.Sensors, true);
-                ship.GuardianFSDBooster = UpdateGuardianFSDBooster(info.SellItem, ship.GuardianFSDBooster, true);
-
-                ship.CargoCapacity += UpdateCargoCapacity(info.BuyItem);
-                ship.FuelCapacity += UpdateFuelCapacity(info.BuyItem);
-
-                ship.Bulkhead = UpdateArmour(info.BuyItem, ship.Bulkhead, false);
-                ship.PowerPlant = UpdatePowerPlant(info.BuyItem, ship.PowerPlant, false);
-                ship.Engine = UpdateEngine(info.BuyItem, ship.Engine, false);
-                ship.PowerDistributor = UpdatePowerDistributor(info.BuyItem, ship.PowerDistributor, false);
-                ship.ShieldGenerator = UpdateShieldGenerator(info.BuyItem, ship.ShieldGenerator, false);
-                ship.FrameShiftDrive = UpdateFrameShiftDrive(info.BuyItem, ship.FrameShiftDrive, false);
-                ship.LifeSupport = UpdateLifeSupport(info.BuyItem, ship.LifeSupport, false);
-                ship.Sensors = UpdateSensors(info.BuyItem, ship.Sensors, false);
-                ship.GuardianFSDBooster = UpdateGuardianFSDBooster(info.BuyItem, ship.GuardianFSDBooster, false);
+                HandleModules(ship, info.BuyItem, false);
             }
         }
 
@@ -787,31 +909,9 @@ namespace Elite
 
             if (ship != null)
             {
-                ship.CargoCapacity -= UpdateCargoCapacity(info.FromItem);
-                ship.FuelCapacity -= UpdateFuelCapacity(info.FromItem);
+                HandleModules(ship, info.FromItem, true);
 
-                ship.Bulkhead = UpdateArmour(info.FromItem, ship.Bulkhead, true);
-                ship.PowerPlant = UpdatePowerPlant(info.FromItem, ship.PowerPlant, true);
-                ship.Engine = UpdateEngine(info.FromItem, ship.Engine, true);
-                ship.PowerDistributor = UpdatePowerDistributor(info.FromItem, ship.PowerDistributor, true);
-                ship.ShieldGenerator = UpdateShieldGenerator(info.FromItem, ship.ShieldGenerator, true);
-                ship.FrameShiftDrive = UpdateFrameShiftDrive(info.FromItem, ship.FrameShiftDrive, true);
-                ship.LifeSupport = UpdateLifeSupport(info.FromItem, ship.LifeSupport, true);
-                ship.Sensors = UpdateSensors(info.FromItem, ship.Sensors, true);
-                ship.GuardianFSDBooster = UpdateGuardianFSDBooster(info.FromItem, ship.GuardianFSDBooster, true);
-
-                ship.CargoCapacity += UpdateCargoCapacity(info.ToItem);
-                ship.FuelCapacity += UpdateFuelCapacity(info.ToItem);
-
-                ship.Bulkhead = UpdateArmour(info.ToItem, ship.Bulkhead, false);
-                ship.PowerPlant = UpdatePowerPlant(info.ToItem, ship.PowerPlant, false);
-                ship.Engine = UpdateEngine(info.ToItem, ship.Engine, false);
-                ship.PowerDistributor = UpdatePowerDistributor(info.ToItem, ship.PowerDistributor, false);
-                ship.ShieldGenerator = UpdateShieldGenerator(info.ToItem, ship.ShieldGenerator, false);
-                ship.FrameShiftDrive = UpdateFrameShiftDrive(info.ToItem, ship.FrameShiftDrive, false);
-                ship.LifeSupport = UpdateLifeSupport(info.ToItem, ship.LifeSupport, false);
-                ship.Sensors = UpdateSensors(info.ToItem, ship.Sensors, false);
-                ship.GuardianFSDBooster = UpdateGuardianFSDBooster(info.ToItem, ship.GuardianFSDBooster, false);
+                HandleModules(ship, info.ToItem, false);
             }
         }
 
@@ -821,18 +921,7 @@ namespace Elite
 
             if (ship != null)
             {
-                ship.CargoCapacity -= UpdateCargoCapacity(info.SellItem);
-                ship.FuelCapacity -= UpdateFuelCapacity(info.SellItem);
-
-                ship.Bulkhead = UpdateArmour(info.SellItem, ship.Bulkhead, true);
-                ship.PowerPlant = UpdatePowerPlant(info.SellItem, ship.PowerPlant, true);
-                ship.Engine = UpdateEngine(info.SellItem, ship.Engine, true);
-                ship.PowerDistributor = UpdatePowerDistributor(info.SellItem, ship.PowerDistributor, true);
-                ship.ShieldGenerator = UpdateShieldGenerator(info.SellItem, ship.ShieldGenerator, true);
-                ship.FrameShiftDrive = UpdateFrameShiftDrive(info.SellItem, ship.FrameShiftDrive, true);
-                ship.LifeSupport = UpdateLifeSupport(info.SellItem, ship.LifeSupport, true);
-                ship.Sensors = UpdateSensors(info.SellItem, ship.Sensors, true);
-                ship.GuardianFSDBooster = UpdateGuardianFSDBooster(info.SellItem, ship.GuardianFSDBooster, true);
+                HandleModules(ship, info.SellItem, true);
             }
         }
 
@@ -842,18 +931,7 @@ namespace Elite
 
             if (ship != null)
             {
-                ship.CargoCapacity -= UpdateCargoCapacity(info.SellItem);
-                ship.FuelCapacity -= UpdateFuelCapacity(info.SellItem);
-
-                ship.Bulkhead = UpdateArmour(info.SellItem, ship.Bulkhead, true);
-                ship.PowerPlant = UpdatePowerPlant(info.SellItem, ship.PowerPlant, true);
-                ship.Engine = UpdateEngine(info.SellItem, ship.Engine, true);
-                ship.PowerDistributor = UpdatePowerDistributor(info.SellItem, ship.PowerDistributor, true);
-                ship.ShieldGenerator = UpdateShieldGenerator(info.SellItem, ship.ShieldGenerator, true);
-                ship.FrameShiftDrive = UpdateFrameShiftDrive(info.SellItem, ship.FrameShiftDrive, true);
-                ship.LifeSupport = UpdateLifeSupport(info.SellItem, ship.LifeSupport, true);
-                ship.Sensors = UpdateSensors(info.SellItem, ship.Sensors, true);
-                ship.GuardianFSDBooster = UpdateGuardianFSDBooster(info.SellItem, ship.GuardianFSDBooster, true);
+                HandleModules(ship, info.SellItem, true);
             }
         }
 
@@ -863,18 +941,7 @@ namespace Elite
 
             if (ship != null)
             {
-                ship.CargoCapacity -= UpdateCargoCapacity(info.StoredItem);
-                ship.FuelCapacity -= UpdateFuelCapacity(info.StoredItem);
-
-                ship.Bulkhead = UpdateArmour(info.StoredItem, ship.Bulkhead, true);
-                ship.PowerPlant = UpdatePowerPlant(info.StoredItem, ship.PowerPlant, true);
-                ship.Engine = UpdateEngine(info.StoredItem, ship.Engine, true);
-                ship.PowerDistributor = UpdatePowerDistributor(info.StoredItem, ship.PowerDistributor, true);
-                ship.ShieldGenerator = UpdateShieldGenerator(info.StoredItem, ship.ShieldGenerator, true);
-                ship.FrameShiftDrive = UpdateFrameShiftDrive(info.StoredItem, ship.FrameShiftDrive, true);
-                ship.LifeSupport = UpdateLifeSupport(info.StoredItem, ship.LifeSupport, true);
-                ship.Sensors = UpdateSensors(info.StoredItem, ship.Sensors, true);
-                ship.GuardianFSDBooster = UpdateGuardianFSDBooster(info.StoredItem, ship.GuardianFSDBooster, true);
+                HandleModules(ship, info.StoredItem, true);
             }
         }
 
@@ -886,18 +953,7 @@ namespace Elite
             {
                 foreach (var i in info.Items)
                 {
-                    ship.CargoCapacity -= UpdateCargoCapacity(i.Name);
-                    ship.FuelCapacity -= UpdateFuelCapacity(i.Name);
-
-                    ship.Bulkhead = UpdateArmour(i.Name, ship.Bulkhead, true);
-                    ship.PowerPlant = UpdatePowerPlant(i.Name, ship.PowerPlant, true);
-                    ship.Engine = UpdateEngine(i.Name, ship.Engine, true);
-                    ship.PowerDistributor = UpdatePowerDistributor(i.Name, ship.PowerDistributor, true);
-                    ship.ShieldGenerator = UpdateShieldGenerator(i.Name, ship.ShieldGenerator, true);
-                    ship.FrameShiftDrive = UpdateFrameShiftDrive(i.Name, ship.FrameShiftDrive, true);
-                    ship.LifeSupport = UpdateLifeSupport(i.Name, ship.LifeSupport, true);
-                    ship.Sensors = UpdateSensors(i.Name, ship.Sensors, true);
-                    ship.GuardianFSDBooster = UpdateGuardianFSDBooster(i.Name, ship.GuardianFSDBooster, true);
+                    HandleModules(ship, i.Name, true);
                 }
             }
         }
