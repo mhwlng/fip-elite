@@ -171,16 +171,22 @@ namespace Elite
             public bool Stored { get; set; }
             public int ShipID { get; set; }
             public string ShipType { get; set; }
-            public string ShipTypeFull { get; set; }
+            public string ShipTypeFull
+            {
+                get
+                {
+                    ShipsByEliteID.TryGetValue(this.ShipType.ToLower(), out var shipTypeFull);
+                    return shipTypeFull?.Trim() ?? this.ShipType?.Trim();
+                }
+            }
+            public string ShipImage => this.ShipTypeFull?.Trim() + ".png";
+
             public string Name { get; set; } = "";
 
             public bool AutomaticDocking { get; set; }
             public string StationName { get; set; }
             public string StarSystem { get; set; }
-            public string ShipImage { get; set; }
-
             public List<double> StarPos { get; set; } = new List<double>();
-
             public double Distance { get; set; }
 
             public int HullValue { get; set; }
@@ -190,19 +196,11 @@ namespace Elite
             public double FuelCapacity { get; set; }
             public int CargoCapacity { get; set; }
 
-            public int EconomyClassPassengerCabinCapacity { get; set; }
-            public int BusinessClassPassengerCabinCapacity { get; set; }
-            public int FirstClassPassengerCabinCapacity { get; set; }
-            public int LuxuryClassPassengerCabinCapacity { get; set; }
-
             public double MaxJumpRange { get; set; }
             public int Rebuy { get; set; }
             public bool Hot { get; set; }
             public Module[] Modules { get; set; }
 
-            //hardpoints = new List<Hardpoint>();
-            //compartments = new List<Compartment>();
-            //launchbays = new List<LaunchBay>();
             public string Bulkhead { get; set; }
             public string PowerPlant { get; set; }
             public string Engine { get; set; }
@@ -216,6 +214,10 @@ namespace Elite
             public string GuardianFSDBooster { get; set; }
             public string ShieldGenerator { get; set; }
 
+            public int EconomyClassPassengerCabinCapacity { get; set; }
+            public int BusinessClassPassengerCabinCapacity { get; set; }
+            public int FirstClassPassengerCabinCapacity { get; set; }
+            public int LuxuryClassPassengerCabinCapacity { get; set; }
             public string Cabins
             {
                 get
@@ -244,13 +246,22 @@ namespace Elite
                     return string.Join("+", c);
                 }
             }
+
+            public List<string> VehicleBaysList { get; set; } = new List<string>();
+            public string VehicleBays => GetPlacement(this.VehicleBaysList);
+
+            public List<string> MultiCannonsList { get; set; } = new List<string>();
+            public List<string> PulseLasersList { get; set; } = new List<string>();
+            public string MultiCannons => GetPlacement(this.MultiCannonsList);
+            public string PulseLasers => GetPlacement(this.PulseLasersList);
+
         }
 
         public static List<ShipData> ShipsList = new List<ShipData>();
 
-        public static EliteShips.ShipData GetCurrentShip()
+        public static ShipData GetCurrentShip()
         {
-            return EliteShips.ShipsList.FirstOrDefault(x => x.Stored == false);
+            return ShipsList.FirstOrDefault(x => x.Stored == false);
         }
 
         public static void AddShip(int shipId, string shipType, string starSystem, string stationName,
@@ -260,16 +271,12 @@ namespace Elite
 
             if (starPos == null) return;
 
-            if (!EliteShips.ShipsList.Any(x => x.ShipType == shipType?.ToLower() && x.ShipID == shipId))
+            if (!ShipsList.Any(x => x.ShipType == shipType?.ToLower() && x.ShipID == shipId))
             {
-                ShipsByEliteID.TryGetValue(shipType.ToLower(), out var shipTypeFull);
-
-                EliteShips.ShipsList.Add(new EliteShips.ShipData()
+                ShipsList.Add(new ShipData()
                 {
                     ShipID = shipId,
                     ShipType = shipType.ToLower(),
-                    ShipTypeFull = shipTypeFull ?? shipType,
-                    ShipImage = shipTypeFull?.Trim() + ".png",
 
                     StarSystem = starSystem,
                     StationName = stationName,
@@ -283,12 +290,12 @@ namespace Elite
         {
             if (shipType == "testbuggy") return;
 
-            var ship = EliteShips.ShipsList.FirstOrDefault(x =>
+            var ship = ShipsList.FirstOrDefault(x =>
                 x.ShipType == shipType?.ToLower() && x.ShipID == shipId);
 
             if (ship != null)
             {
-                EliteShips.ShipsList.Remove(ship);
+                ShipsList.Remove(ship);
             }
         }
 
@@ -297,12 +304,12 @@ namespace Elite
         {
             if (shipType == "testbuggy") return;
 
-            if (!EliteShips.ShipsList.Any(x => x.ShipType == shipType?.ToLower() && x.ShipID == shipId))
+            if (!ShipsList.Any(x => x.ShipType == shipType?.ToLower() && x.ShipID == shipId))
             {
                 AddShip(shipId, shipType, starSystem, stationName, starPos, false);
             }
 
-            foreach (var s in EliteShips.ShipsList)
+            foreach (var s in ShipsList)
             {
                 s.Stored = (s.ShipType != shipType?.ToLower() && s.ShipID != shipId);
             }
@@ -310,9 +317,9 @@ namespace Elite
 
         public static void HandleShipDistance(List<double> starPos)
         {
-            if (EliteShips.ShipsList?.Any() == true && starPos?.Count == 3)
+            if (ShipsList?.Any() == true && starPos?.Count == 3)
             {
-                EliteShips.ShipsList.ForEach(item =>
+                ShipsList.ForEach(item =>
                 {
                     var Xs = starPos[0];
                     var Ys = starPos[1];
@@ -357,7 +364,7 @@ namespace Elite
 
         public static void HandleStoredShips(StoredShipsEvent.StoredShipsEventArgs info)
         {
-            foreach (var s in EliteShips.ShipsList)
+            foreach (var s in ShipsList)
             {
                 s.Stored = false;
             }
@@ -384,14 +391,14 @@ namespace Elite
                     RemoveShip((int) info.SellShipID, info.SellOldShip.ToLower());
                 }
 
-                if (info.StoreShipID != null && !EliteShips.ShipsList.Any(x =>
+                if (info.StoreShipID != null && !ShipsList.Any(x =>
                     x.ShipType == info.StoreOldShip.ToLower() && x.ShipID == info.StoreShipID))
                 {
                     AddShip((int) info.StoreShipID, info.StoreOldShip.ToLower(), ship.StarSystem, ship.StationName,
                         ship.StarPos, true);
                 }
 
-                if (!EliteShips.ShipsList.Any(x => x.ShipType == info.ShipType.ToLower() && x.ShipID == info.ShipID))
+                if (!ShipsList.Any(x => x.ShipType == info.ShipType.ToLower() && x.ShipID == info.ShipID))
                 {
                     AddShip(info.ShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos,
                         false);
@@ -441,6 +448,13 @@ namespace Elite
                 case "5": return "A";
                 default: return "?";
             }
+        }
+
+        public static string GetPlacement(List<string> weaponsList)
+        {
+            return string.Join(" + ",
+                weaponsList.GroupBy(x => x).Select(x => x.Count() + x.Key));
+
         }
 
         public static string GetModuleArmourGrade(string item)
@@ -649,6 +663,20 @@ namespace Elite
             return data;
         }
 
+        public static string UpdateGuardianFSDBooster(string item, string data, bool remove)
+        {
+            if (item?.Contains("_guardianfsdbooster_") == true)
+            {
+                if (remove) return null;
+
+                var size = GetModuleSize(item);
+
+                return " + booster"; //size.ToString();
+            }
+
+            return data;
+        }
+        
         public static string UpdateLifeSupport(string item, string data, bool remove)
         {
             if (item?.Contains("_lifesupport_") == true)
@@ -768,18 +796,80 @@ namespace Elite
             return data;
         }
 
-        public static string UpdateGuardianFSDBooster(string item, string data, bool remove)
+        public static void UpdateVehicleBays(string item, List<string> data, bool remove)
         {
-            if (item?.Contains("_guardianfsdbooster_") == true)
+            if (item?.Contains("_buggybay_") == true)
             {
-                if (remove) return null;
-
                 var size = GetModuleSize(item);
+                var cl = GetModuleClass(item);
 
-                return " + booster"; //size.ToString();
+                var c = size.ToString() + cl;
+
+                if (remove && data.Contains(c))
+                {
+                    data.Remove(c);
+                }
+                else
+                {
+                    data.Add(c);
+                }
             }
+        }
 
-            return data;
+        public static void UpdateMultiCannons(string item, List<string> data, bool remove)
+        {
+            if (item?.Contains("_multicannon_") == true)
+            {
+                var c = "";
+
+                if (item.Contains("small") == true) c += "S";
+                else if (item.Contains("medium") == true) c += "M";
+                else if (item.Contains("large") == true) c += "L";
+                else if (item.Contains("huge") == true) c += "H";
+
+                //if (item.Contains("fixed") == true) c += "-F";
+                //else if (item.Contains("gimbal") == true) c += "-G";
+                //else if (item.Contains("gimbal") == true) c += "-T";
+
+                //if (item.Contains("strong") == true) c += "-S";
+
+                if (remove && data.Contains(c))
+                {
+                    data.Remove(c);
+                }
+                else
+                {
+                    data.Add(c);
+                }
+            }
+        }
+
+        public static void UpdatePulseLasers(string item, List<string> data, bool remove)
+        {
+            if (item?.Contains("_pulselaser_") == true)
+            {
+                var c = "";
+
+                if (item.Contains("small") == true) c += "S";
+                else if (item.Contains("medium") == true) c += "M";
+                else if (item.Contains("large") == true) c += "L";
+                else if (item.Contains("huge") == true) c += "H";
+
+                //if (item.Contains("fixed") == true) c += "-F";
+                //else if (item.Contains("gimbal") == true) c += "-G";
+                //else if (item.Contains("gimbal") == true) c += "-T";
+
+                //if (item.Contains("strong") == true) c += "-S";
+
+                if (remove && data.Contains(c))
+                {
+                    data.Remove(c);
+                }
+                else
+                {
+                    data.Add(c);
+                }
+            }
         }
 
         public static void HandleShipDocked(string starSystem, string stationName)
@@ -861,7 +951,6 @@ namespace Elite
                 ship.BusinessClassPassengerCabinCapacity += UpdateBusinessClassPassengerCabinCapacity(item);
                 ship.FirstClassPassengerCabinCapacity += UpdateFirstClassPassengerCabinCapacity(item);
                 ship.LuxuryClassPassengerCabinCapacity += UpdateLuxuryClassPassengerCabinCapacity(item);
-
             }
 
             ship.Bulkhead = UpdateArmour(item, ship.Bulkhead, remove);
@@ -876,6 +965,11 @@ namespace Elite
             ship.LifeSupport = UpdateLifeSupport(item, ship.LifeSupport, remove);
             ship.Sensors = UpdateSensors(item, ship.Sensors, remove);
             ship.GuardianFSDBooster = UpdateGuardianFSDBooster(item, ship.GuardianFSDBooster, remove);
+
+            UpdateVehicleBays(item, ship.VehicleBaysList, remove);
+
+            UpdateMultiCannons(item, ship.MultiCannonsList, remove);
+            UpdatePulseLasers(item, ship.PulseLasersList, remove);
         }
 
 
@@ -920,6 +1014,11 @@ namespace Elite
                 ship.Sensors = null;
                 ship.GuardianFSDBooster = null;
                 ship.ShieldGenerator = null;
+
+                ship.VehicleBaysList = new List<string>();
+
+                ship.MultiCannonsList = new List<string>();
+                ship.PulseLasersList = new List<string>();
 
                 if (info.Modules != null)
                 {

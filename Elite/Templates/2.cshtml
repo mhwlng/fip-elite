@@ -15,57 +15,57 @@
 
         <table>
             <tbody>
-                @if (!string.IsNullOrEmpty(Model.Name))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.Name))
                 {
                     <tr>
                         <td class="caption">Ship Name</td>
-                        <td class="data">@Model.Name</td>
+                        <td class="data">@Model.CurrentShip.Name</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.ShipTypeFull))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.ShipTypeFull))
                 {
                     <tr>
                         <td class="caption">Ship Type</td>
-                        <td class="data">@Model.ShipTypeFull</td>
+                        <td class="data">@Model.CurrentShip.ShipTypeFull</td>
                     </tr>
                 }
-                @if (Model.HullValue + Model.ModulesValue > 0)
+                @if (Model.CurrentShip.HullValue + Model.CurrentShip.ModulesValue > 0)
                 {
                     <tr>
                         <td class="caption">Value</td>
-                        <td class="data">@((Model.HullValue + Model.ModulesValue).ToString("N0")) CR</td>
+                        <td class="data">@((Model.CurrentShip.HullValue + Model.CurrentShip.ModulesValue).ToString("N0")) CR</td>
                     </tr>
                 }
-                @if (Model.Rebuy > 0)
+                @if (Model.CurrentShip.Rebuy > 0)
                 {
                     <tr>
                         <td class="caption">Rebuy</td>
-                        <td class="data">@Model.Rebuy.ToString("N0") CR</td>
+                        <td class="data">@Model.CurrentShip.Rebuy.ToString("N0") CR</td>
                     </tr>
                 }
-                @if (Model.FuelCapacity > 0)
+                @if (Model.CurrentShip.FuelCapacity > 0)
                 {
                     <tr>
                         <td class="caption">Fuel Capacity</td>
-                        <td class="data">@Model.FuelCapacity.ToString("N0") T</td>
+                        <td class="data">@Model.CurrentShip.FuelCapacity.ToString("N0") T</td>
                     </tr>
                     <tr>
                         <td class="caption">Fuel Level</td>
                         <td class="data">@Model.FuelPercent %</td>
                     </tr>
                 }
-                @if (Model.HullHealth >= 0 && Model.HullHealth < 100)
+                @if (Model.CurrentShip.HullHealth >= 0 && Model.CurrentShip.HullHealth < 100)
                 {
                     <tr>
                         <td class="caption">Hull Health</td>
-                        <td class="data alarm">@Model.HullHealth.ToString("N0") %</td>
+                        <td class="data alarm">@Model.CurrentShip.HullHealth.ToString("N0") %</td>
                     </tr>
                 }
-                @if (Model.CargoCapacity > 0 && Model.CargoCapacity >= Model.Cargo)
+                @if (Model.CurrentShip.CargoCapacity > 0 && Model.CurrentShip.CargoCapacity >= Model.CurrentShip.Cargo)
                 {
                     <tr>
                         <td class="caption">Cargo</td>
-                        <td class="data">@Model.Cargo of @Model.CargoCapacity T</td>
+                        <td class="data">@Model.CurrentShip.Cargo of @Model.CurrentShip.CargoCapacity T</td>
                     </tr>
                 }
                 else
@@ -76,18 +76,18 @@
                     </tr>
                 }
 
-                @if (Model.UnladenMass > 0)
+                @if (Model.CurrentShip.UnladenMass > 0)
                 {
                     <tr>
                         <td class="caption">Mass</td>
-                        <td class="data">@Model.UnladenMass.ToString("N0") T</td>
+                        <td class="data">@Model.CurrentShip.UnladenMass.ToString("N0") T</td>
                     </tr>
                 }
-                @if (Model.MaxJumpRange > 0)
+                @if (Model.CurrentShip.MaxJumpRange > 0)
                 {
                     <tr>
                         <td class="caption">Jump Range</td>
-                        <td class="data">@Model.MaxJumpRange.ToString("N1") LY</td>
+                        <td class="data">@Model.CurrentShip.MaxJumpRange.ToString("N1") LY</td>
                     </tr>
                 }
                 @if (Model.LastJump > 0)
@@ -98,97 +98,117 @@
                     </tr>
                 }
             
-                @if (!string.IsNullOrEmpty(Model.Bulkhead))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.Bulkhead))
                 {
                     <tr>
                         <td class="caption">Bulkhead</td>
-                        <td class="data">@Model.Bulkhead</td>
+                        <td class="data">@Model.CurrentShip.Bulkhead</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.PowerPlant))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.PowerPlant))
                 {
                     <tr>
                         <td class="caption">Powerplant</td>
-                        <td class="data">@Model.PowerPlant</td>
+                        <td class="data">@Model.CurrentShip.PowerPlant</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.Engine))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.Engine))
                 {
                     <tr>
                         <td class="caption">Thrusters</td>
-                        <td class="data">@Model.Engine</td>
+                        <td class="data">@Model.CurrentShip.Engine</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.PowerDistributor))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.PowerDistributor))
                 {
                     <tr>
                         <td class="caption">Power Distr.</td>
-                        <td class="data">@Model.PowerDistributor</td>
+                        <td class="data">@Model.CurrentShip.PowerDistributor</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.ShieldGenerator))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.ShieldGenerator))
                 {
                     <tr>
                         <td class="caption">Shield Gen.</td>
-                        <td class="data">@Model.ShieldGenerator</td>
+                        <td class="data">@Model.CurrentShip.ShieldGenerator</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.FrameShiftDrive))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.FrameShiftDrive))
                 {
                     <tr>
                         <td class="caption">FSD</td>
-                        <td class="data">@Model.FrameShiftDrive@Model.GuardianFSDBooster</td>
+                        <td class="data">@Model.CurrentShip.FrameShiftDrive@Model.CurrentShip.GuardianFSDBooster</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.FuelScoop))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.FuelScoop))
                 {
                     <tr>
                         <td class="caption">Fuel Scoop</td>
-                        <td class="data">@Model.FuelScoop</td>
+                        <td class="data">@Model.CurrentShip.FuelScoop</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.FighterHangar))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.FighterHangar))
                 {
                     <tr>
                         <td class="caption">Fighter Bay</td>
-                        <td class="data">@Model.FighterHangar</td>
+                        <td class="data">@Model.CurrentShip.FighterHangar</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.Refinery))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.Refinery))
                 {
                     <tr>
                         <td class="caption">Refinery</td>
-                        <td class="data">@Model.Refinery</td>
+                        <td class="data">@Model.CurrentShip.Refinery</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.LifeSupport))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.LifeSupport))
                 {
                     <tr>
                         <td class="caption">Life Support</td>
-                        <td class="data">@Model.LifeSupport</td>
+                        <td class="data">@Model.CurrentShip.LifeSupport</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.Sensors))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.Sensors))
                 {
                     <tr>
                         <td class="caption">Sensors</td>
-                        <td class="data">@Model.Sensors</td>
+                        <td class="data">@Model.CurrentShip.Sensors</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.Cabins))
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.Cabins))
                 {
                     <tr>
                         <td class="caption">Cabins</td>
-                        <td class="data">@Model.Cabins</td>
+                        <td class="data">@Model.CurrentShip.Cabins</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.VehicleBays))
+                {
+                    <tr>
+                        <td class="caption">Vehicle Bay</td>
+                        <td class="data">@Model.CurrentShip.VehicleBays</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.MultiCannons))
+                {
+                    <tr>
+                        <td class="caption">Multi-Cannons</td>
+                        <td class="data">@Model.CurrentShip.MultiCannons</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.PulseLasers))
+                {
+                    <tr>
+                        <td class="caption">Pulse Lasers</td>
+                        <td class="data">@Model.CurrentShip.PulseLasers</td>
                     </tr>
                 }
 
-
             </tbody>
         </table>
-        if (!string.IsNullOrEmpty(Model.ShipImage))
+        if (!string.IsNullOrEmpty(Model.CurrentShip.ShipImage))
         {
-            <img src="ships\@Model.ShipImage" />
+            <img src="ships\@Model.CurrentShip.ShipImage" />
         }
 
     }
@@ -382,6 +402,27 @@
                         <tr>
                             <td class="caption">Cabins</td>
                             <td class="data">@m.Cabins</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.VehicleBays))
+                    {
+                        <tr>
+                            <td class="caption">Vehicle Bay</td>
+                            <td class="data">@m.VehicleBays</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.MultiCannons))
+                    {
+                        <tr>
+                            <td class="caption">Multi-Cannons</td>
+                            <td class="data">@m.MultiCannons</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.PulseLasers))
+                    {
+                        <tr>
+                            <td class="caption">Pulse Lasers</td>
+                            <td class="data">@m.PulseLasers</td>
                         </tr>
                     }
 

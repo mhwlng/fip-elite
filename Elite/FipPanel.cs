@@ -664,9 +664,9 @@ namespace Elite
                                             CurrentTab = (int) _currentTab,
                                             CurrentPage = _currentPage,
 
-                                            Commander = EliteData.CommanderData.Name,
-
                                             LegalState = EliteData.StatusData.LegalState,
+
+                                            Commander = EliteData.CommanderData.Name,
 
                                             Credits = EliteData.CommanderData.Credits,
 
@@ -685,7 +685,7 @@ namespace Elite
                                             ExplorationRank = EliteData.CommanderData.ExplorationRank,
                                             ExplorationRankProgress = EliteData.CommanderData.ExplorationRankProgress,
 
-                                            CqcRank = EliteData.CommanderData.CqcRank.ToString(),
+                                            CqcRank = EliteData.CommanderData.CqcRank,
 
                                             CqcRankProgress = EliteData.CommanderData.CqcRankProgress,
 
@@ -714,15 +714,7 @@ namespace Elite
                                             CurrentPage = _currentPage,
                                             CurrentCard = _currentCard[(int)_currentTab],
 
-                                            Name = shipData.Name?.Trim(),
-
-                                            ShipTypeFull = shipData.ShipTypeFull?.Trim(),
-
-                                            ShipImage = shipData.ShipTypeFull?.Trim() + ".png",
-
-                                            Rebuy = shipData.Rebuy,
-
-                                            AutomaticDocking = shipData.AutomaticDocking,
+                                            LastJump = EliteData.StatusData.JumpRange,
 
                                             Docked = EliteData.StatusData.Docked,
 
@@ -730,42 +722,13 @@ namespace Elite
 
                                             FuelReservoir = EliteData.StatusData.Fuel.FuelReservoir,
 
-                                            FuelCapacity = shipData.FuelCapacity,
+                                            Cargo = EliteData.StatusData.Cargo,
 
-                                            FuelPercent = shipData.FuelCapacity >  0 ?
+                                            FuelPercent = shipData.FuelCapacity > 0 ?
                                                 Convert.ToInt32(100 / shipData.FuelCapacity *
                                                                 EliteData.StatusData.Fuel.FuelMain) : 0,
 
-                                            LastJump = EliteData.StatusData.JumpRange,
-
-                                            Cargo = EliteData.StatusData.Cargo,
-                                            CargoCapacity = shipData.CargoCapacity,
-
-                                            Cabins = shipData.Cabins,
-
-                                            HullHealth = shipData.HullHealth,
-
-                                            HullValue = shipData.HullValue, 
-                                            ModulesValue= shipData.ModulesValue,
-
-                                            UnladenMass= shipData.UnladenMass,
-                                            MaxJumpRange= shipData.MaxJumpRange,
-
-                                            Hot = shipData.Hot,
-
-                                            Bulkhead = shipData.Bulkhead,
-                                            PowerPlant = shipData.PowerPlant,
-                                            Engine = shipData.Engine,
-                                            PowerDistributor = shipData.PowerDistributor,
-                                            FrameShiftDrive = shipData.FrameShiftDrive,
-                                            FuelScoop = shipData.FuelScoop,
-                                            FighterHangar = shipData.FighterHangar,
-                                            Refinery = shipData.Refinery,
-                                            LifeSupport = shipData.LifeSupport,
-                                            Sensors = shipData.Sensors,
-                                            GuardianFSDBooster = shipData.GuardianFSDBooster,
-                                            ShieldGenerator = shipData.ShieldGenerator,
-
+                                            CurrentShip = EliteShips.ShipsList.FirstOrDefault(x => x.Stored == false),
 
                                             StoredShips = EliteShips.ShipsList.Where(x => x.Stored == true).OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
 
@@ -801,6 +764,18 @@ namespace Elite
 
                                             LandingPad = EliteData.DockData.LandingPad,
 
+                                            StationType = EliteData.DockData.Type,
+
+                                            Government = EliteData.DockData.Government,
+
+                                            Allegiance = EliteData.DockData.Allegiance,
+
+                                            Faction = EliteData.DockData.Faction,
+
+                                            Economy = EliteData.DockData.Economy,
+
+                                            DistFromStarLs = EliteData.DockData.DistFromStarLs,
+
                                             StartJump = EliteData.LocationData.StartJump,
 
                                             JumpType = EliteData.LocationData.JumpType,
@@ -816,18 +791,6 @@ namespace Elite
                                             Settlement = EliteData.LocationData.Settlement,
 
                                             HideBody = EliteData.LocationData.HideBody,
-
-                                            StationType = EliteData.DockData.Type,
-
-                                            Government = EliteData.DockData.Government,
-
-                                            Allegiance = EliteData.DockData.Allegiance,
-
-                                            Faction = EliteData.DockData.Faction,
-
-                                            Economy = EliteData.DockData.Economy,
-
-                                            DistFromStarLs = EliteData.DockData.DistFromStarLs,
 
                                             SystemAllegiance = EliteData.LocationData.SystemAllegiance,
 
