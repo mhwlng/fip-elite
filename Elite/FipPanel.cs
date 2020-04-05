@@ -758,6 +758,7 @@ namespace Elite
                                             Engine = shipData.Engine,
                                             PowerDistributor = shipData.PowerDistributor,
                                             FrameShiftDrive = shipData.FrameShiftDrive,
+                                            FuelScoop = shipData.FuelScoop,
                                             LifeSupport = shipData.LifeSupport,
                                             Sensors = shipData.Sensors,
                                             GuardianFSDBooster = shipData.GuardianFSDBooster,

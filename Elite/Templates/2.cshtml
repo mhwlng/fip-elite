@@ -140,6 +140,13 @@
                         <td class="data">@Model.FrameShiftDrive@Model.GuardianFSDBooster</td>
                     </tr>
                 }
+                @if (!string.IsNullOrEmpty(Model.FuelScoop))
+                {
+                    <tr>
+                        <td class="caption">Fuel Scoop</td>
+                        <td class="data">@Model.FuelScoop</td>
+                    </tr>
+                }
                 @if (!string.IsNullOrEmpty(Model.LifeSupport))
                 {
                     <tr>
@@ -319,6 +326,13 @@
                         <tr>
                             <td class="caption">FSD</td>
                             <td class="data">@m.FrameShiftDrive@m.GuardianFSDBooster</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.FuelScoop))
+                    {
+                        <tr>
+                            <td class="caption">Fuel Scoop</td>
+                            <td class="data">@m.FuelScoop</td>
                         </tr>
                     }
                     @if (!string.IsNullOrEmpty(m.LifeSupport))
