@@ -115,7 +115,7 @@
                 @if (!string.IsNullOrEmpty(Model.Engine))
                 {
                     <tr>
-                        <td class="caption">Engine</td>
+                        <td class="caption">Thrusters</td>
                         <td class="data">@Model.Engine</td>
                     </tr>
                 }
@@ -145,6 +145,13 @@
                     <tr>
                         <td class="caption">Fuel Scoop</td>
                         <td class="data">@Model.FuelScoop</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.FighterHangar))
+                {
+                    <tr>
+                        <td class="caption">Fighter Bay</td>
+                        <td class="data">@Model.FighterHangar</td>
                     </tr>
                 }
                 @if (!string.IsNullOrEmpty(Model.Refinery))
@@ -310,7 +317,7 @@
                     @if (!string.IsNullOrEmpty(m.Engine))
                     {
                         <tr>
-                            <td class="caption">Engine</td>
+                            <td class="caption">Thrusters</td>
                             <td class="data">@m.Engine</td>
                         </tr>
                     }
@@ -340,6 +347,13 @@
                         <tr>
                             <td class="caption">Fuel Scoop</td>
                             <td class="data">@m.FuelScoop</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.FighterHangar))
+                    {
+                        <tr>
+                            <td class="caption">Fighter Bay</td>
+                            <td class="data">@m.FighterHangar</td>
                         </tr>
                     }
                     @if (!string.IsNullOrEmpty(m.Refinery))

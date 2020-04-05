@@ -209,6 +209,7 @@ namespace Elite
             public string PowerDistributor { get; set; }
             public string FrameShiftDrive { get; set; }
             public string FuelScoop { get; set; }
+            public string FighterHangar { get; set; }
             public string Refinery { get; set; }
             public string LifeSupport { get; set; }
             public string Sensors { get; set; }
@@ -708,6 +709,21 @@ namespace Elite
             return data;
         }
 
+        public static string UpdateFighterHangar(string item, string data, bool remove)
+        {
+            if (item?.Contains("_fighterbay_") == true)
+            {
+                if (remove) return null;
+
+                var size = GetModuleSize(item);
+                var cl = GetModuleClass(item);
+
+                return size.ToString() + cl;
+            }
+
+            return data;
+        }
+
         public static string UpdateRefinery(string item, string data, bool remove)
         {
             if (item?.Contains("_refinery_") == true)
@@ -855,6 +871,7 @@ namespace Elite
             ship.ShieldGenerator = UpdateShieldGenerator(item, ship.ShieldGenerator, remove);
             ship.FrameShiftDrive = UpdateFrameShiftDrive(item, ship.FrameShiftDrive, remove);
             ship.FuelScoop = UpdateFuelScoop(item, ship.FuelScoop, remove);
+            ship.FighterHangar = UpdateFighterHangar(item, ship.FighterHangar, remove);
             ship.Refinery = UpdateRefinery(item, ship.Refinery, remove);
             ship.LifeSupport = UpdateLifeSupport(item, ship.LifeSupport, remove);
             ship.Sensors = UpdateSensors(item, ship.Sensors, remove);
@@ -897,6 +914,7 @@ namespace Elite
                 ship.PowerDistributor = null;
                 ship.FrameShiftDrive = null;
                 ship.FuelScoop = null;
+                ship.FighterHangar = null;
                 ship.Refinery = null;
                 ship.LifeSupport = null;
                 ship.Sensors = null;
