@@ -252,11 +252,13 @@ namespace Elite
 
             public List<string> CannonsList { get; set; } = new List<string>();
             public List<string> MultiCannonsList { get; set; } = new List<string>();
+            public List<string> MiningLasersList { get; set; } = new List<string>();
             public List<string> PulseLasersList { get; set; } = new List<string>();
             public List<string> BeamLasersList { get; set; } = new List<string>();
             public List<string> BurstLasersList { get; set; } = new List<string>();
             public string Cannons => GetPlacement(this.CannonsList);
             public string MultiCannons => GetPlacement(this.MultiCannonsList);
+            public string MiningLasers => GetPlacement(this.MiningLasersList);
             public string PulseLasers => GetPlacement(this.PulseLasersList);
             public string BeamLasers => GetPlacement(this.BeamLasersList);
             public string BurstLasers => GetPlacement(this.BurstLasersList);
@@ -826,6 +828,7 @@ namespace Elite
 
             UpdateWeapons("_cannon_", item, ship.CannonsList, remove);
             UpdateWeapons("_multicannon_", item, ship.MultiCannonsList, remove);
+            UpdateWeapons("_mininglaser_", item, ship.MiningLasersList, remove);
             UpdateWeapons("_pulselaser_", item, ship.PulseLasersList, remove);
             UpdateWeapons("_beamlaser_", item, ship.BeamLasersList, remove);
             UpdateWeapons("_pulselaserburst_", item, ship.BurstLasersList, remove);
@@ -835,39 +838,37 @@ namespace Elite
 
             _PulseLaser_Fixed_Medium_Disruptor" "Disruptor"
 
-            _basicmissilerack_fixed_small"	"missilerack"
-            _causticmissile_fixed_medium"	"enzymemissilerack"
-            _drunkmissilerack_fixed_medium", 1480, "pack_hound"
+            _basicmissilerack_fixed_small"	"Missile Rack"
+            _causticmissile_fixed_medium"	"Enzyme Missile Rack"
+            _drunkmissilerack_fixed_medium" "Pack Hound"
 
-            _railgun_fixed_medium_burst"	"imperialhammer"
+            _railgun_fixed_medium_burst"	"Imperial Hammer"
 
-            _advancedtorppylon_fixed_small"	"torpedopylon"
-            _dumbfiremissilerack_fixed_medium_lasso"	"rocketpropelledfsddisruptor"
-            _flakmortar_fixed_medium"	"remotereleaseflaklauncher"
-            _flechettelauncher_fixed_medium"	"flechettelauncher"
-            _plasmaaccelerator_fixed_huge"	"plasmaaccelerator"
-            _plasmashockcannon_fixed_large"	"shockcannon"
-            _slugshot_fixed_large_range"	"pacifier"
+            _advancedtorppylon_fixed_small"	"Torpedo Pylon"
+            _dumbfiremissilerack_fixed_medium_lasso"	"Rocket Oropelled FSD Disruptor"
+            _flakmortar_fixed_medium"	Rremote Release Flak Launcher"
+            _flechettelauncher_fixed_medium"	"Flechette Launcher"
+            _plasmaaccelerator_fixed_huge"	"Plasma Accelerator"
+            _plasmashockcannon_fixed_large"	"Shock Cannon"
+            _slugshot_fixed_large_range"	"Pacifier"
 
-            _xenoscanner_basic_tiny"	"xenoscanner"
+            _xenoscanner_basic_tiny"	"Xeno Scanner"
 
-            _minelauncher_fixed_small"	"minelauncher"
+            _minelauncher_fixed_small"	"Mine Launcher"
+                        
+            _heatsinklauncher_turret_tiny"	"Heatsink Launcher"
 
-            _mininglaser_fixed_small"	"mininglaser"
+            _electroniccountermeasure_tiny"	"Electronic Countermeasure"
+            _plasmapointdefence_turret_tiny"	"Point Defence"
+            _antiunknownshutdown_tiny"	"Shutdown Field Neutraliser"
+            _chafflauncher_tiny"	"Chaff Launcher"
 
-            _heatsinklauncher_turret_tiny"	"heatsinklauncher"
+            _atdumbfiremissile_fixed_large"	"AX Mmissile ack"
+            _atmulticannon_fixed_large"	"AX multi-cannon"
 
-            _electroniccountermeasure_tiny"	"electroniccountermeasure"
-            _plasmapointdefence_turret_tiny"	"pointdefence"
-            _antiunknownshutdown_tiny"	"shutdownfieldneutraliser"
-            _chafflauncher_tiny"	"chafflauncher"
-
-            _atdumbfiremissile_fixed_large"	"axmissilerack"
-            _atmulticannon_fixed_large"	"ax multi-cannon"
-
-            _guardian_gausscannon_fixed_medium"	"guardiangausscannon"
-            _guardian_plasmalauncher_fixed_large"	"guardianplasmacharger"
-            _guardian_shardcannon_fixed_large"	"shardcannon"
+            _guardian_gausscannon_fixed_medium"	"Guardian Gauss Cannon"
+            _guardian_plasmalauncher_fixed_large"	"Guardian Plasma Charger"
+            _guardian_shardcannon_fixed_large"	"Shard Cannon"
             */
 
         }
@@ -919,6 +920,7 @@ namespace Elite
 
                 ship.CannonsList = new List<string>();
                 ship.MultiCannonsList = new List<string>();
+                ship.MiningLasersList = new List<string>();
                 ship.PulseLasersList = new List<string>();
                 ship.BeamLasersList = new List<string>();
                 ship.BurstLasersList = new List<string>();

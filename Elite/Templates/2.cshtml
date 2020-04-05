@@ -203,6 +203,13 @@
                         <td class="data">@Model.CurrentShip.MultiCannons</td>
                     </tr>
                 }
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.MiningLasers))
+                {
+                    <tr>
+                        <td class="caption">Mining Lasers</td>
+                        <td class="data">@Model.CurrentShip.MiningLasers</td>
+                    </tr>
+                }
                 @if (!string.IsNullOrEmpty(Model.CurrentShip.PulseLasers))
                 {
                     <tr>
@@ -444,6 +451,13 @@
                         <tr>
                             <td class="caption">Multi-Cannons</td>
                             <td class="data">@m.MultiCannons</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.MiningLasers))
+                    {
+                        <tr>
+                            <td class="caption">Mining Lasers</td>
+                            <td class="data">@m.MiningLasers</td>
                         </tr>
                     }
                     @if (!string.IsNullOrEmpty(m.PulseLasers))
