@@ -147,6 +147,13 @@
                         <td class="data">@Model.FuelScoop</td>
                     </tr>
                 }
+                @if (!string.IsNullOrEmpty(Model.Refinery))
+                {
+                    <tr>
+                        <td class="caption">Refinery</td>
+                        <td class="data">@Model.Refinery</td>
+                    </tr>
+                }
                 @if (!string.IsNullOrEmpty(Model.LifeSupport))
                 {
                     <tr>
@@ -333,6 +340,13 @@
                         <tr>
                             <td class="caption">Fuel Scoop</td>
                             <td class="data">@m.FuelScoop</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.Refinery))
+                    {
+                        <tr>
+                            <td class="caption">Refinery</td>
+                            <td class="data">@m.Refinery</td>
                         </tr>
                     }
                     @if (!string.IsNullOrEmpty(m.LifeSupport))
