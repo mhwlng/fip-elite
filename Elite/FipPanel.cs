@@ -705,6 +705,8 @@ namespace Elite
 
                                 case LCDTab.Ship:
 
+                                    var shipData = EliteShips.GetCurrentShip() ?? new EliteShips.ShipData();
+
                                     str =
                                         Engine.Razor.Run("2.cshtml", null, new
                                         {
@@ -712,15 +714,15 @@ namespace Elite
                                             CurrentPage = _currentPage,
                                             CurrentCard = _currentCard[(int)_currentTab],
 
-                                            ShipName = EliteData.ShipData.Name?.Trim(),
+                                            Name = shipData.Name?.Trim(),
 
-                                            ShipType = EliteData.ShipData.Type?.Trim(),
+                                            ShipTypeFull = shipData.ShipTypeFull?.Trim(),
 
-                                            ShipImage = EliteData.ShipData.Type?.Trim() + ".png",
+                                            ShipImage = shipData.ShipTypeFull?.Trim() + ".png",
 
-                                            Rebuy = EliteData.ShipData.Rebuy,
+                                            Rebuy = shipData.Rebuy,
 
-                                            AutomaticDocking = EliteData.ShipData.AutomaticDocking,
+                                            AutomaticDocking = shipData.AutomaticDocking,
 
                                             Docked = EliteData.StatusData.Docked,
 
@@ -728,38 +730,39 @@ namespace Elite
 
                                             FuelReservoir = EliteData.StatusData.Fuel.FuelReservoir,
 
-                                            FuelCapacity = EliteData.ShipData.FuelCapacity,
+                                            FuelCapacity = shipData.FuelCapacity,
 
-                                            FuelPercent = EliteData.ShipData.FuelCapacity >  0 ?
-                                                Convert.ToInt32(100 / EliteData.ShipData.FuelCapacity *
+                                            FuelPercent = shipData.FuelCapacity >  0 ?
+                                                Convert.ToInt32(100 / shipData.FuelCapacity *
                                                                 EliteData.StatusData.Fuel.FuelMain) : 0,
 
                                             LastJump = EliteData.StatusData.JumpRange,
 
                                             Cargo = EliteData.StatusData.Cargo,
-                                            CargoCapacity = EliteData.ShipData.CargoCapacity,
+                                            CargoCapacity = shipData.CargoCapacity,
 
-                                            HullHealth = EliteData.ShipData.HullHealth,
+                                            HullHealth = shipData.HullHealth,
 
-                                            HullValue = EliteData.ShipData.HullValue, 
-                                            ModulesValue= EliteData.ShipData.ModulesValue,
+                                            HullValue = shipData.HullValue, 
+                                            ModulesValue= shipData.ModulesValue,
 
-                                            UnladenMass= EliteData.ShipData.UnladenMass,
-                                            MaxJumpRange= EliteData.ShipData.MaxJumpRange,
+                                            UnladenMass= shipData.UnladenMass,
+                                            MaxJumpRange= shipData.MaxJumpRange,
 
-                                            Hot = EliteData.ShipData.Hot,
+                                            Hot = shipData.Hot,
 
-                                            Bulkhead = EliteData.ShipData.Bulkhead,
-                                            PowerPlant = EliteData.ShipData.PowerPlant,
-                                            Engine = EliteData.ShipData.Engine,
-                                            PowerDistributor = EliteData.ShipData.PowerDistributor,
-                                            FrameShiftDrive = EliteData.ShipData.FrameShiftDrive,
-                                            LifeSupport = EliteData.ShipData.LifeSupport,
-                                            Sensors = EliteData.ShipData.Sensors,
-                                            GuardianFSDBooster = EliteData.ShipData.GuardianFSDBooster,
-                                            ShieldGenerator = EliteData.ShipData.ShieldGenerator,
+                                            Bulkhead = shipData.Bulkhead,
+                                            PowerPlant = shipData.PowerPlant,
+                                            Engine = shipData.Engine,
+                                            PowerDistributor = shipData.PowerDistributor,
+                                            FrameShiftDrive = shipData.FrameShiftDrive,
+                                            LifeSupport = shipData.LifeSupport,
+                                            Sensors = shipData.Sensors,
+                                            GuardianFSDBooster = shipData.GuardianFSDBooster,
+                                            ShieldGenerator = shipData.ShieldGenerator,
 
-                                            StoredShips = EliteHistory.ShipsList.Where(x => x.Stored == true).OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
+
+                                            StoredShips = EliteShips.ShipsList.Where(x => x.Stored == true).OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
 
                                         });
                                     

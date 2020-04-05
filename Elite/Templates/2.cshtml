@@ -15,18 +15,18 @@
 
         <table>
             <tbody>
-                @if (!string.IsNullOrEmpty(Model.ShipName))
+                @if (!string.IsNullOrEmpty(Model.Name))
                 {
                     <tr>
                         <td class="caption">Ship Name</td>
-                        <td class="data">@Model.ShipName</td>
+                        <td class="data">@Model.Name</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.ShipType))
+                @if (!string.IsNullOrEmpty(Model.ShipTypeFull))
                 {
                     <tr>
                         <td class="caption">Ship Type</td>
-                        <td class="data">@Model.ShipType</td>
+                        <td class="data">@Model.ShipTypeFull</td>
                     </tr>
                 }
                 @if (Model.HullValue + Model.ModulesValue > 0)
@@ -172,7 +172,13 @@
         {
             <table>
                 <tbody>
-
+                    @if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Ship Name</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
                     @if (!string.IsNullOrEmpty(m.ShipTypeFull))
                     {
                         <tr>
@@ -331,7 +337,7 @@
                 <img src="ships\@m.ShipImage"  />
             }
 
-            if (!((List<EliteHistory.ShipData>)Model.StoredShips).Last().Equals((EliteHistory.ShipData)m))
+            if (!((List<EliteShips.ShipData>)Model.StoredShips).Last().Equals((EliteShips.ShipData)m))
             {
                 <table class="divider">
                     <tbody>
