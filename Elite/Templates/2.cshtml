@@ -189,6 +189,13 @@
                         <td class="data">@Model.CurrentShip.VehicleBays</td>
                     </tr>
                 }
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.Cannons))
+                {
+                    <tr>
+                        <td class="caption">Cannons</td>
+                        <td class="data">@Model.CurrentShip.Cannons</td>
+                    </tr>
+                }
                 @if (!string.IsNullOrEmpty(Model.CurrentShip.MultiCannons))
                 {
                     <tr>
@@ -201,6 +208,20 @@
                     <tr>
                         <td class="caption">Pulse Lasers</td>
                         <td class="data">@Model.CurrentShip.PulseLasers</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.BeamLasers))
+                {
+                    <tr>
+                        <td class="caption">Beam Lasers</td>
+                        <td class="data">@Model.CurrentShip.BeamLasers</td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.CurrentShip.BurstLasers))
+                {
+                    <tr>
+                        <td class="caption">Burst Lasers</td>
+                        <td class="data">@Model.CurrentShip.BurstLasers</td>
                     </tr>
                 }
 
@@ -411,6 +432,13 @@
                             <td class="data">@m.VehicleBays</td>
                         </tr>
                     }
+                    @if (!string.IsNullOrEmpty(m.Cannons))
+                    {
+                        <tr>
+                            <td class="caption">Cannons</td>
+                            <td class="data">@m.Cannons</td>
+                        </tr>
+                    }
                     @if (!string.IsNullOrEmpty(m.MultiCannons))
                     {
                         <tr>
@@ -423,6 +451,20 @@
                         <tr>
                             <td class="caption">Pulse Lasers</td>
                             <td class="data">@m.PulseLasers</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.BeamLasers))
+                    {
+                        <tr>
+                            <td class="caption">Beam Lasers</td>
+                            <td class="data">@m.BeamLasers</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.BurstLasers))
+                    {
+                        <tr>
+                            <td class="caption">Burst Lasers</td>
+                            <td class="data">@m.BurstLasers</td>
                         </tr>
                     }
 

@@ -250,11 +250,16 @@ namespace Elite
             public List<string> VehicleBaysList { get; set; } = new List<string>();
             public string VehicleBays => GetPlacement(this.VehicleBaysList);
 
+            public List<string> CannonsList { get; set; } = new List<string>();
             public List<string> MultiCannonsList { get; set; } = new List<string>();
             public List<string> PulseLasersList { get; set; } = new List<string>();
+            public List<string> BeamLasersList { get; set; } = new List<string>();
+            public List<string> BurstLasersList { get; set; } = new List<string>();
+            public string Cannons => GetPlacement(this.CannonsList);
             public string MultiCannons => GetPlacement(this.MultiCannonsList);
             public string PulseLasers => GetPlacement(this.PulseLasersList);
-
+            public string BeamLasers => GetPlacement(this.BeamLasersList);
+            public string BurstLasers => GetPlacement(this.BurstLasersList);
         }
 
         public static List<ShipData> ShipsList = new List<ShipData>();
@@ -513,85 +518,52 @@ namespace Elite
             return 0;
         }
 
-        public static int UpdateEconomyClassPassengerCabinCapacity(string item)
+        public static int UpdatePassengerCabinCapacity(string item, string cls)
         {
             if (item?.Contains("_passengercabin_") == true)
             {
                 var size = GetModuleSize(item);
                 var cl = GetModuleClass(item);
 
-                if (cl == "E")
+                if (cls == cl)
                 {
-                    switch (size)
+                    if (cl == "E")
                     {
-                        case 2: return 2;
-                        case 3: return 4;
-                        case 4: return 8;
-                        case 5: return 16;
-                        case 6: return 32;
+                        switch (size)
+                        {
+                            case 2: return 2;
+                            case 3: return 4;
+                            case 4: return 8;
+                            case 5: return 16;
+                            case 6: return 32;
+                        }
                     }
-                }
-            }
-
-            return 0;
-        }
-
-        public static int UpdateBusinessClassPassengerCabinCapacity(string item)
-        {
-            if (item?.Contains("_passengercabin_") == true)
-            {
-                var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
-
-                if (cl == "D")
-                {
-                    switch (size)
+                    else if (cl == "D")
                     {
-                        case 3: return 3;
-                        case 4: return 6;
-                        case 5: return 10;
-                        case 6: return 16;
+                        switch (size)
+                        {
+                            case 3: return 3;
+                            case 4: return 6;
+                            case 5: return 10;
+                            case 6: return 16;
+                        }
                     }
-                }
-            }
-
-            return 0;
-        }
-
-        public static int UpdateFirstClassPassengerCabinCapacity(string item)
-        {
-            if (item?.Contains("_passengercabin_") == true)
-            {
-                var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
-
-                if (cl == "C")
-                {
-                    switch (size)
+                    else if (cl == "C")
                     {
-                        case 4: return 3;
-                        case 5: return 6;
-                        case 6: return 12;
+                        switch (size)
+                        {
+                            case 4: return 3;
+                            case 5: return 6;
+                            case 6: return 12;
+                        }
                     }
-                }
-            }
-
-            return 0;
-        }
-
-        public static int UpdateLuxuryClassPassengerCabinCapacity(string item)
-        {
-            if (item?.Contains("_passengercabin_") == true)
-            {
-                var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
-
-                if (cl == "B")
-                {
-                    switch (size)
+                    else if (cl == "B")
                     {
-                        case 5: return 4;
-                        case 6: return 8;
+                        switch (size)
+                        {
+                            case 5: return 4;
+                            case 6: return 8;
+                        }
                     }
                 }
             }
@@ -676,96 +648,6 @@ namespace Elite
 
             return data;
         }
-        
-        public static string UpdateLifeSupport(string item, string data, bool remove)
-        {
-            if (item?.Contains("_lifesupport_") == true)
-            {
-                if (remove) return null;
-
-                var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
-
-                return size.ToString() + cl;
-            }
-
-            return data;
-        }
-
-        public static string UpdateEngine(string item, string data, bool remove)
-        {
-            if (item?.Contains("_engine_") == true)
-            {
-                if (remove) return null;
-
-                var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
-
-                return size.ToString() + cl;
-            }
-
-            return data;
-        }
-
-        public static string UpdateFrameShiftDrive(string item, string data, bool remove)
-        {
-            if (item?.Contains("_hyperdrive_") == true)
-            {
-                if (remove) return null;
-
-                var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
-
-                return size.ToString() + cl;
-            }
-
-            return data;
-        }
-
-        public static string UpdateFuelScoop(string item, string data, bool remove)
-        {
-            if (item?.Contains("_fuelscoop_") == true)
-            {
-                if (remove) return null;
-
-                var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
-
-                return size.ToString() + cl;
-            }
-
-            return data;
-        }
-
-        public static string UpdateFighterHangar(string item, string data, bool remove)
-        {
-            if (item?.Contains("_fighterbay_") == true)
-            {
-                if (remove) return null;
-
-                var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
-
-                return size.ToString() + cl;
-            }
-
-            return data;
-        }
-
-        public static string UpdateRefinery(string item, string data, bool remove)
-        {
-            if (item?.Contains("_refinery_") == true)
-            {
-                if (remove) return null;
-
-                var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
-
-                return size.ToString() + cl;
-            }
-
-            return data;
-        }
 
         public static string UpdateArmour(string item, string data, bool remove)
         {
@@ -781,9 +663,9 @@ namespace Elite
             return data;
         }
 
-        public static string UpdateSensors(string item, string data, bool remove)
+        public static string UpdateSizeClass(string key, string item, string data, bool remove)
         {
-            if (item?.Contains("_sensors_") == true)
+            if (item?.Contains(key) == true)
             {
                 if (remove) return null;
 
@@ -816,37 +698,9 @@ namespace Elite
             }
         }
 
-        public static void UpdateMultiCannons(string item, List<string> data, bool remove)
+        public static void UpdateWeapons(string key, string item, List<string> data, bool remove)
         {
-            if (item?.Contains("_multicannon_") == true)
-            {
-                var c = "";
-
-                if (item.Contains("small") == true) c += "S";
-                else if (item.Contains("medium") == true) c += "M";
-                else if (item.Contains("large") == true) c += "L";
-                else if (item.Contains("huge") == true) c += "H";
-
-                //if (item.Contains("fixed") == true) c += "-F";
-                //else if (item.Contains("gimbal") == true) c += "-G";
-                //else if (item.Contains("gimbal") == true) c += "-T";
-
-                //if (item.Contains("strong") == true) c += "-S";
-
-                if (remove && data.Contains(c))
-                {
-                    data.Remove(c);
-                }
-                else
-                {
-                    data.Add(c);
-                }
-            }
-        }
-
-        public static void UpdatePulseLasers(string item, List<string> data, bool remove)
-        {
-            if (item?.Contains("_pulselaser_") == true)
+            if (item?.Contains(key) == true)
             {
                 var c = "";
 
@@ -937,39 +791,85 @@ namespace Elite
                 ship.CargoCapacity -= UpdateCargoCapacity(item);
                 ship.FuelCapacity -= UpdateFuelCapacity(item);
 
-                ship.EconomyClassPassengerCabinCapacity -= UpdateEconomyClassPassengerCabinCapacity(item);
-                ship.BusinessClassPassengerCabinCapacity -= UpdateBusinessClassPassengerCabinCapacity(item);
-                ship.FirstClassPassengerCabinCapacity -= UpdateFirstClassPassengerCabinCapacity(item);
-                ship.LuxuryClassPassengerCabinCapacity -= UpdateLuxuryClassPassengerCabinCapacity(item);
+                ship.EconomyClassPassengerCabinCapacity -= UpdatePassengerCabinCapacity(item,"E");
+                ship.BusinessClassPassengerCabinCapacity -= UpdatePassengerCabinCapacity(item,"D");
+                ship.FirstClassPassengerCabinCapacity -= UpdatePassengerCabinCapacity(item,"C");
+                ship.LuxuryClassPassengerCabinCapacity -= UpdatePassengerCabinCapacity(item,"B");
             }
             else
             {
                 ship.CargoCapacity += UpdateCargoCapacity(item);
                 ship.FuelCapacity += UpdateFuelCapacity(item);
 
-                ship.EconomyClassPassengerCabinCapacity += UpdateEconomyClassPassengerCabinCapacity(item);
-                ship.BusinessClassPassengerCabinCapacity += UpdateBusinessClassPassengerCabinCapacity(item);
-                ship.FirstClassPassengerCabinCapacity += UpdateFirstClassPassengerCabinCapacity(item);
-                ship.LuxuryClassPassengerCabinCapacity += UpdateLuxuryClassPassengerCabinCapacity(item);
+                ship.EconomyClassPassengerCabinCapacity += UpdatePassengerCabinCapacity(item,"E");
+                ship.BusinessClassPassengerCabinCapacity += UpdatePassengerCabinCapacity(item,"D");
+                ship.FirstClassPassengerCabinCapacity += UpdatePassengerCabinCapacity(item,"C");
+                ship.LuxuryClassPassengerCabinCapacity += UpdatePassengerCabinCapacity(item,"B");
             }
+
+            ship.FrameShiftDrive = UpdateSizeClass("_hyperdrive_", item, ship.FrameShiftDrive, remove);
+            ship.FuelScoop = UpdateSizeClass("_fuelscoop_",item, ship.FuelScoop, remove);
+            ship.FighterHangar = UpdateSizeClass("_fighterbay_",item, ship.FighterHangar, remove);
+            ship.Refinery = UpdateSizeClass("_refinery_",item, ship.Refinery, remove);
+            ship.LifeSupport = UpdateSizeClass("_lifesupport_",item, ship.LifeSupport, remove);
+            ship.Sensors = UpdateSizeClass("_sensors_",item, ship.Sensors, remove);
+
 
             ship.Bulkhead = UpdateArmour(item, ship.Bulkhead, remove);
             ship.PowerPlant = UpdatePowerPlant(item, ship.PowerPlant, remove);
-            ship.Engine = UpdateEngine(item, ship.Engine, remove);
+            ship.Engine = UpdateSizeClass("_engine_", item, ship.Engine, remove);
             ship.PowerDistributor = UpdatePowerDistributor(item, ship.PowerDistributor, remove);
             ship.ShieldGenerator = UpdateShieldGenerator(item, ship.ShieldGenerator, remove);
-            ship.FrameShiftDrive = UpdateFrameShiftDrive(item, ship.FrameShiftDrive, remove);
-            ship.FuelScoop = UpdateFuelScoop(item, ship.FuelScoop, remove);
-            ship.FighterHangar = UpdateFighterHangar(item, ship.FighterHangar, remove);
-            ship.Refinery = UpdateRefinery(item, ship.Refinery, remove);
-            ship.LifeSupport = UpdateLifeSupport(item, ship.LifeSupport, remove);
-            ship.Sensors = UpdateSensors(item, ship.Sensors, remove);
             ship.GuardianFSDBooster = UpdateGuardianFSDBooster(item, ship.GuardianFSDBooster, remove);
 
             UpdateVehicleBays(item, ship.VehicleBaysList, remove);
 
-            UpdateMultiCannons(item, ship.MultiCannonsList, remove);
-            UpdatePulseLasers(item, ship.PulseLasersList, remove);
+            UpdateWeapons("_cannon_", item, ship.CannonsList, remove);
+            UpdateWeapons("_multicannon_", item, ship.MultiCannonsList, remove);
+            UpdateWeapons("_pulselaser_", item, ship.PulseLasersList, remove);
+            UpdateWeapons("_beamlaser_", item, ship.BeamLasersList, remove);
+            UpdateWeapons("_pulselaserburst_", item, ship.BurstLasersList, remove);
+
+            /*
+            _MultiCannon_Fixed_Small_Strong"    "Enforcer Cannon"
+
+            _PulseLaser_Fixed_Medium_Disruptor" "Disruptor"
+
+            _basicmissilerack_fixed_small"	"missilerack"
+            _causticmissile_fixed_medium"	"enzymemissilerack"
+            _drunkmissilerack_fixed_medium", 1480, "pack_hound"
+
+            _railgun_fixed_medium_burst"	"imperialhammer"
+
+            _advancedtorppylon_fixed_small"	"torpedopylon"
+            _dumbfiremissilerack_fixed_medium_lasso"	"rocketpropelledfsddisruptor"
+            _flakmortar_fixed_medium"	"remotereleaseflaklauncher"
+            _flechettelauncher_fixed_medium"	"flechettelauncher"
+            _plasmaaccelerator_fixed_huge"	"plasmaaccelerator"
+            _plasmashockcannon_fixed_large"	"shockcannon"
+            _slugshot_fixed_large_range"	"pacifier"
+
+            _xenoscanner_basic_tiny"	"xenoscanner"
+
+            _minelauncher_fixed_small"	"minelauncher"
+
+            _mininglaser_fixed_small"	"mininglaser"
+
+            _heatsinklauncher_turret_tiny"	"heatsinklauncher"
+
+            _electroniccountermeasure_tiny"	"electroniccountermeasure"
+            _plasmapointdefence_turret_tiny"	"pointdefence"
+            _antiunknownshutdown_tiny"	"shutdownfieldneutraliser"
+            _chafflauncher_tiny"	"chafflauncher"
+
+            _atdumbfiremissile_fixed_large"	"axmissilerack"
+            _atmulticannon_fixed_large"	"ax multi-cannon"
+
+            _guardian_gausscannon_fixed_medium"	"guardiangausscannon"
+            _guardian_plasmalauncher_fixed_large"	"guardianplasmacharger"
+            _guardian_shardcannon_fixed_large"	"shardcannon"
+            */
+
         }
 
 
@@ -1017,8 +917,11 @@ namespace Elite
 
                 ship.VehicleBaysList = new List<string>();
 
+                ship.CannonsList = new List<string>();
                 ship.MultiCannonsList = new List<string>();
                 ship.PulseLasersList = new List<string>();
+                ship.BeamLasersList = new List<string>();
+                ship.BurstLasersList = new List<string>();
 
                 if (info.Modules != null)
                 {
