@@ -97,7 +97,7 @@
                         <td class="data">@Model.LastJump.ToString("N1") LY</td>
                     </tr>
                 }
-            
+
                 @if (!string.IsNullOrEmpty(Model.CurrentShip.Bulkhead))
                 {
                     <tr>
@@ -140,41 +140,6 @@
                         <td class="data">@Model.CurrentShip.FrameShiftDrive@Model.CurrentShip.GuardianFSDBooster</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.FuelScoop))
-                {
-                    <tr>
-                        <td class="caption">Fuel Scoop</td>
-                        <td class="data">@Model.CurrentShip.FuelScoop</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.FighterHangar))
-                {
-                    <tr>
-                        <td class="caption">Fighter Bay</td>
-                        <td class="data">@Model.CurrentShip.FighterHangar</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.Refinery))
-                {
-                    <tr>
-                        <td class="caption">Refinery</td>
-                        <td class="data">@Model.CurrentShip.Refinery</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.LifeSupport))
-                {
-                    <tr>
-                        <td class="caption">Life Support</td>
-                        <td class="data">@Model.CurrentShip.LifeSupport</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.Sensors))
-                {
-                    <tr>
-                        <td class="caption">Sensors</td>
-                        <td class="data">@Model.CurrentShip.Sensors</td>
-                    </tr>
-                }
                 @if (!string.IsNullOrEmpty(Model.CurrentShip.Cabins))
                 {
                     <tr>
@@ -182,54 +147,15 @@
                         <td class="data">@Model.CurrentShip.Cabins</td>
                     </tr>
                 }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.VehicleBays))
+                @foreach (var ml in Model.CurrentShip.ModuleList)
                 {
-                    <tr>
-                        <td class="caption">Vehicle Bay</td>
-                        <td class="data">@Model.CurrentShip.VehicleBays</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.Cannons))
-                {
-                    <tr>
-                        <td class="caption">Cannons</td>
-                        <td class="data">@Model.CurrentShip.Cannons</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.MultiCannons))
-                {
-                    <tr>
-                        <td class="caption">Multi-Cannons</td>
-                        <td class="data">@Model.CurrentShip.MultiCannons</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.MiningLasers))
-                {
-                    <tr>
-                        <td class="caption">Mining Lasers</td>
-                        <td class="data">@Model.CurrentShip.MiningLasers</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.PulseLasers))
-                {
-                    <tr>
-                        <td class="caption">Pulse Lasers</td>
-                        <td class="data">@Model.CurrentShip.PulseLasers</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.BeamLasers))
-                {
-                    <tr>
-                        <td class="caption">Beam Lasers</td>
-                        <td class="data">@Model.CurrentShip.BeamLasers</td>
-                    </tr>
-                }
-                @if (!string.IsNullOrEmpty(Model.CurrentShip.BurstLasers))
-                {
-                    <tr>
-                        <td class="caption">Burst Lasers</td>
-                        <td class="data">@Model.CurrentShip.BurstLasers</td>
-                    </tr>
+                    if (ml.Value.Count() > 0)
+                    {
+                        <tr>
+                            <td class="caption">@ml.Key</td>
+                        <td class="data">@Raw(EliteShips.GetPlacement(ml.Key, ml.Value))</td>
+                        </tr>
+                    }
                 }
 
             </tbody>
@@ -390,41 +316,6 @@
                             <td class="data">@m.FrameShiftDrive@m.GuardianFSDBooster</td>
                         </tr>
                     }
-                    @if (!string.IsNullOrEmpty(m.FuelScoop))
-                    {
-                        <tr>
-                            <td class="caption">Fuel Scoop</td>
-                            <td class="data">@m.FuelScoop</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(m.FighterHangar))
-                    {
-                        <tr>
-                            <td class="caption">Fighter Bay</td>
-                            <td class="data">@m.FighterHangar</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(m.Refinery))
-                    {
-                        <tr>
-                            <td class="caption">Refinery</td>
-                            <td class="data">@m.Refinery</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(m.LifeSupport))
-                    {
-                        <tr>
-                            <td class="caption">Life Support</td>
-                            <td class="data">@m.LifeSupport</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(m.Sensors))
-                    {
-                        <tr>
-                            <td class="caption">Sensors</td>
-                            <td class="data">@m.Sensors</td>
-                        </tr>
-                    }
                     @if (!string.IsNullOrEmpty(m.Cabins))
                     {
                         <tr>
@@ -432,54 +323,15 @@
                             <td class="data">@m.Cabins</td>
                         </tr>
                     }
-                    @if (!string.IsNullOrEmpty(m.VehicleBays))
+                    @foreach (var ml in m.ModuleList)
                     {
-                        <tr>
-                            <td class="caption">Vehicle Bay</td>
-                            <td class="data">@m.VehicleBays</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(m.Cannons))
-                    {
-                        <tr>
-                            <td class="caption">Cannons</td>
-                            <td class="data">@m.Cannons</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(m.MultiCannons))
-                    {
-                        <tr>
-                            <td class="caption">Multi-Cannons</td>
-                            <td class="data">@m.MultiCannons</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(m.MiningLasers))
-                    {
-                        <tr>
-                            <td class="caption">Mining Lasers</td>
-                            <td class="data">@m.MiningLasers</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(m.PulseLasers))
-                    {
-                        <tr>
-                            <td class="caption">Pulse Lasers</td>
-                            <td class="data">@m.PulseLasers</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(m.BeamLasers))
-                    {
-                        <tr>
-                            <td class="caption">Beam Lasers</td>
-                            <td class="data">@m.BeamLasers</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(m.BurstLasers))
-                    {
-                        <tr>
-                            <td class="caption">Burst Lasers</td>
-                            <td class="data">@m.BurstLasers</td>
-                        </tr>
+                        if (ml.Value.Count() > 0)
+                        {
+                            <tr>
+                                <td class="caption">@ml.Key</td>
+                                <td class="data">@Raw(EliteShips.GetPlacement(ml.Key, ml.Value))</td>
+                            </tr>
+                        }
                     }
 
                 </tbody>
@@ -487,7 +339,7 @@
 
             if (!string.IsNullOrEmpty(m.ShipImage))
             {
-                <img src="ships\@m.ShipImage"  />
+                <img src="ships\@m.ShipImage" />
             }
 
             if (!((List<EliteShips.ShipData>)Model.StoredShips).Last().Equals((EliteShips.ShipData)m))
