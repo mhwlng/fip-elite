@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -53,7 +54,20 @@ namespace Elite
         {
             get
             {
-                return new DelegateCommand {CommandAction = () => Application.Current.Shutdown()};
+                return new DelegateCommand {CommandAction = () =>
+                    {
+                        if (App.jsonTask?.Status.Equals(TaskStatus.Running) == true)
+                        {
+                            MessageBox.Show("Waiting for background tasks to complete...","fip-elite", MessageBoxButton.OK,
+                                MessageBoxImage.Information, MessageBoxResult.OK,
+                                MessageBoxOptions.DefaultDesktopOnly);
+                        }
+                        else
+                        {
+                            Application.Current.Shutdown();
+                        }
+                    }
+                };
             }
         }
     }

@@ -166,6 +166,39 @@ namespace Elite
             return by;
         }
 
+        public static void HandleJson()
+        {
+            lock (App.RefreshJsonLock)
+            {
+                CurrentInterStellarFactors =
+                    Station.GetNearestStationItems(LocationData.StarPos, App.InterStellarFactors);
+                CurrentRawMaterialTraders =
+                    Station.GetNearestStationItems(LocationData.StarPos, App.RawMaterialTraders);
+                CurrentManufacturedMaterialTraders =
+                    Station.GetNearestStationItems(LocationData.StarPos, App.ManufacturedMaterialTraders);
+                CurrentEncodedDataTraders =
+                    Station.GetNearestStationItems(LocationData.StarPos, App.EncodedDataTraders);
+                CurrentHumanTechnologyBrokers =
+                    Station.GetNearestStationItems(LocationData.StarPos, App.HumanTechnologyBrokers);
+                CurrentGuardianTechnologyBrokers =
+                    Station.GetNearestStationItems(LocationData.StarPos, App.GuardianTechnologyBrokers);
+
+                CurrentAislingDuval = Station.GetNearestStationItems(LocationData.StarPos, App.AislingDuval);
+                CurrentArchonDelaine = Station.GetNearestStationItems(LocationData.StarPos, App.ArchonDelaine);
+                CurrentArissaLavignyDuval =
+                    Station.GetNearestStationItems(LocationData.StarPos, App.ArissaLavignyDuval);
+                CurrentDentonPatreus = Station.GetNearestStationItems(LocationData.StarPos, App.DentonPatreus);
+                CurrentEdmundMahon = Station.GetNearestStationItems(LocationData.StarPos, App.EdmundMahon);
+                CurrentFeliciaWinters =
+                    Station.GetNearestStationItems(LocationData.StarPos, App.FeliciaWinters);
+                CurrentLiYongRui = Station.GetNearestStationItems(LocationData.StarPos, App.LiYongRui);
+                CurrentPranavAntal = Station.GetNearestStationItems(LocationData.StarPos, App.PranavAntal);
+                CurrentYuriGrom = Station.GetNearestStationItems(LocationData.StarPos, App.YuriGrom);
+                CurrentZacharyHudson = Station.GetNearestStationItems(LocationData.StarPos, App.ZacharyHudson);
+                CurrentZeminaTorval = Station.GetNearestStationItems(LocationData.StarPos, App.ZeminaTorval);
+            }
+        }
+
         public class Commander
         {
             public string Name { get; set; } = "";
@@ -586,31 +619,8 @@ namespace Elite
                     EliteShips.HandleShipDistance(LocationData.StarPos);
 
                     CurrentPois = Poi.GetNearestPoiItems(LocationData.StarPos);
-                    
-                    CurrentInterStellarFactors =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.InterStellarFactors);
-                    CurrentRawMaterialTraders =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.RawMaterialTraders);
-                    CurrentManufacturedMaterialTraders =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.ManufacturedMaterialTraders);
-                    CurrentEncodedDataTraders =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.EncodedDataTraders);
-                    CurrentHumanTechnologyBrokers =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.HumanTechnologyBrokers);
-                    CurrentGuardianTechnologyBrokers =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.GuardianTechnologyBrokers);
 
-                    CurrentAislingDuval = Station.GetNearestStationItems(LocationData.StarPos, App.AislingDuval);
-                    CurrentArchonDelaine = Station.GetNearestStationItems(LocationData.StarPos, App.ArchonDelaine);
-                    CurrentArissaLavignyDuval = Station.GetNearestStationItems(LocationData.StarPos, App.ArissaLavignyDuval);
-                    CurrentDentonPatreus = Station.GetNearestStationItems(LocationData.StarPos, App.DentonPatreus);
-                    CurrentEdmundMahon = Station.GetNearestStationItems(LocationData.StarPos, App.EdmundMahon);
-                    CurrentFeliciaWinters = Station.GetNearestStationItems(LocationData.StarPos, App.FeliciaWinters);
-                    CurrentLiYongRui = Station.GetNearestStationItems(LocationData.StarPos, App.LiYongRui);
-                    CurrentPranavAntal = Station.GetNearestStationItems(LocationData.StarPos, App.PranavAntal);
-                    CurrentYuriGrom = Station.GetNearestStationItems(LocationData.StarPos, App.YuriGrom);
-                    CurrentZacharyHudson = Station.GetNearestStationItems(LocationData.StarPos, App.ZacharyHudson);
-                    CurrentZeminaTorval = Station.GetNearestStationItems(LocationData.StarPos, App.ZeminaTorval);
+                    HandleJson();
 
                     LocationData.SystemAllegiance = locationInfo.SystemAllegiance;
                     LocationData.SystemFaction = locationInfo.SystemFaction?.Name;
@@ -924,34 +934,11 @@ namespace Elite
 
                     EliteShips.HandleShipDistance(LocationData.StarPos);
 
-                    CurrentPois = Poi.GetNearestPoiItems(LocationData.StarPos);
-
                     EliteHistory.AddTravelPos(LocationData.StarPos);
 
-                    CurrentInterStellarFactors =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.InterStellarFactors);
-                    CurrentRawMaterialTraders =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.RawMaterialTraders);
-                    CurrentManufacturedMaterialTraders =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.ManufacturedMaterialTraders);
-                    CurrentEncodedDataTraders =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.EncodedDataTraders);
-                    CurrentHumanTechnologyBrokers =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.HumanTechnologyBrokers);
-                    CurrentGuardianTechnologyBrokers =
-                        Station.GetNearestStationItems(LocationData.StarPos, App.GuardianTechnologyBrokers);
+                    CurrentPois = Poi.GetNearestPoiItems(LocationData.StarPos);
 
-                    CurrentAislingDuval = Station.GetNearestStationItems(LocationData.StarPos, App.AislingDuval);
-                    CurrentArchonDelaine = Station.GetNearestStationItems(LocationData.StarPos, App.ArchonDelaine);
-                    CurrentArissaLavignyDuval = Station.GetNearestStationItems(LocationData.StarPos, App.ArissaLavignyDuval);
-                    CurrentDentonPatreus = Station.GetNearestStationItems(LocationData.StarPos, App.DentonPatreus);
-                    CurrentEdmundMahon = Station.GetNearestStationItems(LocationData.StarPos, App.EdmundMahon);
-                    CurrentFeliciaWinters = Station.GetNearestStationItems(LocationData.StarPos, App.FeliciaWinters);
-                    CurrentLiYongRui = Station.GetNearestStationItems(LocationData.StarPos, App.LiYongRui);
-                    CurrentPranavAntal = Station.GetNearestStationItems(LocationData.StarPos, App.PranavAntal);
-                    CurrentYuriGrom = Station.GetNearestStationItems(LocationData.StarPos, App.YuriGrom);
-                    CurrentZacharyHudson = Station.GetNearestStationItems(LocationData.StarPos, App.ZacharyHudson);
-                    CurrentZeminaTorval = Station.GetNearestStationItems(LocationData.StarPos, App.ZeminaTorval);
+                    HandleJson();
 
                     LocationData.StartJump = false;
                     LocationData.JumpToSystem = "";

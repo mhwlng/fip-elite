@@ -874,25 +874,30 @@ namespace Elite
                                     
                                 case LCDTab.POI:
 
-                                    str =
-                                        Engine.Razor.Run("6.cshtml", null, new
-                                        {
-                                            CurrentTab = (int) _currentTab,
-                                            CurrentPage = _currentPage,
+                                    lock (App.RefreshJsonLock)
+                                    {
+                                        str =
+                                            Engine.Razor.Run("6.cshtml", null, new
+                                            {
+                                                CurrentTab = (int) _currentTab,
+                                                CurrentPage = _currentPage,
 
-                                            CurrentCard = _currentCard[(int) _currentTab],
+                                                CurrentCard = _currentCard[(int) _currentTab],
 
-                                            CurrentPois = EliteData.CurrentPois, // 0
+                                                CurrentPois = EliteData.CurrentPois, // 0
 
-                                            CurrentInterStellarFactors = EliteData.CurrentInterStellarFactors, // 1
-                                            CurrentRawMaterialTraders = EliteData.CurrentRawMaterialTraders, // 2
-                                            CurrentManufacturedMaterialTraders =
-                                                EliteData.CurrentManufacturedMaterialTraders, // 3
-                                            CurrentEncodedDataTraders = EliteData.CurrentEncodedDataTraders, // 4
-                                            CurrentHumanTechnologyBrokers = EliteData.CurrentHumanTechnologyBrokers, // 5
-                                            CurrentGuardianTechnologyBrokers = EliteData.CurrentGuardianTechnologyBrokers // 6
+                                                CurrentInterStellarFactors = EliteData.CurrentInterStellarFactors, // 1
+                                                CurrentRawMaterialTraders = EliteData.CurrentRawMaterialTraders, // 2
+                                                CurrentManufacturedMaterialTraders =
+                                                    EliteData.CurrentManufacturedMaterialTraders, // 3
+                                                CurrentEncodedDataTraders = EliteData.CurrentEncodedDataTraders, // 4
+                                                CurrentHumanTechnologyBrokers =
+                                                    EliteData.CurrentHumanTechnologyBrokers, // 5
+                                                CurrentGuardianTechnologyBrokers =
+                                                    EliteData.CurrentGuardianTechnologyBrokers // 6
 
-                                        });
+                                            });
+                                    }
 
                                     break;
 
@@ -917,27 +922,30 @@ namespace Elite
 
                                 case LCDTab.Powers:
 
-                                    str =
-                                        Engine.Razor.Run("8.cshtml", null, new
-                                        {
-                                            CurrentTab = (int)_currentTab,
-                                            CurrentPage = _currentPage,
+                                    lock (App.RefreshJsonLock)
+                                    {
+                                        str =
+                                            Engine.Razor.Run("8.cshtml", null, new
+                                            {
+                                                CurrentTab = (int) _currentTab,
+                                                CurrentPage = _currentPage,
 
-                                            CurrentCard = _currentCard[(int)_currentTab],
+                                                CurrentCard = _currentCard[(int) _currentTab],
 
-                                            CurrentAislingDuval = EliteData.CurrentAislingDuval, // 0
-                                            CurrentArchonDelaine = EliteData.CurrentArchonDelaine, // 1
-                                            CurrentArissaLavignyDuval = EliteData.CurrentArissaLavignyDuval, // 2
-                                            CurrentDentonPatreus = EliteData.CurrentDentonPatreus, // 3
-                                            CurrentEdmundMahon = EliteData.CurrentEdmundMahon, // 4
-                                            CurrentFeliciaWinters = EliteData.CurrentFeliciaWinters, // 5
-                                            CurrentLiYongRui = EliteData.CurrentLiYongRui, // 6
-                                            CurrentPranavAntal = EliteData.CurrentPranavAntal, // 7
-                                            CurrentYuriGrom = EliteData.CurrentYuriGrom, // 8
-                                            CurrentZacharyHudson = EliteData.CurrentZacharyHudson, // 9
-                                            CurrentZeminaTorval = EliteData.CurrentZeminaTorval, // 10
+                                                CurrentAislingDuval = EliteData.CurrentAislingDuval, // 0
+                                                CurrentArchonDelaine = EliteData.CurrentArchonDelaine, // 1
+                                                CurrentArissaLavignyDuval = EliteData.CurrentArissaLavignyDuval, // 2
+                                                CurrentDentonPatreus = EliteData.CurrentDentonPatreus, // 3
+                                                CurrentEdmundMahon = EliteData.CurrentEdmundMahon, // 4
+                                                CurrentFeliciaWinters = EliteData.CurrentFeliciaWinters, // 5
+                                                CurrentLiYongRui = EliteData.CurrentLiYongRui, // 6
+                                                CurrentPranavAntal = EliteData.CurrentPranavAntal, // 7
+                                                CurrentYuriGrom = EliteData.CurrentYuriGrom, // 8
+                                                CurrentZacharyHudson = EliteData.CurrentZacharyHudson, // 9
+                                                CurrentZeminaTorval = EliteData.CurrentZeminaTorval, // 10
 
-                                        });
+                                            });
+                                    }
 
                                     break;
 
