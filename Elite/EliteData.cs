@@ -277,6 +277,10 @@ namespace Elite
 
             public long? Population { get; set; }
 
+            public string PowerplayState { get; set; }
+
+            public string Powers { get; set; }
+
             public bool HideBody { get; set; } = false;
 
             public List<double> StarPos { get; set; } // array[x, y, z], in light years
@@ -559,7 +563,6 @@ namespace Elite
                     //SystemSecondEconomy_Localised
                     //Wanted
                     //Powers
-                    //PowerplayState
                     //Factions
                     //Conflicts
 
@@ -592,6 +595,9 @@ namespace Elite
                     LocationData.Population = locationInfo.Population;
                     LocationData.Body = locationInfo.Body;
                     LocationData.BodyType = locationInfo.BodyType.ToString();
+
+                    LocationData.PowerplayState = locationInfo.PowerplayState.ToString();
+                    LocationData.Powers = string.Join(",", locationInfo.Powers);
 
                     LocationData.HideBody = false;
 
@@ -879,7 +885,6 @@ namespace Elite
                     //SystemSecondEconomy_Localised
                     //Wanted
                     //Powers
-                    //PowerplayState
 
                     LocationData.Body = fsdJumpInfo.Body;  
 
@@ -915,6 +920,9 @@ namespace Elite
                     LocationData.JumpToSystem = "";
                     LocationData.JumpToStarClass = "";
                     LocationData.JumpType = "";
+
+                    LocationData.PowerplayState = fsdJumpInfo.PowerplayState.ToString();
+                    LocationData.Powers = string.Join(", ", fsdJumpInfo.Powers);
 
                     LocationData.SystemAllegiance = fsdJumpInfo.SystemAllegiance;
                     LocationData.SystemFaction = fsdJumpInfo.SystemFaction?.Name;

@@ -72,6 +72,21 @@
                     <td class="data">@Model.SystemEconomy</td>
                 </tr>
             }
+            @if (!string.IsNullOrEmpty(Model.Powers))
+            {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Power</td>
+                    <td class="data">@Model.Powers</td>
+                </tr>
+                if (!string.IsNullOrEmpty(Model.PowerplayState))
+                {
+                    <tr>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Pwr. State</td>
+                        <td class="data">@Model.PowerplayState</td>
+                    </tr>
+                }
+            }
+
 
             @if (!Model.HideBody)
             {

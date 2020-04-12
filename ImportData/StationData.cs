@@ -37,6 +37,11 @@ namespace ImportData
         [JsonProperty("systempopulation")]
         public long? SystemPopulation { get; set; }
 
+        [JsonProperty("powerplaystate")]
+        public string PowerplayState { get; set; }
+
+        [JsonProperty("powers")]
+        public string Powers { get; set; }
 
 
         [JsonProperty("x")]

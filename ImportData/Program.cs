@@ -65,6 +65,9 @@ namespace ImportData
                 SystemSecurity = x.PopulatedSystemEDDB?.Security,
                 SystemPopulation = x.PopulatedSystemEDDB?.Population,
 
+                PowerplayState = x.PopulatedSystemEDDB?.PowerState,
+                Powers = x.PopulatedSystemEDDB?.Power,
+
                 Allegiance = x.Allegiance,
                 Government = x.Government,
                 Economy = x.Economy,

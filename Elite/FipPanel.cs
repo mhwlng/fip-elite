@@ -802,7 +802,11 @@ namespace Elite
 
                                             SystemGovernment = EliteData.LocationData.SystemGovernment,
 
-                                            Population = EliteData.LocationData.Population
+                                            Population = EliteData.LocationData.Population,
+
+                                            PowerplayState = EliteData.LocationData.PowerplayState,
+                                            Powers = EliteData.LocationData.Powers
+
 
                                         });
 
