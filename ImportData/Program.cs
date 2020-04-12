@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+// ReSharper disable StringLiteralTypo
 
 namespace ImportData
 {
@@ -96,6 +97,32 @@ namespace ImportData
             }
         }
 
+        public static string DownloadJson(string path, string url)
+        {
+            if (File.Exists(path))
+            {
+                var modification = File.GetLastWriteTime(path);
+
+                if ((DateTime.Now - modification).TotalHours >= 24)
+                {
+                    File.Delete(path);
+                }
+            }
+
+            if (File.Exists(path))
+            {
+                return File.ReadAllText(path);
+            }
+            else
+            {
+                var jsonText = GetJson(url);
+
+                File.WriteAllText(path, jsonText);
+
+                return jsonText;
+            }
+        }
+
         static void Main(string[] args)
         {
             log.Info("ImportData started");
@@ -106,20 +133,9 @@ namespace ImportData
                 Dictionary<string,StationEDDB> stationsEDDB = null;
                 Dictionary<int, PopulatedSystemEDDB> populatedSystemsEDDB = null;
 
-                string jsonText;
-
                 Console.WriteLine("downloading populated systems from EDDB");
 
-                if (File.Exists("populatedsystemsEDDB.json"))
-                {
-                    jsonText = File.ReadAllText("populatedsystemsEDDB.json");
-                }
-                else
-                {
-                    jsonText = GetJson("https://eddb.io/archive/v6/systems_populated.json");
-
-                    File.WriteAllText("populatedsystemsEDDB.json", jsonText);
-                }
+                var jsonText  = DownloadJson("populatedsystemsEDDB.json", "https://eddb.io/archive/v6/systems_populated.json");
 
                 populatedSystemsEDDB = JsonConvert.DeserializeObject<List<PopulatedSystemEDDB>>(jsonText)
                     .Where(x => x.EdsmId != null)
@@ -127,31 +143,13 @@ namespace ImportData
 
                 Console.WriteLine("downloading station list from EDSM");
 
-                if (File.Exists("stationsEDSM.json"))
-                {
-                    jsonText = File.ReadAllText("stationsEDSM.json");
-                }
-                else
-                {
-                    jsonText = GetJson("https://www.edsm.net/dump/stations.json.gz");
-
-                    File.WriteAllText("stationsEDSM.json", jsonText);
-                }
+                jsonText = DownloadJson("stationsEDSM.json", "https://www.edsm.net/dump/stations.json.gz");
 
                 stationsEDSM = JsonConvert.DeserializeObject<List<StationEDSM>>(jsonText);
 
                 Console.WriteLine("downloading station list from EDDB");
 
-                if (File.Exists("stationsEDDB.json"))
-                {
-                    jsonText = File.ReadAllText("stationsEDDB.json");
-                }
-                else
-                {
-                    jsonText = GetJson("https://eddb.io/archive/v6/stations.json");
-
-                    File.WriteAllText("stationsEDDB.json", jsonText);
-                }
+                jsonText = DownloadJson("stationsEDDB.json", "https://eddb.io/archive/v6/stations.json");
 
                 // there are multiple stations with the same name ???
                 stationsEDDB = JsonConvert.DeserializeObject<List<StationEDDB>>(jsonText)
@@ -177,7 +175,121 @@ namespace ImportData
                         z.PopulatedSystemEDDB = populatedSystemsEDDB[z.SystemId];
                     }
                 });
-                
+
+                //-------------------------
+
+                Console.WriteLine("finding Aisling Duval stations");
+                var aislingDuval = stationsEDSM
+                    .Where(x => 
+                                x.PopulatedSystemEDDB != null &&
+                                x.PopulatedSystemEDDB.Power == "Aisling Duval" &&
+                                x.PopulatedSystemEDDB.PowerState == "Control" &&
+                                x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                                x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(aislingDuval, "aislingduval.json");
+
+                Console.WriteLine("finding Archon Delaine stations");
+                var archonDelaine = stationsEDSM
+                    .Where(x =>
+                        x.PopulatedSystemEDDB != null &&
+                        x.PopulatedSystemEDDB.Power == "Archon Delaine" &&
+                        x.PopulatedSystemEDDB.PowerState == "Control" &&
+                        x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                        x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(archonDelaine, "archondelaine.json");
+
+                Console.WriteLine("finding Arissa Lavigny-Duval stations");
+                var arissaLavignyDuval = stationsEDSM
+                    .Where(x =>
+                        x.PopulatedSystemEDDB != null &&
+                        x.PopulatedSystemEDDB.Power == "Arissa Lavigny-Duval" &&
+                        x.PopulatedSystemEDDB.PowerState == "Control" &&
+                        x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                        x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(arissaLavignyDuval, "arissalavignyduval.json");
+
+                Console.WriteLine("finding Denton Patreus stations");
+                var dentonPatreus = stationsEDSM
+                    .Where(x =>
+                        x.PopulatedSystemEDDB != null &&
+                        x.PopulatedSystemEDDB.Power == "Denton Patreus" &&
+                        x.PopulatedSystemEDDB.PowerState == "Control" &&
+                        x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                        x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(dentonPatreus, "dentonpatreus.json");
+
+                Console.WriteLine("finding Edmund Mahon stations");
+                var edmundMahon = stationsEDSM
+                    .Where(x =>
+                        x.PopulatedSystemEDDB != null &&
+                        x.PopulatedSystemEDDB.Power == "Edmund Mahon" &&
+                        x.PopulatedSystemEDDB.PowerState == "Control" &&
+                        x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                        x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(edmundMahon, "edmundmahon.json");
+
+                Console.WriteLine("finding Felicia Winters stations");
+                var feliciaWinters = stationsEDSM
+                    .Where(x =>
+                        x.PopulatedSystemEDDB != null &&
+                        x.PopulatedSystemEDDB.Power == "Felicia Winters" &&
+                        x.PopulatedSystemEDDB.PowerState == "Control" &&
+                        x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                        x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(feliciaWinters, "feliciawinters.json");
+
+                Console.WriteLine("finding Li Yong-Rui stations");
+                var liYongRui = stationsEDSM
+                    .Where(x =>
+                        x.PopulatedSystemEDDB != null &&
+                        x.PopulatedSystemEDDB.Power == "Li Yong-Rui" &&
+                        x.PopulatedSystemEDDB.PowerState == "Control" &&
+                        x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                        x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(liYongRui, "liyongrui.json");
+
+                Console.WriteLine("finding Pranav Antal stations");
+                var pranavAntal = stationsEDSM
+                    .Where(x =>
+                        x.PopulatedSystemEDDB != null &&
+                        x.PopulatedSystemEDDB.Power == "Pranav Antal" &&
+                        x.PopulatedSystemEDDB.PowerState == "Control" &&
+                        x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                        x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(pranavAntal, "pranavantal.json");
+
+                Console.WriteLine("finding Yuri Grom stations");
+                var yuriGrom = stationsEDSM
+                    .Where(x =>
+                        x.PopulatedSystemEDDB != null &&
+                        x.PopulatedSystemEDDB.Power == "Yuri Grom" &&
+                        x.PopulatedSystemEDDB.PowerState == "Control" &&
+                        x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                        x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(yuriGrom, "yurigrom.json");
+
+                Console.WriteLine("finding Zachary Hudson stations");
+                var zacharyHudson = stationsEDSM
+                    .Where(x =>
+                        x.PopulatedSystemEDDB != null &&
+                        x.PopulatedSystemEDDB.Power == "Zachary Hudson" &&
+                        x.PopulatedSystemEDDB.PowerState == "Control" &&
+                        x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                        x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(zacharyHudson, "zacharyhudson.json");
+
+                Console.WriteLine("finding Zemina Torval stations");
+                var zeminaTorval = stationsEDSM
+                    .Where(x =>
+                        x.PopulatedSystemEDDB != null &&
+                        x.PopulatedSystemEDDB.Power == "Zemina Torval" &&
+                        x.PopulatedSystemEDDB.PowerState == "Control" &&
+                        x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                        x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+                StationSerialize(zeminaTorval, "zeminatorval.json");
+
+                //----------------
+
                 Console.WriteLine("finding interstellar factors");
 
                 var interStellarFactors = stationsEDSM

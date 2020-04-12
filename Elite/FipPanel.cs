@@ -48,7 +48,7 @@ namespace Elite
         //---------------
 
         Map = 7,
-        //B = 8,
+        Powers = 8,
         //C = 9,
         //D = 10,
         //E = 11,
@@ -280,7 +280,7 @@ namespace Elite
                 switch (button)
                 {
                     case 8: // scroll clockwise
-                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
                         {
 
                             _currentCard[(int) _currentTab]++;
@@ -292,7 +292,7 @@ namespace Elite
                         break;
                     case 16: // scroll anti-clockwise
 
-                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
                         {
                             _currentCard[(int) _currentTab]--;
                             _currentZoomLevel[(int) _currentTab]--;
@@ -368,10 +368,10 @@ namespace Elite
                             case 32:
                                 mustRefresh = SetTab(LCDTab.Map);
                                 break;
-                            /*
                             case 64:
-                                mustRefresh = SetTab(LCDTab.B);
+                                mustRefresh = SetTab(LCDTab.Powers);
                                 break;
+                            /*
                             case 128:
                                 mustRefresh = SetTab(LCDTab.C);
                                 break;
@@ -614,6 +614,20 @@ namespace Elite
                                 }
                                 else
                                 if (_currentCard[(int)_currentTab] > 6)
+                                {
+                                    _currentCard[(int)_currentTab] = 0;
+                                }
+
+                                break;
+
+                            case LCDTab.Powers:
+
+                                if (_currentCard[(int)_currentTab] < 0)
+                                {
+                                    _currentCard[(int)_currentTab] = 10;
+                                }
+                                else
+                                if (_currentCard[(int)_currentTab] > 10)
                                 {
                                     _currentCard[(int)_currentTab] = 0;
                                 }
@@ -900,6 +914,33 @@ namespace Elite
 
                                     break;
 
+
+                                case LCDTab.Powers:
+
+                                    str =
+                                        Engine.Razor.Run("8.cshtml", null, new
+                                        {
+                                            CurrentTab = (int)_currentTab,
+                                            CurrentPage = _currentPage,
+
+                                            CurrentCard = _currentCard[(int)_currentTab],
+
+                                            CurrentAislingDuval = EliteData.CurrentAislingDuval, // 0
+                                            CurrentArchonDelaine = EliteData.CurrentArchonDelaine, // 1
+                                            CurrentArissaLavignyDuval = EliteData.CurrentArissaLavignyDuval, // 2
+                                            CurrentDentonPatreus = EliteData.CurrentDentonPatreus, // 3
+                                            CurrentEdmundMahon = EliteData.CurrentEdmundMahon, // 4
+                                            CurrentFeliciaWinters = EliteData.CurrentFeliciaWinters, // 5
+                                            CurrentLiYongRui = EliteData.CurrentLiYongRui, // 6
+                                            CurrentPranavAntal = EliteData.CurrentPranavAntal, // 7
+                                            CurrentYuriGrom = EliteData.CurrentYuriGrom, // 8
+                                            CurrentZacharyHudson = EliteData.CurrentZacharyHudson, // 9
+                                            CurrentZeminaTorval = EliteData.CurrentZeminaTorval, // 10
+
+                                        });
+
+                                    break;
+
                                 case LCDTab.Events:
 
                                     var eventlist = "";
@@ -995,7 +1036,7 @@ namespace Elite
                             graphics.DrawImage(menuHtmlImage, 0, 0);
                         }
 
-                        if (_currentTab == LCDTab.Ship || _currentTab == LCDTab.POI)
+                        if (_currentTab == LCDTab.Ship || _currentTab == LCDTab.POI || _currentTab == LCDTab.Powers)
                         {
                             if (mustRender)
                             {

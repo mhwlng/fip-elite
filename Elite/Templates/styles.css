@@ -31,6 +31,9 @@ div.main {
     /*white-space: nowrap;*/
 }
 
+div.imgcenter {
+    text-align: center;
+}
 .cardcaption {
     width: 100%;
     text-align: center;

@@ -1,0 +1,1178 @@
+@using System
+@using System.Collections.Generic
+@using Elite
+@using System.Linq
+@{
+    Layout = "layout.cshtml";
+}
+
+<div class="main">
+
+    @if (Model.CurrentCard == 0)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentAislingDuval).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentAislingDuval)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentAislingDuval).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 1)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentArchonDelaine).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentArchonDelaine)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentArchonDelaine).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 2)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentArissaLavignyDuval).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentArissaLavignyDuval)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentArissaLavignyDuval).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 3)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentDentonPatreus).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentDentonPatreus)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentDentonPatreus).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 4)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentEdmundMahon).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentEdmundMahon)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentEdmundMahon).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 5)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentFeliciaWinters).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentFeliciaWinters)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentFeliciaWinters).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 6)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentLiYongRui).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentLiYongRui)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentLiYongRui).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 7)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentPranavAntal).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentPranavAntal)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentPranavAntal).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 8)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentYuriGrom).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentYuriGrom)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentYuriGrom).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 9)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentZacharyHudson).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentZacharyHudson)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentZacharyHudson).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 10)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.CurrentZeminaTorval).FirstOrDefault().Powers).png" /></div>
+        <table>
+            <tbody>
+                @foreach (var m in Model.CurrentZeminaTorval)
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.Type))
+                    {
+                        <tr>
+                            <td class="caption">Type</td>
+                            <td class="data">@m.Type</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Faction))
+                    {
+                        <tr>
+                            <td class="caption">Faction</td>
+                            <td class="data">@m.Faction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Economy))
+                    {
+                        <tr>
+                            <td class="caption">Economy</td>
+                            <td class="data">@m.Economy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PowerplayState))
+                    {
+                        <tr>
+                            <td class="caption">Pwr. State</td>
+                            <td class="data">@m.PowerplayState</td>
+                        </tr>
+                    }
+
+                    if (!((List<StationData>)Model.CurrentZeminaTorval).Last().Equals((StationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+
+</div>
