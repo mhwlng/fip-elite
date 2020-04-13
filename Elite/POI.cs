@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -162,6 +163,8 @@ namespace Elite
 
     public static class Poi
     {
+        public static List<PoiItem> PoiList = new List<PoiItem>();
+
         // see https://www.reddit.com/r/EliteDangerous/comments/9mfiug/edison_a_tool_which_helps_getting_to_planet/
 
         // see https://docs.google.com/spreadsheets/d/11E05a-hLGyOQ84B9dQUu0Z53ow1Xt-uqJ-xXJmtYq5A/edit#gid=594549382
@@ -180,7 +183,7 @@ namespace Elite
 
                 using (StreamReader streamReader = new StreamReader(resp.GetResponseStream()))
                 {
-                    var csvread = new CsvReader(streamReader, new System.Globalization.CultureInfo("en-US"));
+                    var csvread = new CsvReader(streamReader, new CultureInfo("en-US"));
                     csvread.Configuration.HasHeaderRecord = true;
                     //csv.Configuration.PrepareHeaderForMatch = header => header?.Trim();
                     csvread.Configuration.TrimOptions = TrimOptions.Trim;
@@ -209,9 +212,9 @@ namespace Elite
 
         public static List<PoiItem> GetNearestPoiItems(List<double> starPos)
         {
-            if (App.PoiItems?.Any() == true && starPos?.Count == 3)
+            if (Station.PoiItemList?.Any() == true && starPos?.Count == 3)
             {
-                App.PoiItems.ForEach(poiItem =>
+                Station.PoiItemList.ForEach(poiItem =>
                 {
                     var Xs = starPos[0];
                     var Ys = starPos[1];
@@ -228,7 +231,7 @@ namespace Elite
                     poiItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
-                return App.PoiItems.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+                return Station.PoiItemList.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
             }
 
             return new List<PoiItem>(); 

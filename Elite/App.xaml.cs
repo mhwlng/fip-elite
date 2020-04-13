@@ -52,67 +52,45 @@ namespace Elite
 
         public static CssData cssData;
 
-        public static List<PoiItem> PoiItems = null;
-
-        public static List<StationData> InterStellarFactors = null;
-        public static List<StationData> RawMaterialTraders = null;
-        public static List<StationData> ManufacturedMaterialTraders = null;
-        public static List<StationData> EncodedDataTraders = null;
-        public static List<StationData> HumanTechnologyBrokers = null;
-        public static List<StationData> GuardianTechnologyBrokers = null;
-
-        public static List<StationData> AislingDuval = null;
-        public static List<StationData> ArchonDelaine = null;
-        public static List<StationData> ArissaLavignyDuval = null;
-        public static List<StationData> DentonPatreus = null;
-        public static List<StationData> EdmundMahon = null;
-        public static List<StationData> FeliciaWinters = null;
-        public static List<StationData> LiYongRui = null;
-        public static List<StationData> PranavAntal = null;
-        public static List<StationData> YuriGrom = null;
-        public static List<StationData> ZacharyHudson = null;
-        public static List<StationData> ZeminaTorval = null;
-
-
         public static void RefreshJson(SplashScreenWindow splashScreen = null)
         {
             lock (RefreshJsonLock)
             {
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Inter Stellar Factors...");
-                InterStellarFactors = Station.GetStations(@"Data\interstellarfactors.json");
+                Station.InterStellarFactorsStationList = Station.GetStations(@"Data\interstellarfactors.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Raw Material Traders...");
-                RawMaterialTraders = Station.GetStations(@"Data\rawmaterialtraders.json");
+                Station.RawMaterialTradersStationList = Station.GetStations(@"Data\rawmaterialtraders.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Manufactured Material Traders...");
-                ManufacturedMaterialTraders = Station.GetStations(@"Data\manufacturedmaterialtraders.json");
+                Station.ManufacturedMaterialTradersStationList = Station.GetStations(@"Data\manufacturedmaterialtraders.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Encoded Data Traders..");
-                EncodedDataTraders = Station.GetStations(@"Data\encodeddatatraders.json");
+                Station.EncodedDataTradersStationList = Station.GetStations(@"Data\encodeddatatraders.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Human Technology Brokers...");
-                HumanTechnologyBrokers = Station.GetStations(@"Data\humantechnologybrokers.json");
+                Station.HumanTechnologyBrokersStationList = Station.GetStations(@"Data\humantechnologybrokers.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Guardian Technology Brokers...");
-                GuardianTechnologyBrokers = Station.GetStations(@"Data\guardiantechnologybrokers.json");
+                Station.GuardianTechnologyBrokersStationList = Station.GetStations(@"Data\guardiantechnologybrokers.json");
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Aisling Duval Stations...");
-                AislingDuval = Station.GetStations(@"Data\aislingduval.json");
+                Station.AislingDuvalStationList = Station.GetStations(@"Data\aislingduval.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Archon Delaine Stations...");
-                ArchonDelaine = Station.GetStations(@"Data\archondelaine.json");
+                Station.ArchonDelaineStationList = Station.GetStations(@"Data\archondelaine.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Arissa Lavigny Duval Stations...");
-                ArissaLavignyDuval = Station.GetStations(@"Data\arissalavignyduval.json");
+                Station.ArissaLavignyDuvalStationList = Station.GetStations(@"Data\arissalavignyduval.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Denton Patreus Stations...");
-                DentonPatreus = Station.GetStations(@"Data\dentonpatreus.json");
+                Station.DentonPatreusStationList = Station.GetStations(@"Data\dentonpatreus.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Edmund Mahon Stations...");
-                EdmundMahon = Station.GetStations(@"Data\edmundmahon.json");
+                Station.EdmundMahonStationList = Station.GetStations(@"Data\edmundmahon.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Felicia Winters Stations...");
-                FeliciaWinters = Station.GetStations(@"Data\feliciawinters.json");
+                Station.FeliciaWintersStationList = Station.GetStations(@"Data\feliciawinters.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Li Yong-Rui Stations...");
-                LiYongRui = Station.GetStations(@"Data\liyongrui.json");
+                Station.LiYongRuiStationList = Station.GetStations(@"Data\liyongrui.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Pranav Antal Stations...");
-                PranavAntal = Station.GetStations(@"Data\pranavantal.json");
+                Station.PranavAntalStationList = Station.GetStations(@"Data\pranavantal.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Yuri Grom Stations...");
-                YuriGrom = Station.GetStations(@"Data\yurigrom.json");
+                Station.YuriGromStationList = Station.GetStations(@"Data\yurigrom.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Zachary Hudson Stations...");
-                ZacharyHudson = Station.GetStations(@"Data\zacharyhudson.json");
+                Station.ZacharyHudsonStationList = Station.GetStations(@"Data\zacharyhudson.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Zemina Torval Stations...");
-                ZeminaTorval = Station.GetStations(@"Data\zeminatorval.json");
+                Station.ZeminaTorvalStationList = Station.GetStations(@"Data\zeminatorval.json");
             }
         }
 
@@ -187,30 +165,31 @@ namespace Elite
 
                 Engine.Razor.Compile("7.cshtml", null);
                 Engine.Razor.Compile("8.cshtml", null);
+                Engine.Razor.Compile("9.cshtml", null);
                 Engine.Razor.Compile("12.cshtml", null);
 
                 cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
                     File.ReadAllText("Templates\\styles.css"), true);
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
-                PoiItems = Poi.GetPoiItems(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
+                Station.PoiItemList = Poi.GetPoiItems(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
 
                 RefreshJson(splashScreen);
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading History...");
-                var path = EliteHistory.GetEliteHistory();
+                var path = History.GetEliteHistory();
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Status Watcher...");
                 statusWatcher = new StatusWatcher(path);
 
-                statusWatcher.StatusUpdated += EliteData.HandleStatusEvents;
+                statusWatcher.StatusUpdated += Data.HandleStatusEvents;
 
                 statusWatcher.StartWatching();
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Watcher...");
                 watcher = new JournalWatcher(path);
 
-                watcher.AllEventHandler += EliteData.HandleEliteEvents;
+                watcher.AllEventHandler += Data.HandleEliteEvents;
 
                 watcher.StartWatching().Wait();
 
@@ -250,11 +229,11 @@ namespace Elite
 
         protected override void OnExit(ExitEventArgs e)
         {
-            statusWatcher.StatusUpdated -= EliteData.HandleStatusEvents;
+            statusWatcher.StatusUpdated -= Data.HandleStatusEvents;
 
             statusWatcher.StopWatching();
 
-            watcher.AllEventHandler -= EliteData.HandleEliteEvents;
+            watcher.AllEventHandler -= Data.HandleEliteEvents;
 
             watcher.StopWatching();
 

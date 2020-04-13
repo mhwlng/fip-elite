@@ -87,4 +87,11 @@ div.menu {
     width: 100%;
 }
 
+.main table td.nowrap {
+    width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+
 

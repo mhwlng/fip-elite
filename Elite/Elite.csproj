@@ -118,13 +118,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="EliteShips.cs" />
+    <Compile Include="Ships.cs" />
+    <Compile Include="Material.cs" />
+    <Compile Include="Module.cs" />
     <Compile Include="SplashScreenWindow.xaml.cs">
       <DependentUpon>SplashScreenWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Station.cs" />
-    <Compile Include="EliteData.cs" />
-    <Compile Include="EliteHistory.cs" />
+    <Compile Include="Data.cs" />
+    <Compile Include="History.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -158,6 +160,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Templates\9.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\8.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -49,7 +49,7 @@ namespace Elite
 
         Map = 7,
         Powers = 8,
-        //C = 9,
+        Materials = 9,
         //D = 10,
         //E = 11,
         Events = 12,
@@ -280,7 +280,7 @@ namespace Elite
                 switch (button)
                 {
                     case 8: // scroll clockwise
-                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
                         {
 
                             _currentCard[(int) _currentTab]++;
@@ -292,7 +292,7 @@ namespace Elite
                         break;
                     case 16: // scroll anti-clockwise
 
-                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
                         {
                             _currentCard[(int) _currentTab]--;
                             _currentZoomLevel[(int) _currentTab]--;
@@ -345,13 +345,13 @@ namespace Elite
                                 mustRefresh = SetTab(LCDTab.Navigation);
                                 break;
                             case 256:
-                                if (EliteData.TargetData.TargetLocked)
+                                if (Data.TargetData.TargetLocked)
                                 {
                                     mustRefresh = SetTab(LCDTab.Target);
                                 }
                                 break;
                             case 512:
-                                if (EliteData.MissionData.Count > 0)
+                                if (Data.MissionData.Count > 0)
                                 {
                                     mustRefresh = SetTab(LCDTab.Missions);
                                 }
@@ -371,10 +371,10 @@ namespace Elite
                             case 64:
                                 mustRefresh = SetTab(LCDTab.Powers);
                                 break;
-                            /*
                             case 128:
-                                mustRefresh = SetTab(LCDTab.C);
+                                mustRefresh = SetTab(LCDTab.Materials);
                                 break;
+                            /*
                             case 256:
                                 mustRefresh = SetTab(LCDTab.D);
                                 break;
@@ -502,7 +502,7 @@ namespace Elite
                 {
                     if (e.Src.ToLower() == "galaxy.png" && _currentTab == LCDTab.Map)
                     {
-                        graphics.DrawPolygon(_whitePen, EliteHistory.TravelHistoryPoints.ToArray());
+                        graphics.DrawPolygon(_whitePen, History.TravelHistoryPoints.ToArray());
 
                         var zoomLevel = _currentZoomLevel[(int)_currentTab] / 2.0 + 1;
 
@@ -515,13 +515,13 @@ namespace Elite
                         var zoomedXCenter = image.Width / 2.0;
                         var zoomedYCenter = image.Height / 2.0;
 
-                        if (EliteData.LocationData?.StarPos?.Count == 3)
+                        if (Data.LocationData?.StarPos?.Count == 3)
                         {
-                            var spaceX = EliteData.LocationData.StarPos[0];
-                            var spaceZ = EliteData.LocationData.StarPos[2];
+                            var spaceX = Data.LocationData.StarPos[0];
+                            var spaceZ = Data.LocationData.StarPos[2];
 
-                            var imgX = (spaceX - EliteHistory.SpaceMinX) / (EliteHistory.SpaceMaxX - EliteHistory.SpaceMinX) * image.Width;
-                            var imgY = (EliteHistory.SpaceMaxZ - spaceZ) / (EliteHistory.SpaceMaxZ - EliteHistory.SpaceMinZ) * image.Height;
+                            var imgX = (spaceX - History.SpaceMinX) / (History.SpaceMaxX - History.SpaceMinX) * image.Width;
+                            var imgY = (History.SpaceMaxZ - spaceZ) / (History.SpaceMaxZ - History.SpaceMinZ) * image.Height;
 
                             imgX -= markerWidth / 2.0;
                             imgY -= markerHeight / 2.0;
@@ -575,11 +575,11 @@ namespace Elite
         {
             lock (_refreshDevicePageLock)
             {
-                if (EliteData.MissionData.Count == 0 && _currentTab == LCDTab.Missions)
+                if (Data.MissionData.Count == 0 && _currentTab == LCDTab.Missions)
                 {
                     SetTab(LCDTab.Navigation);
                 }
-                else if (!EliteData.TargetData.TargetLocked && _currentTab == LCDTab.Target)
+                else if (!Data.TargetData.TargetLocked && _currentTab == LCDTab.Target)
                 {
                     SetTab(LCDTab.Navigation);
                 }
@@ -634,6 +634,21 @@ namespace Elite
 
                                 break;
 
+                            case LCDTab.Materials:
+
+                                if (_currentCard[(int)_currentTab] < 0)
+                                {
+                                    _currentCard[(int)_currentTab] = 2;
+                                }
+                                else
+                                if (_currentCard[(int)_currentTab] > 2)
+                                {
+                                    _currentCard[(int)_currentTab] = 0;
+                                }
+
+                                break;
+
+
                             case LCDTab.Map:
 
 
@@ -678,38 +693,38 @@ namespace Elite
                                             CurrentTab = (int) _currentTab,
                                             CurrentPage = _currentPage,
 
-                                            LegalState = EliteData.StatusData.LegalState,
+                                            LegalState = Data.StatusData.LegalState,
 
-                                            Commander = EliteData.CommanderData.Name,
+                                            Commander = Data.CommanderData.Name,
 
-                                            Credits = EliteData.CommanderData.Credits,
+                                            Credits = Data.CommanderData.Credits,
 
-                                            FederationRank = EliteData.CommanderData.FederationRank,
-                                            FederationRankProgress = EliteData.CommanderData.FederationRankProgress,
+                                            FederationRank = Data.CommanderData.FederationRank,
+                                            FederationRankProgress = Data.CommanderData.FederationRankProgress,
 
-                                            EmpireRank = EliteData.CommanderData.EmpireRank,
-                                            EmpireRankProgress = EliteData.CommanderData.EmpireRankProgress,
+                                            EmpireRank = Data.CommanderData.EmpireRank,
+                                            EmpireRankProgress = Data.CommanderData.EmpireRankProgress,
 
-                                            CombatRank = EliteData.CommanderData.CombatRank,
-                                            CombatRankProgress = EliteData.CommanderData.CombatRankProgress,
+                                            CombatRank = Data.CommanderData.CombatRank,
+                                            CombatRankProgress = Data.CommanderData.CombatRankProgress,
 
-                                            TradeRank = EliteData.CommanderData.TradeRank,
-                                            TradeRankProgress = EliteData.CommanderData.TradeRankProgress,
+                                            TradeRank = Data.CommanderData.TradeRank,
+                                            TradeRankProgress = Data.CommanderData.TradeRankProgress,
 
-                                            ExplorationRank = EliteData.CommanderData.ExplorationRank,
-                                            ExplorationRankProgress = EliteData.CommanderData.ExplorationRankProgress,
+                                            ExplorationRank = Data.CommanderData.ExplorationRank,
+                                            ExplorationRankProgress = Data.CommanderData.ExplorationRankProgress,
 
-                                            CqcRank = EliteData.CommanderData.CqcRank,
+                                            CqcRank = Data.CommanderData.CqcRank,
 
-                                            CqcRankProgress = EliteData.CommanderData.CqcRankProgress,
+                                            CqcRankProgress = Data.CommanderData.CqcRankProgress,
 
-                                            FederationReputation = EliteData.CommanderData.FederationReputation,
-                                            AllianceReputation = EliteData.CommanderData.AllianceReputation,
-                                            EmpireReputation = EliteData.CommanderData.EmpireReputation,
+                                            FederationReputation = Data.CommanderData.FederationReputation,
+                                            AllianceReputation = Data.CommanderData.AllianceReputation,
+                                            EmpireReputation = Data.CommanderData.EmpireReputation,
 
-                                            FederationReputationState = EliteData.CommanderData.FederationReputationState,
-                                            AllianceReputationState = EliteData.CommanderData.AllianceReputationState,
-                                            EmpireReputationState = EliteData.CommanderData.EmpireReputationState
+                                            FederationReputationState = Data.CommanderData.FederationReputationState,
+                                            AllianceReputationState = Data.CommanderData.AllianceReputationState,
+                                            EmpireReputationState = Data.CommanderData.EmpireReputationState
 
                                         });
 
@@ -719,7 +734,7 @@ namespace Elite
 
                                 case LCDTab.Ship:
 
-                                    var shipData = EliteShips.GetCurrentShip() ?? new EliteShips.ShipData();
+                                    var shipData = Ships.GetCurrentShip() ?? new Ships.ShipData();
 
                                     str =
                                         Engine.Razor.Run("2.cshtml", null, new
@@ -728,9 +743,9 @@ namespace Elite
                                             CurrentPage = _currentPage,
                                             CurrentCard = _currentCard[(int)_currentTab],
 
-                                            CurrentShip = EliteShips.ShipsList.FirstOrDefault(x => x.Stored == false),
+                                            CurrentShip = Ships.ShipsList.FirstOrDefault(x => x.Stored == false),
 
-                                            StoredShips = EliteShips.ShipsList.Where(x => x.Stored == true).OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
+                                            StoredShips = Ships.ShipsList.Where(x => x.Stored == true).OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
 
                                         });
                                     
@@ -744,68 +759,68 @@ namespace Elite
                                             CurrentTab = (int) _currentTab,
                                             CurrentPage = _currentPage,
 
-                                            StarSystem = EliteData.LocationData.StarSystem,
+                                            StarSystem = Data.LocationData.StarSystem,
 
-                                            Body = !string.IsNullOrEmpty(EliteData.LocationData.BodyType) &&
-                                                   !string.IsNullOrEmpty(EliteData.LocationData.Body)
-                                                ? EliteData.LocationData.Body
+                                            Body = !string.IsNullOrEmpty(Data.LocationData.BodyType) &&
+                                                   !string.IsNullOrEmpty(Data.LocationData.Body)
+                                                ? Data.LocationData.Body
                                                 : null,
 
                                             //"Station""Star""Planet""PlanetaryRing""StellarRing""AsteroidCluster"
 
-                                            BodyType = EliteData.LocationData.BodyType,
+                                            BodyType = Data.LocationData.BodyType,
 
-                                            Station = EliteData.LocationData.BodyType == "Station" &&
-                                                      !string.IsNullOrEmpty(EliteData.LocationData.Body)
-                                                ? EliteData.LocationData.Body
-                                                : EliteData.LocationData.Station,
+                                            Station = Data.LocationData.BodyType == "Station" &&
+                                                      !string.IsNullOrEmpty(Data.LocationData.Body)
+                                                ? Data.LocationData.Body
+                                                : Data.LocationData.Station,
 
-                                            Docked = EliteData.StatusData.Docked,
+                                            Docked = Data.StatusData.Docked,
 
-                                            LandingPad = EliteData.DockData.LandingPad,
+                                            LandingPad = Data.DockData.LandingPad,
 
-                                            StationType = EliteData.DockData.Type,
+                                            StationType = Data.DockData.Type,
 
-                                            Government = EliteData.DockData.Government,
+                                            Government = Data.DockData.Government,
 
-                                            Allegiance = EliteData.DockData.Allegiance,
+                                            Allegiance = Data.DockData.Allegiance,
 
-                                            Faction = EliteData.DockData.Faction,
+                                            Faction = Data.DockData.Faction,
 
-                                            Economy = EliteData.DockData.Economy,
+                                            Economy = Data.DockData.Economy,
 
-                                            DistFromStarLs = EliteData.DockData.DistFromStarLs,
+                                            DistFromStarLs = Data.DockData.DistFromStarLs,
 
-                                            StartJump = EliteData.LocationData.StartJump,
+                                            StartJump = Data.LocationData.StartJump,
 
-                                            JumpType = EliteData.LocationData.JumpType,
+                                            JumpType = Data.LocationData.JumpType,
 
-                                            JumpToSystem = EliteData.LocationData.JumpToSystem,
+                                            JumpToSystem = Data.LocationData.JumpToSystem,
 
-                                            JumpToStarClass = EliteData.LocationData.JumpToStarClass,
+                                            JumpToStarClass = Data.LocationData.JumpToStarClass,
 
-                                            RemainingJumpsInRoute = EliteData.LocationData.RemainingJumpsInRoute,
+                                            RemainingJumpsInRoute = Data.LocationData.RemainingJumpsInRoute,
 
-                                            FsdTargetName = EliteData.LocationData.FsdTargetName,
+                                            FsdTargetName = Data.LocationData.FsdTargetName,
 
-                                            Settlement = EliteData.LocationData.Settlement,
+                                            Settlement = Data.LocationData.Settlement,
 
-                                            HideBody = EliteData.LocationData.HideBody,
+                                            HideBody = Data.LocationData.HideBody,
 
-                                            SystemAllegiance = EliteData.LocationData.SystemAllegiance,
+                                            SystemAllegiance = Data.LocationData.SystemAllegiance,
 
-                                            SystemFaction = EliteData.LocationData.SystemFaction,
+                                            SystemFaction = Data.LocationData.SystemFaction,
 
-                                            SystemSecurity = EliteData.LocationData.SystemSecurity,
+                                            SystemSecurity = Data.LocationData.SystemSecurity,
 
-                                            SystemEconomy = EliteData.LocationData.SystemEconomy,
+                                            SystemEconomy = Data.LocationData.SystemEconomy,
 
-                                            SystemGovernment = EliteData.LocationData.SystemGovernment,
+                                            SystemGovernment = Data.LocationData.SystemGovernment,
 
-                                            Population = EliteData.LocationData.Population,
+                                            Population = Data.LocationData.Population,
 
-                                            PowerplayState = EliteData.LocationData.PowerplayState,
-                                            Powers = EliteData.LocationData.Powers
+                                            PowerplayState = Data.LocationData.PowerplayState,
+                                            Powers = Data.LocationData.Powers
 
 
                                         });
@@ -820,26 +835,26 @@ namespace Elite
                                             CurrentTab = (int) _currentTab,
                                             CurrentPage = _currentPage,
 
-                                            TargetLocked = EliteData.TargetData.TargetLocked,
-                                            ScanStage = EliteData.TargetData.ScanStage,
+                                            TargetLocked = Data.TargetData.TargetLocked,
+                                            ScanStage = Data.TargetData.ScanStage,
 
-                                            Bounty = EliteData.TargetData.Bounty,
-                                            Faction = EliteData.TargetData.Faction,
-                                            LegalStatus = EliteData.TargetData.LegalStatus,
-                                            PilotNameLocalised = EliteData.TargetData.PilotNameLocalised,
-                                            PilotRank = EliteData.TargetData.PilotRank,
+                                            Bounty = Data.TargetData.Bounty,
+                                            Faction = Data.TargetData.Faction,
+                                            LegalStatus = Data.TargetData.LegalStatus,
+                                            PilotNameLocalised = Data.TargetData.PilotNameLocalised,
+                                            PilotRank = Data.TargetData.PilotRank,
 
-                                            Power = EliteData.TargetData.Power,
+                                            Power = Data.TargetData.Power,
 
-                                            Ship = EliteData.TargetData.Ship?.Trim(),
+                                            Ship = Data.TargetData.Ship?.Trim(),
 
-                                            ShipImage = EliteData.TargetData.Ship?.Trim() + ".png",
+                                            ShipImage = Data.TargetData.Ship?.Trim() + ".png",
 
-                                            SubsystemLocalised = EliteData.TargetData.SubsystemLocalised,
+                                            SubsystemLocalised = Data.TargetData.SubsystemLocalised,
 
-                                            SubsystemHealth = EliteData.TargetData.SubsystemHealth,
-                                            HullHealth = EliteData.TargetData.HullHealth,
-                                            ShieldHealth = EliteData.TargetData.ShieldHealth,
+                                            SubsystemHealth = Data.TargetData.SubsystemHealth,
+                                            HullHealth = Data.TargetData.HullHealth,
+                                            ShieldHealth = Data.TargetData.ShieldHealth,
 
                                         });
 
@@ -853,7 +868,7 @@ namespace Elite
                                             CurrentTab = (int) _currentTab,
                                             CurrentPage = _currentPage,
 
-                                            MissionData = EliteData.MissionData
+                                            MissionData = Data.MissionData
                                         });
 
                                     break;
@@ -870,17 +885,17 @@ namespace Elite
 
                                                 CurrentCard = _currentCard[(int) _currentTab],
 
-                                                CurrentPois = EliteData.CurrentPois, // 0
+                                                CurrentPois = Poi.PoiList, // 0
 
-                                                CurrentInterStellarFactors = EliteData.CurrentInterStellarFactors, // 1
-                                                CurrentRawMaterialTraders = EliteData.CurrentRawMaterialTraders, // 2
+                                                CurrentInterStellarFactors = Data.InterStellarFactors, // 1
+                                                CurrentRawMaterialTraders = Data.RawMaterialTraders, // 2
                                                 CurrentManufacturedMaterialTraders =
-                                                    EliteData.CurrentManufacturedMaterialTraders, // 3
-                                                CurrentEncodedDataTraders = EliteData.CurrentEncodedDataTraders, // 4
+                                                    Data.ManufacturedMaterialTraders, // 3
+                                                CurrentEncodedDataTraders = Data.EncodedDataTraders, // 4
                                                 CurrentHumanTechnologyBrokers =
-                                                    EliteData.CurrentHumanTechnologyBrokers, // 5
+                                                    Data.HumanTechnologyBrokers, // 5
                                                 CurrentGuardianTechnologyBrokers =
-                                                    EliteData.CurrentGuardianTechnologyBrokers // 6
+                                                    Data.GuardianTechnologyBrokers // 6
 
                                             });
                                     }
@@ -918,27 +933,45 @@ namespace Elite
 
                                                 CurrentCard = _currentCard[(int) _currentTab],
 
-                                                CurrentAislingDuval = EliteData.CurrentAislingDuval, // 0
-                                                CurrentArchonDelaine = EliteData.CurrentArchonDelaine, // 1
-                                                CurrentArissaLavignyDuval = EliteData.CurrentArissaLavignyDuval, // 2
-                                                CurrentDentonPatreus = EliteData.CurrentDentonPatreus, // 3
-                                                CurrentEdmundMahon = EliteData.CurrentEdmundMahon, // 4
-                                                CurrentFeliciaWinters = EliteData.CurrentFeliciaWinters, // 5
-                                                CurrentLiYongRui = EliteData.CurrentLiYongRui, // 6
-                                                CurrentPranavAntal = EliteData.CurrentPranavAntal, // 7
-                                                CurrentYuriGrom = EliteData.CurrentYuriGrom, // 8
-                                                CurrentZacharyHudson = EliteData.CurrentZacharyHudson, // 9
-                                                CurrentZeminaTorval = EliteData.CurrentZeminaTorval, // 10
+                                                CurrentAislingDuval = Data.AislingDuval, // 0
+                                                CurrentArchonDelaine = Data.ArchonDelaine, // 1
+                                                CurrentArissaLavignyDuval = Data.ArissaLavignyDuval, // 2
+                                                CurrentDentonPatreus = Data.DentonPatreus, // 3
+                                                CurrentEdmundMahon = Data.EdmundMahon, // 4
+                                                CurrentFeliciaWinters = Data.FeliciaWinters, // 5
+                                                CurrentLiYongRui = Data.LiYongRui, // 6
+                                                CurrentPranavAntal = Data.PranavAntal, // 7
+                                                CurrentYuriGrom = Data.YuriGrom, // 8
+                                                CurrentZacharyHudson = Data.ZacharyHudson, // 9
+                                                CurrentZeminaTorval = Data.ZeminaTorval, // 10
 
                                             });
                                     }
 
                                     break;
 
+
+                                case LCDTab.Materials:
+
+                                    str =
+                                        Engine.Razor.Run("9.cshtml", null, new
+                                        {
+                                            CurrentTab = (int)_currentTab,
+                                            CurrentPage = _currentPage,
+
+                                            CurrentCard = _currentCard[(int)_currentTab],
+
+                                            Raw = Material.MaterialList.Where (x => x.Value.Category == "Raw").OrderBy(x => x.Value.Name),
+                                            Manufactured = Material.MaterialList.Where(x => x.Value.Category == "Manufactured").OrderBy(x => x.Value.Name),
+                                            Encoded = Material.MaterialList.Where(x => x.Value.Category == "Encoded").OrderBy(x => x.Value.Name)
+                                        });
+
+                                    break;
+
                                 case LCDTab.Events:
 
                                     var eventlist = "";
-                                    foreach (var b in EliteData.EventHistory)
+                                    foreach (var b in Data.EventHistory)
                                     {
                                         eventlist += b + "<br/>";
                                     }
@@ -1015,9 +1048,9 @@ namespace Elite
                                     CurrentTab = (int)_currentTab,
                                     CurrentPage = _currentPage,
 
-                                    TargetLocked = EliteData.TargetData.TargetLocked,
+                                    TargetLocked = Data.TargetData.TargetLocked,
 
-                                    MissionCount = EliteData.MissionData.Count
+                                    MissionCount = Data.MissionData.Count
                                 });
 
                             menuHtmlImage = HtmlRender.RenderToImage(menustr,
@@ -1030,7 +1063,7 @@ namespace Elite
                             graphics.DrawImage(menuHtmlImage, 0, 0);
                         }
 
-                        if (_currentTab == LCDTab.Ship || _currentTab == LCDTab.POI || _currentTab == LCDTab.Powers)
+                        if (_currentTab == LCDTab.Ship || _currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials)
                         {
                             if (mustRender)
                             {

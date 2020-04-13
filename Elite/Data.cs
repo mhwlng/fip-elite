@@ -14,31 +14,31 @@ using Elite.RingBuffer;
 using EliteJournalReader;
 using EliteJournalReader.Events;
 using Module = EliteJournalReader.Module;
+// ReSharper disable StringLiteralTypo
 
 
 namespace Elite
 {
-    public class EliteData
+    public class Data
     {
-        public static List<PoiItem> CurrentPois = new List<PoiItem>();
-        public static List<StationData> CurrentInterStellarFactors = new List<StationData>();
-        public static List<StationData> CurrentRawMaterialTraders = new List<StationData>();
-        public static List<StationData> CurrentManufacturedMaterialTraders = new List<StationData>();
-        public static List<StationData> CurrentEncodedDataTraders = new List<StationData>();
-        public static List<StationData> CurrentHumanTechnologyBrokers = new List<StationData>();
-        public static List<StationData> CurrentGuardianTechnologyBrokers = new List<StationData>();
+        public static List<StationData> InterStellarFactors = new List<StationData>();
+        public static List<StationData> RawMaterialTraders = new List<StationData>();
+        public static List<StationData> ManufacturedMaterialTraders = new List<StationData>();
+        public static List<StationData> EncodedDataTraders = new List<StationData>();
+        public static List<StationData> HumanTechnologyBrokers = new List<StationData>();
+        public static List<StationData> GuardianTechnologyBrokers = new List<StationData>();
 
-        public static List<StationData> CurrentAislingDuval = new List<StationData>();
-        public static List<StationData> CurrentArchonDelaine = new List<StationData>();
-        public static List<StationData> CurrentArissaLavignyDuval = new List<StationData>();
-        public static List<StationData> CurrentDentonPatreus = new List<StationData>();
-        public static List<StationData> CurrentEdmundMahon = new List<StationData>();
-        public static List<StationData> CurrentFeliciaWinters = new List<StationData>();
-        public static List<StationData> CurrentLiYongRui = new List<StationData>();
-        public static List<StationData> CurrentPranavAntal = new List<StationData>();
-        public static List<StationData> CurrentYuriGrom = new List<StationData>();
-        public static List<StationData> CurrentZacharyHudson = new List<StationData>();
-        public static List<StationData> CurrentZeminaTorval = new List<StationData>();
+        public static List<StationData> AislingDuval = new List<StationData>();
+        public static List<StationData> ArchonDelaine = new List<StationData>();
+        public static List<StationData> ArissaLavignyDuval = new List<StationData>();
+        public static List<StationData> DentonPatreus = new List<StationData>();
+        public static List<StationData> EdmundMahon = new List<StationData>();
+        public static List<StationData> FeliciaWinters = new List<StationData>();
+        public static List<StationData> LiYongRui = new List<StationData>();
+        public static List<StationData> PranavAntal = new List<StationData>();
+        public static List<StationData> YuriGrom = new List<StationData>();
+        public static List<StationData> ZacharyHudson = new List<StationData>();
+        public static List<StationData> ZeminaTorval = new List<StationData>();
 
 
         public static  RingBuffer<string> EventHistory = new RingBuffer<string>(50, true);
@@ -170,32 +170,32 @@ namespace Elite
         {
             lock (App.RefreshJsonLock)
             {
-                CurrentInterStellarFactors =
-                    Station.GetNearestStationItems(LocationData.StarPos, App.InterStellarFactors);
-                CurrentRawMaterialTraders =
-                    Station.GetNearestStationItems(LocationData.StarPos, App.RawMaterialTraders);
-                CurrentManufacturedMaterialTraders =
-                    Station.GetNearestStationItems(LocationData.StarPos, App.ManufacturedMaterialTraders);
-                CurrentEncodedDataTraders =
-                    Station.GetNearestStationItems(LocationData.StarPos, App.EncodedDataTraders);
-                CurrentHumanTechnologyBrokers =
-                    Station.GetNearestStationItems(LocationData.StarPos, App.HumanTechnologyBrokers);
-                CurrentGuardianTechnologyBrokers =
-                    Station.GetNearestStationItems(LocationData.StarPos, App.GuardianTechnologyBrokers);
+                InterStellarFactors =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.InterStellarFactorsStationList);
+                RawMaterialTraders =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.RawMaterialTradersStationList);
+                ManufacturedMaterialTraders =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.ManufacturedMaterialTradersStationList);
+                EncodedDataTraders =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.EncodedDataTradersStationList);
+                HumanTechnologyBrokers =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.HumanTechnologyBrokersStationList);
+                GuardianTechnologyBrokers =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.GuardianTechnologyBrokersStationList);
 
-                CurrentAislingDuval = Station.GetNearestStationItems(LocationData.StarPos, App.AislingDuval);
-                CurrentArchonDelaine = Station.GetNearestStationItems(LocationData.StarPos, App.ArchonDelaine);
-                CurrentArissaLavignyDuval =
-                    Station.GetNearestStationItems(LocationData.StarPos, App.ArissaLavignyDuval);
-                CurrentDentonPatreus = Station.GetNearestStationItems(LocationData.StarPos, App.DentonPatreus);
-                CurrentEdmundMahon = Station.GetNearestStationItems(LocationData.StarPos, App.EdmundMahon);
-                CurrentFeliciaWinters =
-                    Station.GetNearestStationItems(LocationData.StarPos, App.FeliciaWinters);
-                CurrentLiYongRui = Station.GetNearestStationItems(LocationData.StarPos, App.LiYongRui);
-                CurrentPranavAntal = Station.GetNearestStationItems(LocationData.StarPos, App.PranavAntal);
-                CurrentYuriGrom = Station.GetNearestStationItems(LocationData.StarPos, App.YuriGrom);
-                CurrentZacharyHudson = Station.GetNearestStationItems(LocationData.StarPos, App.ZacharyHudson);
-                CurrentZeminaTorval = Station.GetNearestStationItems(LocationData.StarPos, App.ZeminaTorval);
+                AislingDuval = Station.GetNearestStationItems(LocationData.StarPos, Station.AislingDuvalStationList);
+                ArchonDelaine = Station.GetNearestStationItems(LocationData.StarPos, Station.ArchonDelaineStationList);
+                ArissaLavignyDuval =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.ArissaLavignyDuvalStationList);
+                DentonPatreus = Station.GetNearestStationItems(LocationData.StarPos, Station.DentonPatreusStationList);
+                EdmundMahon = Station.GetNearestStationItems(LocationData.StarPos, Station.EdmundMahonStationList);
+                FeliciaWinters =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.FeliciaWintersStationList);
+                LiYongRui = Station.GetNearestStationItems(LocationData.StarPos, Station.LiYongRuiStationList);
+                PranavAntal = Station.GetNearestStationItems(LocationData.StarPos, Station.PranavAntalStationList);
+                YuriGrom = Station.GetNearestStationItems(LocationData.StarPos, Station.YuriGromStationList);
+                ZacharyHudson = Station.GetNearestStationItems(LocationData.StarPos, Station.ZacharyHudsonStationList);
+                ZeminaTorval = Station.GetNearestStationItems(LocationData.StarPos, Station.ZeminaTorvalStationList);
             }
         }
 
@@ -445,7 +445,7 @@ namespace Elite
             StatusData.PlanetRadius = evt.PlanetRadius;
 
 
-            var shipData = EliteShips.GetCurrentShip();
+            var shipData = Ships.GetCurrentShip();
             if (shipData != null)
             {
                 shipData.CurrentFuelMain = evt.Fuel?.FuelMain ?? 0;
@@ -501,7 +501,7 @@ namespace Elite
                 EventHistory.Put(DateTime.Now.ToLongTimeString() + " : " + evt);
             }
 
-            var shipData = EliteShips.GetCurrentShip();
+            var shipData = Ships.GetCurrentShip();
 
             switch (evt)
             {
@@ -524,7 +524,7 @@ namespace Elite
 
                     //FuelLevel
 
-                    EliteShips.HandleLoadGame(loadGameInfo.ShipID, loadGameInfo.Ship, loadGameInfo.ShipName);
+                    Ships.HandleLoadGame(loadGameInfo.ShipID, loadGameInfo.Ship, loadGameInfo.ShipName);
 
                     CommanderData.Name = loadGameInfo.Commander;
                     CommanderData.Credits = Convert.ToUInt32(loadGameInfo.Credits);
@@ -596,7 +596,7 @@ namespace Elite
 
                     //ShipID
 
-                    EliteShips.HandleSetUserShipName(setUserShipNameInfo.ShipID, setUserShipNameInfo.UserShipName, setUserShipNameInfo.Ship);
+                    Ships.HandleSetUserShipName(setUserShipNameInfo.ShipID, setUserShipNameInfo.UserShipName, setUserShipNameInfo.Ship);
 
                     break;
 
@@ -605,7 +605,7 @@ namespace Elite
 
                     var locationInfo = (LocationEvent.LocationEventArgs)e;
 
-                    EliteShips.HandleShipLocation(locationInfo.Docked, locationInfo.StarSystem, locationInfo.StationName, locationInfo.StarPos.ToList());
+                    Ships.HandleShipLocation(locationInfo.Docked, locationInfo.StarSystem, locationInfo.StationName, locationInfo.StarPos.ToList());
 
                     //Docked
                     //Latitude
@@ -625,9 +625,9 @@ namespace Elite
 
                     LocationData.StarPos = locationInfo.StarPos.ToList();
 
-                    EliteShips.HandleShipDistance(LocationData.StarPos);
+                    Ships.HandleShipDistance(LocationData.StarPos);
 
-                    CurrentPois = Poi.GetNearestPoiItems(LocationData.StarPos);
+                    Poi.PoiList = Poi.GetNearestPoiItems(LocationData.StarPos);
 
                     HandleJson();
 
@@ -665,13 +665,13 @@ namespace Elite
 
                     break;
 
-
                 case "Loadout":
                     //When written: at startup, when loading from main menu, or when switching ships, 
 
                     var loadoutInfo = (LoadoutEvent.LoadoutEventArgs)e;
 
-                    EliteShips.HandleLoadout(loadoutInfo);
+                    Ships.HandleLoadout(loadoutInfo);
+                    Module.HandleLoadout(loadoutInfo);
 
                     break;
 
@@ -679,7 +679,7 @@ namespace Elite
                     //When Written: when fetching a previously stored module
                     var moduleRetrieveInfo = (ModuleRetrieveEvent.ModuleRetrieveEventArgs)e;
 
-                    EliteShips.HandleModuleRetrieve(moduleRetrieveInfo);
+                    Module.HandleModuleRetrieve(moduleRetrieveInfo);
 
                     break;
 
@@ -687,7 +687,7 @@ namespace Elite
                     //When Written: when buying a module in outfitting
                     var moduleBuyInfo = (ModuleBuyEvent.ModuleBuyEventArgs) e;
 
-                    EliteShips.HandleModuleBuy(moduleBuyInfo);
+                    Module.HandleModuleBuy(moduleBuyInfo);
 
                     break;
 
@@ -695,7 +695,7 @@ namespace Elite
                     //When Written: when moving a module to a different slot on the ship
                     var moduleSwapInfo = (ModuleSwapEvent.ModuleSwapEventArgs)e;
 
-                    EliteShips.HandleModuleSwap(moduleSwapInfo);
+                    Module.HandleModuleSwap(moduleSwapInfo);
 
                     break;
 
@@ -703,7 +703,7 @@ namespace Elite
                     //When Written: when selling a module in outfitting
                     var moduleSellInfo = (ModuleSellEvent.ModuleSellEventArgs) e;
 
-                    EliteShips.HandleModuleSell(moduleSellInfo);
+                    Module.HandleModuleSell(moduleSellInfo);
 
                     break;
 
@@ -711,7 +711,7 @@ namespace Elite
                     //When Written: when selling a module in outfitting
                     var moduleSellRemoteInfo = (ModuleSellRemoteEvent.ModuleSellRemoteEventArgs)e;
 
-                    EliteShips.HandleModuleSellRemote(moduleSellRemoteInfo);
+                    Module.HandleModuleSellRemote(moduleSellRemoteInfo);
                     
                     break;
 
@@ -719,7 +719,7 @@ namespace Elite
                     //When Written: when fetching a previously stored module
                     var moduleStoreInfo = (ModuleStoreEvent.ModuleStoreEventArgs) e;
 
-                    EliteShips.HandleModuleStore(moduleStoreInfo);
+                    Module.HandleModuleStore(moduleStoreInfo);
 
                     break;
 
@@ -727,7 +727,7 @@ namespace Elite
                     //When written: when putting multiple modules into storage
                     var massModuleStoreInfo = (MassModuleStoreEvent.MassModuleStoreEventArgs)e;
 
-                    EliteShips.HandleMassModuleStore(massModuleStoreInfo);
+                    Module.HandleMassModuleStore(massModuleStoreInfo);
 
                     break;
 
@@ -864,7 +864,7 @@ namespace Elite
                     //    When written: when landing at landing pad in a space station, outpost, or surface settlement
                     var dockedInfo = (DockedEvent.DockedEventArgs) e;
 
-                    EliteShips.HandleShipDocked(dockedInfo.StarSystem, dockedInfo.StationName);
+                    Ships.HandleShipDocked(dockedInfo.StarSystem, dockedInfo.StationName);
 
                     //CockpitBreach
                     //StationEconomies
@@ -921,7 +921,7 @@ namespace Elite
                     //When written: when jumping from one star system to another
                     var fsdJumpInfo = (FSDJumpEvent.FSDJumpEventArgs) e;
 
-                    EliteShips.HandleShipFsdJump(fsdJumpInfo.StarSystem, fsdJumpInfo.StarPos.ToList());
+                    Ships.HandleShipFsdJump(fsdJumpInfo.StarSystem, fsdJumpInfo.StarPos.ToList());
 
                     //FuelUsed
                     //FuelLevel
@@ -941,11 +941,11 @@ namespace Elite
 
                     LocationData.StarPos = fsdJumpInfo.StarPos.ToList();
 
-                    EliteShips.HandleShipDistance(LocationData.StarPos);
+                    Ships.HandleShipDistance(LocationData.StarPos);
 
-                    EliteHistory.AddTravelPos(LocationData.StarPos);
+                    History.AddTravelPos(LocationData.StarPos);
 
-                    CurrentPois = Poi.GetNearestPoiItems(LocationData.StarPos);
+                    Poi.PoiList = Poi.GetNearestPoiItems(LocationData.StarPos);
 
                     HandleJson();
 
@@ -1026,7 +1026,7 @@ namespace Elite
                     //When written: player was HullDamage by player or npc
                     var hullDamageInfo = (HullDamageEvent.HullDamageEventArgs) e;
 
-                    EliteShips.HandleHullDamage(hullDamageInfo.Health);
+                    Ships.HandleHullDamage(hullDamageInfo.Health);
                    
                     break;
 
@@ -1045,7 +1045,7 @@ namespace Elite
 
                     TargetData.Power = shipTargetedInfo.Power;
 
-                    EliteShips.ShipsByEliteID.TryGetValue(shipTargetedInfo.Ship?.ToLower() ?? "???", out var targetShip);
+                    Ships.ShipsByEliteID.TryGetValue(shipTargetedInfo.Ship?.ToLower() ?? "???", out var targetShip);
 
                     TargetData.Ship = shipTargetedInfo.Ship_Localised ?? targetShip ?? shipTargetedInfo.Ship;
 
@@ -1095,16 +1095,6 @@ namespace Elite
 
                     break;
 
-                case "MissionCompleted":
-                    //When Written: when a mission is completed
-
-                    var missionCompletedInfo = (MissionCompletedEvent.MissionCompletedEventArgs) e;
-
-                    CommanderData.Credits += Convert.ToUInt32(missionCompletedInfo.Reward);
-
-                    MissionData.RemoveAll(x => x.MissionID == missionCompletedInfo.MissionID);
-
-                    break;
                 case "MissionAbandoned":
                     //When Written: when a mission has been abandoned 
 
@@ -1122,13 +1112,90 @@ namespace Elite
 
                     break;
 
+                case "MissionCompleted":
+                    //When Written: when a mission is completed
+
+                    var missionCompletedInfo = (MissionCompletedEvent.MissionCompletedEventArgs)e;
+
+                    CommanderData.Credits += Convert.ToUInt32(missionCompletedInfo.Reward);
+
+                    MissionData.RemoveAll(x => x.MissionID == missionCompletedInfo.MissionID);
+
+                    Material.HandleMissionCompletedEvent(missionCompletedInfo);
+
+                    break;
+
+                case "Materials":
+
+                    var materialsInfo = (MaterialsEvent.MaterialsEventArgs)e;
+
+                    Material.HandleMaterialsEvent(materialsInfo);
+
+                    break;
+                case "MaterialCollected":
+
+                    var materialCollectedInfo = (MaterialCollectedEvent.MaterialCollectedEventArgs)e;
+
+                    Material.HandleMaterialCollectedEvent(materialCollectedInfo);
+
+                    break;
+                case "MaterialDiscarded":
+
+                    var materialDiscardedInfo = (MaterialDiscardedEvent.MaterialDiscardedEventArgs)e;
+
+                    Material.HandleMaterialDiscardedEvent(materialDiscardedInfo);
+
+                    break;
+                case "ScientificResearch":
+
+                    var scientificResearchInfo = (ScientificResearchEvent.ScientificResearchEventArgs)e;
+
+                    Material.HandleScientificResearchEvent(scientificResearchInfo);
+
+                    break;
+                case "MaterialTrade":
+
+                    var materialTradeInfo = (MaterialTradeEvent.MaterialTradeEventArgs)e;
+
+                    Material.HandleMaterialTradedEvent(materialTradeInfo);
+
+                    break;
+                case "Synthesis":
+
+                    var synthesisInfo = (SynthesisEvent.SynthesisEventArgs)e;
+
+                    Material.HandleSynthesisedEvent(synthesisInfo);
+
+                    break;
+                case "EngineerCraft":
+
+                    var engineerCraftInfo = (EngineerCraftEvent.EngineerCraftEventArgs)e;
+
+                    Material.HandleEngineerCraftEvent(engineerCraftInfo);
+
+                    break;
+                case "TechnologyBroker":
+
+                    var technologyBrokerInfo = (TechnologyBrokerEvent.TechnologyBrokerEventArgs)e;
+
+                    Material.HandleTechnologyBrokerEvent(technologyBrokerInfo);
+
+                    break;
+                case "EngineerContribution":
+
+                    var engineerContributionInfo = (EngineerContributionEvent.EngineerContributionEventArgs)e;
+
+                    Material.HandleEngineerContributionEvent(engineerContributionInfo);
+
+                    break;
+
                 case "ShipyardBuy":
                     //When Written: when buying a new ship in the shipyard
                     //Note: the new ship’s ShipID will be logged in a separate event after the purchase
 
                     var shipyardBuyInfo = (ShipyardBuyEvent.ShipyardBuyEventArgs)e;
 
-                    EliteShips.HandleShipyardBuy(shipyardBuyInfo);
+                    Ships.HandleShipyardBuy(shipyardBuyInfo);
 
                     break;
 
@@ -1137,7 +1204,7 @@ namespace Elite
 
                     var shipyardSellInfo = (ShipyardSellEvent.ShipyardSellEventArgs)e;
 
-                    EliteShips.HandleShipyardSell(shipyardSellInfo);
+                    Ships.HandleShipyardSell(shipyardSellInfo);
 
                     break;
 
@@ -1145,7 +1212,7 @@ namespace Elite
                     //When written: after a new ship has been purchased
                     var shipyardNewInfo = (ShipyardNewEvent.ShipyardNewEventArgs)e;
 
-                    EliteShips.HandleShipyardNew(shipyardNewInfo);
+                    Ships.HandleShipyardNew(shipyardNewInfo);
 
                     break;
 
@@ -1153,7 +1220,7 @@ namespace Elite
                     //When Written: when switching to another ship already stored at this station
                     var shipyardSwapInfo = (ShipyardSwapEvent.ShipyardSwapEventArgs)e;
 
-                    EliteShips.HandleShipyardSwap(shipyardSwapInfo);
+                    Ships.HandleShipyardSwap(shipyardSwapInfo);
 
                     break;
 
@@ -1171,7 +1238,7 @@ namespace Elite
 
                     //ShipID
 
-                    EliteShips.HandleStoredShips(storedShipsInfo);
+                    Ships.HandleStoredShips(storedShipsInfo);
 
                     break;
 

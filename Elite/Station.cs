@@ -61,6 +61,26 @@ namespace Elite
 
     public static class Station
     {
+        public static List<PoiItem> PoiItemList = null;
+
+        public static List<StationData> InterStellarFactorsStationList = null;
+        public static List<StationData> RawMaterialTradersStationList = null;
+        public static List<StationData> ManufacturedMaterialTradersStationList = null;
+        public static List<StationData> EncodedDataTradersStationList = null;
+        public static List<StationData> HumanTechnologyBrokersStationList = null;
+        public static List<StationData> GuardianTechnologyBrokersStationList = null;
+
+        public static List<StationData> AislingDuvalStationList = null;
+        public static List<StationData> ArchonDelaineStationList = null;
+        public static List<StationData> ArissaLavignyDuvalStationList = null;
+        public static List<StationData> DentonPatreusStationList = null;
+        public static List<StationData> EdmundMahonStationList = null;
+        public static List<StationData> FeliciaWintersStationList = null;
+        public static List<StationData> LiYongRuiStationList = null;
+        public static List<StationData> PranavAntalStationList = null;
+        public static List<StationData> YuriGromStationList = null;
+        public static List<StationData> ZacharyHudsonStationList = null;
+        public static List<StationData> ZeminaTorvalStationList = null;
 
         public static List<StationData> GetStations(string fileName)
         {

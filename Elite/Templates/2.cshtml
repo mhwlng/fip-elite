@@ -152,7 +152,7 @@
                     {
                         <tr>
                             <td class="caption">@ml.Key</td>
-                            <td class="data">@Raw(EliteShips.GetPlacement(ml.Key, ml.Value))</td>
+                            <td class="data">@Raw(Module.GetModulePlacement(ml.Key, ml.Value))</td>
                         </tr>
                     }
                 }
@@ -327,7 +327,7 @@
                         {
                             <tr>
                                 <td class="caption">@ml.Key</td>
-                                <td class="data">@Raw(EliteShips.GetPlacement(ml.Key, ml.Value))</td>
+                                <td class="data">@Raw(Module.GetModulePlacement(ml.Key, ml.Value))</td>
                             </tr>
                         }
                     }
@@ -340,7 +340,7 @@
                 <img src="ships\@m.ShipImage" />
             }
 
-            if (!((List<EliteShips.ShipData>)Model.StoredShips).Last().Equals((EliteShips.ShipData)m))
+            if (!((List<Ships.ShipData>)Model.StoredShips).Last().Equals((Ships.ShipData)m))
             {
                 <table class="divider">
                     <tbody>

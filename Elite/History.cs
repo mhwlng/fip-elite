@@ -16,7 +16,7 @@ using Module = EliteJournalReader.Module;
 
 namespace Elite
 {
-    public static class EliteHistory
+    public static class History
     {
         public const double SpaceMinX = -41715.0;
         public const double SpaceMaxX = 41205.0;
@@ -153,38 +153,38 @@ namespace Elite
                                             AddTravelPos(info.StarPos);
                                         }
 
-                                        EliteShips.HandleShipFsdJump(info.StarSystem, info.StarPos.ToList());
+                                        Ships.HandleShipFsdJump(info.StarSystem, info.StarPos.ToList());
                                     }
                                     else if (json?.Contains("\"event\":\"LoadGame\",") == true)
                                     {
                                         var info = JsonConvert.DeserializeObject<LoadGameEvent.LoadGameEventArgs>(json);
 
-                                        EliteShips.HandleLoadGame(info.ShipID, info.Ship, info.ShipName);
+                                        Ships.HandleLoadGame(info.ShipID, info.Ship, info.ShipName);
                                     }
                                     else if (json?.Contains("\"event\":\"SetUserShipName\",") == true)
                                     {
                                         var info = JsonConvert.DeserializeObject<SetUserShipNameEvent.SetUserShipNameEventArgs>(json);
 
-                                        EliteShips.HandleSetUserShipName(info.ShipID, info.UserShipName, info.Ship);
+                                        Ships.HandleSetUserShipName(info.ShipID, info.UserShipName, info.Ship);
                                     }
                                     else if (json?.Contains("\"event\":\"HullDamage\",") == true)
                                     {
                                         var info = JsonConvert.DeserializeObject<HullDamageEvent.HullDamageEventArgs>(json);
 
-                                        EliteShips.HandleHullDamage(info.Health);
+                                        Ships.HandleHullDamage(info.Health);
                                     }
                                     else if (json?.Contains("\"event\":\"Location\",") == true)
                                     {
                                         var info = JsonConvert.DeserializeObject<LocationInfo>(json);
 
-                                        EliteShips.HandleShipLocation(info.Docked, info.StarSystem, info.StationName,
+                                        Ships.HandleShipLocation(info.Docked, info.StarSystem, info.StationName,
                                             info.StarPos);
                                     }
                                     else if (json?.Contains("\"event\":\"Docked\",") == true)
                                     {
                                         var info = JsonConvert.DeserializeObject<DockedInfo>(json);
 
-                                        EliteShips.HandleShipDocked(info.StarSystem, info.StationName);
+                                        Ships.HandleShipDocked(info.StarSystem, info.StationName);
                                     }
                                     else if (json?.Contains("\"event\":\"ShipyardNew\",") == true)
                                     {
@@ -192,7 +192,7 @@ namespace Elite
                                             JsonConvert.DeserializeObject<ShipyardNewEvent.ShipyardNewEventArgs>(
                                                 json);
 
-                                        EliteShips.HandleShipyardNew(info);
+                                        Ships.HandleShipyardNew(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ShipyardBuy\",") == true)
                                     {
@@ -200,21 +200,21 @@ namespace Elite
                                             JsonConvert.DeserializeObject<ShipyardBuyEvent.ShipyardBuyEventArgs>(
                                                 json);
 
-                                        EliteShips.HandleShipyardBuy(info);
+                                        Ships.HandleShipyardBuy(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ShipyardSell\",") == true)
                                     {
                                         var info = JsonConvert
                                             .DeserializeObject<ShipyardSellEvent.ShipyardSellEventArgs>(json);
 
-                                        EliteShips.HandleShipyardSell(info);
+                                        Ships.HandleShipyardSell(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ShipyardSwap\",") == true)
                                     {
                                         var info = JsonConvert
                                             .DeserializeObject<ShipyardSwapEvent.ShipyardSwapEventArgs>(json);
 
-                                        EliteShips.HandleShipyardSwap(info);
+                                        Ships.HandleShipyardSwap(info);
                                     }
                                     else if (json?.Contains("\"event\":\"StoredShips\",") == true)
                                     {
@@ -222,7 +222,7 @@ namespace Elite
                                             JsonConvert.DeserializeObject<StoredShipsEvent.StoredShipsEventArgs>(
                                                 json);
 
-                                        EliteShips.HandleStoredShips(info);
+                                        Ships.HandleStoredShips(info);
                                     }
                                     /*else if (json?.Contains("\"event\":\"ShipyardTransfer\",") == true)
                                     {
@@ -233,21 +233,22 @@ namespace Elite
                                         var info =
                                             JsonConvert.DeserializeObject<LoadoutEvent.LoadoutEventArgs>(json);
 
-                                        EliteShips.HandleLoadout(info);
+                                        Ships.HandleLoadout(info);
+                                        Module.HandleLoadout(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ModuleBuy\",") == true)
                                     {
                                         var info =
                                             JsonConvert.DeserializeObject<ModuleBuyEvent.ModuleBuyEventArgs>(json);
 
-                                        EliteShips.HandleModuleBuy(info);
+                                        Module.HandleModuleBuy(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ModuleSell\",") == true)
                                     {
                                         var info = JsonConvert
                                             .DeserializeObject<ModuleSellEvent.ModuleSellEventArgs>(json);
 
-                                        EliteShips.HandleModuleSell(info);
+                                        Module.HandleModuleSell(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ModuleSellRemote\",") == true)
                                     {
@@ -255,35 +256,104 @@ namespace Elite
                                             .DeserializeObject<ModuleSellRemoteEvent.ModuleSellRemoteEventArgs>(
                                                 json);
 
-                                        EliteShips.HandleModuleSellRemote(info);
+                                        Module.HandleModuleSellRemote(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ModuleStore\",") == true)
                                     {
                                         var info = JsonConvert
                                             .DeserializeObject<ModuleStoreEvent.ModuleStoreEventArgs>(json);
 
-                                        EliteShips.HandleModuleStore(info);
+                                        Module.HandleModuleStore(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ModuleSwap\",") == true)
                                     {
                                         var info = JsonConvert
                                             .DeserializeObject<ModuleSwapEvent.ModuleSwapEventArgs>(json);
 
-                                        EliteShips.HandleModuleSwap(info);
+                                        Module.HandleModuleSwap(info);
                                     }
                                     else if (json?.Contains("\"event\":\"ModuleRetrieve\",") == true)
                                     {
                                         var info = JsonConvert
                                             .DeserializeObject<ModuleRetrieveEvent.ModuleRetrieveEventArgs>(json);
 
-                                        EliteShips.HandleModuleRetrieve(info);
+                                        Module.HandleModuleRetrieve(info);
                                     }
                                     else if (json?.Contains("\"event\":\"MassModuleStore\",") == true)
                                     {
                                         var info = JsonConvert
                                             .DeserializeObject<MassModuleStoreEvent.MassModuleStoreEventArgs>(json);
 
-                                        EliteShips.HandleMassModuleStore(info);
+                                        Module.HandleMassModuleStore(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"Materials\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<MaterialsEvent.MaterialsEventArgs>(json);
+
+                                        Material.HandleMaterialsEvent(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"MaterialCollected\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<MaterialCollectedEvent.MaterialCollectedEventArgs>(json);
+
+                                        Material.HandleMaterialCollectedEvent(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"MaterialDiscarded\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<MaterialDiscardedEvent.MaterialDiscardedEventArgs>(json);
+
+                                        Material.HandleMaterialDiscardedEvent(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"ScientificResearch\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<ScientificResearchEvent.ScientificResearchEventArgs>(json);
+
+                                        Material.HandleScientificResearchEvent(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"MaterialTrade\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<MaterialTradeEvent.MaterialTradeEventArgs>(json);
+
+                                        Material.HandleMaterialTradedEvent(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"Synthesis\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<SynthesisEvent.SynthesisEventArgs>(json);
+                                        Material.HandleSynthesisedEvent(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"EngineerCraft\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<EngineerCraftEvent.EngineerCraftEventArgs>(json);
+
+                                        Material.HandleEngineerCraftEvent(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"TechnologyBroker\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<TechnologyBrokerEvent.TechnologyBrokerEventArgs>(json);
+
+                                        Material.HandleTechnologyBrokerEvent(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"MissionCompleted\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<MissionCompletedEvent.MissionCompletedEventArgs>(json);
+
+                                        Material.HandleMissionCompletedEvent(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"EngineerContribution\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<EngineerContributionEvent.EngineerContributionEventArgs>(json);
+
+                                        Material.HandleEngineerContributionEvent(info);
                                     }
 
                                 }

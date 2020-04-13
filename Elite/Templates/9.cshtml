@@ -1,0 +1,62 @@
+
+@using System
+@using System.Collections.Generic
+@using Elite
+@using System.Linq
+@{
+    Layout = "layout.cshtml";
+}
+
+<div class="main">
+
+    @if (Model.CurrentCard == 0)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <table class="">
+            <tbody>
+                @foreach (var m in Model.Raw)
+                {
+                    <tr>
+                        <td class="caption nowrap">@m.Value.Name</td>
+                        <td class="data right">@m.Value.Count</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 1)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <table>
+            <tbody>
+                @foreach (var m in Model.Manufactured)
+                {
+                    <tr>
+                        <td class="caption nowrap">@m.Value.Name</td>
+                        <td class="data right">@m.Value.Count</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentCard == 2)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <table>
+            <tbody>
+                @foreach (var m in Model.Encoded)
+                {
+                    <tr>
+                        <td class="caption nowrap">@m.Value.Name</td>
+                        <td class="data right">@m.Value.Count</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+</div>
