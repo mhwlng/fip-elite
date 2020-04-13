@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media.Imaging;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
@@ -144,6 +145,9 @@ namespace Elite
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
 
+            notifyIcon.IconSource = new BitmapImage(new Uri("pack://application:,,,/Elite;component/Hourglass.ico"));
+            notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel [WORKING]";
+
             var splashScreen = new SplashScreenWindow();
             splashScreen.Show();
 
@@ -229,6 +233,14 @@ namespace Elite
                     RefreshJson();
 
                     log.Info("json reloaded");
+
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        notifyIcon.IconSource =
+                            new BitmapImage(new Uri("pack://application:,,,/Elite;component/Elite.ico"));
+
+                        notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel";
+                    });
 
                 });
 

@@ -203,6 +203,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
+    <Resource Include="Hourglass.ico" />
     <Content Include="Templates\images\powers\Aisling Duval.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
