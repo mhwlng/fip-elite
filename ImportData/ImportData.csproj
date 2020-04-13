@@ -86,7 +86,7 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /E /Y "$(TargetDir)*.exe" "$(SolutionDir)Elite\$(OutDir)"
 xcopy /E /Y "$(TargetDir)*.exe.config" "$(SolutionDir)Elite\$(OutDir)"
-xcopy /E /Y "$(TargetDir)*.json" "$(SolutionDir)Elite\$(OutDir)"
+xcopy /E /Y "$(TargetDir)Data\*.json" "$(SolutionDir)Elite\$(OutDir)Data\"
 </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Fody.6.1.1\build\Fody.targets" Condition="Exists('..\packages\Fody.6.1.1\build\Fody.targets')" />

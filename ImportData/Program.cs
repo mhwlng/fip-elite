@@ -84,9 +84,10 @@ namespace ImportData
 
         public static void StationSerialize(List<StationEDSM> stations, string fileName)
         {
+            (new FileInfo(fileName)).Directory?.Create();
+
             JsonSerializer serializer = new JsonSerializer();
             serializer.NullValueHandling = NullValueHandling.Ignore;
-
 
             using (StreamWriter sw = new StreamWriter(fileName))
             using (JsonWriter writer = new JsonTextWriter(sw))
@@ -99,6 +100,8 @@ namespace ImportData
 
         public static string DownloadJson(string path, string url, ref bool wasUpdated)
         {
+            (new FileInfo(path)).Directory?.Create();
+
             if (File.Exists(path))
             {
                 var modification = File.GetLastWriteTime(path);
@@ -139,15 +142,15 @@ namespace ImportData
 
                 Console.WriteLine("downloading populated systems from EDDB");
 
-                var jsonPopulatedsystemsEDDBText = DownloadJson("populatedsystemsEDDB.json", "https://eddb.io/archive/v6/systems_populated.json", ref wasAnyUpdated);
+                var jsonPopulatedsystemsEDDBText = DownloadJson(@"Data\populatedsystemsEDDB.json", "https://eddb.io/archive/v6/systems_populated.json", ref wasAnyUpdated);
 
                 Console.WriteLine("downloading station list from EDSM");
 
-                var jsonStationsEDSMText = DownloadJson("stationsEDSM.json", "https://www.edsm.net/dump/stations.json.gz", ref wasAnyUpdated);
+                var jsonStationsEDSMText = DownloadJson(@"Data\stationsEDSM.json", "https://www.edsm.net/dump/stations.json.gz", ref wasAnyUpdated);
 
                 Console.WriteLine("downloading station list from EDDB");
 
-                var jsonStationsEDDBText = DownloadJson("stationsEDDB.json", "https://eddb.io/archive/v6/stations.json", ref wasAnyUpdated);
+                var jsonStationsEDDBText = DownloadJson(@"Data\stationsEDDB.json", "https://eddb.io/archive/v6/stations.json", ref wasAnyUpdated);
 
                 if (wasAnyUpdated)
                 {
@@ -194,7 +197,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(aislingDuval, "aislingduval.json");
+                    StationSerialize(aislingDuval, @"Data\aislingduval.json");
 
                     Console.WriteLine("finding Archon Delaine stations");
                     var archonDelaine = stationsEDSM
@@ -204,7 +207,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(archonDelaine, "archondelaine.json");
+                    StationSerialize(archonDelaine, @"Data\archondelaine.json");
 
                     Console.WriteLine("finding Arissa Lavigny-Duval stations");
                     var arissaLavignyDuval = stationsEDSM
@@ -214,7 +217,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(arissaLavignyDuval, "arissalavignyduval.json");
+                    StationSerialize(arissaLavignyDuval, @"Data\arissalavignyduval.json");
 
                     Console.WriteLine("finding Denton Patreus stations");
                     var dentonPatreus = stationsEDSM
@@ -224,7 +227,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(dentonPatreus, "dentonpatreus.json");
+                    StationSerialize(dentonPatreus, @"Data\dentonpatreus.json");
 
                     Console.WriteLine("finding Edmund Mahon stations");
                     var edmundMahon = stationsEDSM
@@ -234,7 +237,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(edmundMahon, "edmundmahon.json");
+                    StationSerialize(edmundMahon, @"Data\edmundmahon.json");
 
                     Console.WriteLine("finding Felicia Winters stations");
                     var feliciaWinters = stationsEDSM
@@ -244,7 +247,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(feliciaWinters, "feliciawinters.json");
+                    StationSerialize(feliciaWinters, @"Data\feliciawinters.json");
 
                     Console.WriteLine("finding Li Yong-Rui stations");
                     var liYongRui = stationsEDSM
@@ -254,7 +257,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(liYongRui, "liyongrui.json");
+                    StationSerialize(liYongRui, @"Data\liyongrui.json");
 
                     Console.WriteLine("finding Pranav Antal stations");
                     var pranavAntal = stationsEDSM
@@ -264,7 +267,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(pranavAntal, "pranavantal.json");
+                    StationSerialize(pranavAntal, @"Data\pranavantal.json");
 
                     Console.WriteLine("finding Yuri Grom stations");
                     var yuriGrom = stationsEDSM
@@ -274,7 +277,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(yuriGrom, "yurigrom.json");
+                    StationSerialize(yuriGrom, @"Data\yurigrom.json");
 
                     Console.WriteLine("finding Zachary Hudson stations");
                     var zacharyHudson = stationsEDSM
@@ -284,7 +287,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(zacharyHudson, "zacharyhudson.json");
+                    StationSerialize(zacharyHudson, @"Data\zacharyhudson.json");
 
                     Console.WriteLine("finding Zemina Torval stations");
                     var zeminaTorval = stationsEDSM
@@ -294,7 +297,7 @@ namespace ImportData
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
                             x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                             x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-                    StationSerialize(zeminaTorval, "zeminatorval.json");
+                    StationSerialize(zeminaTorval, @"Data\zeminatorval.json");
 
                     //----------------
 
@@ -306,7 +309,7 @@ namespace ImportData
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
 
-                    StationSerialize(interStellarFactors, "interstellarfactors.json");
+                    StationSerialize(interStellarFactors, @"Data\interstellarfactors.json");
 
                     Console.WriteLine("finding raw material traders");
 
@@ -320,7 +323,7 @@ namespace ImportData
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
 
-                    StationSerialize(rawMaterialTraders, "rawmaterialtraders.json");
+                    StationSerialize(rawMaterialTraders, @"Data\rawmaterialtraders.json");
 
                     Console.WriteLine("finding manufactured material traders");
 
@@ -334,7 +337,7 @@ namespace ImportData
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
 
-                    StationSerialize(manufacturedMaterialTraders, "manufacturedmaterialtraders.json");
+                    StationSerialize(manufacturedMaterialTraders, @"Data\manufacturedmaterialtraders.json");
 
                     Console.WriteLine("finding encoded data traders");
 
@@ -348,7 +351,7 @@ namespace ImportData
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
 
-                    StationSerialize(encodedDataTraders, "encodeddatatraders.json");
+                    StationSerialize(encodedDataTraders, @"Data\encodeddatatraders.json");
 
                     Console.WriteLine("finding human technology brokers");
 
@@ -362,7 +365,7 @@ namespace ImportData
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
 
-                    StationSerialize(humanTechnologyBrokers, "humantechnologybrokers.json");
+                    StationSerialize(humanTechnologyBrokers, @"Data\humantechnologybrokers.json");
 
                     Console.WriteLine("finding guardian technology brokers");
 
@@ -376,7 +379,7 @@ namespace ImportData
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
 
-                    StationSerialize(guardianTechnologyBrokers, "guardiantechnologybrokers.json");
+                    StationSerialize(guardianTechnologyBrokers, @"Data\guardiantechnologybrokers.json");
 
                 }
             }
