@@ -51,7 +51,7 @@
                     </tr>
                     <tr>
                         <td class="caption">Fuel Level</td>
-                        <td class="data">@Model.FuelPercent %</td>
+                        <td class="data">@Model.CurrentShip.FuelPercent %</td>
                     </tr>
                 }
                 @if (Model.CurrentShip.HullHealth >= 0 && Model.CurrentShip.HullHealth < 100)
@@ -75,26 +75,25 @@
                         <td class="data alarm">NONE</td>
                     </tr>
                 }
-
                 @if (Model.CurrentShip.UnladenMass > 0)
                 {
                     <tr>
                         <td class="caption">Mass</td>
-                        <td class="data">@Model.CurrentShip.UnladenMass.ToString("N0") T</td>
+                        <td class="data">@((Model.CurrentShip.UnladenMass + Model.CurrentShip.CurrentFuelMain + Model.CurrentShip.CurrentCargo).ToString("N1")) T</td>
                     </tr>
                 }
                 @if (Model.CurrentShip.MaxJumpRange > 0)
                 {
                     <tr>
-                        <td class="caption">Jump Range</td>
+                        <td class="caption">Max Jump Rng</td>
                         <td class="data">@Model.CurrentShip.MaxJumpRange.ToString("N1") LY</td>
                     </tr>
                 }
-                @if (Model.LastJump > 0)
+                @if (Model.CurrentShip.JumpRange > 0)
                 {
                     <tr>
-                        <td class="caption">Last Jump</td>
-                        <td class="data">@Model.LastJump.ToString("N1") LY</td>
+                        <td class="caption">Jump Range</td>
+                        <td class="data">@Model.CurrentShip.JumpRange.ToString("N1") LY</td>
                     </tr>
                 }
 
@@ -153,7 +152,7 @@
                     {
                         <tr>
                             <td class="caption">@ml.Key</td>
-                        <td class="data">@Raw(EliteShips.GetPlacement(ml.Key, ml.Value))</td>
+                            <td class="data">@Raw(EliteShips.GetPlacement(ml.Key, ml.Value))</td>
                         </tr>
                     }
                 }
@@ -262,18 +261,17 @@
                     @if (m.UnladenMass > 0)
                     {
                         <tr>
-                            <td class="caption">Mass</td>
-                            <td class="data">@m.UnladenMass.ToString("N0") T</td>
+                            <td class="caption">Unladen Mass</td>
+                            <td class="data">@m.UnladenMass.ToString("N1") T</td>
                         </tr>
                     }
                     @if (m.MaxJumpRange > 0)
                     {
                         <tr>
-                            <td class="caption">Jump Range</td>
+                            <td class="caption">Max Jump Rng</td>
                             <td class="data">@m.MaxJumpRange.ToString("N1") LY</td>
                         </tr>
                     }
-
                     @if (!string.IsNullOrEmpty(m.Bulkhead))
                     {
                         <tr>

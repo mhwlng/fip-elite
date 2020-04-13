@@ -728,20 +728,6 @@ namespace Elite
                                             CurrentPage = _currentPage,
                                             CurrentCard = _currentCard[(int)_currentTab],
 
-                                            LastJump = EliteData.StatusData.JumpRange,
-
-                                            Docked = EliteData.StatusData.Docked,
-
-                                            FuelMain = EliteData.StatusData.Fuel.FuelMain,
-
-                                            FuelReservoir = EliteData.StatusData.Fuel.FuelReservoir,
-
-                                            Cargo = EliteData.StatusData.Cargo,
-
-                                            FuelPercent = shipData.FuelCapacity > 0 ?
-                                                Convert.ToInt32(100 / shipData.FuelCapacity *
-                                                                EliteData.StatusData.Fuel.FuelMain) : 0,
-
                                             CurrentShip = EliteShips.ShipsList.FirstOrDefault(x => x.Stored == false),
 
                                             StoredShips = EliteShips.ShipsList.Where(x => x.Stored == true).OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()

@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Animation;
+using EliteJournalReader;
 using EliteJournalReader.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,6 +22,43 @@ namespace Elite
 {
     public static class EliteShips
     {
+        // Frame Shift Drive Constants
+        public static Dictionary<string, double> BaseOptimalMass = new Dictionary<string, double>()
+        {
+            {"2E", 48.0}, {"2D", 54.0}, {"2C", 60.0}, {"2B", 75.0}, {"2A", 90.0},
+            {"3E", 80.0}, {"3D", 90.0}, {"3C", 100.0}, {"3B", 125.0}, {"3A", 150.0},
+            {"4E", 280.0}, {"4D", 315.0}, {"4C", 350.0}, {"4B", 438.0}, {"4A", 525.0},
+            {"5E", 560.0}, {"5D", 630.0}, {"5C", 700.0}, {"5B", 875.0}, {"5A", 1050.0},
+            {"6E", 960.0}, {"6D", 1080.0}, {"6C", 1200.0}, {"6B", 1500.0}, {"6A", 1800.0},
+            {"7E", 1440.0}, {"7D", 1620.0}, {"7C", 1800.0}, {"7B", 2250.0}, {"7A", 2700.0}
+        };
+
+        public static Dictionary<string, double> BaseMaxFuelPerJump = new Dictionary<string, double>()
+        {
+            {"2E", 0.60}, {"2D", 0.60}, {"2C", 0.60}, {"2B", 0.80}, {"2A", 0.90},
+            {"3E", 1.20}, {"3D", 1.20}, {"3C", 1.20}, {"3B", 1.50}, {"3A", 1.80},
+            {"4E", 2.00}, {"4D", 2.00}, {"4C", 2.00}, {"4B", 2.50}, {"4A", 3.00},
+            {"5E", 3.30}, {"5D", 3.30}, {"5C", 3.30}, {"5B", 4.10}, {"5A", 5.00},
+            {"6E", 5.30}, {"6D", 5.30}, {"6C", 5.30}, {"6B", 6.60}, {"6A", 8.00},
+            {"7E", 8.50}, {"7D", 8.50}, {"7C", 8.50}, {"7B", 10.60}, {"7A", 12.80}
+        };
+
+
+        public static Dictionary<int, double> GuardianBoostFSD = new Dictionary<int, double>()
+        {
+            {1, 4.00}, {2, 6.00}, {3, 7.75}, {4, 9.25}, {5, 10.50}
+        };
+
+        public static Dictionary<string, double> RatingConstantFSD = new Dictionary<string, double>()
+        {
+            {"A", 12.0}, {"B", 10.0}, {"C", 8.0}, {"D", 10.0}, {"E", 11.0}
+        };
+
+        public static Dictionary<int, double> PowerConstantFSD = new Dictionary<int, double>()
+        {
+            {2, 2.00}, {3, 2.15}, {4, 2.30}, {5, 2.45}, {6, 2.60}, {7, 2.75}, {8, 2.90}
+        };
+        
         public static readonly Dictionary<string, string> ShipsByEliteID = new Dictionary<string, string>
         {
             {"sidewinder", "Sidewinder"},
@@ -188,11 +226,11 @@ namespace Elite
             {
                 get
                 {
-                    ShipsByEliteID.TryGetValue(this.ShipType.ToLower(), out var shipTypeFull);
-                    return shipTypeFull?.Trim() ?? this.ShipType?.Trim();
+                    ShipsByEliteID.TryGetValue(ShipType.ToLower(), out var shipTypeFull);
+                    return shipTypeFull?.Trim() ?? ShipType?.Trim();
                 }
             }
-            public string ShipImage => this.ShipTypeFull?.Trim() + ".png";
+            public string ShipImage => ShipTypeFull?.Trim() + ".png";
 
             public string Name { get; set; } = "";
 
@@ -221,6 +259,11 @@ namespace Elite
             public string ShieldGenerator { get; set; }
 
             public string FrameShiftDrive { get; set; }
+            public double OptimalMass { get; set; }
+            public double BoostConstant { get; set; }
+            public double RatingConstant { get; set; }
+            public double PowerConstant { get; set; }
+            public double MaxFuelPerJump { get; set; }
             public string GuardianFSDBooster { get; set; }
 
             public int EconomyClassPassengerCabinCapacity { get; set; }
@@ -232,32 +275,60 @@ namespace Elite
                 get
                 {
                     var c = new List<string>();
-                    if (this.EconomyClassPassengerCabinCapacity > 0)
+                    if (EconomyClassPassengerCabinCapacity > 0)
                     {
-                        c.Add("E=" + this.EconomyClassPassengerCabinCapacity);
+                        c.Add("E=" + EconomyClassPassengerCabinCapacity);
                     }
 
-                    if (this.BusinessClassPassengerCabinCapacity > 0)
+                    if (BusinessClassPassengerCabinCapacity > 0)
                     {
-                        c.Add("B=" + this.BusinessClassPassengerCabinCapacity);
+                        c.Add("B=" + BusinessClassPassengerCabinCapacity);
                     }
 
-                    if (this.FirstClassPassengerCabinCapacity > 0)
+                    if (FirstClassPassengerCabinCapacity > 0)
                     {
-                        c.Add("F=" + this.FirstClassPassengerCabinCapacity);
+                        c.Add("F=" + FirstClassPassengerCabinCapacity);
                     }
 
-                    if (this.LuxuryClassPassengerCabinCapacity > 0)
+                    if (LuxuryClassPassengerCabinCapacity > 0)
                     {
-                        c.Add("L=" + this.LuxuryClassPassengerCabinCapacity);
+                        c.Add("L=" + LuxuryClassPassengerCabinCapacity);
                     }
 
                     return string.Join("+", c);
                 }
             }
-
             public Dictionary<string, List<string>> ModuleList { get; set; } = new Dictionary<string, List<string>>();
 
+
+            //---------------------------------------------------------
+
+            public double CurrentFuelMain { get; set; } // filled from StatusData, only valid for current ship, not for stored ships !
+            public double CurrentFuelReservoir { get; set; } // filled from StatusData, only valid for current ship, not for stored ships !
+            public double CurrentCargo { get; set; } // filled from StatusData, only valid for current ship, not for stored ships !
+
+            public double JumpRange {
+                get
+                {
+                    // Thanks to https://github.com/EDCD/EDDI for the formula
+
+                    if (CurrentFuelMain > 0 && UnladenMass > 0 && RatingConstant > 0 && PowerConstant > 0)
+                    {
+                        var massRatio = OptimalMass / (UnladenMass + CurrentFuelMain + CurrentCargo);
+
+                        var fuel = Math.Min(CurrentFuelMain, MaxFuelPerJump);
+
+                        return (massRatio * Math.Pow((double) (1000.0 * fuel / RatingConstant),
+                            (double) (1.0 / PowerConstant))) + BoostConstant;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+
+            public double FuelPercent => FuelCapacity > 0 ? Convert.ToInt32(100.0 / FuelCapacity * CurrentFuelMain) : 0;
         }
 
         public static List<ShipData> ShipsList = new List<ShipData>();
@@ -849,7 +920,7 @@ namespace Elite
             }
         }
 
-        public static void HandleModules(ShipData ship, string item, bool remove)
+        public static void HandleModules(ShipData ship, Module module, string item, bool remove)
         {
             if (remove)
             {
@@ -954,6 +1025,10 @@ namespace Elite
                 ship.ShieldGenerator = null;
 
                 ship.FrameShiftDrive = null;
+                ship.OptimalMass = 0;
+                ship.BoostConstant = 0;
+                ship.RatingConstant = 0;
+                ship.PowerConstant = 0;
                 ship.GuardianFSDBooster = null;
 
 
@@ -965,7 +1040,61 @@ namespace Elite
 
                     foreach (var m in info.Modules)
                     {
-                        HandleModules(ship, m.Item, false);
+                        HandleModules(ship, m, m.Item, false);
+
+                        if (m.Item.Contains("_hyperdrive_"))
+                        {
+                            var size = GetModuleSize(m.Item);
+                            var cl = GetModuleClass(m.Item);
+
+                            RatingConstantFSD.TryGetValue(cl, out var ratingConstant);
+                            if (ratingConstant > 0)
+                            {
+                                ship.RatingConstant = ratingConstant;
+                            }
+
+                            PowerConstantFSD.TryGetValue(size, out var powerConstant);
+                            if (powerConstant > 0)
+                            {
+                                ship.PowerConstant = powerConstant;
+                            }
+
+                            BaseMaxFuelPerJump.TryGetValue(size.ToString() + cl, out var maxFuelPerJump);
+                            if (maxFuelPerJump > 0)
+                            {
+                                ship.MaxFuelPerJump = maxFuelPerJump;
+                            }
+
+                            BaseOptimalMass.TryGetValue(size.ToString() + cl, out var optimalMass);
+
+                            if (m.Engineering?.Modifiers != null)
+                            {
+                                var mod = m.Engineering.Modifiers.Where(x =>
+                                    x.Label == ModuleAttribute.FSDOptimalMass).ToList();
+
+                                if (mod.Any() == true)
+                                {
+                                    optimalMass = mod.FirstOrDefault().Value;
+                                }
+                            }
+
+                            if (optimalMass > 0)
+                            {
+                                ship.OptimalMass = optimalMass;
+                            }
+                        } 
+                        else  if (m.Item.Contains("_guardianfsdbooster_"))
+                        {
+                            var moduleSize = Convert.ToInt32(GetModuleSize(m.Item));
+
+                            GuardianBoostFSD.TryGetValue(moduleSize, out var boostConstant);
+
+                            if (boostConstant > 0)
+                            {
+                                ship.BoostConstant = boostConstant;
+                            }
+                        }
+
                     }
                 }
 
@@ -979,7 +1108,7 @@ namespace Elite
 
             if (ship != null)
             {
-                HandleModules(ship, info.RetrievedItem, false);
+                HandleModules(ship, null, info.RetrievedItem, false);
             }
         }
 
@@ -989,9 +1118,9 @@ namespace Elite
 
             if (ship != null)
             {
-                HandleModules(ship, info.SellItem, true);
+                HandleModules(ship, null, info.SellItem, true);
 
-                HandleModules(ship, info.BuyItem, false);
+                HandleModules(ship, null, info.BuyItem, false);
             }
         }
 
@@ -1001,9 +1130,9 @@ namespace Elite
 
             if (ship != null)
             {
-                HandleModules(ship, info.FromItem, true);
+                HandleModules(ship, null, info.FromItem, true);
 
-                HandleModules(ship, info.ToItem, false);
+                HandleModules(ship, null, info.ToItem, false);
             }
         }
 
@@ -1013,7 +1142,7 @@ namespace Elite
 
             if (ship != null)
             {
-                HandleModules(ship, info.SellItem, true);
+                HandleModules(ship, null, info.SellItem, true);
             }
         }
 
@@ -1023,7 +1152,7 @@ namespace Elite
 
             if (ship != null)
             {
-                HandleModules(ship, info.SellItem, true);
+                HandleModules(ship, null, info.SellItem, true);
             }
         }
 
@@ -1033,7 +1162,7 @@ namespace Elite
 
             if (ship != null)
             {
-                HandleModules(ship, info.StoredItem, true);
+                HandleModules(ship, null, info.StoredItem, true);
             }
         }
 
@@ -1045,7 +1174,7 @@ namespace Elite
             {
                 foreach (var i in info.Items)
                 {
-                    HandleModules(ship, i.Name, true);
+                    HandleModules(ship, null, i.Name, true);
                 }
             }
         }

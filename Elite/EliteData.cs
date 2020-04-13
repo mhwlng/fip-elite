@@ -444,6 +444,15 @@ namespace Elite
             StatusData.BodyName = evt.BodyName;
             StatusData.PlanetRadius = evt.PlanetRadius;
 
+
+            var shipData = EliteShips.GetCurrentShip();
+            if (shipData != null)
+            {
+                shipData.CurrentFuelMain = evt.Fuel?.FuelMain ?? 0;
+                shipData.CurrentFuelReservoir = evt.Fuel?.FuelReservoir ?? 0;
+                shipData.CurrentCargo = evt.Cargo;
+            }
+
             App.fipHandler.RefreshDevicePages();
         }
 
