@@ -9,7 +9,7 @@ The menu area and each screen can be configured via razor (.cshtml) web page tem
 
 Use the right rotary encoder to scroll vertically on all tabs.
 
-Use the left rotary encoder to show another card on the POI or SHIP tab or zoom into the galaxy map.
+Use the left rotary encoder to show another card on various tabs or zoom into the galaxy map.
 
 Use the up/down arrow buttons to switch pages.
 
