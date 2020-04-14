@@ -166,7 +166,7 @@ namespace Elite
             public double CurrentFuelReservoir { get; set; } // filled from StatusData, only valid for current ship, not for stored ships !
             public double CurrentCargo { get; set; } // filled from StatusData, only valid for current ship, not for stored ships !
 
-            public double JumpRange {
+            public double CurrentJumpRange {
                 get
                 {
                     // Thanks to https://github.com/EDCD/EDDI for the formula

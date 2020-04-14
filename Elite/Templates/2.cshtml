@@ -65,7 +65,7 @@
                 {
                     <tr>
                         <td class="caption">Cargo</td>
-                        <td class="data">@Model.CurrentShip.Cargo of @Model.CurrentShip.CargoCapacity T</td>
+                        <td class="data">@Model.CurrentShip.CurrentCargo of @Model.CurrentShip.CargoCapacity T</td>
                     </tr>
                 }
                 else
@@ -89,11 +89,11 @@
                         <td class="data">@Model.CurrentShip.MaxJumpRange.ToString("N1") LY</td>
                     </tr>
                 }
-                @if (Model.CurrentShip.JumpRange > 0)
+                @if (Model.CurrentShip.CurrentJumpRange > 0)
                 {
                     <tr>
                         <td class="caption">Jump Range</td>
-                        <td class="data">@Model.CurrentShip.JumpRange.ToString("N1") LY</td>
+                        <td class="data">@Model.CurrentShip.CurrentJumpRange.ToString("N1") LY</td>
                     </tr>
                 }
 
