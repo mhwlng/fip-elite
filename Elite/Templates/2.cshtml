@@ -61,7 +61,7 @@
                         <td class="data alarm">@Model.CurrentShip.HullHealth.ToString("N0") %</td>
                     </tr>
                 }
-                @if (Model.CurrentShip.CargoCapacity > 0 && Model.CurrentShip.CargoCapacity >= Model.CurrentShip.Cargo)
+                @if (Model.CurrentShip.CargoCapacity > 0 && Model.CurrentShip.CargoCapacity >= Model.CurrentShip.CurrentCargo)
                 {
                     <tr>
                         <td class="caption">Cargo</td>

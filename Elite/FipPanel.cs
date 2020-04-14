@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -668,326 +669,343 @@ namespace Elite
 
                         if (mustRender)
                         {
-
-                            switch (_currentTab)
+                            try
                             {
-                                //----------------------
 
-                                case LCDTab.None:
 
-                                    str =
-                                        Engine.Razor.Run("init.cshtml", null, new
-                                        {
-                                            CurrentTab = (int) _currentTab,
-                                            CurrentPage = _currentPage
+                                switch (_currentTab)
+                                {
+                                    //----------------------
 
-                                        });
+                                    case LCDTab.None:
 
-                                    break;
-
-                                case LCDTab.Commander:
-
-                                    str =
-                                        Engine.Razor.Run("1.cshtml", null, new
-                                        {
-                                            CurrentTab = (int) _currentTab,
-                                            CurrentPage = _currentPage,
-
-                                            LegalState = Data.StatusData.LegalState,
-
-                                            Commander = Data.CommanderData.Name,
-
-                                            Credits = Data.CommanderData.Credits,
-
-                                            FederationRank = Data.CommanderData.FederationRank,
-                                            FederationRankProgress = Data.CommanderData.FederationRankProgress,
-
-                                            EmpireRank = Data.CommanderData.EmpireRank,
-                                            EmpireRankProgress = Data.CommanderData.EmpireRankProgress,
-
-                                            CombatRank = Data.CommanderData.CombatRank,
-                                            CombatRankProgress = Data.CommanderData.CombatRankProgress,
-
-                                            TradeRank = Data.CommanderData.TradeRank,
-                                            TradeRankProgress = Data.CommanderData.TradeRankProgress,
-
-                                            ExplorationRank = Data.CommanderData.ExplorationRank,
-                                            ExplorationRankProgress = Data.CommanderData.ExplorationRankProgress,
-
-                                            CqcRank = Data.CommanderData.CqcRank,
-
-                                            CqcRankProgress = Data.CommanderData.CqcRankProgress,
-
-                                            FederationReputation = Data.CommanderData.FederationReputation,
-                                            AllianceReputation = Data.CommanderData.AllianceReputation,
-                                            EmpireReputation = Data.CommanderData.EmpireReputation,
-
-                                            FederationReputationState = Data.CommanderData.FederationReputationState,
-                                            AllianceReputationState = Data.CommanderData.AllianceReputationState,
-                                            EmpireReputationState = Data.CommanderData.EmpireReputationState
-
-                                        });
-
-                                
-
-                                    break;
-
-                                case LCDTab.Ship:
-
-                                    var shipData = Ships.GetCurrentShip() ?? new Ships.ShipData();
-
-                                    str =
-                                        Engine.Razor.Run("2.cshtml", null, new
-                                        {
-                                            CurrentTab = (int) _currentTab,
-                                            CurrentPage = _currentPage,
-                                            CurrentCard = _currentCard[(int)_currentTab],
-
-                                            CurrentShip = Ships.ShipsList.FirstOrDefault(x => x.Stored == false),
-
-                                            StoredShips = Ships.ShipsList.Where(x => x.Stored == true).OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
-
-                                        });
-                                    
-                                    break;
-                                    
-                                case LCDTab.Navigation:
-
-                                    str =
-                                        Engine.Razor.Run("3.cshtml", null, new
-                                        {
-                                            CurrentTab = (int) _currentTab,
-                                            CurrentPage = _currentPage,
-
-                                            StarSystem = Data.LocationData.StarSystem,
-
-                                            Body = !string.IsNullOrEmpty(Data.LocationData.BodyType) &&
-                                                   !string.IsNullOrEmpty(Data.LocationData.Body)
-                                                ? Data.LocationData.Body
-                                                : null,
-
-                                            //"Station""Star""Planet""PlanetaryRing""StellarRing""AsteroidCluster"
-
-                                            BodyType = Data.LocationData.BodyType,
-
-                                            Station = Data.LocationData.BodyType == "Station" &&
-                                                      !string.IsNullOrEmpty(Data.LocationData.Body)
-                                                ? Data.LocationData.Body
-                                                : Data.LocationData.Station,
-
-                                            Docked = Data.StatusData.Docked,
-
-                                            LandingPad = Data.DockData.LandingPad,
-
-                                            StationType = Data.DockData.Type,
-
-                                            Government = Data.DockData.Government,
-
-                                            Allegiance = Data.DockData.Allegiance,
-
-                                            Faction = Data.DockData.Faction,
-
-                                            Economy = Data.DockData.Economy,
-
-                                            DistFromStarLs = Data.DockData.DistFromStarLs,
-
-                                            StartJump = Data.LocationData.StartJump,
-
-                                            JumpType = Data.LocationData.JumpType,
-
-                                            JumpToSystem = Data.LocationData.JumpToSystem,
-
-                                            JumpToStarClass = Data.LocationData.JumpToStarClass,
-
-                                            RemainingJumpsInRoute = Data.LocationData.RemainingJumpsInRoute,
-
-                                            FsdTargetName = Data.LocationData.FsdTargetName,
-
-                                            Settlement = Data.LocationData.Settlement,
-
-                                            HideBody = Data.LocationData.HideBody,
-
-                                            SystemAllegiance = Data.LocationData.SystemAllegiance,
-
-                                            SystemFaction = Data.LocationData.SystemFaction,
-
-                                            SystemSecurity = Data.LocationData.SystemSecurity,
-
-                                            SystemEconomy = Data.LocationData.SystemEconomy,
-
-                                            SystemGovernment = Data.LocationData.SystemGovernment,
-
-                                            Population = Data.LocationData.Population,
-
-                                            PowerplayState = Data.LocationData.PowerplayState,
-                                            Powers = Data.LocationData.Powers
-
-
-                                        });
-
-                                    break;
-                                    
-                                case LCDTab.Target:
-
-                                    str =
-                                        Engine.Razor.Run("4.cshtml", null, new
-                                        {
-                                            CurrentTab = (int) _currentTab,
-                                            CurrentPage = _currentPage,
-
-                                            TargetLocked = Data.TargetData.TargetLocked,
-                                            ScanStage = Data.TargetData.ScanStage,
-
-                                            Bounty = Data.TargetData.Bounty,
-                                            Faction = Data.TargetData.Faction,
-                                            LegalStatus = Data.TargetData.LegalStatus,
-                                            PilotNameLocalised = Data.TargetData.PilotNameLocalised,
-                                            PilotRank = Data.TargetData.PilotRank,
-
-                                            Power = Data.TargetData.Power,
-
-                                            Ship = Data.TargetData.Ship?.Trim(),
-
-                                            ShipImage = Data.TargetData.Ship?.Trim() + ".png",
-
-                                            SubsystemLocalised = Data.TargetData.SubsystemLocalised,
-
-                                            SubsystemHealth = Data.TargetData.SubsystemHealth,
-                                            HullHealth = Data.TargetData.HullHealth,
-                                            ShieldHealth = Data.TargetData.ShieldHealth,
-
-                                        });
-
-                                    break;
-                                    
-                                case LCDTab.Missions:
-
-                                    str =
-                                        Engine.Razor.Run("5.cshtml", null, new
-                                        {
-                                            CurrentTab = (int) _currentTab,
-                                            CurrentPage = _currentPage,
-
-                                            MissionData = Data.MissionData
-                                        });
-
-                                    break;
-                                    
-                                case LCDTab.POI:
-
-                                    lock (App.RefreshJsonLock)
-                                    {
                                         str =
-                                            Engine.Razor.Run("6.cshtml", null, new
+                                            Engine.Razor.Run("init.cshtml", null, new
+                                            {
+                                                CurrentTab = (int) _currentTab,
+                                                CurrentPage = _currentPage
+
+                                            });
+
+                                        break;
+
+                                    case LCDTab.Commander:
+
+                                        str =
+                                            Engine.Razor.Run("1.cshtml", null, new
+                                            {
+                                                CurrentTab = (int) _currentTab,
+                                                CurrentPage = _currentPage,
+
+                                                LegalState = Data.StatusData.LegalState,
+
+                                                Commander = Data.CommanderData.Name,
+
+                                                Credits = Data.CommanderData.Credits,
+
+                                                FederationRank = Data.CommanderData.FederationRank,
+                                                FederationRankProgress = Data.CommanderData.FederationRankProgress,
+
+                                                EmpireRank = Data.CommanderData.EmpireRank,
+                                                EmpireRankProgress = Data.CommanderData.EmpireRankProgress,
+
+                                                CombatRank = Data.CommanderData.CombatRank,
+                                                CombatRankProgress = Data.CommanderData.CombatRankProgress,
+
+                                                TradeRank = Data.CommanderData.TradeRank,
+                                                TradeRankProgress = Data.CommanderData.TradeRankProgress,
+
+                                                ExplorationRank = Data.CommanderData.ExplorationRank,
+                                                ExplorationRankProgress = Data.CommanderData.ExplorationRankProgress,
+
+                                                CqcRank = Data.CommanderData.CqcRank,
+
+                                                CqcRankProgress = Data.CommanderData.CqcRankProgress,
+
+                                                FederationReputation = Data.CommanderData.FederationReputation,
+                                                AllianceReputation = Data.CommanderData.AllianceReputation,
+                                                EmpireReputation = Data.CommanderData.EmpireReputation,
+
+                                                FederationReputationState =
+                                                    Data.CommanderData.FederationReputationState,
+                                                AllianceReputationState = Data.CommanderData.AllianceReputationState,
+                                                EmpireReputationState = Data.CommanderData.EmpireReputationState
+
+                                            });
+
+
+
+                                        break;
+
+                                    case LCDTab.Ship:
+
+                                        var shipData = Ships.GetCurrentShip() ?? new Ships.ShipData();
+
+                                        str =
+                                            Engine.Razor.Run("2.cshtml", null, new
+                                            {
+                                                CurrentTab = (int) _currentTab,
+                                                CurrentPage = _currentPage,
+                                                CurrentCard = _currentCard[(int) _currentTab],
+
+                                                CurrentShip = Ships.ShipsList.FirstOrDefault(x => x.Stored == false),
+
+                                                StoredShips = Ships.ShipsList.Where(x => x.Stored == true)
+                                                    .OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
+
+                                            });
+
+                                        break;
+
+                                    case LCDTab.Navigation:
+
+                                        str =
+                                            Engine.Razor.Run("3.cshtml", null, new
+                                            {
+                                                CurrentTab = (int) _currentTab,
+                                                CurrentPage = _currentPage,
+
+                                                StarSystem = Data.LocationData.StarSystem,
+
+                                                Body = !string.IsNullOrEmpty(Data.LocationData.BodyType) &&
+                                                       !string.IsNullOrEmpty(Data.LocationData.Body)
+                                                    ? Data.LocationData.Body
+                                                    : null,
+
+                                                //"Station""Star""Planet""PlanetaryRing""StellarRing""AsteroidCluster"
+
+                                                BodyType = Data.LocationData.BodyType,
+
+                                                Station = Data.LocationData.BodyType == "Station" &&
+                                                          !string.IsNullOrEmpty(Data.LocationData.Body)
+                                                    ? Data.LocationData.Body
+                                                    : Data.LocationData.Station,
+
+                                                Docked = Data.StatusData.Docked,
+
+                                                LandingPad = Data.DockData.LandingPad,
+
+                                                StationType = Data.DockData.Type,
+
+                                                Government = Data.DockData.Government,
+
+                                                Allegiance = Data.DockData.Allegiance,
+
+                                                Faction = Data.DockData.Faction,
+
+                                                Economy = Data.DockData.Economy,
+
+                                                DistFromStarLs = Data.DockData.DistFromStarLs,
+
+                                                StartJump = Data.LocationData.StartJump,
+
+                                                JumpType = Data.LocationData.JumpType,
+
+                                                JumpToSystem = Data.LocationData.JumpToSystem,
+
+                                                JumpToStarClass = Data.LocationData.JumpToStarClass,
+
+                                                RemainingJumpsInRoute = Data.LocationData.RemainingJumpsInRoute,
+
+                                                FsdTargetName = Data.LocationData.FsdTargetName,
+
+                                                Settlement = Data.LocationData.Settlement,
+
+                                                HideBody = Data.LocationData.HideBody,
+
+                                                SystemAllegiance = Data.LocationData.SystemAllegiance,
+
+                                                SystemFaction = Data.LocationData.SystemFaction,
+
+                                                SystemSecurity = Data.LocationData.SystemSecurity,
+
+                                                SystemEconomy = Data.LocationData.SystemEconomy,
+
+                                                SystemGovernment = Data.LocationData.SystemGovernment,
+
+                                                Population = Data.LocationData.Population,
+
+                                                PowerplayState = Data.LocationData.PowerplayState,
+                                                Powers = Data.LocationData.Powers
+
+
+                                            });
+
+                                        break;
+
+                                    case LCDTab.Target:
+
+                                        str =
+                                            Engine.Razor.Run("4.cshtml", null, new
+                                            {
+                                                CurrentTab = (int) _currentTab,
+                                                CurrentPage = _currentPage,
+
+                                                TargetLocked = Data.TargetData.TargetLocked,
+                                                ScanStage = Data.TargetData.ScanStage,
+
+                                                Bounty = Data.TargetData.Bounty,
+                                                Faction = Data.TargetData.Faction,
+                                                LegalStatus = Data.TargetData.LegalStatus,
+                                                PilotNameLocalised = Data.TargetData.PilotNameLocalised,
+                                                PilotRank = Data.TargetData.PilotRank,
+
+                                                Power = Data.TargetData.Power,
+
+                                                Ship = Data.TargetData.Ship?.Trim(),
+
+                                                ShipImage = Data.TargetData.Ship?.Trim() + ".png",
+
+                                                SubsystemLocalised = Data.TargetData.SubsystemLocalised,
+
+                                                SubsystemHealth = Data.TargetData.SubsystemHealth,
+                                                HullHealth = Data.TargetData.HullHealth,
+                                                ShieldHealth = Data.TargetData.ShieldHealth,
+
+                                            });
+
+                                        break;
+
+                                    case LCDTab.Missions:
+
+                                        str =
+                                            Engine.Razor.Run("5.cshtml", null, new
+                                            {
+                                                CurrentTab = (int) _currentTab,
+                                                CurrentPage = _currentPage,
+
+                                                MissionData = Data.MissionData
+                                            });
+
+                                        break;
+
+                                    case LCDTab.POI:
+
+                                        lock (App.RefreshJsonLock)
+                                        {
+                                            str =
+                                                Engine.Razor.Run("6.cshtml", null, new
+                                                {
+                                                    CurrentTab = (int) _currentTab,
+                                                    CurrentPage = _currentPage,
+
+                                                    CurrentCard = _currentCard[(int) _currentTab],
+
+                                                    CurrentPois = Poi.PoiList, // 0
+
+                                                    CurrentInterStellarFactors = Data.InterStellarFactors, // 1
+                                                    CurrentRawMaterialTraders = Data.RawMaterialTraders, // 2
+                                                    CurrentManufacturedMaterialTraders =
+                                                        Data.ManufacturedMaterialTraders, // 3
+                                                    CurrentEncodedDataTraders = Data.EncodedDataTraders, // 4
+                                                    CurrentHumanTechnologyBrokers =
+                                                        Data.HumanTechnologyBrokers, // 5
+                                                    CurrentGuardianTechnologyBrokers =
+                                                        Data.GuardianTechnologyBrokers // 6
+
+                                                });
+                                        }
+
+                                        break;
+
+                                    //----------------------
+
+                                    case LCDTab.Map:
+
+
+                                        str =
+                                            Engine.Razor.Run("7.cshtml", null, new
+                                            {
+                                                CurrentTab = (int) _currentTab,
+                                                CurrentPage = _currentPage,
+
+                                                _currentZoomLevel = _currentZoomLevel[(int) _currentTab],
+
+
+                                            });
+
+                                        break;
+
+
+                                    case LCDTab.Powers:
+
+                                        lock (App.RefreshJsonLock)
+                                        {
+                                            str =
+                                                Engine.Razor.Run("8.cshtml", null, new
+                                                {
+                                                    CurrentTab = (int) _currentTab,
+                                                    CurrentPage = _currentPage,
+
+                                                    CurrentCard = _currentCard[(int) _currentTab],
+
+                                                    CurrentAislingDuval = Data.AislingDuval, // 0
+                                                    CurrentArchonDelaine = Data.ArchonDelaine, // 1
+                                                    CurrentArissaLavignyDuval = Data.ArissaLavignyDuval, // 2
+                                                    CurrentDentonPatreus = Data.DentonPatreus, // 3
+                                                    CurrentEdmundMahon = Data.EdmundMahon, // 4
+                                                    CurrentFeliciaWinters = Data.FeliciaWinters, // 5
+                                                    CurrentLiYongRui = Data.LiYongRui, // 6
+                                                    CurrentPranavAntal = Data.PranavAntal, // 7
+                                                    CurrentYuriGrom = Data.YuriGrom, // 8
+                                                    CurrentZacharyHudson = Data.ZacharyHudson, // 9
+                                                    CurrentZeminaTorval = Data.ZeminaTorval, // 10
+
+                                                });
+                                        }
+
+                                        break;
+
+
+                                    case LCDTab.Materials:
+
+                                        str =
+                                            Engine.Razor.Run("9.cshtml", null, new
                                             {
                                                 CurrentTab = (int) _currentTab,
                                                 CurrentPage = _currentPage,
 
                                                 CurrentCard = _currentCard[(int) _currentTab],
 
-                                                CurrentPois = Poi.PoiList, // 0
-
-                                                CurrentInterStellarFactors = Data.InterStellarFactors, // 1
-                                                CurrentRawMaterialTraders = Data.RawMaterialTraders, // 2
-                                                CurrentManufacturedMaterialTraders =
-                                                    Data.ManufacturedMaterialTraders, // 3
-                                                CurrentEncodedDataTraders = Data.EncodedDataTraders, // 4
-                                                CurrentHumanTechnologyBrokers =
-                                                    Data.HumanTechnologyBrokers, // 5
-                                                CurrentGuardianTechnologyBrokers =
-                                                    Data.GuardianTechnologyBrokers // 6
-
+                                                Raw = Material.MaterialList.Where(x => x.Value.Category == "Raw")
+                                                    .OrderBy(x => x.Value.Name),
+                                                Manufactured = Material.MaterialList
+                                                    .Where(x => x.Value.Category == "Manufactured")
+                                                    .OrderBy(x => x.Value.Name),
+                                                Encoded = Material.MaterialList
+                                                    .Where(x => x.Value.Category == "Encoded")
+                                                    .OrderBy(x => x.Value.Name)
                                             });
-                                    }
 
-                                    break;
+                                        break;
 
-                                //----------------------
+                                    case LCDTab.Events:
 
-                                case LCDTab.Map:
-
-
-                                    str =
-                                        Engine.Razor.Run("7.cshtml", null, new
+                                        var eventlist = "";
+                                        foreach (var b in Data.EventHistory)
                                         {
-                                            CurrentTab = (int) _currentTab,
-                                            CurrentPage = _currentPage,
+                                            eventlist += b + "<br/>";
+                                        }
 
-                                            _currentZoomLevel = _currentZoomLevel[(int) _currentTab],
-
-
-                                        });
-
-                                    break;
-
-
-                                case LCDTab.Powers:
-
-                                    lock (App.RefreshJsonLock)
-                                    {
                                         str =
-                                            Engine.Razor.Run("8.cshtml", null, new
+                                            Engine.Razor.Run("12.cshtml", null, new
                                             {
                                                 CurrentTab = (int) _currentTab,
                                                 CurrentPage = _currentPage,
 
-                                                CurrentCard = _currentCard[(int) _currentTab],
-
-                                                CurrentAislingDuval = Data.AislingDuval, // 0
-                                                CurrentArchonDelaine = Data.ArchonDelaine, // 1
-                                                CurrentArissaLavignyDuval = Data.ArissaLavignyDuval, // 2
-                                                CurrentDentonPatreus = Data.DentonPatreus, // 3
-                                                CurrentEdmundMahon = Data.EdmundMahon, // 4
-                                                CurrentFeliciaWinters = Data.FeliciaWinters, // 5
-                                                CurrentLiYongRui = Data.LiYongRui, // 6
-                                                CurrentPranavAntal = Data.PranavAntal, // 7
-                                                CurrentYuriGrom = Data.YuriGrom, // 8
-                                                CurrentZacharyHudson = Data.ZacharyHudson, // 9
-                                                CurrentZeminaTorval = Data.ZeminaTorval, // 10
-
+                                                EventList = eventlist
                                             });
-                                    }
 
-                                    break;
+                                        break;
+
+                                }
 
 
-                                case LCDTab.Materials:
-
-                                    str =
-                                        Engine.Razor.Run("9.cshtml", null, new
-                                        {
-                                            CurrentTab = (int)_currentTab,
-                                            CurrentPage = _currentPage,
-
-                                            CurrentCard = _currentCard[(int)_currentTab],
-
-                                            Raw = Material.MaterialList.Where (x => x.Value.Category == "Raw").OrderBy(x => x.Value.Name),
-                                            Manufactured = Material.MaterialList.Where(x => x.Value.Category == "Manufactured").OrderBy(x => x.Value.Name),
-                                            Encoded = Material.MaterialList.Where(x => x.Value.Category == "Encoded").OrderBy(x => x.Value.Name)
-                                        });
-
-                                    break;
-
-                                case LCDTab.Events:
-
-                                    var eventlist = "";
-                                    foreach (var b in Data.EventHistory)
-                                    {
-                                        eventlist += b + "<br/>";
-                                    }
-
-                                    str =
-                                        Engine.Razor.Run("12.cshtml", null, new
-                                        {
-                                            CurrentTab = (int) _currentTab,
-                                            CurrentPage = _currentPage,
-
-                                            EventList = eventlist
-                                        });
-
-                                    break;
-
-                            } 
+                            }
+                            catch (Exception ex)
+                            {
+                                App.log.Error(ex);
+                            }
                         }
 
                         graphics.Clear(Color.Black);
