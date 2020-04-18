@@ -10,13 +10,13 @@
 <div class="main">
     <table>
         <tbody>
-            @foreach (var m in Model.MissionData)
+            @foreach (var m in Model.MissionList)
             {
                 if (!string.IsNullOrEmpty(m.Name))
                 {
                     <tr>
                         <td class="caption">Mission</td>
-                        <td class="data">@m.Name.Replace("_name", " ").Replace("Mission_", " ").Replace("_EXPANSION", " ").Replace("_", " ")</td>
+                        <td class="data">@m.Name</td>
                     </tr>
                 }
                 if (!string.IsNullOrEmpty(m.System))
@@ -149,7 +149,7 @@
                     }
                 }
 
-                if (!((List<Data.Mission>)Model.MissionData).Last().Equals((Data.Mission)m))
+                if (!((List<Missions.Mission>)Model.MissionList).Last().Equals((Missions.Mission)m))
                 {
                     <tr>
                         <td class="divider" colspan="2">&nbsp;</td>

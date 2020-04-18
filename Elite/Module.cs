@@ -74,6 +74,7 @@ namespace Elite
             {"FSD Interdictor", new ModuleDataItem { Key = "_fsdinterdictor_", ModuleType = ModuleType.SingleModule} },
             {"Pulse Wave Scanner", new ModuleDataItem { Key = "_mrascanner_", ModuleType = ModuleType.SingleModule} },
             {"Manifest Scanner", new ModuleDataItem { Key = "_cargoscanner_", ModuleType = ModuleType.SingleModule} },
+            {"K-Warrant Scan.", new ModuleDataItem { Key = "_crimescanner_", ModuleType = ModuleType.SingleModule} },
 
             {"Hatch Breaker Limpet Contr.", new ModuleDataItem { Key = "_dronecontrol_resourcesiphon_", ModuleType = ModuleType.MultipleModules} },
             {"Collector Limpet Contr.", new ModuleDataItem { Key = "_dronecontrol_collection_", ModuleType = ModuleType.MultipleModules} },
@@ -161,6 +162,11 @@ namespace Elite
             if (size.IndexOf("_", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 size = size.Substring(0, size.IndexOf("_", StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (size == "0")
+            {
+                size = "1";
             }
 
             return Convert.ToInt32(size);

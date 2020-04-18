@@ -244,39 +244,6 @@ namespace Elite
             public double? DistFromStarLs { get; set; } = -1;
         }
 
-        public class Mission
-        {
-            public long MissionID { get; set; }
-            public string Name { get; set; }
-            public bool PassengerMission { get; set; }
-            public DateTime? Expires { get; set; }
-
-            public string System { get; set; }
-            public string Station { get; set; }
-            public long Reward { get; set; }
-            public int? Passengers { get; set; }
-
-            public string Faction { get; set; }
-            public string Influence { get; set; } //    None/Low/Med/High
-            public string Reputation { get; set; } //  None/Low/Med/High
-
-            public string CommodityLocalised { get; set; }
-            public int? Count { get; set; }
-
-            public bool? PassengerViPs { get; set; }
-            public bool? PassengerWanted { get; set; }
-            public string PassengerType { get; set; }
-
-            public bool Wing { get; set; }
-            public string Target { get; set; }
-            public string TargetType { get; set; }
-            public string TargetFaction { get; set; }
-            public int? KillCount { get; set; }
-            public string Donation { get; set; }
-            public int? Donated { get; set; }
-
-        }
-
         public class Target
         {
             public long ScanStage { get; set; }
@@ -398,7 +365,6 @@ namespace Elite
 
         public static Status StatusData = new Status();
 
-        public static List<Mission> MissionData = new List<Mission>();
 
         public static void HandleStatusEvents(object sender, StatusFileEvent evt)
         {
@@ -657,17 +623,9 @@ namespace Elite
                     //When written: at startup
                     var missionsInfo = (MissionsEvent.MissionsEventArgs)e;
 
-                    if (missionsInfo.Active?.Length > 0)
-                    {
-                        MissionData = missionsInfo.Active.Select(x => new Mission
-                        {
-                            MissionID = x.MissionID,
-                            PassengerMission = x.PassengerMission,
-                            Expires = (DateTime?)null, 
-                            Name = x.Name
-                        }).ToList();
+                    Missions.HandleMissionsEvent(missionsInfo);
 
-                    }
+                    Cargo.HandleMissionsEvent(missionsInfo);
 
                     break;
 
@@ -1065,39 +1023,9 @@ namespace Elite
                     //When Written: when starting a mission 
                     var missionAcceptedInfo = (MissionAcceptedEvent.MissionAcceptedEventArgs) e;
 
-                    MissionData.RemoveAll(x => x.MissionID == missionAcceptedInfo.MissionID);
+                    Missions.HandleMissionAcceptedEvent(missionAcceptedInfo);
 
-                    MissionData.Add(new Mission
-                    {
-                        MissionID = missionAcceptedInfo.MissionID,
-                        Name = missionAcceptedInfo.LocalisedName,
-                        Expires = missionAcceptedInfo.Expiry,
-                        PassengerMission = missionAcceptedInfo.PassengerCount > 0,
-                        System = missionAcceptedInfo.DestinationSystem,
-                        Station = missionAcceptedInfo.DestinationStation,
-                        Reward = missionAcceptedInfo.Reward,
-                        Passengers = missionAcceptedInfo.PassengerCount,
-
-                        Faction = missionAcceptedInfo.Faction,
-                        Influence = missionAcceptedInfo.Influence.ToString(), //    None/Low/Med/High
-                        Reputation = missionAcceptedInfo.Reputation.ToString(), //  None/Low/Med/High
-
-                        CommodityLocalised = missionAcceptedInfo.Commodity_Localised,
-                        Count = missionAcceptedInfo.Count,
-
-                        PassengerViPs = missionAcceptedInfo.PassengerVIPs,
-                        PassengerWanted = missionAcceptedInfo.PassengerWanted,
-                        PassengerType = missionAcceptedInfo.PassengerType,
-
-                        Wing = missionAcceptedInfo.Wing,
-                        Target = missionAcceptedInfo.Target,
-                        TargetType = missionAcceptedInfo.TargetType,
-                        TargetFaction = missionAcceptedInfo.TargetFaction,
-                        KillCount = missionAcceptedInfo.KillCount,
-                        Donation = missionAcceptedInfo.Donation,
-                        Donated = missionAcceptedInfo.Donated,
-
-                    });
+                    Cargo.HandleMissionAcceptedEvent(missionAcceptedInfo);
 
                     break;
 
@@ -1106,7 +1034,9 @@ namespace Elite
 
                     var missionAbandonedInfo = (MissionAbandonedEvent.MissionAbandonedEventArgs) e;
 
-                    MissionData.RemoveAll(x => x.MissionID == missionAbandonedInfo.MissionID);
+                    Missions.HandleMissionAbandonedEvent(missionAbandonedInfo);
+
+                    Cargo.HandleMissionAbandonedEvent(missionAbandonedInfo);
 
                     break;
                 case "MissionFailed":
@@ -1114,7 +1044,9 @@ namespace Elite
 
                     var missionFailedInfo = (MissionFailedEvent.MissionFailedEventArgs) e;
 
-                    MissionData.RemoveAll(x => x.MissionID == missionFailedInfo.MissionID);
+                    Missions.HandleMissionFailedEvent(missionFailedInfo);
+
+                    Cargo.HandleMissionFailedEvent(missionFailedInfo);
 
                     break;
 
@@ -1125,9 +1057,11 @@ namespace Elite
 
                     CommanderData.Credits += Convert.ToUInt32(missionCompletedInfo.Reward);
 
-                    MissionData.RemoveAll(x => x.MissionID == missionCompletedInfo.MissionID);
+                    Missions.HandleMissionCompletedEvent(missionCompletedInfo);
 
                     Material.HandleMissionCompletedEvent(missionCompletedInfo);
+
+                    Cargo.HandleMissionCompletedEvent(missionCompletedInfo);
 
                     break;
 
@@ -1192,6 +1126,72 @@ namespace Elite
                     var engineerContributionInfo = (EngineerContributionEvent.EngineerContributionEventArgs)e;
 
                     Material.HandleEngineerContributionEvent(engineerContributionInfo);
+
+                    Cargo.HandleEngineerContributionEvent(engineerContributionInfo);
+
+                    break;
+
+                case "Cargo":
+
+                    var cargoInfo = (CargoEvent.CargoEventArgs)e;
+
+                    Cargo.HandleCargoEvent(cargoInfo);
+
+                    break;
+
+                case "CollectCargo":
+
+                    var collectCargoInfo = (CollectCargoEvent.CollectCargoEventArgs)e;
+
+                    Cargo.HandleCollectCargoEvent(collectCargoInfo);
+
+                    break;
+
+                case "EjectCargo":
+
+                    var ejectCargoInfo = (EjectCargoEvent.EjectCargoEventArgs)e;
+
+                    Cargo.HandleEjectCargoEvent(ejectCargoInfo);
+
+                    break;
+
+                case "MarketBuy":
+
+                    var marketBuyInfo = (MarketBuyEvent.MarketBuyEventArgs)e;
+
+                    Cargo.HandleMarketBuyEvent(marketBuyInfo);
+
+                    break;
+
+                case "MiningRefined":
+
+                    var miningRefinedInfo = (MiningRefinedEvent.MiningRefinedEventArgs)e;
+
+                    Cargo.HandleMiningRefinedEvent(miningRefinedInfo);
+
+                    break;
+
+                case "MarketSell":
+
+                    var marketSellInfo = (MarketSellEvent.MarketSellEventArgs)e;
+
+                    Cargo.HandleMarketSellEvent(marketSellInfo);
+
+                    break;
+
+                case "CargoDepot":
+
+                    var cargoDepotInfo = (CargoDepotEvent.CargoDepotEventArgs)e;
+
+                    Cargo.HandleCargoDepotEvent(cargoDepotInfo);
+
+                    break;
+
+                case "Died":
+
+                    var diedInfo = (DiedEvent.DiedEventArgs)e;
+
+                    Cargo.HandleDiedEvent(diedInfo);
 
                     break;
 

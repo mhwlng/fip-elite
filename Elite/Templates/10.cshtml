@@ -1,0 +1,86 @@
+
+@using System
+@using System.Collections.Generic
+@using Elite
+@using System.Linq
+@{
+    Layout = "layout.cshtml";
+}
+
+<div class="main">
+    <table class="">
+        <tbody>
+        @foreach (var m in Model.Cargo)
+        {
+            <tr>
+                <td class="caption wrap">@m.Name</td>
+                <td class="data right">@m.Count</td>
+            </tr>
+        }
+
+        @if (Model.MissionCargoCount > 0)
+        {
+            if (Model.CargoCargoCount > 0)
+            {
+                <tr>
+                    <td class="divider" colspan="2">&nbsp;</td>
+                </tr>
+            }
+            <tr>
+                <td class="caption center" colspan="2">MISSIONS</td>
+            </tr>
+        }
+
+        @foreach (var mg in Model.MissionCargo)
+        {
+            foreach (var m in mg)
+            {
+                if (((List<Cargo.CargoItem>)mg).FirstOrDefault().Equals((Cargo.CargoItem)m))
+                {
+                    <tr>
+                        <td class="caption" colspan="2">@m.MissionName
+                        @if (!string.IsNullOrEmpty(m.System))
+                        {
+                            <text>to</text> @m.System
+                        }
+                        @if (!string.IsNullOrEmpty(m.Station))
+                        {
+                            <text>,</text> @m.Station
+                        }
+                        </td>
+                    </tr>
+                }
+
+                <tr>
+                    <td class="caption wrap">&nbsp;&nbsp;&nbsp;@m.Name</td>
+                    <td class="data right">@m.Count</td>
+                </tr>
+            }
+        }
+
+        @if(Model.StolenCargoCount > 0)
+        {
+            if (Model.MissionCargoCount > 0 || Model.CargoCargoCount > 0)
+            {
+                <tr>
+                    <td class="divider" colspan="2">&nbsp;</td>
+                </tr>
+            }
+            <tr>
+                <td class="caption center" colspan="2">STOLEN</td>
+            </tr>
+        }
+
+        @foreach (var m in Model.StolenCargo)
+        {
+            <tr>
+                <td class="caption wrap">@m.Name</td>
+                <td class="data right">@m.Stolen</td>
+            </tr>
+        }
+
+        </tbody>
+    </table>
+   
+
+</div>

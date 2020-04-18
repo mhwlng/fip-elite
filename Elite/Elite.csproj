@@ -118,6 +118,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Cargo.cs" />
+    <Compile Include="Missions.cs" />
     <Compile Include="Ships.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="Module.cs" />
@@ -160,6 +162,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Templates\10.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\9.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

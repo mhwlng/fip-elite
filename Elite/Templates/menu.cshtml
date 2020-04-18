@@ -55,10 +55,28 @@
                     <td><div class="@(Model.CurrentTab == 8 ? "highlight" : "")">POWER</div></td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == 9 ? "highlight" : "")">MAT</div></td>
+                    <td>
+                        @if (Model.MaterialCount > 0)
+                        {
+                            <div class="@(Model.CurrentTab == 9 ? "highlight" : "")">MAT</div>
+                        }
+                        else
+                        {
+                            <div class="disabled">MAT</div>
+                        }
+                    </td>
                 </tr>
                 <tr>
-                    <td><div>&nbsp;</div><td>
+                    <td>
+                        @if (Model.CargoCount > 0)
+                        {
+                            <div class="@(Model.CurrentTab == 10 ? "highlight" : "")">CARGO</div>
+                        }
+                        else
+                        {
+                            <div class="disabled">CARGO</div>
+                        }
+                    </td>
                 </tr>
                 <tr>
                     <td><div>&nbsp;</div><td>

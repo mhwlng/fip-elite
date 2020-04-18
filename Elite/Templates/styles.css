@@ -93,5 +93,9 @@ div.menu {
     white-space: nowrap;
 }
 
+.main table td.wrap {
+    width: 200px;
+}
+
 
 

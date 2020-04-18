@@ -51,7 +51,7 @@ namespace Elite
         Map = 7,
         Powers = 8,
         Materials = 9,
-        //D = 10,
+        Cargo = 10,
         //E = 11,
         Events = 12,
 
@@ -352,7 +352,7 @@ namespace Elite
                                 }
                                 break;
                             case 512:
-                                if (Data.MissionData.Count > 0)
+                                if (Missions.MissionList.Count > 0)
                                 {
                                     mustRefresh = SetTab(LCDTab.Missions);
                                 }
@@ -373,12 +373,18 @@ namespace Elite
                                 mustRefresh = SetTab(LCDTab.Powers);
                                 break;
                             case 128:
-                                mustRefresh = SetTab(LCDTab.Materials);
+                                if (Material.MaterialList.Count > 0)
+                                {
+                                    mustRefresh = SetTab(LCDTab.Materials);
+                                }
+                                break;
+                            case 256:
+                                if (Cargo.CargoList.Count > 0)
+                                {
+                                    mustRefresh = SetTab(LCDTab.Cargo);
+                                }
                                 break;
                             /*
-                            case 256:
-                                mustRefresh = SetTab(LCDTab.D);
-                                break;
                             case 512:
                                 mustRefresh = SetTab(LCDTab.E);
                                 break;
@@ -576,13 +582,21 @@ namespace Elite
         {
             lock (_refreshDevicePageLock)
             {
-                if (Data.MissionData.Count == 0 && _currentTab == LCDTab.Missions)
+                if (Missions.MissionList.Count == 0 && _currentTab == LCDTab.Missions)
                 {
                     SetTab(LCDTab.Navigation);
                 }
                 else if (!Data.TargetData.TargetLocked && _currentTab == LCDTab.Target)
                 {
                     SetTab(LCDTab.Navigation);
+                }
+                else if (Material.MaterialList.Count == 0 && _currentTab == LCDTab.Materials)
+                {
+                    SetTab(LCDTab.Map);
+                }
+                else if (Cargo.CargoList.Count == 0 && _currentTab == LCDTab.Cargo)
+                {
+                    SetTab(LCDTab.Map);
                 }
 
                 using (var fipImage = new Bitmap(320, 240))
@@ -874,7 +888,7 @@ namespace Elite
                                                 CurrentTab = (int) _currentTab,
                                                 CurrentPage = _currentPage,
 
-                                                MissionData = Data.MissionData
+                                                MissionList = Missions.MissionList
                                             });
 
                                         break;
@@ -960,6 +974,54 @@ namespace Elite
                                             });
 
                                         break;
+
+                                    case LCDTab.Cargo:
+
+                                        var cargo = Cargo.CargoList
+                                            .Where(x => x.Value.Count > 0 && x.Value.MissionID == 0)
+                                            .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                        var missionCargo = Cargo.CargoList
+                                            .Where(x => x.Value.Count > 0 && x.Value.MissionID > 0)
+                                            .Select(x => new Cargo.CargoItem
+                                            {
+                                                Count = x.Value.Count,
+                                                Name = x.Value.Name,
+                                                MissionID = x.Value.MissionID,
+                                                MissionName = Missions.GetMissionName(x.Value.MissionID),
+                                                System = Missions.GetMissionSystem(x.Value.MissionID),
+                                                Station = Missions.GetMissionStation(x.Value.MissionID)
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .GroupBy(x => x.MissionName)
+                                            .Select(grp => grp.ToList())
+                                            .ToList();
+
+
+                                        var stolenCargo = Cargo.CargoList.Where(x => x.Value.Stolen > 0)
+                                            .Select(x => x.Value)
+                                            .OrderBy(x => x.Name).ToList();
+
+                                        str =
+                                            Engine.Razor.Run("10.cshtml", null, new
+                                            {
+                                                CurrentTab = (int) _currentTab,
+                                                CurrentPage = _currentPage,
+
+                                                CurrentCard = _currentCard[(int) _currentTab],
+
+                                                Cargo = cargo,
+                                                CargoCargoCount = cargo.Count,
+
+                                                MissionCargo = missionCargo,
+                                                MissionCargoCount = missionCargo.Count,
+
+                                                StolenCargo = stolenCargo,
+                                                StolenCargoCount = stolenCargo.Count
+                                            });
+
+                                        break;
+
 
                                     case LCDTab.Events:
 
@@ -1050,7 +1112,11 @@ namespace Elite
 
                                     TargetLocked = Data.TargetData.TargetLocked,
 
-                                    MissionCount = Data.MissionData.Count
+                                    MissionCount = Missions.MissionList.Count,
+
+                                    MaterialCount = Material.MaterialList.Count,
+
+                                    CargoCount = Cargo.CargoList.Count
                                 });
 
                             menuHtmlImage = HtmlRender.RenderToImage(menustr,
