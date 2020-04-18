@@ -891,17 +891,9 @@ namespace Elite
 
                                                     CurrentCard = _currentCard[(int) _currentTab],
 
-                                                    CurrentPois = Poi.PoiList, // 0
+                                                    NearbyPoiList = Poi.NearbyPoiList,
 
-                                                    CurrentInterStellarFactors = Data.InterStellarFactors, // 1
-                                                    CurrentRawMaterialTraders = Data.RawMaterialTraders, // 2
-                                                    CurrentManufacturedMaterialTraders =
-                                                        Data.ManufacturedMaterialTraders, // 3
-                                                    CurrentEncodedDataTraders = Data.EncodedDataTraders, // 4
-                                                    CurrentHumanTechnologyBrokers =
-                                                        Data.HumanTechnologyBrokers, // 5
-                                                    CurrentGuardianTechnologyBrokers =
-                                                        Data.GuardianTechnologyBrokers // 6
+                                                    NearbyStationList = Data.NearbyStationList
 
                                                 });
                                         }
@@ -939,17 +931,7 @@ namespace Elite
 
                                                     CurrentCard = _currentCard[(int) _currentTab],
 
-                                                    CurrentAislingDuval = Data.AislingDuval, // 0
-                                                    CurrentArchonDelaine = Data.ArchonDelaine, // 1
-                                                    CurrentArissaLavignyDuval = Data.ArissaLavignyDuval, // 2
-                                                    CurrentDentonPatreus = Data.DentonPatreus, // 3
-                                                    CurrentEdmundMahon = Data.EdmundMahon, // 4
-                                                    CurrentFeliciaWinters = Data.FeliciaWinters, // 5
-                                                    CurrentLiYongRui = Data.LiYongRui, // 6
-                                                    CurrentPranavAntal = Data.PranavAntal, // 7
-                                                    CurrentYuriGrom = Data.YuriGrom, // 8
-                                                    CurrentZacharyHudson = Data.ZacharyHudson, // 9
-                                                    CurrentZeminaTorval = Data.ZeminaTorval, // 10
+                                                    NearbyPowerStationList = Data.NearbyPowerStationList
 
                                                 });
                                         }

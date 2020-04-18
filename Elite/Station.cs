@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+// ReSharper disable IdentifierTypo
 
 namespace Elite
 {
@@ -61,28 +62,59 @@ namespace Elite
 
     public static class Station
     {
-        public static List<PoiItem> PoiItemList = null;
+        public enum PoiTypes
+        {
+            InterStellarFactors = 1,
+            RawMaterialTraders = 2,
+            ManufacturedMaterialTraders = 3,
+            EncodedDataTraders = 4,
+            HumanTechnologyBrokers = 5,
+            GuardianTechnologyBrokers = 6
+        }
 
-        public static List<StationData> InterStellarFactorsStationList = null;
-        public static List<StationData> RawMaterialTradersStationList = null;
-        public static List<StationData> ManufacturedMaterialTradersStationList = null;
-        public static List<StationData> EncodedDataTradersStationList = null;
-        public static List<StationData> HumanTechnologyBrokersStationList = null;
-        public static List<StationData> GuardianTechnologyBrokersStationList = null;
+        public enum PowerTypes
+        {
+            AislingDuval,
+            ArchonDelaine,
+            ArissaLavignyDuval,
+            DentonPatreus,
+            EdmundMahon,
+            FeliciaWinters,
+            LiYongRui,
+            PranavAntal,
+            YuriGrom,
+            ZacharyHudson,
+            ZeminaTorval
+        }
 
-        public static List<StationData> AislingDuvalStationList = null;
-        public static List<StationData> ArchonDelaineStationList = null;
-        public static List<StationData> ArissaLavignyDuvalStationList = null;
-        public static List<StationData> DentonPatreusStationList = null;
-        public static List<StationData> EdmundMahonStationList = null;
-        public static List<StationData> FeliciaWintersStationList = null;
-        public static List<StationData> LiYongRuiStationList = null;
-        public static List<StationData> PranavAntalStationList = null;
-        public static List<StationData> YuriGromStationList = null;
-        public static List<StationData> ZacharyHudsonStationList = null;
-        public static List<StationData> ZeminaTorvalStationList = null;
+        public static List<PoiItem> FullPoiItemList = null;
 
-        public static List<StationData> GetStations(string fileName)
+        public static Dictionary<PoiTypes, List<StationData>> FullStationList = new Dictionary<PoiTypes, List<StationData>>
+        {
+            {PoiTypes.InterStellarFactors, new List<StationData>()},
+            {PoiTypes.RawMaterialTraders, new List<StationData>()},
+            {PoiTypes.ManufacturedMaterialTraders, new List<StationData>()},
+            {PoiTypes.EncodedDataTraders, new List<StationData>()},
+            {PoiTypes.HumanTechnologyBrokers, new List<StationData>()},
+            {PoiTypes.GuardianTechnologyBrokers, new List<StationData>()}
+        };
+
+        public static Dictionary<PowerTypes, List<StationData>> FullPowerStationList = new Dictionary<PowerTypes, List<StationData>>
+        {
+            {PowerTypes.AislingDuval, new List<StationData>()},
+            {PowerTypes.ArchonDelaine, new List<StationData>()},
+            {PowerTypes.ArissaLavignyDuval, new List<StationData>()},
+            {PowerTypes.DentonPatreus, new List<StationData>()},
+            {PowerTypes.EdmundMahon, new List<StationData>()},
+            {PowerTypes.FeliciaWinters, new List<StationData>()},
+            {PowerTypes.LiYongRui, new List<StationData>()},
+            {PowerTypes.PranavAntal, new List<StationData>()},
+            {PowerTypes.YuriGrom, new List<StationData>()},
+            {PowerTypes.ZacharyHudson, new List<StationData>()},
+            {PowerTypes.ZeminaTorval, new List<StationData>()}
+        };
+
+        public static List<StationData> GetAllStations(string fileName)
         {
             try
             {

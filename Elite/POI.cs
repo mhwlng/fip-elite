@@ -163,7 +163,7 @@ namespace Elite
 
     public static class Poi
     {
-        public static List<PoiItem> PoiList = new List<PoiItem>();
+        public static List<PoiItem> NearbyPoiList = new List<PoiItem>();
 
         // see https://www.reddit.com/r/EliteDangerous/comments/9mfiug/edison_a_tool_which_helps_getting_to_planet/
 
@@ -172,7 +172,7 @@ namespace Elite
         public const string PoiSpreadsheet =
             @"https://docs.google.com/spreadsheets/d/11E05a-hLGyOQ84B9dQUu0Z53ow1Xt-uqJ-xXJmtYq5A/export?format=csv&gid=594549382";
 
-        public static List<PoiItem> GetPoiItems()
+        public static List<PoiItem> GetAllPoiItems()
         {
             try
             {
@@ -212,9 +212,9 @@ namespace Elite
 
         public static List<PoiItem> GetNearestPoiItems(List<double> starPos)
         {
-            if (Station.PoiItemList?.Any() == true && starPos?.Count == 3)
+            if (Station.FullPoiItemList?.Any() == true && starPos?.Count == 3)
             {
-                Station.PoiItemList.ForEach(poiItem =>
+                Station.FullPoiItemList.ForEach(poiItem =>
                 {
                     var Xs = starPos[0];
                     var Ys = starPos[1];
@@ -231,7 +231,7 @@ namespace Elite
                     poiItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
-                return Station.PoiItemList.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+                return Station.FullPoiItemList.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
             }
 
             return new List<PoiItem>(); 

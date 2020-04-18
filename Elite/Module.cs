@@ -11,7 +11,7 @@ namespace Elite
     public static class Module
     {
         // Frame Shift Drive Constants
-        public static Dictionary<string, double> BaseOptimalMass = new Dictionary<string, double>()
+        public static Dictionary<string, double> BaseOptimalMass = new Dictionary<string, double>
         {
             {"2E", 48.0}, {"2D", 54.0}, {"2C", 60.0}, {"2B", 75.0}, {"2A", 90.0},
             {"3E", 80.0}, {"3D", 90.0}, {"3C", 100.0}, {"3B", 125.0}, {"3A", 150.0},
@@ -21,7 +21,7 @@ namespace Elite
             {"7E", 1440.0}, {"7D", 1620.0}, {"7C", 1800.0}, {"7B", 2250.0}, {"7A", 2700.0}
         };
 
-        public static Dictionary<string, double> BaseMaxFuelPerJump = new Dictionary<string, double>()
+        public static Dictionary<string, double> BaseMaxFuelPerJump = new Dictionary<string, double>
         {
             {"2E", 0.60}, {"2D", 0.60}, {"2C", 0.60}, {"2B", 0.80}, {"2A", 0.90},
             {"3E", 1.20}, {"3D", 1.20}, {"3C", 1.20}, {"3B", 1.50}, {"3A", 1.80},
@@ -32,17 +32,17 @@ namespace Elite
         };
 
 
-        public static Dictionary<int, double> GuardianBoostFSD = new Dictionary<int, double>()
+        public static Dictionary<int, double> GuardianBoostFSD = new Dictionary<int, double>
         {
             {1, 4.00}, {2, 6.00}, {3, 7.75}, {4, 9.25}, {5, 10.50}
         };
 
-        public static Dictionary<string, double> RatingConstantFSD = new Dictionary<string, double>()
+        public static Dictionary<string, double> RatingConstantFSD = new Dictionary<string, double>
         {
             {"A", 12.0}, {"B", 10.0}, {"C", 8.0}, {"D", 10.0}, {"E", 11.0}
         };
 
-        public static Dictionary<int, double> PowerConstantFSD = new Dictionary<int, double>()
+        public static Dictionary<int, double> PowerConstantFSD = new Dictionary<int, double>
         {
             {2, 2.00}, {3, 2.15}, {4, 2.30}, {5, 2.45}, {6, 2.60}, {7, 2.75}, {8, 2.90}
         };

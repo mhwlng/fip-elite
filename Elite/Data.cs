@@ -21,25 +21,31 @@ namespace Elite
 {
     public class Data
     {
-        public static List<StationData> InterStellarFactors = new List<StationData>();
-        public static List<StationData> RawMaterialTraders = new List<StationData>();
-        public static List<StationData> ManufacturedMaterialTraders = new List<StationData>();
-        public static List<StationData> EncodedDataTraders = new List<StationData>();
-        public static List<StationData> HumanTechnologyBrokers = new List<StationData>();
-        public static List<StationData> GuardianTechnologyBrokers = new List<StationData>();
 
-        public static List<StationData> AislingDuval = new List<StationData>();
-        public static List<StationData> ArchonDelaine = new List<StationData>();
-        public static List<StationData> ArissaLavignyDuval = new List<StationData>();
-        public static List<StationData> DentonPatreus = new List<StationData>();
-        public static List<StationData> EdmundMahon = new List<StationData>();
-        public static List<StationData> FeliciaWinters = new List<StationData>();
-        public static List<StationData> LiYongRui = new List<StationData>();
-        public static List<StationData> PranavAntal = new List<StationData>();
-        public static List<StationData> YuriGrom = new List<StationData>();
-        public static List<StationData> ZacharyHudson = new List<StationData>();
-        public static List<StationData> ZeminaTorval = new List<StationData>();
+        public static Dictionary<Station.PoiTypes, List<StationData>> NearbyStationList = new Dictionary<Station.PoiTypes, List<StationData>>
+        {
+            {Station.PoiTypes.InterStellarFactors, new List<StationData>()},
+            {Station.PoiTypes.RawMaterialTraders, new List<StationData>()},
+            {Station.PoiTypes.ManufacturedMaterialTraders, new List<StationData>()},
+            {Station.PoiTypes.EncodedDataTraders, new List<StationData>()},
+            {Station.PoiTypes.HumanTechnologyBrokers, new List<StationData>()},
+            {Station.PoiTypes.GuardianTechnologyBrokers, new List<StationData>()}
+        };
 
+        public static Dictionary<Station.PowerTypes, List<StationData>> NearbyPowerStationList = new Dictionary<Station.PowerTypes, List<StationData>>
+        {
+            {Station.PowerTypes.AislingDuval, new List<StationData>()},
+            {Station.PowerTypes.ArchonDelaine, new List<StationData>()},
+            {Station.PowerTypes.ArissaLavignyDuval, new List<StationData>()},
+            {Station.PowerTypes.DentonPatreus, new List<StationData>()},
+            {Station.PowerTypes.EdmundMahon, new List<StationData>()},
+            {Station.PowerTypes.FeliciaWinters, new List<StationData>()},
+            {Station.PowerTypes.LiYongRui, new List<StationData>()},
+            {Station.PowerTypes.PranavAntal, new List<StationData>()},
+            {Station.PowerTypes.YuriGrom, new List<StationData>()},
+            {Station.PowerTypes.ZacharyHudson, new List<StationData>()},
+            {Station.PowerTypes.ZeminaTorval, new List<StationData>()}
+        };
 
         public static  RingBuffer<string> EventHistory = new RingBuffer<string>(50, true);
 
@@ -170,32 +176,32 @@ namespace Elite
         {
             lock (App.RefreshJsonLock)
             {
-                InterStellarFactors =
-                    Station.GetNearestStationItems(LocationData.StarPos, Station.InterStellarFactorsStationList);
-                RawMaterialTraders =
-                    Station.GetNearestStationItems(LocationData.StarPos, Station.RawMaterialTradersStationList);
-                ManufacturedMaterialTraders =
-                    Station.GetNearestStationItems(LocationData.StarPos, Station.ManufacturedMaterialTradersStationList);
-                EncodedDataTraders =
-                    Station.GetNearestStationItems(LocationData.StarPos, Station.EncodedDataTradersStationList);
-                HumanTechnologyBrokers =
-                    Station.GetNearestStationItems(LocationData.StarPos, Station.HumanTechnologyBrokersStationList);
-                GuardianTechnologyBrokers =
-                    Station.GetNearestStationItems(LocationData.StarPos, Station.GuardianTechnologyBrokersStationList);
+                NearbyStationList[Station.PoiTypes.InterStellarFactors] =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.FullStationList[Station.PoiTypes.InterStellarFactors]);
+                NearbyStationList[Station.PoiTypes.RawMaterialTraders] =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.FullStationList[Station.PoiTypes.RawMaterialTraders]);
+                NearbyStationList[Station.PoiTypes.ManufacturedMaterialTraders] =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.FullStationList[Station.PoiTypes.ManufacturedMaterialTraders]);
+                NearbyStationList[Station.PoiTypes.EncodedDataTraders] =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.FullStationList[Station.PoiTypes.EncodedDataTraders]);
+                NearbyStationList[Station.PoiTypes.HumanTechnologyBrokers] =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.FullStationList[Station.PoiTypes.HumanTechnologyBrokers]);
+                NearbyStationList[Station.PoiTypes.GuardianTechnologyBrokers] =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.FullStationList[Station.PoiTypes.GuardianTechnologyBrokers]);
 
-                AislingDuval = Station.GetNearestStationItems(LocationData.StarPos, Station.AislingDuvalStationList);
-                ArchonDelaine = Station.GetNearestStationItems(LocationData.StarPos, Station.ArchonDelaineStationList);
-                ArissaLavignyDuval =
-                    Station.GetNearestStationItems(LocationData.StarPos, Station.ArissaLavignyDuvalStationList);
-                DentonPatreus = Station.GetNearestStationItems(LocationData.StarPos, Station.DentonPatreusStationList);
-                EdmundMahon = Station.GetNearestStationItems(LocationData.StarPos, Station.EdmundMahonStationList);
-                FeliciaWinters =
-                    Station.GetNearestStationItems(LocationData.StarPos, Station.FeliciaWintersStationList);
-                LiYongRui = Station.GetNearestStationItems(LocationData.StarPos, Station.LiYongRuiStationList);
-                PranavAntal = Station.GetNearestStationItems(LocationData.StarPos, Station.PranavAntalStationList);
-                YuriGrom = Station.GetNearestStationItems(LocationData.StarPos, Station.YuriGromStationList);
-                ZacharyHudson = Station.GetNearestStationItems(LocationData.StarPos, Station.ZacharyHudsonStationList);
-                ZeminaTorval = Station.GetNearestStationItems(LocationData.StarPos, Station.ZeminaTorvalStationList);
+                NearbyPowerStationList[Station.PowerTypes.AislingDuval] = Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.AislingDuval]);
+                NearbyPowerStationList[Station.PowerTypes.ArchonDelaine] = Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.ArchonDelaine]);
+                NearbyPowerStationList[Station.PowerTypes.ArissaLavignyDuval] =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.ArissaLavignyDuval]);
+                NearbyPowerStationList[Station.PowerTypes.DentonPatreus] = Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.DentonPatreus]);
+                NearbyPowerStationList[Station.PowerTypes.EdmundMahon] = Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.EdmundMahon]);
+                NearbyPowerStationList[Station.PowerTypes.FeliciaWinters] =
+                    Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.FeliciaWinters]);
+                NearbyPowerStationList[Station.PowerTypes.LiYongRui] = Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.LiYongRui]);
+                NearbyPowerStationList[Station.PowerTypes.PranavAntal] = Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.PranavAntal]);
+                NearbyPowerStationList[Station.PowerTypes.YuriGrom] = Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.YuriGrom]);
+                NearbyPowerStationList[Station.PowerTypes.ZacharyHudson] = Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.ZacharyHudson]);
+                NearbyPowerStationList[Station.PowerTypes.ZeminaTorval] = Station.GetNearestStationItems(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.ZeminaTorval]);
             }
         }
 
@@ -627,7 +633,7 @@ namespace Elite
 
                     Ships.HandleShipDistance(LocationData.StarPos);
 
-                    Poi.PoiList = Poi.GetNearestPoiItems(LocationData.StarPos);
+                    Poi.NearbyPoiList = Poi.GetNearestPoiItems(LocationData.StarPos);
 
                     HandleJson();
 
@@ -945,7 +951,7 @@ namespace Elite
 
                     History.AddTravelPos(LocationData.StarPos);
 
-                    Poi.PoiList = Poi.GetNearestPoiItems(LocationData.StarPos);
+                    Poi.NearbyPoiList = Poi.GetNearestPoiItems(LocationData.StarPos);
 
                     HandleJson();
 

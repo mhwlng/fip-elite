@@ -57,40 +57,40 @@ namespace Elite
             lock (RefreshJsonLock)
             {
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Inter Stellar Factors...");
-                Station.InterStellarFactorsStationList = Station.GetStations(@"Data\interstellarfactors.json");
+                Station.FullStationList[Station.PoiTypes.InterStellarFactors] = Station.GetAllStations(@"Data\interstellarfactors.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Raw Material Traders...");
-                Station.RawMaterialTradersStationList = Station.GetStations(@"Data\rawmaterialtraders.json");
+                Station.FullStationList[Station.PoiTypes.RawMaterialTraders] = Station.GetAllStations(@"Data\rawmaterialtraders.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Manufactured Material Traders...");
-                Station.ManufacturedMaterialTradersStationList = Station.GetStations(@"Data\manufacturedmaterialtraders.json");
+                Station.FullStationList[Station.PoiTypes.ManufacturedMaterialTraders] = Station.GetAllStations(@"Data\manufacturedmaterialtraders.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Encoded Data Traders..");
-                Station.EncodedDataTradersStationList = Station.GetStations(@"Data\encodeddatatraders.json");
+                Station.FullStationList[Station.PoiTypes.EncodedDataTraders] = Station.GetAllStations(@"Data\encodeddatatraders.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Human Technology Brokers...");
-                Station.HumanTechnologyBrokersStationList = Station.GetStations(@"Data\humantechnologybrokers.json");
+                Station.FullStationList[Station.PoiTypes.HumanTechnologyBrokers] = Station.GetAllStations(@"Data\humantechnologybrokers.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Guardian Technology Brokers...");
-                Station.GuardianTechnologyBrokersStationList = Station.GetStations(@"Data\guardiantechnologybrokers.json");
+                Station.FullStationList[Station.PoiTypes.GuardianTechnologyBrokers] = Station.GetAllStations(@"Data\guardiantechnologybrokers.json");
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Aisling Duval Stations...");
-                Station.AislingDuvalStationList = Station.GetStations(@"Data\aislingduval.json");
+                Station.FullPowerStationList[Station.PowerTypes.AislingDuval] = Station.GetAllStations(@"Data\aislingduval.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Archon Delaine Stations...");
-                Station.ArchonDelaineStationList = Station.GetStations(@"Data\archondelaine.json");
+                Station.FullPowerStationList[Station.PowerTypes.ArchonDelaine] = Station.GetAllStations(@"Data\archondelaine.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Arissa Lavigny Duval Stations...");
-                Station.ArissaLavignyDuvalStationList = Station.GetStations(@"Data\arissalavignyduval.json");
+                Station.FullPowerStationList[Station.PowerTypes.ArissaLavignyDuval] = Station.GetAllStations(@"Data\arissalavignyduval.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Denton Patreus Stations...");
-                Station.DentonPatreusStationList = Station.GetStations(@"Data\dentonpatreus.json");
+                Station.FullPowerStationList[Station.PowerTypes.DentonPatreus] = Station.GetAllStations(@"Data\dentonpatreus.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Edmund Mahon Stations...");
-                Station.EdmundMahonStationList = Station.GetStations(@"Data\edmundmahon.json");
+                Station.FullPowerStationList[Station.PowerTypes.EdmundMahon] = Station.GetAllStations(@"Data\edmundmahon.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Felicia Winters Stations...");
-                Station.FeliciaWintersStationList = Station.GetStations(@"Data\feliciawinters.json");
+                Station.FullPowerStationList[Station.PowerTypes.FeliciaWinters] = Station.GetAllStations(@"Data\feliciawinters.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Li Yong-Rui Stations...");
-                Station.LiYongRuiStationList = Station.GetStations(@"Data\liyongrui.json");
+                Station.FullPowerStationList[Station.PowerTypes.LiYongRui] = Station.GetAllStations(@"Data\liyongrui.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Pranav Antal Stations...");
-                Station.PranavAntalStationList = Station.GetStations(@"Data\pranavantal.json");
+                Station.FullPowerStationList[Station.PowerTypes.PranavAntal] = Station.GetAllStations(@"Data\pranavantal.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Yuri Grom Stations...");
-                Station.YuriGromStationList = Station.GetStations(@"Data\yurigrom.json");
+                Station.FullPowerStationList[Station.PowerTypes.YuriGrom] = Station.GetAllStations(@"Data\yurigrom.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Zachary Hudson Stations...");
-                Station.ZacharyHudsonStationList = Station.GetStations(@"Data\zacharyhudson.json");
+                Station.FullPowerStationList[Station.PowerTypes.ZacharyHudson] = Station.GetAllStations(@"Data\zacharyhudson.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Zemina Torval Stations...");
-                Station.ZeminaTorvalStationList = Station.GetStations(@"Data\zeminatorval.json");
+                Station.FullPowerStationList[Station.PowerTypes.ZeminaTorval] = Station.GetAllStations(@"Data\zeminatorval.json");
             }
         }
 
@@ -172,7 +172,7 @@ namespace Elite
                     File.ReadAllText("Templates\\styles.css"), true);
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
-                Station.PoiItemList = Poi.GetPoiItems(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
+                Station.FullPoiItemList = Poi.GetAllPoiItems(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
 
                 RefreshJson(splashScreen);
 

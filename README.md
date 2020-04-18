@@ -22,15 +22,10 @@ Use the up/down arrow buttons to switch pages.
 ![Screenshot 7](https://i.imgur.com/z6gq2Ok.png)
 ![Screenshot 8](https://i.imgur.com/WJHBVIX.png)
 ![Screenshot 9](https://i.imgur.com/SaMQ2H2.png)
-![Screenshot 10](https://i.imgur.com/dHuz0fq.png)
-![Screenshot 11](https://i.imgur.com/5UatgrF.png)
-![Screenshot 12](https://i.imgur.com/F2CjRWi.png)
-![Screenshot 13](https://i.imgur.com/eS2OScl.png)
-![Screenshot 14](https://i.imgur.com/iBhMo4L.png)
-![Screenshot 15](https://i.imgur.com/Syp0t78.png)
-![Screenshot 16](https://i.imgur.com/ZOcUfyI.png)
-![Screenshot 17](https://i.imgur.com/v8aUFMT.png)
-![Screenshot 18](https://i.imgur.com/wFsMD4t.png)
+![Screenshot 10](https://i.imgur.com/Syp0t78.png)
+![Screenshot 11](https://i.imgur.com/ZOcUfyI.png)
+![Screenshot 12](https://i.imgur.com/v8aUFMT.png)
+![Screenshot 13](https://i.imgur.com/wFsMD4t.png)
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 
