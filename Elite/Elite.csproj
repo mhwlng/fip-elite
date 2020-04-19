@@ -126,6 +126,7 @@
     <Compile Include="SplashScreenWindow.xaml.cs">
       <DependentUpon>SplashScreenWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Systems.cs" />
     <Compile Include="Station.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="History.cs" />

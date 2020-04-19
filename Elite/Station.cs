@@ -64,12 +64,12 @@ namespace Elite
     {
         public enum PoiTypes
         {
-            InterStellarFactors = 1,
-            RawMaterialTraders = 2,
-            ManufacturedMaterialTraders = 3,
-            EncodedDataTraders = 4,
-            HumanTechnologyBrokers = 5,
-            GuardianTechnologyBrokers = 6
+            InterStellarFactors = 2,
+            RawMaterialTraders = 3,
+            ManufacturedMaterialTraders = 4,
+            EncodedDataTraders = 5,
+            HumanTechnologyBrokers = 6,
+            GuardianTechnologyBrokers = 7
         }
 
         public enum PowerTypes
@@ -86,8 +86,6 @@ namespace Elite
             ZacharyHudson,
             ZeminaTorval
         }
-
-        public static List<PoiItem> FullPoiItemList = null;
 
         public static Dictionary<PoiTypes, List<StationData>> FullStationList = new Dictionary<PoiTypes, List<StationData>>
         {
@@ -132,7 +130,7 @@ namespace Elite
 
         }
 
-        public static List<StationData> GetNearestStationItems(List<double> starPos, List<StationData> stationData)
+        public static List<StationData> GetNearestStations(List<double> starPos, List<StationData> stationData)
         {
             if (stationData?.Any() == true && starPos?.Count == 3)
             {

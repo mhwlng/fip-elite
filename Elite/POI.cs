@@ -13,8 +13,6 @@ using CsvHelper.TypeConversion;
 
 namespace Elite
 {
-
-
     public class PoiItem
     {
         [Name("Location Name")] public string LocationName { get; set; }
@@ -151,7 +149,7 @@ namespace Elite
             Map(m => m.Forums).Index(31);
             Map(m => m.Link).Index(32);
             Map(m => m.Screenshot).Index(33);
-            Map(m => m.DateAdded).Index(34).TypeConverter<CustomDateTimeConverter>(); 
+            Map(m => m.DateAdded).Index(34).TypeConverter<CustomDateTimeConverter>();
             Map(m => m.Checked).Index(35);
             Map(m => m.GalacticX).Index(36);
             Map(m => m.GalacticY).Index(37);
@@ -164,6 +162,7 @@ namespace Elite
     public static class Poi
     {
         public static List<PoiItem> NearbyPoiList = new List<PoiItem>();
+        public static List<PoiItem> FullPoiList = null;
 
         // see https://www.reddit.com/r/EliteDangerous/comments/9mfiug/edison_a_tool_which_helps_getting_to_planet/
 
@@ -172,14 +171,15 @@ namespace Elite
         public const string PoiSpreadsheet =
             @"https://docs.google.com/spreadsheets/d/11E05a-hLGyOQ84B9dQUu0Z53ow1Xt-uqJ-xXJmtYq5A/export?format=csv&gid=594549382";
 
-        public static List<PoiItem> GetAllPoiItems()
+
+        public static List<PoiItem> GetAllPois()
         {
             try
             {
-                HttpWebRequest req = (HttpWebRequest) WebRequest.Create(PoiSpreadsheet);
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(PoiSpreadsheet);
                 req.KeepAlive = false;
                 req.ProtocolVersion = HttpVersion.Version10;
-                HttpWebResponse resp = (HttpWebResponse) req.GetResponse();
+                HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
 
                 using (StreamReader streamReader = new StreamReader(resp.GetResponseStream()))
                 {
@@ -194,10 +194,10 @@ namespace Elite
                     csvread.Configuration.IgnoreBlankLines = true;
                     csvread.Configuration.ShouldSkipRecord = (records) => string.IsNullOrEmpty(records[0]);
                     csvread.Configuration.TypeConverterOptionsCache.GetOptions<DateTime>().Formats =
-                        new[] {"yyyy-MM-dd"};
+                        new[] { "yyyy-MM-dd" };
 
 
-                    return csvread.GetRecords<PoiItem>().Where(x => !x.LocationName.Trim().EndsWith("[X]") ).ToList();
+                    return csvread.GetRecords<PoiItem>().Where(x => !x.LocationName.Trim().EndsWith("[X]")).ToList();
 
                 }
             }
@@ -210,11 +210,11 @@ namespace Elite
 
         }
 
-        public static List<PoiItem> GetNearestPoiItems(List<double> starPos)
+        public static List<PoiItem> GetNearestPois(List<double> starPos)
         {
-            if (Station.FullPoiItemList?.Any() == true && starPos?.Count == 3)
+            if (FullPoiList?.Any() == true && starPos?.Count == 3)
             {
-                Station.FullPoiItemList.ForEach(poiItem =>
+                FullPoiList.ForEach(poiItem =>
                 {
                     var Xs = starPos[0];
                     var Ys = starPos[1];
@@ -228,13 +228,13 @@ namespace Elite
                     double deltaY = Ys - Yd;
                     double deltaZ = Zs - Zd;
 
-                    poiItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                    poiItem.Distance = (double)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
-                return Station.FullPoiItemList.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+                return Enumerable.Where<PoiItem>(FullPoiList, x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
             }
 
-            return new List<PoiItem>(); 
+            return new List<PoiItem>();
 
         }
     }

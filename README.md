@@ -14,15 +14,15 @@ Use the left rotary encoder to show another card on various tabs or zoom into th
 Use the up/down arrow buttons to switch pages.
 
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
-![Screenshot 2](https://i.imgur.com/gmZVF4P.png)
-![Screenshot 3](https://i.imgur.com/cGRZX5F.png)
-![Screenshot 4](https://i.imgur.com/TLWL3Fx.png)
+![Screenshot 2](https://i.imgur.com/JTxiIBL.png)
+![Screenshot 3](https://i.imgur.com/uXpUC6m.png)
+![Screenshot 4](https://i.imgur.com/Fk62MmG.png)
 ![Screenshot 5](https://i.imgur.com/iJnHuOV.png)
 ![Screenshot 6](https://i.imgur.com/16pc2zo.png)
-![Screenshot 7](https://i.imgur.com/z6gq2Ok.png)
+![Screenshot 7](https://i.imgur.com/Cgqdic6.png)
 ![Screenshot 8](https://i.imgur.com/WJHBVIX.png)
 ![Screenshot 9](https://i.imgur.com/SaMQ2H2.png)
-![Screenshot 10](https://i.imgur.com/Syp0t78.png)
+![Screenshot 10](https://i.imgur.com/X5kL0fn.png)
 ![Screenshot 11](https://i.imgur.com/ZOcUfyI.png)
 ![Screenshot 12](https://i.imgur.com/v8aUFMT.png)
 ![Screenshot 13](https://i.imgur.com/iqZVk2Y.png)
@@ -60,3 +60,4 @@ https://www.edsm.net/ for the galaxy image
 
 https://edassets.org/ CMDR Qohen Leth and CMDR Nuse for the ship images
 
+http://edtools.ddns.net/

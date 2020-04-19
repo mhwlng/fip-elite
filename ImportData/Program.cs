@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+
 // ReSharper disable StringLiteralTypo
 
 namespace ImportData
@@ -127,6 +129,97 @@ namespace ImportData
                 return jsonText;
             }
         }
+
+        public class CNBSystemData
+        {
+            [JsonProperty("x")]
+            public double X { get; set; }
+
+            [JsonProperty("y")]
+            public double Y { get; set; }
+
+            [JsonProperty("z")]
+            public double Z { get; set; }
+
+            [JsonProperty("beac")]
+            public string CompromisedNavBeacon { get; set; }
+
+            [JsonProperty("name")]
+            public string Name { get; set; }
+
+            [JsonProperty("systemsecurity")]
+            public string SystemSecurity { get; set; }
+
+            [JsonProperty("systempopulation")]
+            public long? SystemPopulation { get; set; }
+
+            [JsonProperty("powerplaystate")]
+            public string PowerplayState { get; set; }
+
+            [JsonProperty("powers")]
+            public string Powers { get; set; }
+
+            [JsonProperty("allegiance")]
+            public string Allegiance { get; set; }
+
+            [JsonProperty("primary_economy")]
+            public string PrimaryEconomy { get; set; }
+
+            [JsonProperty("government")]
+            public string Government { get; set; }
+
+            [JsonProperty("controlling_minor_faction")]
+            public string ControllingMinorFaction { get; set; }
+
+        }
+
+        public static List<CNBSystemData> GetCnbSystems(string url)
+        {
+            try
+            {
+                using (var client = new WebClient())
+                {
+                    var data = client.DownloadString(url);
+
+                    var jObj = JObject.Parse(data);
+
+                    var systemInfo = jObj.ToObject<Dictionary<string, CNBSystemData>>();
+
+                    return systemInfo.Where(x => x.Value.CompromisedNavBeacon == "1").Select(x => new CNBSystemData
+                    {
+                        CompromisedNavBeacon = x.Value.CompromisedNavBeacon,
+                        X = x.Value.X,
+                        Y = x.Value.Y,
+                        Z = x.Value.Z,
+                        Name = x.Key
+                    }).ToList();
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+
+            return new List<CNBSystemData>();
+
+        }
+
+        public static void CnbSystemSerialize(List<CNBSystemData> systems, string fileName)
+        {
+            (new FileInfo(fileName)).Directory?.Create();
+
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.NullValueHandling = NullValueHandling.Ignore;
+
+            using (StreamWriter sw = new StreamWriter(fileName))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, systems);
+            }
+        }
+
 
         static void Main(string[] args)
         {
@@ -380,8 +473,52 @@ namespace ImportData
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
 
                     StationSerialize(guardianTechnologyBrokers, @"Data\guardiantechnologybrokers.json");
-
                 }
+
+                //--------------------------
+
+                const string cnbPath = @"Data\cnbsystems.json";
+
+                if (File.Exists(cnbPath))
+                {
+                    var modification = File.GetLastWriteTime(cnbPath);
+
+                    if ((DateTime.Now - modification).TotalHours >= 24)
+                    {
+                        File.Delete(cnbPath);
+                    }
+                }
+
+                if (!File.Exists(cnbPath))
+                {
+                    Console.WriteLine("looking up Compromised Nav Beacons");
+
+                    var populatedSystemsByNameEDDB = JsonConvert
+                        .DeserializeObject<List<PopulatedSystemEDDB>>(jsonPopulatedsystemsEDDBText)
+                        .ToDictionary(x => x.Name);
+
+                    var cnbSystems = GetCnbSystems("http://edtools.ddns.net/res.json");
+
+                    cnbSystems.ForEach(z =>
+                    {
+                        if (populatedSystemsByNameEDDB.ContainsKey(z.Name))
+                        {
+                            var systemInfo = populatedSystemsByNameEDDB[z.Name];
+
+                            z.SystemSecurity = systemInfo.Security;
+                            z.SystemPopulation = systemInfo.Population;
+                            z.PowerplayState = systemInfo.PowerState;
+                            z.Powers = systemInfo.Power;
+                            z.PrimaryEconomy = systemInfo.PrimaryEconomy;
+                            z.Government = systemInfo.Government;
+                            z.ControllingMinorFaction = systemInfo.ControllingMinorFaction;
+                            z.Allegiance = systemInfo.Allegiance;
+                        }
+                    });
+
+                    CnbSystemSerialize(cnbSystems, cnbPath);
+                }
+
             }
             catch (Exception ex)
             {

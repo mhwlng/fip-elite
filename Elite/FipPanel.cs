@@ -625,10 +625,10 @@ namespace Elite
 
                                 if (_currentCard[(int)_currentTab] < 0)
                                 {
-                                    _currentCard[(int)_currentTab] = 6;
+                                    _currentCard[(int)_currentTab] = 7;
                                 }
                                 else
-                                if (_currentCard[(int)_currentTab] > 6)
+                                if (_currentCard[(int)_currentTab] > 7)
                                 {
                                     _currentCard[(int)_currentTab] = 0;
                                 }
@@ -906,6 +906,8 @@ namespace Elite
                                                     CurrentCard = _currentCard[(int) _currentTab],
 
                                                     NearbyPoiList = Poi.NearbyPoiList,
+
+                                                    NearbyCnbSystemsList = Systems.NearbyCnbSystemsList,
 
                                                     NearbyStationList = Data.NearbyStationList
 

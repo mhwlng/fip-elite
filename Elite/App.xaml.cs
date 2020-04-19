@@ -173,7 +173,10 @@ namespace Elite
                     File.ReadAllText("Templates\\styles.css"), true);
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
-                Station.FullPoiItemList = Poi.GetAllPoiItems(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
+                Poi.FullPoiList = Poi.GetAllPois(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading CNB Systems...");
+                Systems.FullCnbSystemsList = Systems.GetAllCnbSystems(@"Data\cnbsystems.json"); 
 
                 RefreshJson(splashScreen);
 

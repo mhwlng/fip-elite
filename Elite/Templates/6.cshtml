@@ -205,6 +205,97 @@
             </tbody>
         </table>
     }
+    else if (Model.CurrentCard == 1)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        <table>
+            <tbody>
+                @foreach (var m in Model.NearbyCnbSystemsList)
+                {
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+
+                    if (!string.IsNullOrEmpty(m.SystemSecurity))
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Security</td>
+                            <td class="data">@m.SystemSecurity</td>
+                        </tr>
+                    }
+                    if (m.SystemPopulation > 0)
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Population</td>
+                            <td class="data">@m.SystemPopulation.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Government))
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Government</td>
+                            <td class="data">@m.Government</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Allegiance))
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Allegiance</td>
+                            <td class="data">@m.Allegiance</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.ControllingMinorFaction))
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Faction</td>
+                            <td class="data">@m.ControllingMinorFaction</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.PrimaryEconomy))
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Economy</td>
+                            <td class="data">@m.PrimaryEconomy</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Powers))
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Power</td>
+                            <td class="data">@m.Powers</td>
+                        </tr>
+                        if (!string.IsNullOrEmpty(m.PowerplayState))
+                        {
+                            <tr>
+                                <td class="caption">&nbsp;&nbsp;&nbsp;Pwr. State</td>
+                                <td class="data">@m.PowerplayState</td>
+                            </tr>
+                        }
+                    }
+
+
+                    if (!((List<Systems.CnbSystemData>)Model.NearbyCnbSystemsList).Last().Equals((Systems.CnbSystemData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
     else
     {
         <div class="cardcaption">&nbsp;</div>
