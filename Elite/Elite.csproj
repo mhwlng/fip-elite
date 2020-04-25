@@ -119,6 +119,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cargo.cs" />
+    <Compile Include="HotspotSystems.cs" />
     <Compile Include="Missions.cs" />
     <Compile Include="Ships.cs" />
     <Compile Include="Material.cs" />
@@ -126,7 +127,7 @@
     <Compile Include="SplashScreenWindow.xaml.cs">
       <DependentUpon>SplashScreenWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Systems.cs" />
+    <Compile Include="CnbSystems.cs" />
     <Compile Include="Station.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="History.cs" />
@@ -164,6 +165,9 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Templates\10.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\11.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Templates\9.cshtml">

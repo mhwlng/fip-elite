@@ -52,7 +52,7 @@ namespace Elite
         Powers = 8,
         Materials = 9,
         Cargo = 10,
-        //E = 11,
+        Mining = 11,
         Events = 12,
 
         //---------------
@@ -281,7 +281,7 @@ namespace Elite
                 switch (button)
                 {
                     case 8: // scroll clockwise
-                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship || _currentTab == LCDTab.Mining))
                         {
 
                             _currentCard[(int) _currentTab]++;
@@ -293,7 +293,7 @@ namespace Elite
                         break;
                     case 16: // scroll anti-clockwise
 
-                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship))
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship || _currentTab == LCDTab.Mining))
                         {
                             _currentCard[(int) _currentTab]--;
                             _currentZoomLevel[(int) _currentTab]--;
@@ -384,11 +384,9 @@ namespace Elite
                                     mustRefresh = SetTab(LCDTab.Cargo);
                                 }
                                 break;
-                            /*
                             case 512:
-                                mustRefresh = SetTab(LCDTab.E);
+                                mustRefresh = SetTab(LCDTab.Mining);
                                 break;
-                                */
                             case 1024:
                                 mustRefresh = SetTab(LCDTab.Events);
                                 break;
@@ -663,6 +661,19 @@ namespace Elite
 
                                 break;
 
+                            case LCDTab.Mining:
+
+                                if (_currentCard[(int)_currentTab] < 0)
+                                {
+                                    _currentCard[(int)_currentTab] = 1;
+                                }
+                                else
+                                if (_currentCard[(int)_currentTab] > 1)
+                                {
+                                    _currentCard[(int)_currentTab] = 0;
+                                }
+
+                                break;
 
                             case LCDTab.Map:
 
@@ -907,7 +918,7 @@ namespace Elite
 
                                                     NearbyPoiList = Poi.NearbyPoiList,
 
-                                                    NearbyCnbSystemsList = Systems.NearbyCnbSystemsList,
+                                                    NearbyCnbSystemsList = Data.NearbyCnbSystemsList,
 
                                                     NearbyStationList = Data.NearbyStationList
 
@@ -1024,6 +1035,25 @@ namespace Elite
 
                                         break;
 
+                                    case LCDTab.Mining:
+
+                                        lock (App.RefreshJsonLock)
+                                        {
+                                            str =
+                                                Engine.Razor.Run("11.cshtml", null, new
+                                                {
+                                                    CurrentTab = (int)_currentTab,
+                                                    CurrentPage = _currentPage,
+
+                                                    CurrentCard = _currentCard[(int)_currentTab],
+
+                                                    NearbyHotspotSystemsList = Data.NearbyHotspotSystemsList
+
+                                                });
+                                        }
+
+                                        break;
+
 
                                     case LCDTab.Events:
 
@@ -1131,7 +1161,7 @@ namespace Elite
                             graphics.DrawImage(menuHtmlImage, 0, 0);
                         }
 
-                        if (_currentTab == LCDTab.Ship || _currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials)
+                        if (_currentTab == LCDTab.Ship || _currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials || _currentTab == LCDTab.Mining)
                         {
                             if (mustRender)
                             {

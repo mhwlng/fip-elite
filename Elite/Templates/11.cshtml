@@ -1,0 +1,48 @@
+@using System
+@using System.Collections.Generic
+@using Elite
+@using System.Linq
+@{
+    Layout = "layout.cshtml";
+}
+
+<div class="main">
+
+    <div class="cardcaption">&nbsp;</div>
+
+    <table>
+        <tbody>
+            @foreach (var m in Model.NearbyHotspotSystemsList[(HotspotSystems.MaterialTypes)Model.CurrentCard])
+            {
+                if (!string.IsNullOrEmpty(m.Name))
+                {
+                    <tr>
+                        <td class="caption">System</td>
+                        <td class="data">@m.Name</td>
+                    </tr>
+                }
+                if (m.Distance > 0)
+                {
+                    <tr>
+                        <td class="caption">Dist.</td>
+                        <td class="data">@m.Distance.ToString("N0") Ly</td>
+                    </tr>
+                }
+                if (!string.IsNullOrEmpty(m.Comment))
+                {
+                    <tr>
+                        <td class="caption">Ring</td>
+                        <td class="data">@m.Comment</td>
+                    </tr>
+                }
+                if (!((List<HotspotSystems.HotspotSystemData>)Model.NearbyHotspotSystemsList[(HotspotSystems.MaterialTypes)Model.CurrentCard]).Last().Equals((HotspotSystems.HotspotSystemData)m))
+                {
+                    <tr>
+                        <td class="divider" colspan="2">&nbsp;</td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+</div>

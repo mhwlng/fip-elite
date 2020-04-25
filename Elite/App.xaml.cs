@@ -91,6 +91,15 @@ namespace Elite
                 Station.FullPowerStationList[Station.PowerTypes.ZacharyHudson] = Station.GetAllStations(@"Data\zacharyhudson.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Zemina Torval Stations...");
                 Station.FullPowerStationList[Station.PowerTypes.ZeminaTorval] = Station.GetAllStations(@"Data\zeminatorval.json");
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading CNB Systems...");
+                CnbSystems.FullCnbSystemsList = CnbSystems.GetAllCnbSystems(@"Data\cnbsystems.json");
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Painite Hotspot Systems...");
+                HotspotSystems.FullHotspotSystemsList[HotspotSystems.MaterialTypes.Painite] = HotspotSystems.GetAllHotspotSystems(@"Data\painitesystems.json");
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading LTD Hotspot Systems...");
+                HotspotSystems.FullHotspotSystemsList[HotspotSystems.MaterialTypes.LTD] = HotspotSystems.GetAllHotspotSystems(@"Data\ltdsystems.json");
             }
         }
 
@@ -167,6 +176,7 @@ namespace Elite
                 Engine.Razor.Compile("8.cshtml", null);
                 Engine.Razor.Compile("9.cshtml", null);
                 Engine.Razor.Compile("10.cshtml", null);
+                Engine.Razor.Compile("11.cshtml", null);
                 Engine.Razor.Compile("12.cshtml", null);
 
                 cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
@@ -174,9 +184,6 @@ namespace Elite
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
                 Poi.FullPoiList = Poi.GetAllPois(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
-
-                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading CNB Systems...");
-                Systems.FullCnbSystemsList = Systems.GetAllCnbSystems(@"Data\cnbsystems.json"); 
 
                 RefreshJson(splashScreen);
 

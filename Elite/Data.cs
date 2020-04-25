@@ -22,6 +22,12 @@ namespace Elite
     public class Data
     {
 
+        public static Dictionary<HotspotSystems.MaterialTypes, List<HotspotSystems.HotspotSystemData>> NearbyHotspotSystemsList = new Dictionary<HotspotSystems.MaterialTypes, List<HotspotSystems.HotspotSystemData>>
+        {
+            {HotspotSystems.MaterialTypes.Painite, new List<HotspotSystems.HotspotSystemData>()},
+            {HotspotSystems.MaterialTypes.LTD, new List<HotspotSystems.HotspotSystemData>()}
+        };
+
         public static Dictionary<Station.PoiTypes, List<StationData>> NearbyStationList = new Dictionary<Station.PoiTypes, List<StationData>>
         {
             {Station.PoiTypes.InterStellarFactors, new List<StationData>()},
@@ -46,6 +52,9 @@ namespace Elite
             {Station.PowerTypes.ZacharyHudson, new List<StationData>()},
             {Station.PowerTypes.ZeminaTorval, new List<StationData>()}
         };
+
+        public static List<CnbSystems.CnbSystemData> NearbyCnbSystemsList = new List<CnbSystems.CnbSystemData>();
+
 
         public static  RingBuffer<string> EventHistory = new RingBuffer<string>(50, true);
 
@@ -202,6 +211,11 @@ namespace Elite
                 NearbyPowerStationList[Station.PowerTypes.YuriGrom] = Station.GetNearestStations(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.YuriGrom]);
                 NearbyPowerStationList[Station.PowerTypes.ZacharyHudson] = Station.GetNearestStations(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.ZacharyHudson]);
                 NearbyPowerStationList[Station.PowerTypes.ZeminaTorval] = Station.GetNearestStations(LocationData.StarPos, Station.FullPowerStationList[Station.PowerTypes.ZeminaTorval]);
+
+                NearbyCnbSystemsList = CnbSystems.GetNearestCnbSystems(LocationData.StarPos);
+
+                NearbyHotspotSystemsList[HotspotSystems.MaterialTypes.Painite] = HotspotSystems.GetNearestHotspotSystems(LocationData.StarPos, HotspotSystems.FullHotspotSystemsList[HotspotSystems.MaterialTypes.Painite]);
+                NearbyHotspotSystemsList[HotspotSystems.MaterialTypes.LTD] = HotspotSystems.GetNearestHotspotSystems(LocationData.StarPos, HotspotSystems.FullHotspotSystemsList[HotspotSystems.MaterialTypes.LTD]);
             }
         }
 
@@ -601,8 +615,6 @@ namespace Elite
 
                     Poi.NearbyPoiList = Poi.GetNearestPois(LocationData.StarPos);
 
-                    Systems.NearbyCnbSystemsList = Systems.GetNearestCnbSystems(LocationData.StarPos);
-
                     HandleJson();
 
                     LocationData.SystemAllegiance = locationInfo.SystemAllegiance;
@@ -912,8 +924,6 @@ namespace Elite
                     History.AddTravelPos(LocationData.StarPos);
 
                     Poi.NearbyPoiList = Poi.GetNearestPois(LocationData.StarPos);
-
-                    Systems.NearbyCnbSystemsList = Systems.GetNearestCnbSystems(LocationData.StarPos);
 
                     HandleJson();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -100,8 +101,9 @@ namespace ImportData
             }
         }
 
-        public static string DownloadJson(string path, string url, ref bool wasUpdated)
+        public static void DeleteExpiredFile(string path)
         {
+
             (new FileInfo(path)).Directory?.Create();
 
             if (File.Exists(path))
@@ -113,6 +115,13 @@ namespace ImportData
                     File.Delete(path);
                 }
             }
+        }
+
+
+        public static string DownloadJson(string path, string url, ref bool wasUpdated)
+        {
+
+            DeleteExpiredFile(path);
 
             if (File.Exists(path))
             {
@@ -220,6 +229,56 @@ namespace ImportData
             }
         }
 
+        public class PainiteLocationData
+        {
+            [JsonProperty("x")]
+            public double X { get; set; }
+
+            [JsonProperty("y")]
+            public double Y { get; set; }
+
+            [JsonProperty("z")]
+            public double Z { get; set; }
+
+        }
+
+        public class PainiteSystemData
+        {
+            [JsonProperty("name")]
+            public double Name { get; set; }
+
+            [JsonProperty("comment")]
+            public string Comment { get; set; }
+
+            [JsonProperty("coords")]
+            public PainiteLocationData Coords { get; set; }
+        }
+
+
+        public static void GetHotspotSystems(string path, string url, string material)
+        {
+            try
+            {
+                DeleteExpiredFile(path);
+
+                if (!File.Exists(path))
+                {
+                    Console.WriteLine("looking up " + material + " Hotspots");
+
+                    using (var client = new WebClient())
+                    {
+                        var data = client.DownloadString(url+material);
+
+                        File.WriteAllText(path, data);
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+        }
 
         static void Main(string[] args)
         {
@@ -477,17 +536,11 @@ namespace ImportData
 
                 //--------------------------
 
+                // Compromised Nav Beacons
+
                 const string cnbPath = @"Data\cnbsystems.json";
 
-                if (File.Exists(cnbPath))
-                {
-                    var modification = File.GetLastWriteTime(cnbPath);
-
-                    if ((DateTime.Now - modification).TotalHours >= 24)
-                    {
-                        File.Delete(cnbPath);
-                    }
-                }
+                DeleteExpiredFile(cnbPath);
 
                 if (!File.Exists(cnbPath))
                 {
@@ -518,6 +571,12 @@ namespace ImportData
 
                     CnbSystemSerialize(cnbSystems, cnbPath);
                 }
+
+                //--------------------------
+
+                 GetHotspotSystems(@"Data\painitesystems.json", "http://edtools.ddns.net/miner?a=r&n=", "Painite");
+                 GetHotspotSystems(@"Data\ltdsystems.json", "http://edtools.ddns.net/miner?a=r&n=", "LTD");
+
 
             }
             catch (Exception ex)

@@ -13,10 +13,9 @@ using Newtonsoft.Json.Linq;
 namespace Elite
 {
 
-    public static class Systems
+    public static class CnbSystems
     {
         public static List<CnbSystemData> FullCnbSystemsList = null;
-        public static List<CnbSystemData> NearbyCnbSystemsList = null;
 
         public class CnbSystemData
         {
