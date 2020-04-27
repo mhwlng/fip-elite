@@ -12,37 +12,107 @@
 
     <table>
         <tbody>
-            @foreach (var m in Model.NearbyHotspotSystemsList[(HotspotSystems.MaterialTypes)Model.CurrentCard])
+            @if (Model.CurrentCard == 0 || Model.CurrentCard == 2)
             {
-                if (!string.IsNullOrEmpty(m.Name))
-                {
-                    <tr>
-                        <td class="caption">System</td>
-                        <td class="data">@m.Name</td>
-                    </tr>
-                }
-                if (m.Distance > 0)
-                {
-                    <tr>
-                        <td class="caption">Dist.</td>
-                        <td class="data">@m.Distance.ToString("N0") Ly</td>
-                    </tr>
-                }
-                if (!string.IsNullOrEmpty(m.Comment))
-                {
-                    <tr>
-                        <td class="caption">Ring</td>
-                        <td class="data">@m.Comment</td>
-                    </tr>
-                }
-                if (!((List<HotspotSystems.HotspotSystemData>)Model.NearbyHotspotSystemsList[(HotspotSystems.MaterialTypes)Model.CurrentCard]).Last().Equals((HotspotSystems.HotspotSystemData)m))
-                {
-                    <tr>
-                        <td class="divider" colspan="2">&nbsp;</td>
-                    </tr>
-                }
 
+                foreach (var m in Model.NearbyHotspotSystemsList[(HotspotSystems.MaterialTypes)Model.CurrentCard])
+                {
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">System</td>
+                            <td class="data">@m.Name</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist.</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Comment))
+                    {
+                        <tr>
+                            <td class="caption">Ring</td>
+                            <td class="data">@m.Comment</td>
+                        </tr>
+                    }
+                    if (!((List<HotspotSystems.HotspotSystemData>)Model.NearbyHotspotSystemsList[(HotspotSystems.MaterialTypes)Model.CurrentCard]).Last().Equals((HotspotSystems.HotspotSystemData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+
+                }
             }
+            else if (Model.CurrentCard == 1 || Model.CurrentCard == 3)
+            {
+
+                foreach (var m in Model.NearbyMiningStationsList[(MiningStations.MaterialTypes)Model.CurrentCard])
+                {
+                    if (!string.IsNullOrEmpty(m.SystemName))
+                    {
+                        <tr>
+                            <td class="caption">System</td>
+                            <td class="data">@m.SystemName</td>
+                        </tr>
+                    }
+                    if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.Name))
+                    {
+                        <tr>
+                            <td class="caption">Station</td>
+                            <td class="data">@m.Name (@m.Pad)</td>
+                        </tr>
+                    }
+                    if (m.DistanceToArrival > 0)
+                    {
+                        <tr>
+                            <td class="caption">Dist. from star</td>
+                            <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                        </tr>
+                    }
+
+                    if (m.Price > 0)
+                    {
+                        <tr>
+                            <td class="caption">Price</td>
+                            <td class="data">@m.Price.ToString("N0") CR</td>
+                        </tr>
+                    }
+                    if (m.Price > 0)
+                    {
+                        <tr>
+                            <td class="caption">Demand</td>
+                            <td class="data">@m.Demand.ToString("N0")</td>
+                        </tr>
+                    }
+                    if (m.AgoSec > 0)
+                    {
+                        <tr>
+                            <td class="caption">Ago</td>
+                            <td class="data">@Html.SinceText(m.AgoSec, m.UpdatedTime)</td>
+                        </tr>
+                    }
+
+                    if (!((List<MiningStations.MiningStationData>)Model.NearbyMiningStationsList[(MiningStations.MaterialTypes)Model.CurrentCard]).Last().Equals((MiningStations.MiningStationData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+                    }
+
+                }
+            }
+
         </tbody>
     </table>
 </div>

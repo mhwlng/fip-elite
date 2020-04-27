@@ -28,6 +28,13 @@ namespace Elite
             {HotspotSystems.MaterialTypes.LTD, new List<HotspotSystems.HotspotSystemData>()}
         };
 
+
+        public static Dictionary<MiningStations.MaterialTypes, List<MiningStations.MiningStationData>> NearbyMiningStationsList = new Dictionary<MiningStations.MaterialTypes, List<MiningStations.MiningStationData>>
+        {
+            {MiningStations.MaterialTypes.Painite, new List<MiningStations.MiningStationData>()},
+            {MiningStations.MaterialTypes.LTD, new List<MiningStations.MiningStationData>()}
+        };
+
         public static Dictionary<Station.PoiTypes, List<StationData>> NearbyStationList = new Dictionary<Station.PoiTypes, List<StationData>>
         {
             {Station.PoiTypes.InterStellarFactors, new List<StationData>()},
@@ -216,6 +223,10 @@ namespace Elite
 
                 NearbyHotspotSystemsList[HotspotSystems.MaterialTypes.Painite] = HotspotSystems.GetNearestHotspotSystems(LocationData.StarPos, HotspotSystems.FullHotspotSystemsList[HotspotSystems.MaterialTypes.Painite]);
                 NearbyHotspotSystemsList[HotspotSystems.MaterialTypes.LTD] = HotspotSystems.GetNearestHotspotSystems(LocationData.StarPos, HotspotSystems.FullHotspotSystemsList[HotspotSystems.MaterialTypes.LTD]);
+
+                NearbyMiningStationsList[MiningStations.MaterialTypes.Painite] = MiningStations.GetNearestMiningStations(LocationData.StarPos, MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.Painite]);
+                NearbyMiningStationsList[MiningStations.MaterialTypes.LTD] = MiningStations.GetNearestMiningStations(LocationData.StarPos, MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.LTD]);
+
             }
         }
 

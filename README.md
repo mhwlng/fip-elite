@@ -27,7 +27,8 @@ Use the up/down arrow buttons to switch pages.
 ![Screenshot 12](https://i.imgur.com/v8aUFMT.png)
 ![Screenshot 13](https://i.imgur.com/iqZVk2Y.png)
 ![Screenshot 14](https://i.imgur.com/ofaRPKm.png)
-![Screenshot 15](https://i.imgur.com/wFsMD4t.png)
+![Screenshot 15](https://i.imgur.com/zm3Xrm9.png)
+![Screenshot 16](https://i.imgur.com/wFsMD4t.png)
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 

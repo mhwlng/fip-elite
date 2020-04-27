@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -89,11 +90,13 @@ namespace ImportData
         {
             (new FileInfo(fileName)).Directory?.Create();
 
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.NullValueHandling = NullValueHandling.Ignore;
+            var serializer = new JsonSerializer
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
 
-            using (StreamWriter sw = new StreamWriter(fileName))
-            using (JsonWriter writer = new JsonTextWriter(sw))
+            using (var sw = new StreamWriter(fileName))
+            using (var writer = new JsonTextWriter(sw))
             {
                 var stationsData = GetStationsData(stations);
 
@@ -101,7 +104,7 @@ namespace ImportData
             }
         }
 
-        public static void DeleteExpiredFile(string path)
+        public static void DeleteExpiredFile(string path, int  minutes)
         {
 
             (new FileInfo(path)).Directory?.Create();
@@ -110,18 +113,37 @@ namespace ImportData
             {
                 var modification = File.GetLastWriteTime(path);
 
-                if ((DateTime.Now - modification).TotalHours >= 24)
+                if ((DateTime.Now - modification).TotalMinutes >= minutes)
                 {
                     File.Delete(path);
                 }
             }
         }
 
+        public static bool NeedToUpdateFile(string path, int minutes)
+        {
+            if (File.Exists(path))
+            {
+                var modification = File.GetLastWriteTime(path);
+
+                if ((DateTime.Now - modification).TotalMinutes <= minutes)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                (new FileInfo(path)).Directory?.Create();
+            }
+
+            return true;
+        }
+
 
         public static string DownloadJson(string path, string url, ref bool wasUpdated)
         {
 
-            DeleteExpiredFile(path);
+            DeleteExpiredFile(path, 1440);
 
             if (File.Exists(path))
             {
@@ -215,51 +237,59 @@ namespace ImportData
 
         }
 
-        public static void CnbSystemSerialize(List<CNBSystemData> systems, string fileName)
+        public static void CnbSystemsSerialize(List<CNBSystemData> systems, string fileName)
         {
             (new FileInfo(fileName)).Directory?.Create();
 
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.NullValueHandling = NullValueHandling.Ignore;
+            var serializer = new JsonSerializer
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
 
-            using (StreamWriter sw = new StreamWriter(fileName))
-            using (JsonWriter writer = new JsonTextWriter(sw))
+            using (var sw = new StreamWriter(fileName))
+            using (var writer = new JsonTextWriter(sw))
             {
                 serializer.Serialize(writer, systems);
             }
         }
-
-        public class PainiteLocationData
+        
+        public static void DownloadCnbSystems(string cnbPath, Dictionary<string, PopulatedSystemEDDB> populatedSystemsEDDBbyName)
         {
-            [JsonProperty("x")]
-            public double X { get; set; }
 
-            [JsonProperty("y")]
-            public double Y { get; set; }
+            DeleteExpiredFile(cnbPath, 1440);
 
-            [JsonProperty("z")]
-            public double Z { get; set; }
+            if (!File.Exists(cnbPath))
+            {
+                Console.WriteLine("looking up Compromised Nav Beacons");
 
+                var cnbSystems = GetCnbSystems("http://edtools.ddns.net/res.json");
+
+                cnbSystems.ForEach(z =>
+                {
+                    if (populatedSystemsEDDBbyName.ContainsKey(z.Name))
+                    {
+                        var systemInfo = populatedSystemsEDDBbyName[z.Name];
+
+                        z.SystemSecurity = systemInfo.Security;
+                        z.SystemPopulation = systemInfo.Population;
+                        z.PowerplayState = systemInfo.PowerState;
+                        z.Powers = systemInfo.Power;
+                        z.PrimaryEconomy = systemInfo.PrimaryEconomy;
+                        z.Government = systemInfo.Government;
+                        z.ControllingMinorFaction = systemInfo.ControllingMinorFaction;
+                        z.Allegiance = systemInfo.Allegiance;
+                    }
+                });
+
+                CnbSystemsSerialize(cnbSystems, cnbPath);
+            }
         }
 
-        public class PainiteSystemData
-        {
-            [JsonProperty("name")]
-            public double Name { get; set; }
-
-            [JsonProperty("comment")]
-            public string Comment { get; set; }
-
-            [JsonProperty("coords")]
-            public PainiteLocationData Coords { get; set; }
-        }
-
-
-        public static void GetHotspotSystems(string path, string url, string material)
+        public static void DownloadHotspotSystems(string path, string url, string material)
         {
             try
             {
-                DeleteExpiredFile(path);
+                DeleteExpiredFile(path, 1440);
 
                 if (!File.Exists(path))
                 {
@@ -270,8 +300,120 @@ namespace ImportData
                         var data = client.DownloadString(url+material);
 
                         File.WriteAllText(path, data);
-
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+        }
+
+
+        public class HotspotStationData
+        {
+            public string System { get; set; }
+            public string Station { get; set; }
+            public int Price { get; set; }
+            public string Pad { get; set; }
+            public int AgoSec { get; set; }
+            public int Demand { get; set; }
+
+            [JsonIgnore]
+            public StationEDSM StationEDSM { get; set; }
+        }
+
+        public static List<MiningStationData> GetMiningStationsData(List<HotspotStationData> stations, List<StationEDSM> stationsEDSM)
+        {
+            if (stationsEDSM != null)
+            {
+                foreach (var s in stations)
+                {
+                    s.StationEDSM = stationsEDSM.FirstOrDefault(x => x.Name == s.Station && x.SystemName == s.System);
+                }
+            }
+
+            return stations.Select(x => new MiningStationData
+            {
+                Name = x.Station,
+                SystemName = x.System,
+
+                Price = x.Price,
+                Pad = x.Pad,
+                AgoSec = x.AgoSec,
+                Demand =x.Demand,
+
+                X = x.StationEDSM?.PopulatedSystemEDDB?.X ?? 0,
+                Y = x.StationEDSM?.PopulatedSystemEDDB?.Y ?? 0,
+                Z = x.StationEDSM?.PopulatedSystemEDDB?.Z ?? 0,
+
+                DistanceToArrival = x.StationEDSM?.DistanceToArrival,
+                Type = x.StationEDSM?.Type,
+
+                SystemSecurity = x.StationEDSM?.PopulatedSystemEDDB?.Security,
+                SystemPopulation = x.StationEDSM?.PopulatedSystemEDDB?.Population,
+
+                PowerplayState = x.StationEDSM?.PopulatedSystemEDDB?.PowerState,
+                Powers = x.StationEDSM?.PopulatedSystemEDDB?.Power,
+
+                Allegiance = x.StationEDSM?.Allegiance,
+                Government = x.StationEDSM?.Government,
+                Economy = x.StationEDSM?.Economy,
+                Faction = x.StationEDSM?.ControllingFaction?.Name
+
+
+            }).ToList();
+
+        }
+
+        public static void MiningStationsSerialize(List<MiningStationData> stations, string fileName)
+        {
+            (new FileInfo(fileName)).Directory?.Create();
+
+            var serializer = new JsonSerializer
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+            using (var sw = new StreamWriter(fileName))
+            using (var writer = new JsonTextWriter(sw))
+            {
+
+                serializer.Serialize(writer, stations);
+            }
+        }
+
+        public static void DownloadMiningStationsHtml(string path, string url, string material, int cid, List<StationEDSM> stationsEDSM)
+        {
+            try
+            {
+                Console.WriteLine("looking up " + material + " Stations");
+
+                using (var client = new WebClient())
+                {
+                    var data = client.DownloadString(url + cid);
+
+                    HtmlDocument doc = new HtmlDocument();
+                    doc.LoadHtml(data);
+
+                    var stationInfo = doc.DocumentNode.SelectSingleNode("//table[@id='table-stations-max-sell']")
+                        .Descendants("tr")
+                        .Where(tr => tr.Elements("td").Count() > 1)
+                        .Select(tr => tr.Elements("td").Select(td => td.InnerText.Trim()).ToList())
+                        .Select( tr => new HotspotStationData
+                        {
+                            Station = tr[0],
+                            System = tr[1],
+                            Price = Convert.ToInt32(tr[2].Replace(",","").Replace(".", "")),
+                            Demand = Convert.ToInt32(tr[4].Replace(",","").Replace(".", "")),
+                            Pad = tr[5],
+                            AgoSec = Convert.ToInt32(tr[6].Substring(2, tr[6].IndexOf("}")-2))
+                        })
+                        .ToList();
+
+                    var stationsData = GetMiningStationsData(stationInfo, stationsEDSM);
+
+                    MiningStationsSerialize(stationsData, path);
                 }
             }
             catch (Exception ex)
@@ -288,7 +430,8 @@ namespace ImportData
             {
                 List<StationEDSM> stationsEDSM = null;
                 Dictionary<string,StationEDDB> stationsEDDB = null;
-                Dictionary<int, PopulatedSystemEDDB> populatedSystemsEDDB = null;
+                Dictionary<int, PopulatedSystemEDDB> populatedSystemsEDDBbyEdsmId = null;
+                Dictionary<string,PopulatedSystemEDDB> populatedSystemsEDDBbyName = null;
 
                 var wasAnyUpdated = false;
 
@@ -304,13 +447,23 @@ namespace ImportData
 
                 var jsonStationsEDDBText = DownloadJson(@"Data\stationsEDDB.json", "https://eddb.io/archive/v6/stations.json", ref wasAnyUpdated);
 
-                if (wasAnyUpdated)
-                {
-                    Console.WriteLine("checking station and system data");
+                Console.WriteLine("checking station and system data");
 
-                    populatedSystemsEDDB = JsonConvert.DeserializeObject<List<PopulatedSystemEDDB>>(jsonPopulatedsystemsEDDBText)
+                if (NeedToUpdateFile(@"Data\cnbsystems.json", 1440))
+                {
+                    populatedSystemsEDDBbyName = JsonConvert
+                        .DeserializeObject<List<PopulatedSystemEDDB>>(jsonPopulatedsystemsEDDBText)
+                        .ToDictionary(x => x.Name);
+
+                    DownloadCnbSystems(@"Data\cnbsystems.json", populatedSystemsEDDBbyName);
+                }
+
+                if (wasAnyUpdated || NeedToUpdateFile(@"Data\painitestations.json", 15))
+                {
+                    populatedSystemsEDDBbyEdsmId = JsonConvert
+                        .DeserializeObject<List<PopulatedSystemEDDB>>(jsonPopulatedsystemsEDDBText)
                         .Where(x => x.EdsmId != null)
-                        .ToDictionary(x => (int)x.EdsmId);
+                        .ToDictionary(x => (int) x.EdsmId);
 
                     stationsEDSM = JsonConvert.DeserializeObject<List<StationEDSM>>(jsonStationsEDSMText);
 
@@ -333,12 +486,18 @@ namespace ImportData
 
                     stationsEDSM.ForEach(z =>
                     {
-                        if (populatedSystemsEDDB.ContainsKey(z.SystemId))
+                        if (populatedSystemsEDDBbyEdsmId.ContainsKey(z.SystemId))
                         {
-                            z.PopulatedSystemEDDB = populatedSystemsEDDB[z.SystemId];
+                            z.PopulatedSystemEDDB = populatedSystemsEDDBbyEdsmId[z.SystemId];
                         }
                     });
 
+                    DownloadMiningStationsHtml(@"Data\painitestations.json", "https://eddb.io/commodity/", "Painite", 83, stationsEDSM);
+                    DownloadMiningStationsHtml(@"Data\ltdstations.json", "https://eddb.io/commodity/", "LTD", 276, stationsEDSM);
+                }
+
+                if (wasAnyUpdated)
+                {
                     //-------------------------
 
                     Console.WriteLine("finding Aisling Duval stations");
@@ -534,48 +693,8 @@ namespace ImportData
                     StationSerialize(guardianTechnologyBrokers, @"Data\guardiantechnologybrokers.json");
                 }
 
-                //--------------------------
-
-                // Compromised Nav Beacons
-
-                const string cnbPath = @"Data\cnbsystems.json";
-
-                DeleteExpiredFile(cnbPath);
-
-                if (!File.Exists(cnbPath))
-                {
-                    Console.WriteLine("looking up Compromised Nav Beacons");
-
-                    var populatedSystemsByNameEDDB = JsonConvert
-                        .DeserializeObject<List<PopulatedSystemEDDB>>(jsonPopulatedsystemsEDDBText)
-                        .ToDictionary(x => x.Name);
-
-                    var cnbSystems = GetCnbSystems("http://edtools.ddns.net/res.json");
-
-                    cnbSystems.ForEach(z =>
-                    {
-                        if (populatedSystemsByNameEDDB.ContainsKey(z.Name))
-                        {
-                            var systemInfo = populatedSystemsByNameEDDB[z.Name];
-
-                            z.SystemSecurity = systemInfo.Security;
-                            z.SystemPopulation = systemInfo.Population;
-                            z.PowerplayState = systemInfo.PowerState;
-                            z.Powers = systemInfo.Power;
-                            z.PrimaryEconomy = systemInfo.PrimaryEconomy;
-                            z.Government = systemInfo.Government;
-                            z.ControllingMinorFaction = systemInfo.ControllingMinorFaction;
-                            z.Allegiance = systemInfo.Allegiance;
-                        }
-                    });
-
-                    CnbSystemSerialize(cnbSystems, cnbPath);
-                }
-
-                //--------------------------
-
-                 GetHotspotSystems(@"Data\painitesystems.json", "http://edtools.ddns.net/miner?a=r&n=", "Painite");
-                 GetHotspotSystems(@"Data\ltdsystems.json", "http://edtools.ddns.net/miner?a=r&n=", "LTD");
+                DownloadHotspotSystems(@"Data\painitesystems.json", "http://edtools.ddns.net/miner?a=r&n=", "Painite");
+                DownloadHotspotSystems(@"Data\ltdsystems.json", "http://edtools.ddns.net/miner?a=r&n=", "LTD");
 
 
             }

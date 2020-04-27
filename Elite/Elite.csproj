@@ -119,6 +119,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cargo.cs" />
+    <Compile Include="MiningStations.cs" />
     <Compile Include="HotspotSystems.cs" />
     <Compile Include="Missions.cs" />
     <Compile Include="Ships.cs" />

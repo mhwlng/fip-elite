@@ -36,6 +36,7 @@ namespace Elite
         public static readonly object RefreshJsonLock = new object();
 
         public static Task jsonTask;
+        public static CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         private static Mutex _mutex = null;
 
@@ -100,7 +101,20 @@ namespace Elite
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading LTD Hotspot Systems...");
                 HotspotSystems.FullHotspotSystemsList[HotspotSystems.MaterialTypes.LTD] = HotspotSystems.GetAllHotspotSystems(@"Data\ltdsystems.json");
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Painite Mining Stations...");
+                MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.Painite] = MiningStations.GetAllMiningStations(@"Data\painitestations.json");
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading LTD Mining Stations...");
+                MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.LTD] = MiningStations.GetAllMiningStations(@"Data\ltdstations.json");
+
             }
+
+            if (splashScreen == null)
+            {
+                Data.HandleJson();
+            }
+
         }
 
         private static void RunProcess(string fileName)
@@ -214,25 +228,41 @@ namespace Elite
 
                 this.Dispatcher.Invoke(() => { splashScreen.Close(); });
 
-                jsonTask = Task.Run(() =>
+                var token = tokenSource.Token;
+
+                jsonTask = Task.Run(async () =>
                 {
-                    log.Info("reloading json");
-
-                    RunProcess("ImportData.exe");
-
-                    RefreshJson();
-
-                    log.Info("json reloaded");
-
-                    this.Dispatcher.Invoke(() =>
+                    while (true)
                     {
-                        notifyIcon.IconSource =
-                            new BitmapImage(new Uri("pack://application:,,,/Elite;component/Elite.ico"));
+                        if (token.IsCancellationRequested)
+                        {
+                            token.ThrowIfCancellationRequested();
+                        }
 
-                        notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel";
-                    });
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            notifyIcon.IconSource =
+                                new BitmapImage(new Uri("pack://application:,,,/Elite;component/Hourglass.ico"));
 
-                });
+                            notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel [WORKING]";
+                        });
+
+                        RunProcess("ImportData.exe");
+
+                        RefreshJson();
+
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            notifyIcon.IconSource =
+                                new BitmapImage(new Uri("pack://application:,,,/Elite;component/Elite.ico"));
+
+                            notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel";
+                        });
+
+                        await Task.Delay(30 * 60 * 1000, tokenSource.Token);
+                    }
+
+                }, token);
 
             });
 
@@ -252,7 +282,22 @@ namespace Elite
 
             notifyIcon.Dispose(); //the icon would clean up automatically, but this is cleaner
 
-            jsonTask?.Wait();
+            tokenSource.Cancel();
+
+            var token = tokenSource.Token;
+
+            try
+            {
+                jsonTask?.Wait(token);
+            }
+            catch (OperationCanceledException)
+            {
+                log.Info("background task ended");
+            }
+            finally
+            {
+                tokenSource.Dispose();
+            }
 
             log.Info("exiting");
 

@@ -65,8 +65,37 @@ namespace Elite
         L = 18
     }
 
+    public static class TimeSpanFormattingExtensions
+    {
+        public static string ToHumanReadableString(this TimeSpan t)
+        {
+            if (t.TotalMinutes <= 1)
+            {
+                return $@"{Math.Ceiling(t.TotalSeconds)} seconds";
+            }
+            if (t.TotalHours <= 1)
+            {
+                return $@"{Math.Ceiling(t.TotalMinutes)} minutes";
+            }
+            if (t.TotalDays <= 1)
+            {
+                return $@"{Math.Ceiling(t.TotalHours)} hours";
+            }
+
+            return $@"{Math.Ceiling(t.TotalDays)} days";
+        }
+    }
+
     public class MyHtmlHelper
     {
+        public IEncodedString SinceText(int agodec, DateTime UpdatedTime)
+        {
+
+            var ts = DateTime.Now - UpdatedTime.AddSeconds(-agodec);
+
+            return new RawString(ts.ToHumanReadableString());
+        }
+
         public IEncodedString Raw(string rawString)
         {
             return new RawString(rawString);
@@ -665,10 +694,10 @@ namespace Elite
 
                                 if (_currentCard[(int)_currentTab] < 0)
                                 {
-                                    _currentCard[(int)_currentTab] = 1;
+                                    _currentCard[(int)_currentTab] = 3;
                                 }
                                 else
-                                if (_currentCard[(int)_currentTab] > 1)
+                                if (_currentCard[(int)_currentTab] > 3)
                                 {
                                     _currentCard[(int)_currentTab] = 0;
                                 }
@@ -1039,6 +1068,7 @@ namespace Elite
 
                                         lock (App.RefreshJsonLock)
                                         {
+
                                             str =
                                                 Engine.Razor.Run("11.cshtml", null, new
                                                 {
@@ -1047,7 +1077,9 @@ namespace Elite
 
                                                     CurrentCard = _currentCard[(int)_currentTab],
 
-                                                    NearbyHotspotSystemsList = Data.NearbyHotspotSystemsList
+                                                    NearbyHotspotSystemsList = Data.NearbyHotspotSystemsList,
+
+                                                    NearbyMiningStationsList = Data.NearbyMiningStationsList
 
                                                 });
                                         }

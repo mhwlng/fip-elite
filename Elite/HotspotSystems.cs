@@ -19,7 +19,7 @@ namespace Elite
         public enum MaterialTypes
         {
             Painite = 0,
-            LTD = 1,
+            LTD = 2
 
         }
 
