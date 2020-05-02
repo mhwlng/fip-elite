@@ -1,0 +1,200 @@
+@using System.Net
+@{
+    Layout = "layout.cshtml";
+}
+
+<div class="main">
+    
+    <div class="cardcaption">&nbsp;</div>
+
+    <table>
+        <tbody>
+        @if (Model.StarSystem != Model.FsdTargetName && Model.RemainingJumpsInRoute > 0)
+        {
+            if (!string.IsNullOrEmpty(Model.FsdTargetName))
+            {
+                <tr>
+                    <td class="caption">FSD Target</td>
+                    <td class="data">@Model.FsdTargetName</td>
+                </tr>
+            }
+            <tr>
+                <td class="caption">&nbsp;&nbsp;&nbsp;Jumps Left</td>
+                <td class="data">@Model.RemainingJumpsInRoute</td>
+            </tr>
+
+            <tr>
+                <td class="divider" colspan="2">&nbsp;</td>
+            </tr>
+        }
+
+        <tr>
+            <td class="caption">In System</td>
+            <td class="data">@Model.StarSystem</td>
+        </tr>
+
+        @if (!string.IsNullOrEmpty(Model.SystemSecurity))
+        {
+            <tr>
+                <td class="caption">&nbsp;&nbsp;&nbsp;Security</td>
+                <td class="data">@Model.SystemSecurity</td>
+            </tr>
+        }
+        @if (Model.Population > 0)
+        {
+            <tr>
+                <td class="caption">&nbsp;&nbsp;&nbsp;Population</td>
+                <td class="data">@Model.Population.ToString("N0")</td>
+            </tr>
+        }
+        @if (!string.IsNullOrEmpty(Model.SystemGovernment))
+        {
+            <tr>
+                <td class="caption">&nbsp;&nbsp;&nbsp;Government</td>
+                <td class="data">@Model.SystemGovernment</td>
+            </tr>
+        }
+        @if (!string.IsNullOrEmpty(Model.SystemAllegiance))
+        {
+            <tr>
+                <td class="caption">&nbsp;&nbsp;&nbsp;Allegiance</td>
+                <td class="data">@Model.SystemAllegiance</td>
+            </tr>
+        }
+        @if (!string.IsNullOrEmpty(Model.SystemFaction))
+        {
+            <tr>
+                <td class="caption">&nbsp;&nbsp;&nbsp;Faction</td>
+                <td class="data">@Model.SystemFaction</td>
+            </tr>
+        }
+        @if (!string.IsNullOrEmpty(Model.SystemEconomy))
+        {
+            <tr>
+                <td class="caption">&nbsp;&nbsp;&nbsp;Economy</td>
+                <td class="data">@Model.SystemEconomy</td>
+            </tr>
+        }
+        @if (!string.IsNullOrEmpty(Model.Powers))
+        {
+            <tr>
+                <td class="caption">&nbsp;&nbsp;&nbsp;Power</td>
+                <td class="data">@Model.Powers</td>
+            </tr>
+            if (!string.IsNullOrEmpty(Model.PowerplayState))
+            {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Pwr. State</td>
+                    <td class="data">@Model.PowerplayState</td>
+                </tr>
+            }
+        }
+
+
+        @if (!Model.HideBody)
+        {
+            if (Model.BodyType == "Station")
+            {
+                <tr>
+                    <td class="divider" colspan="2">&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <td class="caption">Station</td>
+                    <td class="data">@Model.Station</td>
+                </tr>
+            }
+            else if (!string.IsNullOrEmpty(@Model.BodyType) && !string.IsNullOrEmpty(Model.Body) && Model.Body != Model.FsdTargetName && Model.Body != Model.StarSystem)
+            {
+                <tr>
+                    <td class="divider" colspan="2">&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <td class="caption">Body</td>
+                    <td class="data">@Model.Body</td>
+                </tr>
+                if (!string.IsNullOrEmpty(Model.BodyType))
+                {
+                    <tr>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Type</td>
+                        <td class="data">@Model.BodyType</td>
+                    </tr>
+                }
+                if (!string.IsNullOrEmpty(Model.Settlement))
+                {
+                    <tr>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Settlement</td>
+                        <td class="data">@Model.Settlement</td>
+                    </tr>
+                }
+
+            }
+        }
+
+        @if (Model.Docked)
+        {
+            if (!string.IsNullOrEmpty(Model.StationType))
+            {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Type</td>
+                    <td class="data">@Model.StationType</td>
+                </tr>
+            }
+            if (Model.DistFromStarLs > 0)
+            {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Dist. from star</td>
+                    <td class="data">@Model.DistFromStarLs.ToString("N1") Ls</td>
+                </tr>
+            }
+
+            if (!string.IsNullOrEmpty(Model.Government))
+            {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Government</td>
+                    <td class="data">@Model.Government</td>
+                </tr>
+            }
+            if (!string.IsNullOrEmpty(Model.Allegiance))
+            {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Allegiance</td>
+                    <td class="data">@Model.Allegiance</td>
+                </tr>
+            }
+            if (!string.IsNullOrEmpty(Model.Faction))
+            {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Faction</td>
+                    <td class="data">@Model.Faction</td>
+                </tr>
+            }
+            if (!string.IsNullOrEmpty(Model.Economy))
+            {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Economy</td>
+                    <td class="data">@Model.Economy</td>
+                </tr>
+            }
+
+        }
+        else
+        {
+            if (Model.LandingPad > 0)
+            {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Landing Pad</td>
+                    <td class="data">@Model.LandingPad</td>
+                </tr>
+            }
+        }
+
+        <tr>
+            <td class="caption">&nbsp;</td>
+            <td class="data">&nbsp;</td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>

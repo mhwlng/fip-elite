@@ -3,6 +3,9 @@
 }
 
 <div class="main">
+
+    <div class="cardcaption">&nbsp;</div>
+
     <table>
         <tbody>
             @if (!string.IsNullOrEmpty(Model.Commander))
@@ -16,7 +19,7 @@
             {
                 <tr>
                     <td class="caption">Legal State</td>
-                    <td class="data @(Model.LegalState!="Clean" ? "alarm" : "")" colspan="2">@Model.LegalState.Trim()</td>
+                    <td class="data @(Model.LegalState != "Clean" ? "alarm" : "")" colspan="2">@Model.LegalState.Trim()</td>
                 </tr>
             }
             @if (Model.Credits > 0)

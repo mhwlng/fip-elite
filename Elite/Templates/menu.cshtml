@@ -1,68 +1,69 @@
+@using Elite
 <div class="menu">
 
-    @if (Model.CurrentPage == 0)
+    @if (Model.CurrentPage == LCDPage.Home)
     {
-
-        <table>
+        <table class="menu">
             <tbody>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == 1 ? "highlight" : "")">CMDR</div></td>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Commander ? "highlight" : "")">CMDR</div></td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == 2 ? "highlight" : "")">SHIP</div></td>
-                </tr>
-                <tr>
-                    <td><div class="@(Model.CurrentTab == 3 ? "highlight" : "")">NAV</div></td>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Navigation ? "highlight" : "")">NAVIGATION</div></td>
                 </tr>
                 <tr>
                     <td>
-                        @if (Model.TargetLocked)
-                        {
-                            <div class="@(Model.CurrentTab == 4 ? "highlight" : "")">TARGET</div>
-                        }
-                        else
-                        {
-                            <div class="disabled">TARGET</div>
-                        }
-                    <td>
+                    @if (Model.TargetLocked)
+                    {
+                        <div class="@(Model.CurrentTab == LCDTab.Target ? "highlight" : "")">TARGET</div>
+                    }
+                    else
+                    {
+                        <div class="disabled">TARGET</div>
+                    }
+                    </td>
                 </tr>
                 <tr>
                     <td>
-                        @if (Model.MissionCount > 0)
-                        {
-                            <div class="@(Model.CurrentTab == 5 ? "highlight" : "")">MISSION</div>
-                        }
-                        else
-                        {
-                            <div class="disabled">MISSION</div>
-                        }
-                    <td>
+                    @if (Model.MissionCount > 0)
+                    {
+                        <div class="@(Model.CurrentTab == LCDTab.Missions ? "highlight" : "")">MISSIONS</div>
+                    }
+                    else
+                    {
+                        <div class="disabled">MISSIONS</div>
+                    }
+                    </td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == 6 ? "highlight" : "")">POI</div></td>
+                    <td><div class="navigation">SHIP &#x25b6;</div></td>
                 </tr>
+                <tr>
+                    <td><div class="navigation">LOCATIONS &#x25b6;</div></td>
+                </tr>
+
             </tbody>
         </table>
     }
-    else if (Model.CurrentPage == 1)
+    else if (Model.CurrentPage == LCDPage.Ship)
     {
-        <table>
+        <table class="menu">
             <tbody>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == 7 ? "highlight" : "")">MAP</div></td>
+                    <td><div class="navigation">&#x25c0; BACK</div></td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == 8 ? "highlight" : "")">POWER</div></td>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Ship ? "highlight" : "")">SHIP</div></td>
                 </tr>
                 <tr>
                     <td>
                         @if (Model.MaterialCount > 0)
                         {
-                            <div class="@(Model.CurrentTab == 9 ? "highlight" : "")">MAT</div>
+                            <div class="@(Model.CurrentTab == LCDTab.Materials ? "highlight" : "")">MATERIALS</div>
                         }
                         else
                         {
-                            <div class="disabled">MAT</div>
+                            <div class="disabled">MATERIALS</div>
                         }
                     </td>
                 </tr>
@@ -70,7 +71,7 @@
                     <td>
                         @if (Model.CargoCount > 0)
                         {
-                            <div class="@(Model.CurrentTab == 10 ? "highlight" : "")">CARGO</div>
+                            <div class="@(Model.CurrentTab == LCDTab.Cargo ? "highlight" : "")">CARGO</div>
                         }
                         else
                         {
@@ -78,37 +79,39 @@
                         }
                     </td>
                 </tr>
-            <tr>
-                <td><div class="@(Model.CurrentTab == 11 ? "highlight" : "")">MINING</div></td>
-            </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == 12 ? "highlight" : "")">EVENTS</div></td>
-            </tr>
+                    <td>
+                        <div class="@(Model.CurrentTab == LCDTab.Events ? "highlight" : "")">EVENTS</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><div>&nbsp;</div></td>
+                </tr>
             </tbody>
         </table>
     }
-    else if (Model.CurrentPage == 2)
+    else if (Model.CurrentPage == LCDPage.Locations)
     {
-        <table>
+        <table class="menu">
             <tbody>
-            <tr>
-                <td><div class="@(Model.CurrentTab == 13 ? "highlight" : "")">G</div></td>
-            </tr>
-            <tr>
-                <td><div class="@(Model.CurrentTab == 14 ? "highlight" : "")">H</div></td>
-            </tr>
-            <tr>
-                <td><div class="@(Model.CurrentTab == 15 ? "highlight" : "")">I</div></td>
-            </tr>
-            <tr>
-                <td><div class="@(Model.CurrentTab == 16 ? "highlight" : "")">J</div><td>
-            </tr>
-            <tr>
-                <td><div class="@(Model.CurrentTab == 17 ? "highlight" : "")">K</div><td>
-            </tr>
-            <tr>
-                <td><div class="@(Model.CurrentTab == 18 ? "highlight" : "")">L</div></td>
-            </tr>
+                <tr>
+                    <td><div class="navigation">&#x25c0; BACK</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == LCDTab.POI ? "highlight" : "")">POI</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Map ? "highlight" : "")">MAP</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Powers ? "highlight" : "")">POWERS</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Mining ? "highlight" : "")">MINING</div></td>
+                </tr>
+                <tr>
+                    <td><div>&nbsp;</div></td>
+                </tr>
             </tbody>
         </table>
     }

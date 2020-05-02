@@ -11,7 +11,7 @@ Use the right rotary encoder to scroll vertically on all tabs.
 
 Use the left rotary encoder to show another card on various tabs or zoom into the galaxy map.
 
-Use the up/down arrow buttons to switch pages.
+Use S1 to display the menu.
 
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
 ![Screenshot 2](https://i.imgur.com/JTxiIBL.png)

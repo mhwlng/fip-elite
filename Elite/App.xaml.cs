@@ -179,19 +179,19 @@ namespace Elite
                 Engine.Razor.Compile("layout.cshtml", null);
                 Engine.Razor.Compile("init.cshtml", null);
 
-                Engine.Razor.Compile("1.cshtml", null);
-                Engine.Razor.Compile("2.cshtml", null);
-                Engine.Razor.Compile("3.cshtml", null);
-                Engine.Razor.Compile("4.cshtml", null);
-                Engine.Razor.Compile("5.cshtml", null);
-                Engine.Razor.Compile("6.cshtml", null);
+                Engine.Razor.Compile("commander.cshtml", null);
+                Engine.Razor.Compile("ship.cshtml", null);
+                Engine.Razor.Compile("navigation.cshtml", null);
+                Engine.Razor.Compile("target.cshtml", null);
+                Engine.Razor.Compile("missions.cshtml", null);
+                Engine.Razor.Compile("poi.cshtml", null);
 
-                Engine.Razor.Compile("7.cshtml", null);
-                Engine.Razor.Compile("8.cshtml", null);
-                Engine.Razor.Compile("9.cshtml", null);
-                Engine.Razor.Compile("10.cshtml", null);
-                Engine.Razor.Compile("11.cshtml", null);
-                Engine.Razor.Compile("12.cshtml", null);
+                Engine.Razor.Compile("map.cshtml", null);
+                Engine.Razor.Compile("powers.cshtml", null);
+                Engine.Razor.Compile("materials.cshtml", null);
+                Engine.Razor.Compile("cargo.cshtml", null);
+                Engine.Razor.Compile("mining.cshtml", null);
+                Engine.Razor.Compile("events.cshtml", null);
 
                 cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
                     File.ReadAllText("Templates\\styles.css"), true);

@@ -70,6 +70,10 @@ div.menu {
     background-color: #FFB000;
 }
 
+.menu table td div.navigation {
+    color: #FFB000;
+}
+
 .menu table td div.disabled {
     color: #303030;
     background-color: black;
@@ -78,9 +82,13 @@ div.menu {
 
 .main table {
     border-spacing: 5px;
-    max-width: 100%;
+    /*max-width: 100%;*/
+    width: 300px;
 }
 
+.menu table {
+    width: 109px;
+}
 
 .main table.divider {
     border-spacing: 5px;
@@ -88,13 +96,13 @@ div.menu {
 }
 
 .main table td.nowrap {
-    width: 200px;
+    width: 240px;
     overflow: hidden;
     white-space: nowrap;
 }
 
 .main table td.wrap {
-    width: 200px;
+    width: 240px;
 }
 
 

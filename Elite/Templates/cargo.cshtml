@@ -8,6 +8,9 @@
 }
 
 <div class="main">
+    
+    <div class="cardcaption">&nbsp;</div>
+
     <table class="">
         <tbody>
         @foreach (var m in Model.Cargo)
@@ -35,18 +38,20 @@
         {
             foreach (var m in mg)
             {
-                if (((List<Cargo.CargoItem>)mg).FirstOrDefault().Equals((Cargo.CargoItem)m))
+                if (((List<Cargo.CargoItem>) mg).FirstOrDefault().Equals((Cargo.CargoItem) m))
                 {
                     <tr>
                         <td class="caption" colspan="2">@m.MissionName
-                        @if (!string.IsNullOrEmpty(m.System))
-                        {
-                            <text>to</text> @m.System
-                        }
-                        @if (!string.IsNullOrEmpty(m.Station))
-                        {
-                            <text>,</text> @m.Station
-                        }
+                            @if (!string.IsNullOrEmpty(m.System))
+                            {
+                                <text>to</text>
+                                @m.System
+                            }
+                            @if (!string.IsNullOrEmpty(m.Station))
+                            {
+                                <text>,</text>
+                                @m.Station
+                            }
                         </td>
                     </tr>
                 }
@@ -58,7 +63,7 @@
             }
         }
 
-        @if(Model.StolenCargoCount > 0)
+        @if (Model.StolenCargoCount > 0)
         {
             if (Model.MissionCargoCount > 0 || Model.CargoCargoCount > 0)
             {
@@ -81,6 +86,6 @@
 
         </tbody>
     </table>
-   
+
 
 </div>

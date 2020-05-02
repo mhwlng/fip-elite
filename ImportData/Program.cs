@@ -333,7 +333,8 @@ namespace ImportData
                 }
             }
 
-            return stations.Select(x => new MiningStationData
+            return stations.Where(x => x.StationEDSM?.AdditionalStationDataEDDB?.IsPlanetary == false)
+                .Select(x => new MiningStationData
             {
                 Name = x.Station,
                 SystemName = x.System,
@@ -360,10 +361,7 @@ namespace ImportData
                 Government = x.StationEDSM?.Government,
                 Economy = x.StationEDSM?.Economy,
                 Faction = x.StationEDSM?.ControllingFaction?.Name
-
-
             }).ToList();
-
         }
 
         public static void MiningStationsSerialize(List<MiningStationData> stations, string fileName)
@@ -398,7 +396,7 @@ namespace ImportData
 
                     var stationInfo = doc.DocumentNode.SelectSingleNode("//table[@id='table-stations-max-sell']")
                         .Descendants("tr")
-                        .Where(tr => tr.Elements("td").Count() > 1)
+                        .Where(tr => tr.Elements("td").Count() == 7)
                         .Select(tr => tr.Elements("td").Select(td => td.InnerText.Trim()).ToList())
                         .Select( tr => new HotspotStationData
                         {

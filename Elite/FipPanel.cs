@@ -34,35 +34,44 @@ using TheArtOfDev.HtmlRenderer.Core.Entities;
 
 namespace Elite
 {
+    public enum LCDPage
+    {
+        Collapsed = -1,
+        Home = 0,
+        Ship = 1,
+        Locations = 2
+    }
+
     public enum LCDTab
     {
-        Init=-1,
-
+        Init=-999,
         None = 0,
+
         Commander = 1,
-        Ship = 2,
-        Navigation = 3,
-        Target = 4,
-        Missions = 5,
-        POI = 6,
+        Navigation = 2,
+        Target = 3,
+        Missions = 4,
+        // ship ->
+        // location ->
 
         //---------------
 
-        Map = 7,
-        Powers = 8,
+        // <- back
+        Ship = 8,
         Materials = 9,
         Cargo = 10,
-        Mining = 11,
-        Events = 12,
+        Events = 11,
+        // empty
 
         //---------------
 
-        G = 13,
-        H = 14,
-        I = 15,
-        J = 16,
-        K = 17,
-        L = 18
+        // <- back
+        POI = 14,
+        Map = 15,
+        Powers = 16,
+        Mining = 17
+        // empty
+
     }
 
     public static class TimeSpanFormattingExtensions
@@ -118,11 +127,11 @@ namespace Elite
         private readonly object _refreshDevicePageLock = new object();
 
 
+        private LCDPage _currentPage = LCDPage.Collapsed;
         private LCDTab _currentTab = LCDTab.None;
         private LCDTab _lastTab = LCDTab.Init;
         const int DEFAULT_PAGE = 0;
         const int NO_PAGES = 2;
-        private uint _currentPage = DEFAULT_PAGE;
         private string _settingsPath;
 
         private int[] _currentCard = new int[100];
@@ -147,11 +156,11 @@ namespace Elite
         private Image menuHtmlImage = null;
         private Image cardcaptionHtmlImage = null;
 
-        private const int HtmlMenuWindowWidth = 69;
+        private const int HtmlMenuWindowWidth = 110; //69;
 
         private const int HtmlWindowHeight = 240;
 
-        private const int HtmlWindowXOffset = HtmlMenuWindowWidth + 1;
+        private const int HtmlWindowXOffset = /*HtmlMenuWindowWidth*/ + 1;
         private const int HtmlWindowWidth = 311- HtmlWindowXOffset;
         
 
@@ -160,6 +169,7 @@ namespace Elite
         protected DirectOutputClass.PageCallback PageCallbackDelegate;
         protected DirectOutputClass.SoftButtonCallback SoftButtonCallbackDelegate;
 
+        private bool blockNextUpState = false;
 
         public FipPanel(IntPtr devicePtr) 
         {
@@ -188,8 +198,6 @@ namespace Elite
                 App.log.Error("FipPanel failed to init RegisterSoftButtonCallback. " + returnValues1);
             }
 
-            _currentPage = DEFAULT_PAGE;
-
             var returnValues3 = DirectOutputClass.GetSerialNumber(FipDevicePointer, out var serialNumber);
             if (returnValues3 != ReturnValues.S_OK)
             {
@@ -202,26 +210,26 @@ namespace Elite
                 _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                                 "\\mhwlng\\fip-elite\\" + serialNumber;
 
+                
                 if (File.Exists(_settingsPath))
                 {
-                    _currentPage = uint.Parse(File.ReadAllText(_settingsPath));
+                    try
+                    {
+                        _currentTab = (LCDTab) uint.Parse(File.ReadAllText(_settingsPath));
+                    }
+                    catch
+                    {
+                        _currentTab = LCDTab.None;
+                    }
                 }
                 else
                 {
                     (new FileInfo(_settingsPath)).Directory?.Create();
 
-                    File.WriteAllText(_settingsPath, _currentPage.ToString());
+                    File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
                 }
-
-                for (uint x = 0; x <= NO_PAGES; x++)
-                {
-                    if (x != _currentPage)
-                    {
-                        AddPage(x, false);
-                    }
-                }
-
-                AddPage(_currentPage, true);
+                
+                AddPage(DEFAULT_PAGE, true);
 
                 RefreshDevicePage();
             }
@@ -245,8 +253,6 @@ namespace Elite
 
                     } while (_pageList.Count > 0);
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -264,12 +270,12 @@ namespace Elite
 
                 CurrentLCDYOffset = 0;
 
-                _currentPage = ((uint)_currentTab - 1) / 6;
-
-                return true;
+                File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
             }
 
-            return false;
+            _currentPage = LCDPage.Collapsed;
+
+            return true;
         }
 
         private void PageCallback(IntPtr device, IntPtr page, byte bActivated, IntPtr context)
@@ -278,15 +284,13 @@ namespace Elite
             {
                 if (bActivated != 0)
                 {
+                    /*   
                     _lastTab = LCDTab.Init;
-                    _currentTab = LCDTab.None;
-
+                    _currentTab = LCDTab.Map;
+                    _currentPage = LCDPage.Collapsed;
                     CurrentLCDYOffset = 0;
-
-                    _currentPage = (uint)page;
-
-                    File.WriteAllText(_settingsPath, _currentPage.ToString());
-
+                    File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
+                   */
 
                     RefreshDevicePage();
                 }
@@ -310,7 +314,9 @@ namespace Elite
                 switch (button)
                 {
                     case 8: // scroll clockwise
-                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship || _currentTab == LCDTab.Mining))
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers ||
+                                      _currentTab == LCDTab.Materials || _currentTab == LCDTab.Map ||
+                                      _currentTab == LCDTab.Ship || _currentTab == LCDTab.Mining))
                         {
 
                             _currentCard[(int) _currentTab]++;
@@ -319,10 +325,13 @@ namespace Elite
 
                             mustRefresh = true;
                         }
+
                         break;
                     case 16: // scroll anti-clockwise
 
-                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials || _currentTab == LCDTab.Map || _currentTab == LCDTab.Ship || _currentTab == LCDTab.Mining))
+                        if (state && (_currentTab == LCDTab.POI || _currentTab == LCDTab.Powers ||
+                                      _currentTab == LCDTab.Materials || _currentTab == LCDTab.Map ||
+                                      _currentTab == LCDTab.Ship || _currentTab == LCDTab.Mining))
                         {
                             _currentCard[(int) _currentTab]--;
                             _currentZoomLevel[(int) _currentTab]--;
@@ -330,6 +339,7 @@ namespace Elite
 
                             mustRefresh = true;
                         }
+
                         break;
                     case 2: // scroll clockwise
                         if (state)
@@ -340,6 +350,7 @@ namespace Elite
 
                             mustRefresh = true;
                         }
+
                         break;
                     case 4: // scroll anti-clockwise
 
@@ -357,94 +368,131 @@ namespace Elite
 
                             mustRefresh = true;
                         }
+
                         break;
                 }
 
                 switch (_currentPage)
                 {
-                    case 0:
-                        switch (button)
+                    case LCDPage.Collapsed:
+                        if (state || !blockNextUpState)
                         {
-                            case 32:
-                                mustRefresh = SetTab(LCDTab.Commander);
-                                break;
-                            case 64:
-                                mustRefresh = SetTab(LCDTab.Ship);
-                                break;
-                            case 128:
-                                mustRefresh = SetTab(LCDTab.Navigation);
-                                break;
-                            case 256:
-                                if (Data.TargetData.TargetLocked)
-                                {
-                                    mustRefresh = SetTab(LCDTab.Target);
-                                }
-                                break;
-                            case 512:
-                                if (Missions.MissionList.Count > 0)
-                                {
-                                    mustRefresh = SetTab(LCDTab.Missions);
-                                }
-                                break;
-                            case 1024:
-                                mustRefresh = SetTab(LCDTab.POI);
-                                break;
+                            switch (button)
+                            {
+                                case 32:
+                                    mustRefresh = true;
+                                    _currentPage = (LCDPage) (((uint) _currentTab - 1) / 6);
+                                    if (_currentTab == LCDTab.None)
+                                    {
+                                        _currentPage = LCDPage.Home;
+                                    }
+
+                                    break;
+                            }
                         }
 
                         break;
-                    case 1:
-                        switch (button)
+                    case LCDPage.Home:
+                        if (state)
                         {
-                            case 32:
-                                mustRefresh = SetTab(LCDTab.Map);
-                                break;
-                            case 64:
-                                mustRefresh = SetTab(LCDTab.Powers);
-                                break;
-                            case 128:
-                                if (Material.MaterialList.Count > 0)
-                                {
-                                    mustRefresh = SetTab(LCDTab.Materials);
-                                }
-                                break;
-                            case 256:
-                                if (Cargo.CargoList.Count > 0)
-                                {
-                                    mustRefresh = SetTab(LCDTab.Cargo);
-                                }
-                                break;
-                            case 512:
-                                mustRefresh = SetTab(LCDTab.Mining);
-                                break;
-                            case 1024:
-                                mustRefresh = SetTab(LCDTab.Events);
-                                break;
+                            switch (button)
+                            {
+                                case 32:
+                                    mustRefresh = SetTab(LCDTab.Commander);
+                                    break;
+                                case 64:
+                                    mustRefresh = SetTab(LCDTab.Navigation);
+                                    break;
+                                case 128:
+                                    if (Data.TargetData.TargetLocked)
+                                    {
+                                        mustRefresh = SetTab(LCDTab.Target);
+                                    }
+                                    break;
+                                case 256:
+                                    if (Missions.MissionList.Count > 0)
+                                    {
+                                        mustRefresh = SetTab(LCDTab.Missions);
+                                    }
+                                    break;
+                                case 512:
+                                    mustRefresh = true;
+                                    _currentPage = LCDPage.Ship;
+                                    break;
+                                case 1024:
+                                    mustRefresh = true;
+                                    _currentPage = LCDPage.Locations;
+                                    break;
+                            }
                         }
+
                         break;
-                    case 2:
-                        switch (button)
+                    case LCDPage.Ship:
+                        if (state)
                         {
-                            case 32:
-                                mustRefresh = SetTab(LCDTab.G);
-                                break;
-                            case 64:
-                                mustRefresh = SetTab(LCDTab.H);
-                                break;
-                            case 128:
-                                mustRefresh = SetTab(LCDTab.I);
-                                break;
-                            case 256:
-                                mustRefresh = SetTab(LCDTab.J);
-                                break;
-                            case 512:
-                                mustRefresh = SetTab(LCDTab.K);
-                                break;
-                            case 1024:
-                                mustRefresh = SetTab(LCDTab.L);
-                                break;
+                            switch (button)
+                            {
+                                case 32:
+                                    mustRefresh = true;
+                                    _currentPage = LCDPage.Home;
+                                    break;
+                                case 64:
+                                    mustRefresh = SetTab(LCDTab.Ship);
+                                    break;
+                                case 128:
+                                    if (Material.MaterialList.Count > 0)
+                                    {
+                                        mustRefresh = SetTab(LCDTab.Materials);
+                                    }
+                                    break;
+                                case 256:
+                                    if (Cargo.CargoList.Count > 0)
+                                    {
+                                        mustRefresh = SetTab(LCDTab.Cargo);
+                                    }
+                                    break;
+                                case 512:
+                                    mustRefresh = SetTab(LCDTab.Events);
+                                    break;
+                                case 1024:
+                                    // empty
+                                    break;
+                            }
                         }
+
+                        break;
+                    case LCDPage.Locations:
+
+                        if (state)
+                        {
+                            switch (button)
+                            {
+                                case 32:
+                                    mustRefresh = true;
+                                    _currentPage = LCDPage.Home;
+                                    break;
+                                case 64:
+                                    mustRefresh = SetTab(LCDTab.POI);
+                                    break;
+                                case 128:
+                                    mustRefresh = SetTab(LCDTab.Map);
+                                    break;
+                                case 256:
+                                    mustRefresh = SetTab(LCDTab.Powers);
+                                    break;
+                                case 512:
+                                    mustRefresh = SetTab(LCDTab.Mining);
+                                    break;
+                                case 1024:
+                                    // empty
+                                    break;
+                            }
+                        }
+
                         break;
                 }
+
+                blockNextUpState = state;
 
                 if (mustRefresh)
                 {
@@ -736,9 +784,8 @@ namespace Elite
                                         str =
                                             Engine.Razor.Run("init.cshtml", null, new
                                             {
-                                                CurrentTab = (int) _currentTab,
+                                                CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage
-
                                             });
 
                                         break;
@@ -746,9 +793,9 @@ namespace Elite
                                     case LCDTab.Commander:
 
                                         str =
-                                            Engine.Razor.Run("1.cshtml", null, new
+                                            Engine.Razor.Run("commander.cshtml", null, new
                                             {
-                                                CurrentTab = (int) _currentTab,
+                                                CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
 
                                                 LegalState = Data.StatusData.LegalState,
@@ -796,9 +843,9 @@ namespace Elite
                                         var shipData = Ships.GetCurrentShip() ?? new Ships.ShipData();
 
                                         str =
-                                            Engine.Razor.Run("2.cshtml", null, new
+                                            Engine.Razor.Run("ship.cshtml", null, new
                                             {
-                                                CurrentTab = (int) _currentTab,
+                                                CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
                                                 CurrentCard = _currentCard[(int) _currentTab],
 
@@ -814,9 +861,9 @@ namespace Elite
                                     case LCDTab.Navigation:
 
                                         str =
-                                            Engine.Razor.Run("3.cshtml", null, new
+                                            Engine.Razor.Run("navigation.cshtml", null, new
                                             {
-                                                CurrentTab = (int) _currentTab,
+                                                CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
 
                                                 StarSystem = Data.LocationData.StarSystem,
@@ -890,9 +937,9 @@ namespace Elite
                                     case LCDTab.Target:
 
                                         str =
-                                            Engine.Razor.Run("4.cshtml", null, new
+                                            Engine.Razor.Run("target.cshtml", null, new
                                             {
-                                                CurrentTab = (int) _currentTab,
+                                                CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
 
                                                 TargetLocked = Data.TargetData.TargetLocked,
@@ -923,9 +970,9 @@ namespace Elite
                                     case LCDTab.Missions:
 
                                         str =
-                                            Engine.Razor.Run("5.cshtml", null, new
+                                            Engine.Razor.Run("missions.cshtml", null, new
                                             {
-                                                CurrentTab = (int) _currentTab,
+                                                CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
 
                                                 MissionList = Missions.MissionList
@@ -938,11 +985,10 @@ namespace Elite
                                         lock (App.RefreshJsonLock)
                                         {
                                             str =
-                                                Engine.Razor.Run("6.cshtml", null, new
+                                                Engine.Razor.Run("poi.cshtml", null, new
                                                 {
-                                                    CurrentTab = (int) _currentTab,
+                                                    CurrentTab = _currentTab,
                                                     CurrentPage = _currentPage,
-
                                                     CurrentCard = _currentCard[(int) _currentTab],
 
                                                     NearbyPoiList = Poi.NearbyPoiList,
@@ -962,9 +1008,9 @@ namespace Elite
 
 
                                         str =
-                                            Engine.Razor.Run("7.cshtml", null, new
+                                            Engine.Razor.Run("map.cshtml", null, new
                                             {
-                                                CurrentTab = (int) _currentTab,
+                                                CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
 
                                                 _currentZoomLevel = _currentZoomLevel[(int) _currentTab],
@@ -980,11 +1026,10 @@ namespace Elite
                                         lock (App.RefreshJsonLock)
                                         {
                                             str =
-                                                Engine.Razor.Run("8.cshtml", null, new
+                                                Engine.Razor.Run("powers.cshtml", null, new
                                                 {
-                                                    CurrentTab = (int) _currentTab,
+                                                    CurrentTab = _currentTab,
                                                     CurrentPage = _currentPage,
-
                                                     CurrentCard = _currentCard[(int) _currentTab],
 
                                                     NearbyPowerStationList = Data.NearbyPowerStationList
@@ -998,11 +1043,10 @@ namespace Elite
                                     case LCDTab.Materials:
 
                                         str =
-                                            Engine.Razor.Run("9.cshtml", null, new
+                                            Engine.Razor.Run("materials.cshtml", null, new
                                             {
-                                                CurrentTab = (int) _currentTab,
+                                                CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
-
                                                 CurrentCard = _currentCard[(int) _currentTab],
 
                                                 Raw = Material.MaterialList.Where(x => x.Value.Category == "Raw")
@@ -1045,11 +1089,10 @@ namespace Elite
                                             .OrderBy(x => x.Name).ToList();
 
                                         str =
-                                            Engine.Razor.Run("10.cshtml", null, new
+                                            Engine.Razor.Run("cargo.cshtml", null, new
                                             {
-                                                CurrentTab = (int) _currentTab,
+                                                CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
-
                                                 CurrentCard = _currentCard[(int) _currentTab],
 
                                                 Cargo = cargo,
@@ -1070,11 +1113,10 @@ namespace Elite
                                         {
 
                                             str =
-                                                Engine.Razor.Run("11.cshtml", null, new
+                                                Engine.Razor.Run("mining.cshtml", null, new
                                                 {
-                                                    CurrentTab = (int)_currentTab,
+                                                    CurrentTab = _currentTab,
                                                     CurrentPage = _currentPage,
-
                                                     CurrentCard = _currentCard[(int)_currentTab],
 
                                                     NearbyHotspotSystemsList = Data.NearbyHotspotSystemsList,
@@ -1096,9 +1138,9 @@ namespace Elite
                                         }
 
                                         str =
-                                            Engine.Razor.Run("12.cshtml", null, new
+                                            Engine.Razor.Run("events.cshtml", null, new
                                             {
-                                                CurrentTab = (int) _currentTab,
+                                                CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
 
                                                 EventList = eventlist
@@ -1166,41 +1208,15 @@ namespace Elite
                             }
                         }
 
-                        if (mustRender)
-                        {
-                            var menustr =
-                                Engine.Razor.Run("menu.cshtml", null, new
-                                {
-                                    CurrentTab = (int)_currentTab,
-                                    CurrentPage = _currentPage,
 
-                                    TargetLocked = Data.TargetData.TargetLocked,
-
-                                    MissionCount = Missions.MissionList.Count,
-
-                                    MaterialCount = Material.MaterialList.Count,
-
-                                    CargoCount = Cargo.CargoList.Count
-                                });
-
-                            menuHtmlImage = HtmlRender.RenderToImage(menustr,
-                                new Size(HtmlMenuWindowWidth, HtmlWindowHeight), Color.Black, App.cssData, null,
-                                OnImageLoad);
-                        }
-
-                        if (menuHtmlImage != null)
-                        {
-                            graphics.DrawImage(menuHtmlImage, 0, 0);
-                        }
-
-                        if (_currentTab == LCDTab.Ship || _currentTab == LCDTab.POI || _currentTab == LCDTab.Powers || _currentTab == LCDTab.Materials || _currentTab == LCDTab.Mining)
+                        if (_currentTab != LCDTab.Map)
                         {
                             if (mustRender)
                             {
                                 var cardcaptionstr =
                                     Engine.Razor.Run("cardcaption.cshtml", null, new
                                     {
-                                        CurrentTab = (int)_currentTab,
+                                        CurrentTab = _currentTab,
                                         CurrentPage = _currentPage,
                                         CurrentCard = _currentCard[(int)_currentTab]
                                     });
@@ -1216,23 +1232,95 @@ namespace Elite
                             }
                         }
 
+                        if (_currentPage != LCDPage.Collapsed)
+                        {
+                            if (mustRender)
+                            {
+                                var menustr =
+                                    Engine.Razor.Run("menu.cshtml", null, new
+                                    {
+                                        CurrentTab = _currentTab,
+                                        CurrentPage = _currentPage,
+
+                                        TargetLocked = Data.TargetData.TargetLocked,
+
+                                        MissionCount = Missions.MissionList.Count,
+
+                                        MaterialCount = Material.MaterialList.Count,
+
+                                        CargoCount = Cargo.CargoList.Count
+                                    });
+
+                                menuHtmlImage = HtmlRender.RenderToImage(menustr,
+                                    new Size(HtmlMenuWindowWidth, HtmlWindowHeight), Color.Black, App.cssData, null,
+                                    OnImageLoad);
+                            }
+
+                            if (menuHtmlImage != null)
+                            {
+                                graphics.DrawImage(menuHtmlImage, 0, 0);
+                            }
+                        }
+
+
 #if DEBUG
                         fipImage.Save(@"screenshot"+(int)_currentTab+"_"+ _currentCard[(int)_currentTab] + ".png", ImageFormat.Png);
 #endif
 
                         fipImage.RotateFlip(RotateFlipType.Rotate180FlipX);
-                        SetImage(_currentPage, fipImage);
 
-                        if (_lastTab > 0)
+
+                        SetImage(DEFAULT_PAGE, fipImage);
+
+                        var tabPage = (LCDPage)(((uint)_currentTab - 1) / 6);
+                        if (_currentTab == LCDTab.None)
                         {
-                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage,
-                                (uint) _lastTab - ((uint) _lastTab - 1) / 6 * 6, false);
+                            tabPage = LCDPage.Home;
                         }
 
-                        if (_currentTab > 0)
+                        if (_currentPage == LCDPage.Collapsed)
                         {
-                            DirectOutputClass.SetLed(FipDevicePointer, _currentPage,
-                                (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, true);
+                            if (_lastTab > 0)
+                            {
+                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                    (uint)_lastTab - ((uint)_lastTab - 1) / 6 * 6, false);
+                            }
+
+                            if (_currentTab > 0)
+                            {
+                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                    (uint)_currentTab - ((uint)_currentTab - 1) / 6 * 6, false);
+                            }
+
+                            DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                1, true);
+
+                        }
+                        else
+                        if (tabPage != _currentPage)
+                        {
+                            if (_lastTab > 0)
+                            {
+                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                    (uint)_lastTab - ((uint)_lastTab - 1) / 6 * 6, false);
+                            }
+
+                            if (_currentTab > 0)
+                            {
+                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                    (uint)_currentTab - ((uint)_currentTab - 1) / 6 * 6, false);
+                            }
+                        }
+                        else
+                        {
+                            DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                1, false);
+
+                            if (_currentTab > 0)
+                            {
+                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                    (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, true);
+                            }
                         }
 
                     }

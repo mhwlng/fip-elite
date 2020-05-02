@@ -7,142 +7,163 @@
     Layout = "layout.cshtml";
 }
 
-<div class="main">
+    <div class="main">
 
-    @if (Model.CurrentTab == 2)
-    {
 
-        if (Model.CurrentCard == 0)
+        @if (Model.CurrentTab == LCDTab.Commander)
         {
-            <div class="cardcaption">&#x25c0; Current Ship &#x25b6;</div>
+            <div class="cardcaption">Commander</div>
         }
-        else if (Model.CurrentCard == 1)
+        else if (Model.CurrentTab == LCDTab.Target)
         {
-            <div class="cardcaption">&#x25c0; Stored Ships &#x25b6;</div>
+            <div class="cardcaption">Target</div>
         }
-    }
-    else if (Model.CurrentTab == 6)
-    { 
+        else if (Model.CurrentTab == LCDTab.Missions)
+        {
+            <div class="cardcaption">Missions</div>
+        }
+        else if (Model.CurrentTab == LCDTab.Events)
+        {
+            <div class="cardcaption">Events</div>
+        }
+        else if (Model.CurrentTab == LCDTab.Ship)
+        {
+            if (Model.CurrentCard == 0)
+            {
+                <div class="cardcaption">&#x25c0; Current Ship &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 1)
+            {
+                <div class="cardcaption">&#x25c0; Stored Ships &#x25b6;</div>
+            }
+        }
+        else if (Model.CurrentTab == LCDTab.Materials)
+        {
+            if (Model.CurrentCard == 0)
+            {
+                <div class="cardcaption">&#x25c0; Raw Materials &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 1)
+            {
+                <div class="cardcaption">&#x25c0; Manufactured Materials &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 2)
+            {
+                <div class="cardcaption">&#x25c0; Encoded Materials &#x25b6;</div>
+            }
+        }
+        else if (Model.CurrentTab == LCDTab.Cargo)
+        {
+            <div class="cardcaption">Cargo</div>
+        }
+        else if (Model.CurrentTab == LCDTab.Navigation)
+        {
+            <div class="cardcaption">Navigation</div>
+        }
+        else if (Model.CurrentTab == LCDTab.POI)
+        {
+            if (Model.CurrentCard == 0)
+            {
+                <div class="cardcaption">&#x25c0; Points of Interest &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 1)
+            {
+                <div class="cardcaption">&#x25c0; Compromised Nav. Beacons &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 2)
+            {
+                <div class="cardcaption">&#x25c0; Interstellar Factors &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 3)
+            {
+                <div class="cardcaption">&#x25c0; Raw Material Traders &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 4)
+            {
+                <div class="cardcaption">&#x25c0; Manufactured Material Traders &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 5)
+            {
+                <div class="cardcaption">&#x25c0; Encoded Data Traders &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 6)
+            {
+                <div class="cardcaption">&#x25c0; Human Technology Brokers &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 7)
+            {
+                <div class="cardcaption">&#x25c0; Guardian Technology Brokers &#x25b6;</div>
+            }
+        }
+        else if (Model.CurrentTab == LCDTab.Map)
+        {
 
-        if (Model.CurrentCard == 0)
-        {
-            <div class="cardcaption">&#x25c0; Points of Interest &#x25b6;</div>
         }
-        else if (Model.CurrentCard == 1)
+        else if (Model.CurrentTab == LCDTab.Powers)
         {
-            <div class="cardcaption">&#x25c0; Compromised Nav. Bcns &#x25b6;</div>
+            if (Model.CurrentCard == 0)
+            {
+                <div class="cardcaption">&#x25c0; Aisling Duval &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 1)
+            {
+                <div class="cardcaption">&#x25c0; Archon Delaine &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 2)
+            {
+                <div class="cardcaption">&#x25c0; Arissa Lavigny-Duval &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 3)
+            {
+                <div class="cardcaption">&#x25c0; Denton Patreus &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 4)
+            {
+                <div class="cardcaption">&#x25c0; Edmund Mahon &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 5)
+            {
+                <div class="cardcaption">&#x25c0; Felicia Winters &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 6)
+            {
+                <div class="cardcaption">&#x25c0; Li Yong-Rui &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 7)
+            {
+                <div class="cardcaption">&#x25c0; Pranav Antal &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 8)
+            {
+                <div class="cardcaption">&#x25c0; Yuri Grom &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 9)
+            {
+                <div class="cardcaption">&#x25c0; Zachary Hudson &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 10)
+            {
+                <div class="cardcaption">&#x25c0; Zemina Torval &#x25b6;</div>
+            }
         }
-        else if (Model.CurrentCard == 2)
+        else if (Model.CurrentTab == LCDTab.Mining)
         {
-            <div class="cardcaption">&#x25c0; Interstellar Factors &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 3)
-        {
-            <div class="cardcaption">&#x25c0; Raw Material Traders &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 4)
-        {
-            <div class="cardcaption">&#x25c0; Manuf. Material Traders &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 5)
-        {
-            <div class="cardcaption">&#x25c0; Encoded Data Traders &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 6)
-        {
-            <div class="cardcaption">&#x25c0; Human Tech. Brokers &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 7)
-        {
-            <div class="cardcaption">&#x25c0; Guardian Tech. Brokers &#x25b6;</div>
-        }
-    }
-    else if (Model.CurrentTab == 8)
-    { 
-
-        if (Model.CurrentCard == 0)
-        {
-            <div class="cardcaption">&#x25c0; Aisling Duval &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 1)
-        {
-            <div class="cardcaption">&#x25c0; Archon Delaine &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 2)
-        {
-            <div class="cardcaption">&#x25c0; Arissa Lavigny-Duval &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 3)
-        {
-            <div class="cardcaption">&#x25c0; Denton Patreus &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 4)
-        {
-            <div class="cardcaption">&#x25c0; Edmund Mahon &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 5)
-        {
-            <div class="cardcaption">&#x25c0; Felicia Winters &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 6)
-        {
-            <div class="cardcaption">&#x25c0; Li Yong-Rui &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 7)
-        {
-            <div class="cardcaption">&#x25c0; Pranav Antal &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 8)
-        {
-            <div class="cardcaption">&#x25c0; Yuri Grom &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 9)
-        {
-            <div class="cardcaption">&#x25c0; Zachary Hudson &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 10)
-        {
-            <div class="cardcaption">&#x25c0; Zemina Torval &#x25b6;</div>
+            if (Model.CurrentCard == 0)
+            {
+                <div class="cardcaption">&#x25c0; Painite Hotspots &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 1)
+            {
+                <div class="cardcaption">&#x25c0; Painite Prices &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 2)
+            {
+                <div class="cardcaption">&#x25c0; LTD Hotspots &#x25b6;</div>
+            }
+            else if (Model.CurrentCard == 3)
+            {
+                <div class="cardcaption">&#x25c0; LTD Prices &#x25b6;</div>
+            }
         }
 
-    }
-    else if (Model.CurrentTab == 9)
-    { 
-
-        if (Model.CurrentCard == 0)
-        {
-            <div class="cardcaption">&#x25c0; Raw &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 1)
-        {
-            <div class="cardcaption">&#x25c0; Manufactured &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 2)
-        {
-            <div class="cardcaption">&#x25c0; Encoded &#x25b6;</div>
-        }
-
-    }
-    else if (Model.CurrentTab == 11)
-    { 
-
-        if (Model.CurrentCard == 0)
-        {
-            <div class="cardcaption">&#x25c0; Painite Hotspots &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 1)
-        {
-            <div class="cardcaption">&#x25c0; Painite Prices &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 2)
-        {
-            <div class="cardcaption">&#x25c0; LTD Hotspots &#x25b6;</div>
-        }
-        else if (Model.CurrentCard == 3)
-        {
-            <div class="cardcaption">&#x25c0; LTD Prices &#x25b6;</div>
-        }
-
-    }
-
-</div>
+    </div>

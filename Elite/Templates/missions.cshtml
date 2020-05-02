@@ -1,0 +1,165 @@
+@using System
+@using System.Collections.Generic
+@using Elite
+@using System.Linq
+@using System.Security.Cryptography.X509Certificates
+@{
+    Layout = "layout.cshtml";
+}
+
+<div class="main">
+    
+    <div class="cardcaption">&nbsp;</div>
+
+    <table>
+        <tbody>
+        @foreach (var m in Model.MissionList)
+        {
+            if (!string.IsNullOrEmpty(m.Name))
+            {
+                <tr>
+                    <td class="caption">Mission</td>
+                    <td class="data">@m.Name</td>
+                </tr>
+            }
+            if (!string.IsNullOrEmpty(m.System))
+            {
+                <tr>
+                    <td class="caption">System</td>
+                    <td class="data">@m.System</td>
+                </tr>
+            }
+            if (!string.IsNullOrEmpty(m.Station))
+            {
+                <tr>
+                    <td class="caption">Station</td>
+                    <td class="data">@m.Station</td>
+                </tr>
+            }
+
+            if (m.Reward > 0)
+            {
+                <tr>
+                    <td class="caption">Reward</td>
+                    <td class="data">@m.Reward.ToString("N0") CR</td>
+                </tr>
+            }
+            if (m.Expires != null)
+            {
+                <tr>
+                    <td class="caption">Expires</td>
+                    <td class="data">@(((DateTime) m.Expires - DateTime.Now.ToUniversalTime()).TotalHours.ToString("N1")) hours</td>
+                </tr>
+            }
+
+            if (!string.IsNullOrEmpty(m.Faction))
+            {
+                <tr>
+                    <td class="caption">Faction</td>
+                    <td class="data">@m.Faction</td>
+                </tr>
+            }
+
+            if (m.Passengers > 0)
+            {
+                <tr>
+                    <td class="caption">Passengers</td>
+                    <td class="data">@m.Passengers.ToString("N0")</td>
+                </tr>
+
+                if (!string.IsNullOrEmpty(m.PassengerType))
+                {
+                    <tr>
+                        <td class="caption">Type</td>
+                        <td class="data">@m.PassengerType</td>
+                    </tr>
+                }
+
+                <tr>
+                    <td class="caption">VIP</td>
+                    <td class="data">@m.PassengerViPs</td>
+                </tr>
+
+                <tr>
+                    <td class="caption">Wanted</td>
+                    <td class="data  @(m.PassengerWanted ? "alarm" : "")">@m.PassengerWanted</td>
+                </tr>
+
+            }
+            else if (m.KillCount > 0)
+            {
+                if (!string.IsNullOrEmpty(m.Target))
+                {
+                    <tr>
+                        <td class="caption">Target</td>
+                        <td class="data">@m.Target</td>
+                    </tr>
+                }
+
+                <tr>
+                    <td class="caption">Kill Count</td>
+                    <td class="data">@m.KillCount.ToString("N0")</td>
+                </tr>
+
+                if (!string.IsNullOrEmpty(m.TargetType))
+                {
+                    <tr>
+                        <td class="caption">Target Type</td>
+                        <td class="data">@m.TargetType</td>
+                    </tr>
+                }
+
+                if (!string.IsNullOrEmpty(m.TargetFaction))
+                {
+                    <tr>
+                        <td class="caption">Target Faction</td>
+                        <td class="data">@m.TargetFaction</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(m.CommodityLocalised))
+                {
+                    <tr>
+                        <td class="caption">Commodity</td>
+                        <td class="data">@m.CommodityLocalised</td>
+                    </tr>
+                }
+
+                if (m.Count > 0)
+                {
+                    <tr>
+                        <td class="caption">Count</td>
+                        <td class="data">@m.Count.ToString("N0")</td>
+                    </tr>
+                }
+
+                if (!string.IsNullOrEmpty(m.Donation))
+                {
+                    <tr>
+                        <td class="caption">Donation</td>
+                        <td class="data">@m.Donation</td>
+                    </tr>
+                }
+
+                if (m.Donated > 0)
+                {
+                    <tr>
+                        <td class="caption">Donated</td>
+                        <td class="data">@m.Donated.ToString("N0")</td>
+                    </tr>
+                }
+            }
+
+            if (!((List<Missions.Mission>) Model.MissionList).Last().Equals((Missions.Mission) m))
+            {
+                <tr>
+                    <td class="divider" colspan="2">&nbsp;</td>
+                </tr>
+            }
+
+        }
+        </tbody>
+    </table>
+</div>

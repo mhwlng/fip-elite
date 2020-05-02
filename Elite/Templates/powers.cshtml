@@ -12,6 +12,7 @@
     <div class="cardcaption">&nbsp;</div>
 
     <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.NearbyPowerStationList[(Station.PowerTypes)Model.CurrentCard]).FirstOrDefault().Powers).png" /></div>
+
     <table>
         <tbody>
             @foreach (var m in Model.NearbyPowerStationList[(Station.PowerTypes)Model.CurrentCard])
@@ -33,14 +34,14 @@
                 if (!string.IsNullOrEmpty(m.Name))
                 {
                     <tr>
-                        <td class="caption">Station</td>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Station</td>
                         <td class="data">@m.Name</td>
                     </tr>
                 }
                 if (m.DistanceToArrival > 0)
                 {
                     <tr>
-                        <td class="caption">Dist. from star</td>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Dist. from star</td>
                         <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
                     </tr>
                 }
@@ -48,7 +49,7 @@
                 if (!string.IsNullOrEmpty(m.Type))
                 {
                     <tr>
-                        <td class="caption">Type</td>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Type</td>
                         <td class="data">@m.Type</td>
                     </tr>
                 }
@@ -56,49 +57,49 @@
                 if (!string.IsNullOrEmpty(m.SystemSecurity))
                 {
                     <tr>
-                        <td class="caption">Security</td>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Security</td>
                         <td class="data">@m.SystemSecurity</td>
                     </tr>
                 }
                 if (m.SystemPopulation > 0)
                 {
                     <tr>
-                        <td class="caption">Population</td>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Population</td>
                         <td class="data">@m.SystemPopulation.ToString("N0")</td>
                     </tr>
                 }
                 if (!string.IsNullOrEmpty(m.Government))
                 {
                     <tr>
-                        <td class="caption">Government</td>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Government</td>
                         <td class="data">@m.Government</td>
                     </tr>
                 }
                 if (!string.IsNullOrEmpty(m.Allegiance))
                 {
                     <tr>
-                        <td class="caption">Allegiance</td>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Allegiance</td>
                         <td class="data">@m.Allegiance</td>
                     </tr>
                 }
                 if (!string.IsNullOrEmpty(m.Faction))
                 {
                     <tr>
-                        <td class="caption">Faction</td>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Faction</td>
                         <td class="data">@m.Faction</td>
                     </tr>
                 }
                 if (!string.IsNullOrEmpty(m.Economy))
                 {
                     <tr>
-                        <td class="caption">Economy</td>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Economy</td>
                         <td class="data">@m.Economy</td>
                     </tr>
                 }
                 if (!string.IsNullOrEmpty(m.PowerplayState))
                 {
                     <tr>
-                        <td class="caption">Pwr. State</td>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Pwr. State</td>
                         <td class="data">@m.PowerplayState</td>
                     </tr>
                 }

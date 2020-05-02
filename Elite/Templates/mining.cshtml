@@ -27,7 +27,7 @@
                     if (m.Distance > 0)
                     {
                         <tr>
-                            <td class="caption">Dist.</td>
+                            <td class="caption">Distance</td>
                             <td class="data">@m.Distance.ToString("N0") Ly</td>
                         </tr>
                     }
@@ -69,14 +69,14 @@
                     if (!string.IsNullOrEmpty(m.Name))
                     {
                         <tr>
-                            <td class="caption">Station</td>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Station</td>
                             <td class="data">@m.Name (@m.Pad)</td>
                         </tr>
                     }
                     if (m.DistanceToArrival > 0)
                     {
                         <tr>
-                            <td class="caption">Dist. from star</td>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Dist. from star</td>
                             <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
                         </tr>
                     }
@@ -84,22 +84,22 @@
                     if (m.Price > 0)
                     {
                         <tr>
-                            <td class="caption">Price</td>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Price</td>
                             <td class="data">@m.Price.ToString("N0") CR</td>
                         </tr>
                     }
                     if (m.Price > 0)
                     {
                         <tr>
-                            <td class="caption">Demand</td>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Demand</td>
                             <td class="data">@m.Demand.ToString("N0")</td>
                         </tr>
                     }
                     if (m.AgoSec > 0)
                     {
                         <tr>
-                            <td class="caption">Ago</td>
-                            <td class="data">@Html.SinceText(m.AgoSec, m.UpdatedTime)</td>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Last Updated</td>
+                            <td class="data">@Html.SinceText(m.AgoSec, m.UpdatedTime) ago</td>
                         </tr>
                     }
 

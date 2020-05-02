@@ -85,7 +85,7 @@
                 @if (Model.CurrentShip.MaxJumpRange > 0)
                 {
                     <tr>
-                        <td class="caption">Max Jump Rng</td>
+                        <td class="caption">Max. Jump Range</td>
                         <td class="data">@Model.CurrentShip.MaxJumpRange.ToString("N1") LY</td>
                     </tr>
                 }
@@ -121,14 +121,14 @@
                 @if (!string.IsNullOrEmpty(Model.CurrentShip.PowerDistributor))
                 {
                     <tr>
-                        <td class="caption">Power Distr.</td>
+                        <td class="caption">Power Distributor</td>
                         <td class="data">@Model.CurrentShip.PowerDistributor</td>
                     </tr>
                 }
                 @if (!string.IsNullOrEmpty(Model.CurrentShip.ShieldGenerator))
                 {
                     <tr>
-                        <td class="caption">Shield Gen.</td>
+                        <td class="caption">Shield Generator</td>
                         <td class="data">@Model.CurrentShip.ShieldGenerator</td>
                     </tr>
                 }
@@ -151,7 +151,7 @@
                     if (ml.Value.Count() > 0)
                     {
                         <tr>
-                            <td class="caption">@ml.Key</td>
+                            <td class="caption">@Raw(ml.Key)</td>
                             <td class="data">@Raw(Module.GetModulePlacement(ml.Key, ml.Value))</td>
                         </tr>
                     }
@@ -161,7 +161,7 @@
         </table>
         if (!string.IsNullOrEmpty(Model.CurrentShip.ShipImage))
         {
-            <img src="ships\@Model.CurrentShip.ShipImage" />
+            <div class="imgcenter"><img src="ships\@Model.CurrentShip.ShipImage" /></div>
         }
 
     }
@@ -268,7 +268,7 @@
                     @if (m.MaxJumpRange > 0)
                     {
                         <tr>
-                            <td class="caption">Max Jump Rng</td>
+                            <td class="caption">Max. Jump Range</td>
                             <td class="data">@m.MaxJumpRange.ToString("N1") LY</td>
                         </tr>
                     }
@@ -296,14 +296,14 @@
                     @if (!string.IsNullOrEmpty(m.PowerDistributor))
                     {
                         <tr>
-                            <td class="caption">Power Distr.</td>
+                            <td class="caption">Power Distributor</td>
                             <td class="data">@m.PowerDistributor</td>
                         </tr>
                     }
                     @if (!string.IsNullOrEmpty(m.ShieldGenerator))
                     {
                         <tr>
-                            <td class="caption">Shield Gen.</td>
+                            <td class="caption">Shield Generator</td>
                             <td class="data">@m.ShieldGenerator</td>
                         </tr>
                     }
@@ -326,7 +326,7 @@
                         if (ml.Value.Count() > 0)
                         {
                             <tr>
-                                <td class="caption">@ml.Key</td>
+                                <td class="caption">@Raw(ml.Key)</td>
                                 <td class="data">@Raw(Module.GetModulePlacement(ml.Key, ml.Value))</td>
                             </tr>
                         }
@@ -337,7 +337,7 @@
 
             if (!string.IsNullOrEmpty(m.ShipImage))
             {
-                <img src="ships\@m.ShipImage" />
+                <div class="imgcenter"><img src="ships\@m.ShipImage" /></div>
             }
 
             if (!((List<Ships.ShipData>)Model.StoredShips).Last().Equals((Ships.ShipData)m))
