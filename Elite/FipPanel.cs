@@ -319,8 +319,6 @@ namespace Elite
 
         public void HandleJoystickButton(JoystickButton joystickButton, bool state)
         {
-            App.log.Info("HandleJoystickButton " + SerialNumber + " " + joystickButton + " " + state);
-
             uint buttons = 0;
 
             var currentPage = (LCDPage)(((uint)_currentTab - 1) / 6);
