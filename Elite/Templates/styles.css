@@ -70,6 +70,12 @@ div.menu {
     background-color: #FFB000;
 }
 
+.menu table td div.menucursor {
+    color: white;
+    background-color: red;
+}
+
+
 .menu table td div.navigation {
     color: #FFB000;
 }

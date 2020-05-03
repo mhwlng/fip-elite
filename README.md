@@ -13,6 +13,9 @@ Use the left rotary encoder to show another card on various tabs or zoom into th
 
 Use S1 to display the menu.
 
+You can also control ONE Flight Instrument Panel with a HOTAS 4-way hat switch with pushbutton.
+The joystick is configured via joysticksettings.config
+
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
 ![Screenshot 2](https://i.imgur.com/JTxiIBL.png)
 ![Screenshot 3](https://i.imgur.com/uXpUC6m.png)

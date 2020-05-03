@@ -1,21 +1,21 @@
 @using Elite
 <div class="menu">
 
-    @if (Model.CurrentPage == LCDPage.Home)
+    @if (Model.CurrentPage == LCDPage.HomeMenu)
     {
         <table class="menu">
             <tbody>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == LCDTab.Commander ? "highlight" : "")">CMDR</div></td>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Commander ? "highlight" : "") @(Model.Cursor == LCDTab.Commander ? "menucursor" : "")">CMDR</div></td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == LCDTab.Navigation ? "highlight" : "")">NAVIGATION</div></td>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Navigation ? "highlight" : "") @(Model.Cursor == LCDTab.Navigation ? "menucursor" : "")">NAVIGATION</div></td>
                 </tr>
                 <tr>
                     <td>
                     @if (Model.TargetLocked)
                     {
-                        <div class="@(Model.CurrentTab == LCDTab.Target ? "highlight" : "")">TARGET</div>
+                        <div class="@(Model.CurrentTab == LCDTab.Target ? "highlight" : "") @(Model.Cursor == LCDTab.Target ? "menucursor" : "")">TARGET</div>
                     }
                     else
                     {
@@ -27,7 +27,7 @@
                     <td>
                     @if (Model.MissionCount > 0)
                     {
-                        <div class="@(Model.CurrentTab == LCDTab.Missions ? "highlight" : "")">MISSIONS</div>
+                        <div class="@(Model.CurrentTab == LCDTab.Missions ? "highlight" : "") @(Model.Cursor == LCDTab.Missions ? "menucursor" : "")">MISSIONS</div>
                     }
                     else
                     {
@@ -36,30 +36,30 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><div class="navigation">SHIP &#x25b6;</div></td>
+                    <td><div class="navigation @(Model.Cursor == LCDTab.ShipMenu ? "menucursor" : "")">SHIP &#x25b6;</div></td>
                 </tr>
                 <tr>
-                    <td><div class="navigation">LOCATIONS &#x25b6;</div></td>
+                    <td><div class="navigation @(Model.Cursor == LCDTab.LocationsMenu ? "menucursor" : "")">LOCATIONS &#x25b6;</div></td>
                 </tr>
 
             </tbody>
         </table>
     }
-    else if (Model.CurrentPage == LCDPage.Ship)
+    else if (Model.CurrentPage == LCDPage.ShipMenu)
     {
         <table class="menu">
             <tbody>
                 <tr>
-                    <td><div class="navigation">&#x25c0; BACK</div></td>
+                    <td><div class="navigation @(Model.Cursor == LCDTab.ShipBack ? "menucursor" : "")">&#x25c0; BACK</div></td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == LCDTab.Ship ? "highlight" : "")">SHIP</div></td>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Ship ? "highlight" : "") @(Model.Cursor == LCDTab.Ship ? "menucursor" : "")">SHIP</div></td>
                 </tr>
                 <tr>
                     <td>
                         @if (Model.MaterialCount > 0)
                         {
-                            <div class="@(Model.CurrentTab == LCDTab.Materials ? "highlight" : "")">MATERIALS</div>
+                            <div class="@(Model.CurrentTab == LCDTab.Materials ? "highlight" : "") @(Model.Cursor == LCDTab.Materials ? "menucursor" : "")">MATERIALS</div>
                         }
                         else
                         {
@@ -71,7 +71,7 @@
                     <td>
                         @if (Model.CargoCount > 0)
                         {
-                            <div class="@(Model.CurrentTab == LCDTab.Cargo ? "highlight" : "")">CARGO</div>
+                            <div class="@(Model.CurrentTab == LCDTab.Cargo ? "highlight" : "") @(Model.Cursor == LCDTab.Cargo ? "menucursor" : "")">CARGO</div>
                         }
                         else
                         {
@@ -81,7 +81,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <div class="@(Model.CurrentTab == LCDTab.Events ? "highlight" : "")">EVENTS</div>
+                        <div class="@(Model.CurrentTab == LCDTab.Events ? "highlight" : "") @(Model.Cursor == LCDTab.Events ? "menucursor" : "")">EVENTS</div>
                     </td>
                 </tr>
                 <tr>
@@ -90,24 +90,24 @@
             </tbody>
         </table>
     }
-    else if (Model.CurrentPage == LCDPage.Locations)
+    else if (Model.CurrentPage == LCDPage.LocationsMenu)
     {
         <table class="menu">
             <tbody>
                 <tr>
-                    <td><div class="navigation">&#x25c0; BACK</div></td>
+                    <td><div class="navigation @(Model.Cursor == LCDTab.LocationsBack ? "menucursor" : "")">&#x25c0; BACK</div></td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == LCDTab.POI ? "highlight" : "")">POI</div></td>
+                    <td><div class="@(Model.CurrentTab == LCDTab.POI ? "highlight" : "") @(Model.Cursor == LCDTab.POI ? "menucursor" : "")">POI</div></td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == LCDTab.Map ? "highlight" : "")">MAP</div></td>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Map ? "highlight" : "") @(Model.Cursor == LCDTab.Map ? "menucursor" : "")">MAP</div></td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == LCDTab.Powers ? "highlight" : "")">POWERS</div></td>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Powers ? "highlight" : "") @(Model.Cursor == LCDTab.Powers ? "menucursor" : "")">POWERS</div></td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == LCDTab.Mining ? "highlight" : "")">MINING</div></td>
+                    <td><div class="@(Model.CurrentTab == LCDTab.Mining ? "highlight" : "") @(Model.Cursor == LCDTab.Mining ? "menucursor" : "")">MINING</div></td>
                 </tr>
                 <tr>
                     <td><div>&nbsp;</div></td>

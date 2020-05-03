@@ -34,12 +34,21 @@ using TheArtOfDev.HtmlRenderer.Core.Entities;
 
 namespace Elite
 {
+    public enum JoystickButton
+    {
+        Up,
+        Down,
+        Left,
+        Right,
+        Push
+    }
+
     public enum LCDPage
     {
         Collapsed = -1,
-        Home = 0,
-        Ship = 1,
-        Locations = 2
+        HomeMenu = 0,
+        ShipMenu = 1,
+        LocationsMenu = 2
     }
 
     public enum LCDTab
@@ -51,12 +60,12 @@ namespace Elite
         Navigation = 2,
         Target = 3,
         Missions = 4,
-        // ship ->
-        // location ->
+        ShipMenu = 5, // ship ->
+        LocationsMenu = 6, // locations ->
 
         //---------------
 
-        // <- back
+        ShipBack = 7, // <- back
         Ship = 8,
         Materials = 9,
         Cargo = 10,
@@ -65,7 +74,7 @@ namespace Elite
 
         //---------------
 
-        // <- back
+        LocationsBack = 13, // <- back
         POI = 14,
         Map = 15,
         Powers = 16,
@@ -129,6 +138,7 @@ namespace Elite
 
         private LCDPage _currentPage = LCDPage.Collapsed;
         private LCDTab _currentTab = LCDTab.None;
+        private LCDTab _currentTabCursor = LCDTab.None;
         private LCDTab _lastTab = LCDTab.Init;
         const int DEFAULT_PAGE = 0;
         const int NO_PAGES = 2;
@@ -142,6 +152,7 @@ namespace Elite
         private int CurrentLCDHeight = 0;
 
         public IntPtr FipDevicePointer;
+        public string SerialNumber;
 
         private uint _prevButtons;
 
@@ -162,7 +173,7 @@ namespace Elite
 
         private const int HtmlWindowXOffset = /*HtmlMenuWindowWidth*/ + 1;
         private const int HtmlWindowWidth = 311- HtmlWindowXOffset;
-        
+
 
         protected bool DoShutdown;
 
@@ -198,17 +209,17 @@ namespace Elite
                 App.log.Error("FipPanel failed to init RegisterSoftButtonCallback. " + returnValues1);
             }
 
-            var returnValues3 = DirectOutputClass.GetSerialNumber(FipDevicePointer, out var serialNumber);
+            var returnValues3 = DirectOutputClass.GetSerialNumber(FipDevicePointer, out SerialNumber);
             if (returnValues3 != ReturnValues.S_OK)
             {
                 App.log.Error("FipPanel failed to get Serial Number. " + returnValues1);
             }
             else
             {
-                App.log.Info("FipPanel Serial Number " + serialNumber);
+                App.log.Info("FipPanel Serial Number " + SerialNumber);
 
                 _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                                "\\mhwlng\\fip-elite\\" + serialNumber;
+                                "\\mhwlng\\fip-elite\\" + SerialNumber;
 
                 
                 if (File.Exists(_settingsPath))
@@ -268,6 +279,8 @@ namespace Elite
                 _lastTab = _currentTab;
                 _currentTab = tab;
 
+                _currentTabCursor = LCDTab.None;
+
                 CurrentLCDYOffset = 0;
 
                 File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
@@ -296,6 +309,269 @@ namespace Elite
                 }
             }
         }
+
+        public uint CalculateButton (LCDTab tab)
+        {
+            var currentPage = (((int)tab - 1) / 6);
+
+            return (uint)(1 << ((int)tab + 4 - (currentPage * 6)));
+        }
+
+        public void HandleJoystickButton(JoystickButton joystickButton, bool state)
+        {
+            App.log.Info("HandleJoystickButton " + SerialNumber + " " + joystickButton + " " + state);
+
+            uint buttons = 0;
+
+            var currentPage = (LCDPage)(((uint)_currentTab - 1) / 6);
+            if (_currentTab == LCDTab.None)
+            {
+                currentPage = LCDPage.HomeMenu;
+            }
+
+            if (state)
+            {
+                switch (joystickButton)
+                {
+                    case JoystickButton.Up:
+                        if (_currentPage == LCDPage.Collapsed)
+                        {
+                            buttons = 4;
+                        }
+                        else
+                        {
+                            if (_currentTabCursor == LCDTab.None)
+                            {
+                                _currentTabCursor = (LCDTab)((int)currentPage * 6) + 1;
+                            }
+
+                            switch (_currentTabCursor)
+                            {
+                                case LCDTab.Missions:
+                                    _currentTabCursor = Data.TargetData.TargetLocked ? _currentTabCursor - 1 : _currentTabCursor - 2;
+                                    break;
+                                case LCDTab.ShipMenu:
+                                    if (Missions.MissionList.Count > 0)
+                                    {
+                                        _currentTabCursor -= 1;
+                                    }
+                                    else
+                                    {
+                                        _currentTabCursor = Data.TargetData.TargetLocked ? _currentTabCursor -2 : _currentTabCursor - 3;
+                                    }
+                                    break;
+
+                                case LCDTab.Cargo:
+                                    _currentTabCursor = Material.MaterialList.Count > 0 ? _currentTabCursor - 1 : _currentTabCursor - 2;
+                                    break;
+
+                                case LCDTab.Events:
+                                    if (Cargo.CargoList.Count > 0)
+                                    {
+                                        _currentTabCursor -= 1;
+                                    }
+                                    else
+                                    {
+                                        _currentTabCursor = Material.MaterialList.Count > 0 ? _currentTabCursor -2  : _currentTabCursor - 3;
+                                    }
+                                    break;
+
+                                case LCDTab.Commander:
+                                    _currentTabCursor = LCDTab.LocationsMenu;
+                                    break;
+                                case LCDTab.ShipBack:
+                                    _currentTabCursor = LCDTab.Events;
+                                    break;
+                                case LCDTab.LocationsBack:
+                                    _currentTabCursor = LCDTab.Mining;
+                                    break;
+
+                                case LCDTab.Navigation:
+                                case LCDTab.Target:
+                                case LCDTab.LocationsMenu:
+                                case LCDTab.Ship:
+                                case LCDTab.Materials:
+                                case LCDTab.POI:
+                                case LCDTab.Map:
+                                case LCDTab.Powers:
+                                case LCDTab.Mining:
+                                    _currentTabCursor -= 1;
+                                    break;
+                            }
+
+                            buttons = 2048;
+                        }
+                        break;
+                    case JoystickButton.Down:
+                        if (_currentPage == LCDPage.Collapsed)
+                        {
+                            buttons = 2;
+                        }
+                        else
+                        {
+                            if (_currentTabCursor == LCDTab.None)
+                            {
+                                _currentTabCursor = (LCDTab)((int)currentPage * 6) + 1;
+                            }
+
+                            switch (_currentTabCursor)
+                            {
+                                case LCDTab.Navigation:
+                                    if (Data.TargetData.TargetLocked)
+                                    {
+                                        _currentTabCursor += 1;
+                                    }
+                                    else
+                                    {
+                                        _currentTabCursor = Missions.MissionList.Count > 0 ? _currentTabCursor + 2 : _currentTabCursor + 3;
+                                    }
+                                    break;
+                                case LCDTab.Target:
+                                    _currentTabCursor = Missions.MissionList.Count > 0 ? _currentTabCursor + 1 : _currentTabCursor + 2;
+                                    break;
+
+                                case LCDTab.Ship:
+                                    if (Material.MaterialList.Count > 0)
+                                    {
+                                        _currentTabCursor += 1;
+                                    }
+                                    else
+                                    {
+                                        _currentTabCursor = Cargo.CargoList.Count > 0 ? _currentTabCursor + 2 : _currentTabCursor + 3;
+                                    }
+                                    break;
+
+                                case LCDTab.Materials:
+                                    _currentTabCursor = Cargo.CargoList.Count > 0 ? _currentTabCursor + 1 : _currentTabCursor + 2;
+                                    break;
+
+                                case LCDTab.LocationsMenu:
+                                    _currentTabCursor = LCDTab.Commander;
+                                    break;
+                                case LCDTab.Events:
+                                    _currentTabCursor = LCDTab.ShipBack;
+                                    break;
+                                case LCDTab.Mining:
+                                    _currentTabCursor = LCDTab.LocationsBack;
+                                    break;
+
+                                case LCDTab.Commander:
+                                case LCDTab.Missions:
+                                case LCDTab.ShipMenu:
+                                case LCDTab.ShipBack:
+                                case LCDTab.Cargo:
+                                case LCDTab.LocationsBack:
+                                case LCDTab.POI:
+                                case LCDTab.Map:
+                                case LCDTab.Powers:
+                                    _currentTabCursor += 1;
+                                    break;
+                            }
+
+                            buttons = 2048; // refresh
+                        }
+                        break;
+                    case JoystickButton.Left:
+                        if (_currentPage == LCDPage.Collapsed)
+                        {
+                            buttons = 16;
+                        }
+                        else
+                        {
+                            if (_currentTabCursor == LCDTab.None)
+                            {
+                                _currentTabCursor = (LCDTab)((int)currentPage * 6) + 1;
+                            }
+
+                            switch (((int)_currentTabCursor - 1) / 6)
+                            {
+                                case 1:
+                                    buttons = 32; // back
+                                    _currentTabCursor = LCDTab.ShipMenu;
+                                    break;
+                                case 2:
+                                    buttons = 32; // back
+                                    _currentTabCursor = LCDTab.LocationsMenu;
+                                    break;
+                            }
+                        }
+                        break;
+                    case JoystickButton.Right:
+                        if (_currentPage == LCDPage.Collapsed)
+                        {
+                            buttons = 8;
+                        }
+                        else
+                        {
+                            if (_currentTabCursor == LCDTab.None)
+                            {
+                                _currentTabCursor = (LCDTab)((int)currentPage * 6) + 1;
+                            }
+
+                            switch (_currentTabCursor)
+                            {
+                                case LCDTab.ShipMenu:
+                                    buttons = CalculateButton(_currentTabCursor);
+                                    _currentTabCursor = LCDTab.ShipBack;
+                                    break;
+                                case LCDTab.LocationsMenu:
+                                    buttons = CalculateButton(_currentTabCursor);
+                                    _currentTabCursor = LCDTab.LocationsBack;
+                                    break;
+                            }
+                        }
+                        break;
+                    case JoystickButton.Push:
+
+                        if (_currentPage == LCDPage.Collapsed)
+                        {
+                            if (_currentTabCursor == LCDTab.None)
+                            {
+                                if (_currentTab != LCDTab.None)
+                                {
+                                    _currentTabCursor = _currentTab;
+                                }
+                                else
+                                {
+                                    _currentTabCursor = (LCDTab)((int)currentPage * 6) + 1;
+                                }
+                            }
+
+                            buttons = 32;
+                        }
+                        else
+                        {
+                            if (_currentTabCursor == LCDTab.None)
+                            {
+                                _currentTabCursor = (LCDTab)((int)currentPage * 6) + 1;
+                            }
+
+                            buttons = CalculateButton(_currentTabCursor);
+
+                            switch (_currentTabCursor)
+                            {
+                                case LCDTab.ShipMenu:
+                                    _currentTabCursor = LCDTab.ShipBack;
+                                    break;
+                                case LCDTab.LocationsMenu:
+                                    _currentTabCursor = LCDTab.LocationsBack;
+                                    break;
+                                case LCDTab.ShipBack:
+                                    _currentTabCursor = LCDTab.ShipMenu;
+                                    break;
+                                case LCDTab.LocationsBack:
+                                    _currentTabCursor = LCDTab.LocationsMenu;
+                                    break;
+                            }
+                        }
+
+                        break;
+                }
+            }
+
+            SoftButtonCallback(FipDevicePointer, (IntPtr) buttons, (IntPtr)null);
+        }
+
 
         private void SoftButtonCallback(IntPtr device, IntPtr buttons, IntPtr context)
         {
@@ -372,124 +648,146 @@ namespace Elite
                         break;
                 }
 
-                switch (_currentPage)
+                if (!mustRefresh)
                 {
-                    case LCDPage.Collapsed:
-                        if (state || !blockNextUpState)
-                        {
-                            switch (button)
+
+                    switch (_currentPage)
+                    {
+                        case LCDPage.Collapsed:
+                            if (state || !blockNextUpState)
                             {
-                                case 32:
-                                    mustRefresh = true;
-                                    _currentPage = (LCDPage) (((uint) _currentTab - 1) / 6);
-                                    if (_currentTab == LCDTab.None)
-                                    {
-                                        _currentPage = LCDPage.Home;
-                                    }
+                                switch (button)
+                                {
+                                    case 32:
+                                        mustRefresh = true;
+                                        _currentPage = (LCDPage) (((uint) _currentTab - 1) / 6);
+                                        if (_currentTab == LCDTab.None)
+                                        {
+                                            _currentPage = LCDPage.HomeMenu;
+                                        }
 
-                                    break;
+                                        _lastTab = LCDTab.Init;
+
+                                        break;
+                                }
                             }
-                        }
 
-                        break;
-                    case LCDPage.Home:
-                        if (state)
-                        {
-                            switch (button)
+                            break;
+                        case LCDPage.HomeMenu:
+                            if (state)
                             {
-                                case 32:
-                                    mustRefresh = SetTab(LCDTab.Commander);
-                                    break;
-                                case 64:
-                                    mustRefresh = SetTab(LCDTab.Navigation);
-                                    break;
-                                case 128:
-                                    if (Data.TargetData.TargetLocked)
-                                    {
-                                        mustRefresh = SetTab(LCDTab.Target);
-                                    }
-                                    break;
-                                case 256:
-                                    if (Missions.MissionList.Count > 0)
-                                    {
-                                        mustRefresh = SetTab(LCDTab.Missions);
-                                    }
-                                    break;
-                                case 512:
-                                    mustRefresh = true;
-                                    _currentPage = LCDPage.Ship;
-                                    break;
-                                case 1024:
-                                    mustRefresh = true;
-                                    _currentPage = LCDPage.Locations;
-                                    break;
-                            }
-                        }
+                                switch (button)
+                                {
+                                    case 32:
+                                        mustRefresh = SetTab(LCDTab.Commander);
+                                        break;
+                                    case 64:
+                                        mustRefresh = SetTab(LCDTab.Navigation);
+                                        break;
+                                    case 128:
+                                        if (Data.TargetData.TargetLocked)
+                                        {
+                                            mustRefresh = SetTab(LCDTab.Target);
+                                        }
 
-                        break;
-                    case LCDPage.Ship:
-                        if (state)
-                        {
-                            switch (button)
+                                        break;
+                                    case 256:
+                                        if (Missions.MissionList.Count > 0)
+                                        {
+                                            mustRefresh = SetTab(LCDTab.Missions);
+                                        }
+
+                                        break;
+                                    case 512:
+                                        mustRefresh = true;
+                                        _currentPage = LCDPage.ShipMenu;
+                                        _lastTab = LCDTab.Init;
+                                        break;
+                                    case 1024:
+                                        mustRefresh = true;
+                                        _currentPage = LCDPage.LocationsMenu;
+                                        _lastTab = LCDTab.Init;
+                                        break;
+                                    case 2048:
+                                        mustRefresh = true;
+                                        break;
+                                }
+                            }
+
+                            break;
+                        case LCDPage.ShipMenu:
+                            if (state)
                             {
-                                case 32:
-                                    mustRefresh = true;
-                                    _currentPage = LCDPage.Home;
-                                    break;
-                                case 64:
-                                    mustRefresh = SetTab(LCDTab.Ship);
-                                    break;
-                                case 128:
-                                    if (Material.MaterialList.Count > 0)
-                                    {
-                                        mustRefresh = SetTab(LCDTab.Materials);
-                                    }
-                                    break;
-                                case 256:
-                                    if (Cargo.CargoList.Count > 0)
-                                    {
-                                        mustRefresh = SetTab(LCDTab.Cargo);
-                                    }
-                                    break;
-                                case 512:
-                                    mustRefresh = SetTab(LCDTab.Events);
-                                    break;
-                                case 1024:
-                                    // empty
-                                    break;
+                                switch (button)
+                                {
+                                    case 32:
+                                        mustRefresh = true;
+                                        _currentPage = LCDPage.HomeMenu;
+                                        _lastTab = LCDTab.Init;
+                                        break;
+                                    case 64:
+                                        mustRefresh = SetTab(LCDTab.Ship);
+                                        break;
+                                    case 128:
+                                        if (Material.MaterialList.Count > 0)
+                                        {
+                                            mustRefresh = SetTab(LCDTab.Materials);
+                                        }
+
+                                        break;
+                                    case 256:
+                                        if (Cargo.CargoList.Count > 0)
+                                        {
+                                            mustRefresh = SetTab(LCDTab.Cargo);
+                                        }
+                                        break;
+                                    case 512:
+                                        mustRefresh = SetTab(LCDTab.Events);
+                                        break;
+                                    case 1024:
+                                        // empty
+                                        break;
+                                    case 2048:
+                                        mustRefresh = true;
+                                        break;
+                                }
                             }
-                        }
 
-                        break;
-                    case LCDPage.Locations:
+                            break;
+                        case LCDPage.LocationsMenu:
 
-                        if (state)
-                        {
-                            switch (button)
+                            if (state)
                             {
-                                case 32:
-                                    mustRefresh = true;
-                                    _currentPage = LCDPage.Home;
-                                    break;
-                                case 64:
-                                    mustRefresh = SetTab(LCDTab.POI);
-                                    break;
-                                case 128:
-                                    mustRefresh = SetTab(LCDTab.Map);
-                                    break;
-                                case 256:
-                                    mustRefresh = SetTab(LCDTab.Powers);
-                                    break;
-                                case 512:
-                                    mustRefresh = SetTab(LCDTab.Mining);
-                                    break;
-                                case 1024:
-                                    // empty
-                                    break;
+                                switch (button)
+                                {
+                                    case 32:
+                                        mustRefresh = true;
+                                        _currentPage = LCDPage.HomeMenu;
+                                        _lastTab = LCDTab.Init;
+                                        break;
+                                    case 64:
+                                        mustRefresh = SetTab(LCDTab.POI);
+                                        break;
+                                    case 128:
+                                        mustRefresh = SetTab(LCDTab.Map);
+                                        break;
+                                    case 256:
+                                        mustRefresh = SetTab(LCDTab.Powers);
+                                        break;
+                                    case 512:
+                                        mustRefresh = SetTab(LCDTab.Mining);
+                                        break;
+                                    case 1024:
+                                        // empty
+                                        break;
+                                    case 2048:
+                                        mustRefresh = true;
+                                        break;
+                                }
                             }
-                        }
 
-                        break;
+                            break;
+                    }
                 }
 
                 blockNextUpState = state;
@@ -651,7 +949,6 @@ namespace Elite
                 e.Callback(image);
             }
         }
-
 
         public void RefreshDevicePage(bool mustRender = true)
         {
@@ -1241,6 +1538,7 @@ namespace Elite
                                     {
                                         CurrentTab = _currentTab,
                                         CurrentPage = _currentPage,
+                                        Cursor = _currentTabCursor,
 
                                         TargetLocked = Data.TargetData.TargetLocked,
 
@@ -1275,52 +1573,56 @@ namespace Elite
                         var tabPage = (LCDPage)(((uint)_currentTab - 1) / 6);
                         if (_currentTab == LCDTab.None)
                         {
-                            tabPage = LCDPage.Home;
+                            tabPage = LCDPage.HomeMenu;
                         }
 
-                        if (_currentPage == LCDPage.Collapsed)
+                        if (_lastTab != _currentTab)
                         {
-                            if (_lastTab > 0)
+                            if (_currentPage == LCDPage.Collapsed)
+                            {
+                                if (_lastTab > 0)
+                                {
+                                    DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                        (uint) _lastTab - ((uint) _lastTab - 1) / 6 * 6, false);
+                                }
+
+                                if (_currentTab > 0)
+                                {
+                                    DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                        (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, false);
+                                }
+
+                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                    1, true);
+
+                            }
+                            else if (tabPage != _currentPage)
+                            {
+                                if (_lastTab > 0)
+                                {
+                                    DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                        (uint) _lastTab - ((uint) _lastTab - 1) / 6 * 6, false);
+                                }
+
+                                if (_currentTab > 0)
+                                {
+                                    DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                        (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, false);
+                                }
+                            }
+                            else
                             {
                                 DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                    (uint)_lastTab - ((uint)_lastTab - 1) / 6 * 6, false);
+                                    1, false);
+
+                                if (_currentTab > 0)
+                                {
+                                    DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                        (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, true);
+                                }
                             }
 
-                            if (_currentTab > 0)
-                            {
-                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                    (uint)_currentTab - ((uint)_currentTab - 1) / 6 * 6, false);
-                            }
-
-                            DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                1, true);
-
-                        }
-                        else
-                        if (tabPage != _currentPage)
-                        {
-                            if (_lastTab > 0)
-                            {
-                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                    (uint)_lastTab - ((uint)_lastTab - 1) / 6 * 6, false);
-                            }
-
-                            if (_currentTab > 0)
-                            {
-                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                    (uint)_currentTab - ((uint)_currentTab - 1) / 6 * 6, false);
-                            }
-                        }
-                        else
-                        {
-                            DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                1, false);
-
-                            if (_currentTab > 0)
-                            {
-                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                    (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, true);
-                            }
+                            _lastTab = _currentTab;
                         }
 
                     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -21,6 +23,9 @@ using RazorEngine.Templating;
 using TheArtOfDev.HtmlRenderer.Core;
 using EliteJournalReader;
 using EliteJournalReader.Events;
+using log4net.Repository.Hierarchy;
+using SharpDX.DirectInput;
+using System.Collections.Specialized;
 
 
 // ReSharper disable StringLiteralTypo
@@ -36,7 +41,10 @@ namespace Elite
         public static readonly object RefreshJsonLock = new object();
 
         public static Task jsonTask;
-        public static CancellationTokenSource tokenSource = new CancellationTokenSource();
+        public static CancellationTokenSource jsonTokenSource = new CancellationTokenSource();
+
+        public static Task joystickTask;
+        public static CancellationTokenSource joystickTokenSource = new CancellationTokenSource();
 
         private static Mutex _mutex = null;
 
@@ -52,6 +60,22 @@ namespace Elite
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static CssData cssData;
+
+        // Initialize DirectInput
+        public static DirectInput directInput = new DirectInput();
+
+        public static Joystick joystick = null;
+
+        private static string PID;
+        private static string VID;
+        private static int UpButton;
+        private static int DownButton;
+        private static int LeftButton;
+        private static int RightButton;
+        private static int PushButton;
+        public static string FipSerialNumber;
+
+        private static bool[] lastButtonState = new bool[256];
 
         public static void RefreshJson(SplashScreenWindow splashScreen = null)
         {
@@ -125,6 +149,28 @@ namespace Elite
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             process.Start();
             process.WaitForExit();
+        }
+
+        private static void HandleJoystickButton(JoystickState state, JoystickButton button, int buttonId)
+        {
+            if (state.Buttons.Length >= buttonId)
+            {
+                var buttonState = state.Buttons[buttonId - 1];
+                var oldButtonState = lastButtonState[buttonId - 1];
+
+                if (buttonState && buttonState == oldButtonState)
+                {
+                    fipHandler.HandleJoystickButton(button, false);
+                }
+
+                if (buttonState || buttonState != oldButtonState)
+                {
+                    fipHandler.HandleJoystickButton(button, buttonState);
+                }
+
+                lastButtonState[buttonId - 1] = buttonState;
+            }
+
         }
 
         protected override void OnStartup(StartupEventArgs evtArgs)
@@ -217,7 +263,7 @@ namespace Elite
                 watcher.AllEventHandler += Data.HandleEliteEvents;
 
                 watcher.StartWatching().Wait();
-
+                
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting FIP...");
                 if (!fipHandler.Initialize())
                 {
@@ -226,17 +272,157 @@ namespace Elite
 
                 log.Info("Fip-Elite started");
 
+                if (File.Exists("joystickSettings.config") && ConfigurationManager.GetSection("joystickSettings") is NameValueCollection section)
+                {
+                    PID = section["PID"];
+                    VID = section["VID"];
+                    UpButton = Convert.ToInt32(section["UpButton"]);
+                    DownButton = Convert.ToInt32(section["DownButton"]);
+                    LeftButton = Convert.ToInt32(section["LeftButton"]);
+                    RightButton = Convert.ToInt32(section["RightButton"]);
+                    PushButton = Convert.ToInt32(section["PushButton"]);
+                    FipSerialNumber = section["FipSerialNumber"];
+
+                    if (!string.IsNullOrEmpty(PID) && !string.IsNullOrEmpty(VID) && UpButton > 0 && DownButton > 0 && LeftButton > 0 && RightButton > 0 && PushButton > 0)
+                    {
+                        splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Looking for Joystick...");
+
+                        if (!string.IsNullOrEmpty(FipSerialNumber))
+                        {
+                            log.Info($"Sending joystick button presses to FIP panel with serial number {FipSerialNumber}");
+                        }
+
+                        log.Info($"Looking for directinput devices with PID={PID} and VID={VID}");
+
+                        log.Info($"Button numbers : Up={UpButton} Down={DownButton} Left={LeftButton} Right={RightButton} Push={PushButton}");
+
+                        foreach (var deviceInstance in directInput.GetDevices())
+                        {
+
+                            //Device = 17,
+                            //Mouse = 18,
+                            //Keyboard = 19,
+
+                            //Joystick = 20,
+                            //Gamepad = 21,
+                            //Driving = 22,
+                            //Flight = 23,
+                            //FirstPerson = 24,
+
+                            //ControlDevice = 25,
+                            //ScreenPointer = 26,
+                            //Remote = 27,
+                            //Supplemental = 28
+
+                            if (deviceInstance.Type >= DeviceType.Joystick &&
+                                deviceInstance.Type <= DeviceType.FirstPerson)
+                            {
+                                log.Info("P:" + deviceInstance.ProductGuid.ToString().Substring(0, 4) + " - V:" +
+                                         deviceInstance.ProductGuid.ToString().Substring(4, 4) + " - " +
+                                         deviceInstance.Type.ToString().PadRight(11) + " - " +
+                                         deviceInstance.ProductGuid + " - " + deviceInstance.InstanceGuid + " - " +
+                                         deviceInstance.InstanceName.Trim().Replace("\0", ""));
+
+                                if (joystick == null &&
+                                    deviceInstance.ProductGuid.ToString().ToUpper().StartsWith(PID + VID))
+                                {
+                                    log.Info(
+                                        $"Using Joystick {deviceInstance.InstanceName.Trim().Replace("\0", "")} with Instance Guid {deviceInstance.InstanceGuid}");
+
+                                    joystick = new Joystick(directInput, deviceInstance.InstanceGuid);
+
+                                    //joystick.Properties.BufferSize = 128;
+
+                                    /*
+                                    joystick.SetCooperativeLevel(wih,
+                                      CooperativeLevel.Background | CooperativeLevel.NonExclusive);*/
+
+                                    joystick.Acquire();
+
+                                    var joystickToken = joystickTokenSource.Token;
+
+                                    joystickTask = Task.Run(async () =>
+                                    {
+                                        log.Info("joystick task started");
+
+                                        while (true)
+                                        {
+                                            if (joystickToken.IsCancellationRequested)
+                                            {
+                                                joystickToken.ThrowIfCancellationRequested();
+                                            }
+
+                                            joystick.Poll();
+
+                                            var state = joystick.GetCurrentState();
+
+                                            HandleJoystickButton(state, JoystickButton.Up, UpButton);
+                                            HandleJoystickButton(state, JoystickButton.Down, DownButton);
+                                            HandleJoystickButton(state, JoystickButton.Left, LeftButton);
+                                            HandleJoystickButton(state, JoystickButton.Right, RightButton);
+                                            HandleJoystickButton(state, JoystickButton.Push, PushButton);
+
+                                            /*
+                                             TODO 
+                                            var pov = state.PointOfViewControllers;
+                                            for (var j = 0; j < pov.Length; j++)
+                                            {
+                                                // 0 up
+                                                // 9000 right
+                                                // 18000 down
+                                                // 27000 left
+                                            } */
+
+                                            /*
+                                            var bufferedData = joystick.GetBufferedData();
+                                            foreach (var data in bufferedData)
+                                            {
+                                                if (data.Offset >= JoystickOffset.Buttons0 &&
+                                                    data.Offset <= JoystickOffset.Buttons127)
+                                                {
+                                                    var button = data.Offset - JoystickOffset.Buttons0 + 1;
+                                                    var state = data.Value > 0;
+                                                    if (button == UpButton)
+                                                        fipHandler.HandleJoystickButton(JoystickButton.Up, state);
+                                                    else if (button == DownButton)
+                                                        fipHandler.HandleJoystickButton(JoystickButton.Down, state);
+                                                    else if (button == LeftButton)
+                                                        fipHandler.HandleJoystickButton(JoystickButton.Left, state);
+                                                    else if (button == RightButton)
+                                                        fipHandler.HandleJoystickButton(JoystickButton.Right, state);
+                                                    else if (button == PushButton)
+                                                        fipHandler.HandleJoystickButton(JoystickButton.Push, state);
+                                                }
+                                            }*/
+
+                                            await Task.Delay(100, jsonTokenSource.Token);
+                                        }
+
+                                    }, joystickToken);
+                                }
+                            }
+                        }
+
+                        if (joystick == null)
+                        {
+                            log.Info($"No joystick found with PID={PID} and VID={VID}");
+                        }
+                    }
+                }
+
                 this.Dispatcher.Invoke(() => { splashScreen.Close(); });
 
-                var token = tokenSource.Token;
+                var jsonToken = jsonTokenSource.Token;
 
                 jsonTask = Task.Run(async () =>
                 {
+                    log.Info("json task started");
+
                     while (true)
                     {
-                        if (token.IsCancellationRequested)
+                        if (jsonToken.IsCancellationRequested)
                         {
-                            token.ThrowIfCancellationRequested();
+                            jsonToken.ThrowIfCancellationRequested();
                         }
 
                         this.Dispatcher.Invoke(() =>
@@ -259,10 +445,10 @@ namespace Elite
                             notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel";
                         });
 
-                        await Task.Delay(30 * 60 * 1000, tokenSource.Token);
+                        await Task.Delay(30 * 60 * 1000, jsonTokenSource.Token);
                     }
 
-                }, token);
+                }, jsonToken);
 
             });
 
@@ -282,21 +468,44 @@ namespace Elite
 
             notifyIcon.Dispose(); //the icon would clean up automatically, but this is cleaner
 
-            tokenSource.Cancel();
+            jsonTokenSource.Cancel();
 
-            var token = tokenSource.Token;
+            var jsonToken = jsonTokenSource.Token;
 
             try
             {
-                jsonTask?.Wait(token);
+                jsonTask?.Wait(jsonToken);
             }
             catch (OperationCanceledException)
             {
-                log.Info("background task ended");
+                log.Info("json background task ended");
             }
             finally
             {
-                tokenSource.Dispose();
+                jsonTokenSource.Dispose();
+            }
+
+            if (joystick != null)
+            {
+                joystickTokenSource.Cancel();
+
+                var joystickToken = joystickTokenSource.Token;
+
+                try
+                {
+                    joystickTask?.Wait(joystickToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    log.Info("joystick background task ended");
+                }
+                finally
+                {
+                    joystickTokenSource.Dispose();
+
+                    joystick?.Unacquire();
+                    joystick?.Dispose();
+                }
             }
 
             log.Info("exiting");

@@ -89,6 +89,18 @@ namespace Elite
         }
 
 
+        public void HandleJoystickButton(JoystickButton joystickButton, bool state)
+        {
+            foreach (var fipPanel in _fipPanels)
+            {
+                if (string.IsNullOrEmpty(App.FipSerialNumber) || fipPanel.SerialNumber == App.FipSerialNumber)
+                {
+                    fipPanel.HandleJoystickButton(joystickButton, state);
+                    break;
+                }
+            }
+        }
+
         public void RefreshDevicePages()
         {
             foreach (var fipPanel in _fipPanels)
