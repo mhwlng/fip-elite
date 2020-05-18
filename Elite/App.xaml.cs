@@ -26,6 +26,7 @@ using EliteJournalReader.Events;
 using log4net.Repository.Hierarchy;
 using SharpDX.DirectInput;
 using System.Collections.Specialized;
+using System.Windows.Controls;
 
 
 // ReSharper disable StringLiteralTypo
@@ -38,6 +39,8 @@ namespace Elite
     /// </summary>
     public partial class App : Application
     {
+        public static bool IsShuttingDown { get; set; }
+
         public static readonly object RefreshJsonLock = new object();
 
         public static Task jsonTask;
@@ -189,6 +192,23 @@ namespace Elite
 
             log4net.Config.XmlConfigurator.Configure();
 
+            foreach (var _Assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var _Type in _Assembly.GetTypes())
+                {
+                    if (_Type.Name == "Settings" && typeof(SettingsBase).IsAssignableFrom(_Type))
+                    {
+                        var settings = (ApplicationSettingsBase)_Type.GetProperty("Default").GetValue(null, null);
+                        if (settings != null)
+                        {
+                            settings.Upgrade();
+                            settings.Reload();
+                            settings.Save();
+                        }
+                    }
+                }
+            }
+
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
 
@@ -200,7 +220,6 @@ namespace Elite
 
             Task.Run(() =>
             {
-
                 var config = new TemplateServiceConfiguration
                 {
                     TemplateManager = new ResolvePathTemplateManager(new[] { "Templates" }),
@@ -212,8 +231,6 @@ namespace Elite
                         "System.Collections",
                         "System.Collections.Generic"
                         }*/
-
-
                 };
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading cshtml templates...");
@@ -250,6 +267,7 @@ namespace Elite
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading History...");
                 var path = History.GetEliteHistory();
 
+
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Status Watcher...");
                 statusWatcher = new StatusWatcher(path);
 
@@ -271,6 +289,20 @@ namespace Elite
                 }
 
                 log.Info("Fip-Elite started");
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    Current.MainWindow = new MainWindow();
+                    Current.MainWindow.ShowActivated = false;
+
+                    if (Elite.Properties.Settings.Default.Visible)
+                    {
+                        Current.MainWindow.Show();
+                        fipHandler.RefreshDevicePages();
+                    }
+                    else
+                        Current.MainWindow.Hide();
+                });
 
                 if (File.Exists("joystickSettings.config") && ConfigurationManager.GetSection("joystickSettings") is NameValueCollection section)
                 {
@@ -445,7 +477,7 @@ namespace Elite
                             notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel";
                         });
 
-                        await Task.Delay(30 * 60 * 1000, jsonTokenSource.Token);
+                        await Task.Delay(30 * 60 * 1000, jsonTokenSource.Token); // repeat every 30 minutes
                     }
 
                 }, jsonToken);
@@ -453,9 +485,12 @@ namespace Elite
             });
 
         }
+      
 
         protected override void OnExit(ExitEventArgs e)
         {
+            Elite.Properties.Settings.Default.Save();
+
             statusWatcher.StatusUpdated -= Data.HandleStatusEvents;
 
             statusWatcher.StopWatching();

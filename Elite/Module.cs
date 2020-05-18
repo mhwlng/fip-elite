@@ -76,6 +76,7 @@ namespace Elite
             {"Manifest Scanner", new ModuleDataItem { Key = "_cargoscanner_", ModuleType = ModuleType.SingleModule} },
             {"K-Warrant Scanner", new ModuleDataItem { Key = "_crimescanner_", ModuleType = ModuleType.SingleModule} },
 
+            {"Research Limpet Contr.", new ModuleDataItem { Key = "_dronecontrol_unkvesselresearch", ModuleType = ModuleType.MultipleModules} },
             {"Hatch Breaker Limpet Contr.", new ModuleDataItem { Key = "_dronecontrol_resourcesiphon_", ModuleType = ModuleType.MultipleModules} },
             {"Collector Limpet Contr.", new ModuleDataItem { Key = "_dronecontrol_collection_", ModuleType = ModuleType.MultipleModules} },
             {"Fuel Transfer Limpet Contr.", new ModuleDataItem { Key = "_dronecontrol_fueltransfer_", ModuleType = ModuleType.MultipleModules} },
@@ -637,8 +638,6 @@ namespace Elite
             }
 
             /* TODO:
-            "int_dronecontrol_resourcesiphon", "Hatch Breaker Limpet Contr.", "I"
-            "int_dronecontrol_unkvesselresearch", "Research Limpet Contr.", "E"
             "int_dockingcomputer_standard", "Std. Docking Computer", "E"
             "int_dockingcomputer_advanced", "Adv. Docking Computer", "E"
             "int_stellarbodydiscoveryscanner_standard", "Basic Discovery Scanner", "E"

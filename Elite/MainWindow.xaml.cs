@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,14 @@ namespace Elite
     /// </summary>
     public partial class MainWindow : Window
     {
+        void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            if (!App.IsShuttingDown)
+            {
+                Properties.Settings.Default.Visible = false;
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();

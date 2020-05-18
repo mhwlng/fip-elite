@@ -12,40 +12,46 @@ namespace Elite
     /// </summary>
     public class NotifyIconViewModel
     {
-        /// <summary>
-        /// Shows a window, if none is already open.
-        /// </summary>
-        public ICommand ShowWindowCommand
+        public ICommand ToggleWindowCommand
         {
             get
             {
                 return new DelegateCommand
                 {
-                    CanExecuteFunc = () => Application.Current.MainWindow == null,
                     CommandAction = () =>
                     {
-                        Application.Current.MainWindow = new MainWindow();
-                        Application.Current.MainWindow.Show();
-                    }
+                        if (Application.Current.MainWindow == null || Application.Current.MainWindow.Visibility == Visibility.Collapsed)
+                        {
+                            Application.Current.MainWindow = new MainWindow();
+                            Application.Current.MainWindow.ShowActivated = false;
+                            Application.Current.MainWindow.Show();
+                            App.fipHandler.RefreshDevicePages();
+
+                            Properties.Settings.Default.Visible = true;
+                        }
+                        else
+                        {
+                            Application.Current.MainWindow.ShowActivated = false;
+                            if (Application.Current.MainWindow.Visibility == Visibility.Visible)
+                            {
+                                Application.Current.MainWindow.Hide();
+
+                                Properties.Settings.Default.Visible = false;
+                            }
+                            else
+                            {
+                                Application.Current.MainWindow.Show();
+                                App.fipHandler.RefreshDevicePages();
+
+
+                                Properties.Settings.Default.Visible = true;
+                            }
+                        }
+                    },
+                    CanExecuteFunc = () => App.jsonTask != null
                 };
             }
         }
-
-        /// <summary>
-        /// Hides the main window. This command is only enabled if a window is open.
-        /// </summary>
-        public ICommand HideWindowCommand
-        {
-            get
-            {
-                return new DelegateCommand
-                {
-                    CommandAction = () => Application.Current.MainWindow.Close(),
-                    CanExecuteFunc = () => Application.Current.MainWindow != null
-                };
-            }
-        }
-
 
         /// <summary>
         /// Shuts down the application.
@@ -64,6 +70,7 @@ namespace Elite
                         }
                         else
                         {
+                            App.IsShuttingDown = true;
                             Application.Current.Shutdown();
                         }
                     }

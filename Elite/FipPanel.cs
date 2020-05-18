@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using Elite.RingBuffer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -948,6 +949,46 @@ namespace Elite
             }
         }
 
+        private BitmapImage ConvertBitmapToBitmapImage(Bitmap src)
+        {
+            MemoryStream ms = new MemoryStream();
+            ((System.Drawing.Bitmap)src).Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            ms.Seek(0, SeekOrigin.Begin);
+            image.StreamSource = ms;
+            image.EndInit();
+            return image;
+        }
+
+        private void RefreshMirrorWindow(Bitmap fipImage)
+        {
+            if (string.IsNullOrEmpty(App.FipSerialNumber) || SerialNumber == App.FipSerialNumber)
+            {
+                try
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action<Bitmap>((bitmap) =>
+                    {
+                        System.Windows.Window owner = System.Windows.Application.Current.MainWindow;
+
+                        if (owner != null && owner.Visibility == System.Windows.Visibility.Visible)
+                        {
+                            var im = (System.Windows.Controls.Image)owner.FindName("im");
+
+                            if (im != null)
+                            {
+                                im.Source = ConvertBitmapToBitmapImage(bitmap);
+                            }
+                        }
+                    }), fipImage);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+        }
+
         public void RefreshDevicePage(bool mustRender = true)
         {
             lock (_refreshDevicePageLock)
@@ -1562,6 +1603,8 @@ namespace Elite
 #if DEBUG
                         fipImage.Save(@"screenshot"+(int)_currentTab+"_"+ _currentCard[(int)_currentTab] + ".png", ImageFormat.Png);
 #endif
+
+                        RefreshMirrorWindow(fipImage);
 
                         fipImage.RotateFlip(RotateFlipType.Rotate180FlipX);
 

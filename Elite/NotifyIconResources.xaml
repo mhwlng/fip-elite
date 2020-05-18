@@ -9,15 +9,13 @@
         reuse the same context menu (which is a resource) again (which will have its DataContext set to the old TaskbarIcon)
   -->
     <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
-        <!--MenuItem Header="Show Window" Command="{Binding ShowWindowCommand}" /-->
-        <!--MenuItem Header="Hide Window" Command="{Binding HideWindowCommand}" /-->
-        <!--Separator /-->
+        <MenuItem Name="ToggleWindowMenuItem" Header="Toggle Mirror Window" Command="{Binding ToggleWindowCommand}"  />
+        <Separator />
         <MenuItem Header="Exit" Command="{Binding ExitApplicationCommand}" />
     </ContextMenu>
 
 
     <!-- the application's NotifyIcon - started from App.xaml.cs. Declares its own view model. -->
-    <!-- DoubleClickCommand="{Binding ShowWindowCommand}"  -->
     <tb:TaskbarIcon x:Key="NotifyIcon"
                     IconSource="/Elite.ico"
                     ToolTipText="Elite Dangerous Flight Instrument Panel"
