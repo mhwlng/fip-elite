@@ -609,6 +609,11 @@ namespace Elite
             }
 
             SoftButtonCallback(FipDevicePointer, (IntPtr) buttons, (IntPtr)null);
+
+            if (!InitOk)
+            {
+                Thread.Sleep(50);
+            }
         }
 
 

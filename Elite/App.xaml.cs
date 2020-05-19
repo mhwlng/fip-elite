@@ -300,29 +300,6 @@ namespace Elite
 
                 log.Info("Fip-Elite started");
 
-                this.Dispatcher.Invoke(() =>
-                {
-                    Current.MainWindow = new MainWindow();
-                    Current.MainWindow.ShowActivated = false;
-
-                    if (evtArgs.Args.Length >= 1)
-                    {
-                        if (evtArgs.Args[0].ToLower().Contains("mirror"))
-                        {
-                            Elite.Properties.Settings.Default.Visible = true;
-                            Elite.Properties.Settings.Default.Save();
-                        }
-                    }
-
-                    if (Elite.Properties.Settings.Default.Visible)
-                    {
-                        Current.MainWindow.Show();
-                        fipHandler.RefreshDevicePages();
-                    }
-                    else
-                        Current.MainWindow.Hide();
-                });
-
                 if (File.Exists(Path.Combine(ExePath, "joystickSettings.config")) && ConfigurationManager.GetSection("joystickSettings") is NameValueCollection section)
                 {
                     PID = section["PID"];
@@ -472,6 +449,30 @@ namespace Elite
                         }
                     }
                 }
+
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    Current.MainWindow = new MainWindow();
+                    Current.MainWindow.ShowActivated = false;
+
+                    if (evtArgs.Args.Length >= 1)
+                    {
+                        if (evtArgs.Args[0].ToLower().Contains("mirror"))
+                        {
+                            Elite.Properties.Settings.Default.Visible = true;
+                            Elite.Properties.Settings.Default.Save();
+                        }
+                    }
+
+                    if (Elite.Properties.Settings.Default.Visible)
+                    {
+                        Current.MainWindow.Show();
+                        fipHandler.RefreshDevicePages();
+                    }
+                    else
+                        Current.MainWindow.Hide();
+                });
 
                 this.Dispatcher.Invoke(() => { splashScreen.Close(); });
 

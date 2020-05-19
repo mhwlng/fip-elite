@@ -5,6 +5,8 @@ Logitech Flight Instrument Panel and VR application for Elite Dangerous
 
 This application displays data from Elite Dangerous on Logitech Flight Instrument Panels or in a window for VR.
 
+![VR](https://i.imgur.com/qhICACC.jpg)
+
 The menu area and each screen can be configured via razor (.cshtml) web page templates.
 
 Use the right rotary encoder to scroll vertically on all tabs.
@@ -34,7 +36,7 @@ The joystick is configured via joysticksettings.config
 There is a Toggle Mirror Window menu option in the tray icon context menu.
 This option mirrors the FIP display, that is being controlled by the HOTAS hat switch, to a window for use in VR.
 
-If FipSerialNumber in joysticksettings.config has the special value "window", then a separate window is created 
+If FipSerialNumber in joysticksettings.config has the special value "window", then a separate window is created, 
 that is NOT a mirror of a FIP display. 
 
 **So this window will also work WITHOUT any connected FIP display.**
