@@ -14,6 +14,7 @@ Use the left rotary encoder to show another card on various tabs or zoom into th
 Use S1 to display the menu.
 
 You can also control ONE Flight Instrument Panel with a HOTAS 4-way hat switch with pushbutton.
+
 The joystick is configured via joysticksettings.config
 
 ```
@@ -31,15 +32,15 @@ The joystick is configured via joysticksettings.config
 ```
 
 There is a Toggle Mirror Window menu option in the tray icon context menu.
-This option mirrors the FIP display, that is being controlled by the HOTAS hat switch, to a window for use in VR, 
-in combination with the OVR Toolkit application on steam.
+This option mirrors the FIP display, that is being controlled by the HOTAS hat switch, to a window for use in VR.
 
 If FipSerialNumber in joysticksettings.config has the special value "window", then a separate window is created 
 that is NOT a mirror of a FIP display. 
 
-So this window also works WITHOUT any FIP display.
+**So this window will also work WITHOUT any connected FIP display.**
 
 You can then use a tool like [OVR Toolkit](https://store.steampowered.com/app/1068820/OVR_Toolkit/) to display this window in VR. 
+
 
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
 ![Screenshot 2](https://i.imgur.com/JTxiIBL.png)
