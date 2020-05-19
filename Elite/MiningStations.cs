@@ -92,15 +92,17 @@ namespace Elite
 
         }
 
-        public static List<MiningStationData> GetAllMiningStations(string fileName)
+        public static List<MiningStationData> GetAllMiningStations(string path)
         {
             try
             {
-                if (File.Exists(fileName))
-                {
-                    var data = JsonConvert.DeserializeObject<List<MiningStationData>>(File.ReadAllText(fileName));
+                path = Path.Combine(App.ExePath, path);
 
-                    var modification = File.GetLastWriteTime(fileName);
+                if (File.Exists(path))
+                {
+                    var data = JsonConvert.DeserializeObject<List<MiningStationData>>(File.ReadAllText(path));
+
+                    var modification = File.GetLastWriteTime(path);
 
                     foreach (var d in data)
                     {

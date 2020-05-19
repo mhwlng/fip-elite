@@ -112,13 +112,15 @@ namespace Elite
             {PowerTypes.ZeminaTorval, new List<StationData>()}
         };
 
-        public static List<StationData> GetAllStations(string fileName)
+        public static List<StationData> GetAllStations(string path)
         {
             try
             {
-                if (File.Exists(fileName))
+                path = Path.Combine(App.ExePath, path);
+
+                if (File.Exists(path))
                 {
-                    return JsonConvert.DeserializeObject<List<StationData>>(File.ReadAllText(fileName));
+                    return JsonConvert.DeserializeObject<List<StationData>>(File.ReadAllText(path));
                 }
             }
             catch (Exception ex)

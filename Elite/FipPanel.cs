@@ -221,7 +221,6 @@ namespace Elite
 
                 _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                                 "\\mhwlng\\fip-elite\\" + SerialNumber;
-
                 
                 if (File.Exists(_settingsPath))
                 {
@@ -875,7 +874,7 @@ namespace Elite
 
             try
             {
-                var image = Image.FromFile("Templates\\images\\" + e.Src);
+                var image = Image.FromFile(Path.Combine(App.ExePath,"Templates\\images\\") + e.Src);
 
                 using (var graphics = Graphics.FromImage(image))
                 {

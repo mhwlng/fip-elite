@@ -64,13 +64,15 @@ namespace Elite
 
         }
 
-        public static List<CnbSystemData> GetAllCnbSystems(string fileName)
+        public static List<CnbSystemData> GetAllCnbSystems(string path)
         {
             try
             {
-                if (File.Exists(fileName))
+                path = Path.Combine(App.ExePath, path);
+
+                if (File.Exists(path))
                 {
-                    return JsonConvert.DeserializeObject<List<CnbSystemData>>(File.ReadAllText(fileName));
+                    return JsonConvert.DeserializeObject<List<CnbSystemData>>(File.ReadAllText(path));
                 }
             }
             catch (Exception ex)

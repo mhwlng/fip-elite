@@ -61,13 +61,15 @@ namespace Elite
             return Regex.Replace(input, "<.*?>", String.Empty);
         }
 
-        public static List<HotspotSystemData> GetAllHotspotSystems(string fileName)
+        public static List<HotspotSystemData> GetAllHotspotSystems(string path)
         {
             try
             {
-                if (File.Exists(fileName))
+                path = Path.Combine(App.ExePath, path);
+
+                if (File.Exists(path))
                 {
-                    var data = JsonConvert.DeserializeObject<List<HotspotSystemData>>(File.ReadAllText(fileName));
+                    var data = JsonConvert.DeserializeObject<List<HotspotSystemData>>(File.ReadAllText(path));
 
                     data.ForEach(x => { x.Comment = StripHTML(x.Comment); });
                     return data;

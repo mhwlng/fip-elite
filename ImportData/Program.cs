@@ -46,6 +46,12 @@ namespace ImportData
             }
         }
 
+        private static string GetExePath()
+        {
+            string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            return Path.GetDirectoryName(strExeFilePath);
+        }
+
         public static string GetJson(string url)
         {
             using (var client = new WebClient())
@@ -86,16 +92,33 @@ namespace ImportData
 
         }
 
-        public static void StationSerialize(List<StationEDSM> stations, string fileName)
+        public static void DeleteExpiredFile(string fullPath, int minutes)
         {
-            (new FileInfo(fileName)).Directory?.Create();
+            (new FileInfo(fullPath)).Directory?.Create();
+
+            if (File.Exists(fullPath))
+            {
+                var modification = File.GetLastWriteTime(fullPath);
+
+                if ((DateTime.Now - modification).TotalMinutes >= minutes)
+                {
+                    File.Delete(fullPath);
+                }
+            }
+        }
+
+        public static void StationSerialize(List<StationEDSM> stations, string path)
+        {
+            path = Path.Combine(GetExePath(), path);
+
+            (new FileInfo(path)).Directory?.Create();
 
             var serializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            using (var sw = new StreamWriter(fileName))
+            using (var sw = new StreamWriter(path))
             using (var writer = new JsonTextWriter(sw))
             {
                 var stationsData = GetStationsData(stations);
@@ -104,24 +127,11 @@ namespace ImportData
             }
         }
 
-        public static void DeleteExpiredFile(string path, int  minutes)
-        {
-
-            (new FileInfo(path)).Directory?.Create();
-
-            if (File.Exists(path))
-            {
-                var modification = File.GetLastWriteTime(path);
-
-                if ((DateTime.Now - modification).TotalMinutes >= minutes)
-                {
-                    File.Delete(path);
-                }
-            }
-        }
 
         public static bool NeedToUpdateFile(string path, int minutes)
         {
+            path = Path.Combine(GetExePath(), path);
+
             if (File.Exists(path))
             {
                 var modification = File.GetLastWriteTime(path);
@@ -142,6 +152,7 @@ namespace ImportData
 
         public static string DownloadJson(string path, string url, ref bool wasUpdated)
         {
+            path = Path.Combine(GetExePath(), path);
 
             DeleteExpiredFile(path, 1440);
 
@@ -237,28 +248,29 @@ namespace ImportData
 
         }
 
-        public static void CnbSystemsSerialize(List<CNBSystemData> systems, string fileName)
+        public static void CnbSystemsSerialize(List<CNBSystemData> systems, string fullPath)
         {
-            (new FileInfo(fileName)).Directory?.Create();
+            (new FileInfo(fullPath)).Directory?.Create();
 
             var serializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            using (var sw = new StreamWriter(fileName))
+            using (var sw = new StreamWriter(fullPath))
             using (var writer = new JsonTextWriter(sw))
             {
                 serializer.Serialize(writer, systems);
             }
         }
         
-        public static void DownloadCnbSystems(string cnbPath, Dictionary<string, PopulatedSystemEDDB> populatedSystemsEDDBbyName)
+        public static void DownloadCnbSystems(string path, Dictionary<string, PopulatedSystemEDDB> populatedSystemsEDDBbyName)
         {
+            path = Path.Combine(GetExePath(), path);
 
-            DeleteExpiredFile(cnbPath, 1440);
+            DeleteExpiredFile(path, 1440);
 
-            if (!File.Exists(cnbPath))
+            if (!File.Exists(path))
             {
                 Console.WriteLine("looking up Compromised Nav Beacons");
 
@@ -281,7 +293,7 @@ namespace ImportData
                     }
                 });
 
-                CnbSystemsSerialize(cnbSystems, cnbPath);
+                CnbSystemsSerialize(cnbSystems, path);
             }
         }
 
@@ -289,6 +301,8 @@ namespace ImportData
         {
             try
             {
+                path = Path.Combine(GetExePath(), path);
+
                 DeleteExpiredFile(path, 1440);
 
                 if (!File.Exists(path))
@@ -364,16 +378,16 @@ namespace ImportData
             }).ToList();
         }
 
-        public static void MiningStationsSerialize(List<MiningStationData> stations, string fileName)
+        public static void MiningStationsSerialize(List<MiningStationData> stations, string fullPath)
         {
-            (new FileInfo(fileName)).Directory?.Create();
+            (new FileInfo(fullPath)).Directory?.Create();
 
             var serializer = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            using (var sw = new StreamWriter(fileName))
+            using (var sw = new StreamWriter(fullPath))
             using (var writer = new JsonTextWriter(sw))
             {
 
@@ -385,6 +399,8 @@ namespace ImportData
         {
             try
             {
+                path = Path.Combine(GetExePath(), path);
+
                 Console.WriteLine("looking up " + material + " Stations");
 
                 using (var client = new WebClient())

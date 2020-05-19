@@ -125,7 +125,7 @@ namespace Elite
 
             try
             {
-                var image = Image.FromFile("Templates\\images\\galaxy.png");
+                var image = Image.FromFile(Path.Combine(App.ExePath, "Templates\\images\\galaxy.png"));
                 ImageWidth = image.Width;
                 ImageHeight = image.Height;
 

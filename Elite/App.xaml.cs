@@ -80,6 +80,14 @@ namespace Elite
 
         private static bool[] lastButtonState = new bool[256];
 
+        public static string ExePath;
+
+        private static void GetExePath()
+        {
+            string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            ExePath = Path.GetDirectoryName(strExeFilePath);
+        }
+
         public static void RefreshJson(SplashScreenWindow splashScreen = null)
         {
             lock (RefreshJsonLock)
@@ -188,6 +196,8 @@ namespace Elite
                 Application.Current.Shutdown();
             }
 
+            GetExePath();
+
             base.OnStartup(evtArgs);
 
             log4net.Config.XmlConfigurator.Configure();
@@ -222,7 +232,7 @@ namespace Elite
             {
                 var config = new TemplateServiceConfiguration
                 {
-                    TemplateManager = new ResolvePathTemplateManager(new[] { "Templates" }),
+                    TemplateManager = new ResolvePathTemplateManager(new[] { Path.Combine(ExePath, "Templates") }),
                     DisableTempFileLocking = true,
                     BaseTemplateType = typeof(HtmlSupportTemplateBase<>) /*,
                     Namespaces = new HashSet<string>(){
@@ -257,7 +267,7 @@ namespace Elite
                 Engine.Razor.Compile("events.cshtml", null);
 
                 cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
-                    File.ReadAllText("Templates\\styles.css"), true);
+                    File.ReadAllText(Path.Combine(ExePath, "Templates\\styles.css")), true);
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
                 Poi.FullPoiList = Poi.GetAllPois(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
@@ -304,7 +314,7 @@ namespace Elite
                         Current.MainWindow.Hide();
                 });
 
-                if (File.Exists("joystickSettings.config") && ConfigurationManager.GetSection("joystickSettings") is NameValueCollection section)
+                if (File.Exists(Path.Combine(ExePath, "joystickSettings.config")) && ConfigurationManager.GetSection("joystickSettings") is NameValueCollection section)
                 {
                     PID = section["PID"];
                     VID = section["VID"];
@@ -465,7 +475,7 @@ namespace Elite
                             notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel [WORKING]";
                         });
 
-                        RunProcess("ImportData.exe");
+                        RunProcess(Path.Combine(ExePath, "ImportData.exe"));
 
                         RefreshJson();
 
