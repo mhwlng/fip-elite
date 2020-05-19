@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:elite="clr-namespace:Elite"
         Closing="MainWindow_Closing"
+        MouseDown="MainWindow_OnMouseDown"
         Title="fip-elite" Height="300" Width="500" SizeToContent="WidthAndHeight" ResizeMode="NoResize" 
         Left="{elite:SettingBinding Left}"
         Top="{elite:SettingBinding Top}">

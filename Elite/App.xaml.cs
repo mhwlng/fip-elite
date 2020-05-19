@@ -292,7 +292,7 @@ namespace Elite
 
                 watcher.StartWatching().Wait();
                 
-                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting FIP...");
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Initializing FIP...");
                 if (!fipHandler.Initialize())
                 {
                     Application.Current.Shutdown();
@@ -340,7 +340,19 @@ namespace Elite
 
                         if (!string.IsNullOrEmpty(FipSerialNumber))
                         {
-                            log.Info($"Sending joystick button presses to FIP panel with serial number {FipSerialNumber}");
+                            log.Info($"Sending joystick button presses to FIP panel with serial number : {FipSerialNumber}");
+
+                            if (FipSerialNumber.ToLower().Contains("window"))
+                            {
+                                fipHandler.AddWindow("window",(IntPtr)0);
+
+                                this.Dispatcher.Invoke(() =>
+                                {
+                                    Elite.Properties.Settings.Default.Visible = true;
+                                    Current.MainWindow.Show();
+                                    fipHandler.RefreshDevicePages();
+                                });
+                            }
                         }
 
                         log.Info($"Looking for directinput devices with PID={PID} and VID={VID}");

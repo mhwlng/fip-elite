@@ -137,6 +137,8 @@ namespace Elite
         private readonly object _refreshDevicePageLock = new object();
 
 
+        public bool InitOk;
+
         private LCDPage _currentPage = LCDPage.Collapsed;
         private LCDTab _currentTab = LCDTab.None;
         private LCDTab _currentTabCursor = LCDTab.None;
@@ -217,11 +219,11 @@ namespace Elite
             }
             else
             {
-                App.log.Info("FipPanel Serial Number " + SerialNumber);
+                App.log.Info("FipPanel Serial Number : " + SerialNumber);
 
                 _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                                 "\\mhwlng\\fip-elite\\" + SerialNumber;
-                
+
                 if (File.Exists(_settingsPath))
                 {
                     try
@@ -239,11 +241,47 @@ namespace Elite
 
                     File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
                 }
-                
+
+                InitOk = true;
+
                 AddPage(DEFAULT_PAGE, true);
 
                 RefreshDevicePage();
             }
+
+        }
+
+        public void InitalizeWindow(string serialNumber)
+        {
+            SerialNumber = serialNumber;
+
+            App.log.Info("FipPanel Serial Number : " + SerialNumber);
+
+            _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                            "\\mhwlng\\fip-elite\\" + serialNumber;
+
+            if (File.Exists(_settingsPath))
+            {
+                try
+                {
+                    _currentTab = (LCDTab)uint.Parse(File.ReadAllText(_settingsPath));
+                }
+                catch
+                {
+                    _currentTab = LCDTab.None;
+                }
+            }
+            else
+            {
+                (new FileInfo(_settingsPath)).Directory?.Create();
+
+                File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
+            }
+
+            InitOk = false;
+
+            RefreshDevicePage();
+            
 
         }
 
@@ -257,7 +295,10 @@ namespace Elite
                 {
                     do
                     {
-                        DirectOutputClass.RemovePage(FipDevicePointer, _pageList[0]);
+                        if (InitOk)
+                        {
+                            DirectOutputClass.RemovePage(FipDevicePointer, _pageList[0]);
+                        }
 
                         _pageList.Remove(_pageList[0]);
 
@@ -816,54 +857,69 @@ namespace Elite
         private ReturnValues AddPage(uint pageNumber, bool setActive)
         {
             var result = ReturnValues.E_FAIL;
-            try
-            {
-                if (_pageList.Contains(pageNumber))
-                {
-                    return ReturnValues.S_OK;
-                }
 
-                result = DirectOutputClass.AddPage(FipDevicePointer, (IntPtr)((long)pageNumber), string.Concat(new object[4]
-                                                      {
-                                                    "0x",
-                                                    FipDevicePointer.ToString(),
-                                                    " PageNo: ",
-                                                    pageNumber
-                                                      }), setActive);
-                if (result == ReturnValues.S_OK)
+            if (InitOk)
+            {
+                try
                 {
-                    App.log.Info("Page: " + (pageNumber) + " added");
-                    
-                    _pageList.Add(pageNumber);
+                    if (_pageList.Contains(pageNumber))
+                    {
+                        return ReturnValues.S_OK;
+                    }
+
+                    result = DirectOutputClass.AddPage(FipDevicePointer, (IntPtr) ((long) pageNumber), string.Concat(
+                        new object[4]
+                        {
+                            "0x",
+                            FipDevicePointer.ToString(),
+                            " PageNo: ",
+                            pageNumber
+                        }), setActive);
+                    if (result == ReturnValues.S_OK)
+                    {
+                        App.log.Info("Page: " + (pageNumber) + " added");
+
+                        _pageList.Add(pageNumber);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.log.Error(ex);
                 }
             }
-            catch (Exception ex)
-            {
-                App.log.Error(ex);
-            }
+
             return result;
         }
 
-        private ReturnValues SetImage(uint page, Bitmap fipImage)
+        private ReturnValues SendImageToFip(uint page, Bitmap fipImage)
         {
-            if (fipImage == null)
+
+            if (InitOk)
             {
-                return ReturnValues.E_INVALIDARG;
+                if (fipImage == null)
+                {
+                    return ReturnValues.E_INVALIDARG;
+                }
+
+                try
+                {
+                    fipImage.RotateFlip(RotateFlipType.Rotate180FlipX);
+
+                    var bitmapData =
+                        fipImage.LockBits(new System.Drawing.Rectangle(0, 0, fipImage.Width, fipImage.Height),
+                            ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                    var intPtr = bitmapData.Scan0;
+                    var local3 = bitmapData.Stride * fipImage.Height;
+                    DirectOutputClass.SetImage(FipDevicePointer, page, 0, local3, intPtr);
+                    fipImage.UnlockBits(bitmapData);
+                    return ReturnValues.S_OK;
+                }
+                catch (Exception ex)
+                {
+                    App.log.Error(ex);
+                }
             }
 
-            try
-            {
-                var bitmapData = fipImage.LockBits(new System.Drawing.Rectangle(0, 0, fipImage.Width, fipImage.Height), ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                var intPtr = bitmapData.Scan0;
-                var local3 = bitmapData.Stride * fipImage.Height;
-                DirectOutputClass.SetImage(FipDevicePointer, page, 0, local3, intPtr);
-                fipImage.UnlockBits(bitmapData);
-                return ReturnValues.S_OK;
-            }
-            catch (Exception ex)
-            {
-                App.log.Error(ex);
-            }
             return ReturnValues.E_FAIL;
         }
         
@@ -1605,10 +1661,8 @@ namespace Elite
 
                         RefreshMirrorWindow(fipImage);
 
-                        fipImage.RotateFlip(RotateFlipType.Rotate180FlipX);
-
-
-                        SetImage(DEFAULT_PAGE, fipImage);
+                       
+                        SendImageToFip(DEFAULT_PAGE, fipImage);
 
                         var tabPage = (LCDPage)(((uint)_currentTab - 1) / 6);
                         if (_currentTab == LCDTab.None)
@@ -1618,47 +1672,50 @@ namespace Elite
 
                         if (_lastTab != _currentTab)
                         {
-                            if (_currentPage == LCDPage.Collapsed)
+                            if (InitOk)
                             {
-                                if (_lastTab > 0)
+                                if (_currentPage == LCDPage.Collapsed)
                                 {
+                                    if (_lastTab > 0)
+                                    {
+                                        DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                            (uint) _lastTab - ((uint) _lastTab - 1) / 6 * 6, false);
+                                    }
+
+                                    if (_currentTab > 0)
+                                    {
+                                        DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                            (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, false);
+                                    }
+
                                     DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                        (uint) _lastTab - ((uint) _lastTab - 1) / 6 * 6, false);
+                                        1, true);
+
                                 }
-
-                                if (_currentTab > 0)
+                                else if (tabPage != _currentPage)
                                 {
-                                    DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                        (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, false);
+                                    if (_lastTab > 0)
+                                    {
+                                        DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                            (uint) _lastTab - ((uint) _lastTab - 1) / 6 * 6, false);
+                                    }
+
+                                    if (_currentTab > 0)
+                                    {
+                                        DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                            (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, false);
+                                    }
                                 }
-
-                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                    1, true);
-
-                            }
-                            else if (tabPage != _currentPage)
-                            {
-                                if (_lastTab > 0)
+                                else
                                 {
                                     DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                        (uint) _lastTab - ((uint) _lastTab - 1) / 6 * 6, false);
-                                }
+                                        1, false);
 
-                                if (_currentTab > 0)
-                                {
-                                    DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                        (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, false);
-                                }
-                            }
-                            else
-                            {
-                                DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                    1, false);
-
-                                if (_currentTab > 0)
-                                {
-                                    DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
-                                        (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, true);
+                                    if (_currentTab > 0)
+                                    {
+                                        DirectOutputClass.SetLed(FipDevicePointer, DEFAULT_PAGE,
+                                            (uint) _currentTab - ((uint) _currentTab - 1) / 6 * 6, true);
+                                    }
                                 }
                             }
 

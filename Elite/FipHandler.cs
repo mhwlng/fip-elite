@@ -19,7 +19,7 @@ namespace Elite
 
         private DirectOutputClass.DeviceCallback _deviceCallback;
         private DirectOutputClass.EnumerateCallback _enumerateCallback;
-        private bool _initOk;
+        public bool InitOk;
 
         //private const String directOutputKey = "SOFTWARE\\Saitek\\DirectOutput";
 
@@ -27,7 +27,7 @@ namespace Elite
 
         public bool Initialize()
         {
-            _initOk = false;
+            InitOk = false;
             try
             {
                 _deviceCallback = DeviceCallback;
@@ -39,7 +39,7 @@ namespace Elite
                 if (value != null && (value is string))
                 {
 
-                    var retVal = DirectOutputClass.Initialize("ABC");
+                    var retVal = DirectOutputClass.Initialize("fip-elite");
                     if (retVal != ReturnValues.S_OK)
                     {
                         App.log.Error("FIPHandler failed to init DirectOutputClass. " + retVal);
@@ -63,7 +63,7 @@ namespace Elite
                 
                 return false;
             }
-            _initOk = true;
+            InitOk = true;
             return true;
         }
 
@@ -75,11 +75,11 @@ namespace Elite
                 {
                     fipPanel.Shutdown();
                 }
-                if (_initOk)
+                if (InitOk)
                 {
                     //No need to deinit if init never worked. (e.g. missing Saitek Drivers)
                     DirectOutputClass.Deinitialize();
-                    _initOk = false;
+                    InitOk = false;
                 }
             }
             catch (Exception ex)
@@ -117,6 +117,17 @@ namespace Elite
             DirectOutputClass.GetDeviceType(device, ref mGuid);
 
             return (string.Compare(mGuid.ToString(), "3E083CD8-6A37-4A58-80A8-3D6A2C07513E", true, CultureInfo.InvariantCulture) == 0);
+        }
+
+        public void AddWindow(string serialNumber, IntPtr device)
+        {
+            var mGuid = Guid.Empty;
+
+            App.log.Info($"Adding new Window device {device} of type: {mGuid.ToString()}");
+
+            var fipPanel = new FipPanel(device);
+            _fipPanels.Add(fipPanel);
+            fipPanel.InitalizeWindow(serialNumber);
         }
 
         private void EnumerateCallback(IntPtr device, IntPtr context)
@@ -169,11 +180,11 @@ namespace Elite
                     if (_fipPanels[i].FipDevicePointer == device)
                     {
                         found = true;
-                        var fip = _fipPanels[i];
+                        var fipPanel = _fipPanels[i];
                         if (!added)
                         {
-                            fip.Shutdown();
-                            _fipPanels.Remove(fip);
+                            fipPanel.Shutdown();
+                            _fipPanels.Remove(fipPanel);
                         }
                     }
                     i--;
