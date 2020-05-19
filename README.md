@@ -16,7 +16,8 @@ Use S1 to display the menu.
 You can also control ONE Flight Instrument Panel with a HOTAS 4-way hat switch with pushbutton.
 The joystick is configured via joysticksettings.config
 
-```<?xml version="1.0" encoding="utf-8" ?>
+```
+<?xml version="1.0" encoding="utf-8" ?>
 <joystickSettings>
   <add key="PID" value="0127" />
   <add key="VID" value="231D" />
@@ -26,7 +27,8 @@ The joystick is configured via joysticksettings.config
   <add key="RightButton" value="22" />
   <add key="PushButton" value="25" />
   <add key="FipSerialNumber" value="MZAAFAA883" />
-</joystickSettings>```
+</joystickSettings>
+```
 
 There is a Toggle Mirror Window menu option in the tray icon context menu.
 This option mirrors the FIP display, that is being controlled by the HOTAS hat switch, to a window for use in VR, 
