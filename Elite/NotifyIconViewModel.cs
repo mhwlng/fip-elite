@@ -47,6 +47,8 @@ namespace Elite
                                 Properties.Settings.Default.Visible = true;
                             }
                         }
+
+                        Elite.Properties.Settings.Default.Save();
                     },
                     CanExecuteFunc = () => App.jsonTask != null
                 };

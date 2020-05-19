@@ -184,6 +184,21 @@ namespace Elite
 
         }
 
+        private static void MigrateSettings()
+        {
+            try
+            {
+                if (!Elite.Properties.Settings.Default.Upgraded)
+                {
+                    Elite.Properties.Settings.Default.Upgrade();
+                    Elite.Properties.Settings.Default.Upgraded = true;
+                    Elite.Properties.Settings.Default.Save();
+                }
+
+            }
+            catch { }
+        }
+
         protected override void OnStartup(StartupEventArgs evtArgs)
         {
             const string appName = "Fip-Elite";
@@ -202,22 +217,7 @@ namespace Elite
 
             log4net.Config.XmlConfigurator.Configure();
 
-            foreach (var _Assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (var _Type in _Assembly.GetTypes())
-                {
-                    if (_Type.Name == "Settings" && typeof(SettingsBase).IsAssignableFrom(_Type))
-                    {
-                        var settings = (ApplicationSettingsBase)_Type.GetProperty("Default").GetValue(null, null);
-                        if (settings != null)
-                        {
-                            settings.Upgrade();
-                            settings.Reload();
-                            settings.Save();
-                        }
-                    }
-                }
-            }
+            MigrateSettings();
 
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
@@ -304,6 +304,15 @@ namespace Elite
                 {
                     Current.MainWindow = new MainWindow();
                     Current.MainWindow.ShowActivated = false;
+
+                    if (evtArgs.Args.Length >= 1)
+                    {
+                        if (evtArgs.Args[0].ToLower().Contains("mirror"))
+                        {
+                            Elite.Properties.Settings.Default.Visible = true;
+                            Elite.Properties.Settings.Default.Save();
+                        }
+                    }
 
                     if (Elite.Properties.Settings.Default.Visible)
                     {
@@ -499,8 +508,6 @@ namespace Elite
 
         protected override void OnExit(ExitEventArgs e)
         {
-            Elite.Properties.Settings.Default.Save();
-
             statusWatcher.StatusUpdated -= Data.HandleStatusEvents;
 
             statusWatcher.StopWatching();

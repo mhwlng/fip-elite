@@ -26,6 +26,7 @@ namespace Elite
             if (!App.IsShuttingDown)
             {
                 Properties.Settings.Default.Visible = false;
+                Elite.Properties.Settings.Default.Save();
             }
         }
 
