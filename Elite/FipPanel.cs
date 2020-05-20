@@ -254,6 +254,7 @@ namespace Elite
         public void InitalizeWindow(string serialNumber)
         {
             SerialNumber = serialNumber;
+            InitOk = false;
 
             App.log.Info("FipPanel Serial Number : " + SerialNumber);
 
@@ -278,10 +279,7 @@ namespace Elite
                 File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
             }
 
-            InitOk = false;
-
             RefreshDevicePage();
-            
 
         }
 
@@ -358,7 +356,7 @@ namespace Elite
             return (uint)(1 << ((int)tab + 4 - (currentPage * 6)));
         }
 
-        public void HandleJoystickButton(JoystickButton joystickButton, bool state)
+        public void HandleJoystickButton(JoystickButton joystickButton, bool state, bool oldState)
         {
             uint buttons = 0;
 
@@ -379,6 +377,8 @@ namespace Elite
                         }
                         else
                         {
+                            if (oldState) return;
+
                             if (_currentTabCursor == LCDTab.None)
                             {
                                 _currentTabCursor = (LCDTab)((int)currentPage * 6) + 1;
@@ -448,6 +448,8 @@ namespace Elite
                         }
                         else
                         {
+                            if (oldState) return;
+
                             if (_currentTabCursor == LCDTab.None)
                             {
                                 _currentTabCursor = (LCDTab)((int)currentPage * 6) + 1;
@@ -511,12 +513,17 @@ namespace Elite
                         }
                         break;
                     case JoystickButton.Left:
+
                         if (_currentPage == LCDPage.Collapsed)
                         {
+                            if (_currentTab != LCDTab.Map && oldState) return;
+
                             buttons = 16;
                         }
                         else
                         {
+                            if (oldState) return;
+
                             if (_currentTabCursor == LCDTab.None)
                             {
                                 _currentTabCursor = (LCDTab)((int)currentPage * 6) + 1;
@@ -536,12 +543,17 @@ namespace Elite
                         }
                         break;
                     case JoystickButton.Right:
+
                         if (_currentPage == LCDPage.Collapsed)
                         {
+                            if (_currentTab != LCDTab.Map && oldState) return;
+
                             buttons = 8;
                         }
                         else
                         {
+                            if (oldState) return;
+
                             if (_currentTabCursor == LCDTab.None)
                             {
                                 _currentTabCursor = (LCDTab)((int)currentPage * 6) + 1;
@@ -561,6 +573,8 @@ namespace Elite
                         }
                         break;
                     case JoystickButton.Push:
+
+                        if (oldState) return;
 
                         if (_currentPage == LCDPage.Collapsed)
                         {
@@ -612,7 +626,7 @@ namespace Elite
 
             if (!InitOk)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(30);
             }
         }
 

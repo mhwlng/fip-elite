@@ -171,12 +171,12 @@ namespace Elite
 
                 if (buttonState && buttonState == oldButtonState)
                 {
-                    fipHandler.HandleJoystickButton(button, false);
+                    fipHandler.HandleJoystickButton(button, false, false);
                 }
 
                 if (buttonState || buttonState != oldButtonState)
                 {
-                    fipHandler.HandleJoystickButton(button, buttonState);
+                    fipHandler.HandleJoystickButton(button, buttonState, oldButtonState);
                 }
 
                 lastButtonState[buttonId - 1] = buttonState;
@@ -322,13 +322,6 @@ namespace Elite
                             if (FipSerialNumber.ToLower().Contains("window"))
                             {
                                 fipHandler.AddWindow("window",(IntPtr)0);
-
-                                this.Dispatcher.Invoke(() =>
-                                {
-                                    Elite.Properties.Settings.Default.Visible = true;
-                                    Current.MainWindow.Show();
-                                    fipHandler.RefreshDevicePages();
-                                });
                             }
                         }
 
@@ -435,7 +428,7 @@ namespace Elite
                                                 }
                                             }*/
 
-                                            await Task.Delay(100, jsonTokenSource.Token);
+                                            await Task.Delay(50, jsonTokenSource.Token);
                                         }
 
                                     }, joystickToken);
@@ -450,19 +443,15 @@ namespace Elite
                     }
                 }
 
-
                 this.Dispatcher.Invoke(() =>
                 {
                     Current.MainWindow = new MainWindow();
                     Current.MainWindow.ShowActivated = false;
 
-                    if (evtArgs.Args.Length >= 1)
+                    if ((evtArgs.Args.Length >= 1 && evtArgs.Args[0].ToLower().Contains("mirror")) || !fipHandler.InitOk)
                     {
-                        if (evtArgs.Args[0].ToLower().Contains("mirror"))
-                        {
-                            Elite.Properties.Settings.Default.Visible = true;
-                            Elite.Properties.Settings.Default.Save();
-                        }
+                        Elite.Properties.Settings.Default.Visible = true;
+                        Elite.Properties.Settings.Default.Save();
                     }
 
                     if (Elite.Properties.Settings.Default.Visible)

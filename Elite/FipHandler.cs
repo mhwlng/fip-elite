@@ -89,13 +89,13 @@ namespace Elite
         }
 
 
-        public void HandleJoystickButton(JoystickButton joystickButton, bool state)
+        public void HandleJoystickButton(JoystickButton joystickButton, bool state, bool oldState)
         {
             foreach (var fipPanel in _fipPanels)
             {
                 if (string.IsNullOrEmpty(App.FipSerialNumber) || fipPanel.SerialNumber == App.FipSerialNumber)
                 {
-                    fipPanel.HandleJoystickButton(joystickButton, state);
+                    fipPanel.HandleJoystickButton(joystickButton, state, oldState);
                     break;
                 }
             }
