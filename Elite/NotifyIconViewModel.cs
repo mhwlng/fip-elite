@@ -22,8 +22,16 @@ namespace Elite
                     {
                         if (Application.Current.MainWindow == null || Application.Current.MainWindow.Visibility == Visibility.Collapsed)
                         {
-                            Application.Current.MainWindow = new MainWindow();
-                            Application.Current.MainWindow.ShowActivated = false;
+                            var window = Application.Current.MainWindow = new MainWindow();
+                            window.ShowActivated = false;
+                            
+                            var im = (System.Windows.Controls.Image)window.FindName("im");
+                            if (im != null && App.WindowWidth > 0 && App.WindowHeight > 0)
+                            {
+                                im.Width = App.WindowWidth;
+                                im.Height = App.WindowHeight;
+                            }
+
                             Application.Current.MainWindow.Show();
                             App.FipHandler.RefreshDevicePages();
 

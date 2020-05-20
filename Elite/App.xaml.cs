@@ -64,8 +64,9 @@ namespace Elite
         private static int _leftButton;
         private static int _rightButton;
         private static int _pushButton;
-        private static int _windowWidth;
-        private static int _windowHeight;
+
+        public static int WindowWidth;
+        public static int WindowHeight;
 
         public static string FipSerialNumber;
 
@@ -313,10 +314,10 @@ namespace Elite
 
                             if (FipSerialNumber.ToLower().Contains("window"))
                             {
-                                _windowWidth = Convert.ToInt32(section["WindowWidth"]);
-                                _windowHeight = Convert.ToInt32(section["WindowHeight"]);
+                                WindowWidth = Convert.ToInt32(section["WindowWidth"]);
+                                WindowHeight = Convert.ToInt32(section["WindowHeight"]);
 
-                                FipHandler.AddWindow("window",(IntPtr)0, _windowWidth, _windowHeight);
+                                FipHandler.AddWindow("window",(IntPtr)0, WindowWidth, WindowHeight);
                             }
                         }
 
@@ -443,10 +444,10 @@ namespace Elite
                     var window = Current.MainWindow = new MainWindow();
                     window.ShowActivated = false;
                     var im = (System.Windows.Controls.Image)window.FindName("im");
-                    if (im != null && _windowWidth > 0 && _windowHeight > 0)
+                    if (im != null && WindowWidth > 0 && WindowHeight > 0)
                     {
-                        im.Width = _windowWidth;
-                        im.Height = _windowHeight;
+                        im.Width = WindowWidth;
+                        im.Height = WindowHeight;
                     }
 
                     if (evtArgs.Args.Length >= 1 && evtArgs.Args[0].ToLower().Contains("mirror") || !FipHandler.InitOk)
@@ -511,6 +512,8 @@ namespace Elite
 
         protected override void OnExit(ExitEventArgs e)
         {
+            Elite.Properties.Settings.Default.Save();
+
             _statusWatcher.StatusUpdated -= Data.HandleStatusEvents;
 
             _statusWatcher.StopWatching();
