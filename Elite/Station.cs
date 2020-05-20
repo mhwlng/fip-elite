@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 // ReSharper disable IdentifierTypo
 
@@ -125,7 +123,7 @@ namespace Elite
             }
             catch (Exception ex)
             {
-                App.log.Error(ex);
+                App.Log.Error(ex);
             }
 
             return new List<StationData>();
@@ -138,19 +136,19 @@ namespace Elite
             {
                 stationData.ForEach(stationItem =>
                 {
-                    var Xs = starPos[0];
-                    var Ys = starPos[1];
-                    var Zs = starPos[2];
+                    var xs = starPos[0];
+                    var ys = starPos[1];
+                    var zs = starPos[2];
 
-                    var Xd = stationItem.X;
-                    var Yd = stationItem.Y;
-                    var Zd = stationItem.Z;
+                    var xd = stationItem.X;
+                    var yd = stationItem.Y;
+                    var zd = stationItem.Z;
 
-                    double deltaX = Xs - Xd;
-                    double deltaY = Ys - Yd;
-                    double deltaZ = Zs - Zd;
+                    var deltaX = xs - xd;
+                    var deltaY = ys - yd;
+                    var deltaZ = zs - zd;
 
-                    stationItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                    stationItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
                 return stationData.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();

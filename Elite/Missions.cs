@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EliteJournalReader.Events;
 
 namespace Elite
@@ -50,7 +48,7 @@ namespace Elite
             var missionName = string.Empty;
             if (missionID > 0)
             {
-                missionName = Missions.MissionList.FirstOrDefault(x => x.MissionID == missionID)?.Name;
+                missionName = MissionList.FirstOrDefault(x => x.MissionID == missionID)?.Name;
 
                 if (string.IsNullOrEmpty(missionName))
                 {
@@ -66,18 +64,18 @@ namespace Elite
             var missionSystem = string.Empty;
             if (missionID > 0)
             {
-                missionSystem = Missions.MissionList.FirstOrDefault(x => x.MissionID == missionID)?.System;
+                missionSystem = MissionList.FirstOrDefault(x => x.MissionID == missionID)?.System;
             }
 
             return missionSystem;
         }
 
-        public static string GetMissionStation(long missionID)
+        public static string GetMissionStation(long missionId)
         {
             var missionStation = string.Empty;
-            if (missionID > 0)
+            if (missionId > 0)
             {
-                missionStation = Missions.MissionList.FirstOrDefault(x => x.MissionID == missionID)?.Station;
+                missionStation = MissionList.FirstOrDefault(x => x.MissionID == missionId)?.Station;
             }
 
             return missionStation;
@@ -105,7 +103,7 @@ namespace Elite
         {
             MissionList.RemoveAll(x => x.MissionID == info.MissionID);
 
-            MissionList.Add(new Missions.Mission
+            MissionList.Add(new Mission
             {
                 MissionID = info.MissionID,
                 Name = info.LocalisedName?.Replace("_name", " ").Replace("Mission_", " ").Replace("_EXPANSION", " ").Replace("_", " "),
@@ -134,7 +132,7 @@ namespace Elite
                 TargetFaction = info.TargetFaction,
                 KillCount = info.KillCount,
                 Donation = info.Donation,
-                Donated = info.Donated,
+                Donated = info.Donated
             });
         }
 

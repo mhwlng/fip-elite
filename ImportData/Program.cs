@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using log4net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 // ReSharper disable StringLiteralTypo
@@ -19,19 +15,19 @@ namespace ImportData
 {
     class Program
     {
-        public static readonly ILog log =
+        private static readonly ILog Log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        static byte[] Decompress(byte[] gzip)
+        private static byte[] Decompress(byte[] gzip)
         {
-            using (GZipStream stream = new GZipStream(new MemoryStream(gzip),
+            using (var stream = new GZipStream(new MemoryStream(gzip),
                 CompressionMode.Decompress))
             {
                 const int size = 100000;
-                byte[] buffer = new byte[size];
-                using (MemoryStream memory = new MemoryStream())
+                var buffer = new byte[size];
+                using (var memory = new MemoryStream())
                 {
-                    int count = 0;
+                    int count;
                     do
                     {
                         count = stream.Read(buffer, 0, size);
@@ -48,11 +44,11 @@ namespace ImportData
 
         private static string GetExePath()
         {
-            string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             return Path.GetDirectoryName(strExeFilePath);
         }
 
-        public static string GetJson(string url)
+        private static string GetJson(string url)
         {
             using (var client = new WebClient())
             {
@@ -64,7 +60,7 @@ namespace ImportData
             }
         }
 
-        public static List<StationData> GetStationsData(List<StationEDSM> stations)
+        private static List<StationData> GetStationsData(List<StationEDSM> stations)
         {
             return stations.Select(x => new StationData
             {
@@ -92,9 +88,9 @@ namespace ImportData
 
         }
 
-        public static void DeleteExpiredFile(string fullPath, int minutes)
+        private static void DeleteExpiredFile(string fullPath, int minutes)
         {
-            (new FileInfo(fullPath)).Directory?.Create();
+            new FileInfo(fullPath).Directory?.Create();
 
             if (File.Exists(fullPath))
             {
@@ -107,11 +103,11 @@ namespace ImportData
             }
         }
 
-        public static void StationSerialize(List<StationEDSM> stations, string path)
+        private static void StationSerialize(List<StationEDSM> stations, string path)
         {
             path = Path.Combine(GetExePath(), path);
 
-            (new FileInfo(path)).Directory?.Create();
+            new FileInfo(path).Directory?.Create();
 
             var serializer = new JsonSerializer
             {
@@ -128,7 +124,7 @@ namespace ImportData
         }
 
 
-        public static bool NeedToUpdateFile(string path, int minutes)
+        private static bool NeedToUpdateFile(string path, int minutes)
         {
             path = Path.Combine(GetExePath(), path);
 
@@ -143,14 +139,14 @@ namespace ImportData
             }
             else
             {
-                (new FileInfo(path)).Directory?.Create();
+                new FileInfo(path).Directory?.Create();
             }
 
             return true;
         }
 
 
-        public static string DownloadJson(string path, string url, ref bool wasUpdated)
+        private static string DownloadJson(string path, string url, ref bool wasUpdated)
         {
             path = Path.Combine(GetExePath(), path);
 
@@ -215,7 +211,7 @@ namespace ImportData
 
         }
 
-        public static List<CNBSystemData> GetCnbSystems(string url)
+        private static List<CNBSystemData> GetCnbSystems(string url)
         {
             try
             {
@@ -241,16 +237,16 @@ namespace ImportData
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                Log.Error(ex);
             }
 
             return new List<CNBSystemData>();
 
         }
 
-        public static void CnbSystemsSerialize(List<CNBSystemData> systems, string fullPath)
+        private static void CnbSystemsSerialize(List<CNBSystemData> systems, string fullPath)
         {
-            (new FileInfo(fullPath)).Directory?.Create();
+            new FileInfo(fullPath).Directory?.Create();
 
             var serializer = new JsonSerializer
             {
@@ -263,8 +259,8 @@ namespace ImportData
                 serializer.Serialize(writer, systems);
             }
         }
-        
-        public static void DownloadCnbSystems(string path, Dictionary<string, PopulatedSystemEDDB> populatedSystemsEDDBbyName)
+
+        private static void DownloadCnbSystems(string path, Dictionary<string, PopulatedSystemEDDB> populatedSystemsEDDBbyName)
         {
             path = Path.Combine(GetExePath(), path);
 
@@ -297,7 +293,7 @@ namespace ImportData
             }
         }
 
-        public static void DownloadHotspotSystems(string path, string url, string material)
+        private static void DownloadHotspotSystems(string path, string url, string material)
         {
             try
             {
@@ -319,12 +315,12 @@ namespace ImportData
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                Log.Error(ex);
             }
         }
 
 
-        public class HotspotStationData
+        private class HotspotStationData
         {
             public string System { get; set; }
             public string Station { get; set; }
@@ -337,7 +333,7 @@ namespace ImportData
             public StationEDSM StationEDSM { get; set; }
         }
 
-        public static List<MiningStationData> GetMiningStationsData(List<HotspotStationData> stations, List<StationEDSM> stationsEDSM)
+        private static List<MiningStationData> GetMiningStationsData(List<HotspotStationData> stations, List<StationEDSM> stationsEDSM)
         {
             if (stationsEDSM != null)
             {
@@ -378,9 +374,9 @@ namespace ImportData
             }).ToList();
         }
 
-        public static void MiningStationsSerialize(List<MiningStationData> stations, string fullPath)
+        private static void MiningStationsSerialize(List<MiningStationData> stations, string fullPath)
         {
-            (new FileInfo(fullPath)).Directory?.Create();
+            new FileInfo(fullPath).Directory?.Create();
 
             var serializer = new JsonSerializer
             {
@@ -395,7 +391,7 @@ namespace ImportData
             }
         }
 
-        public static void DownloadMiningStationsHtml(string path, string url, string material, int cid, List<StationEDSM> stationsEDSM)
+        private static void DownloadMiningStationsHtml(string path, string url, string material, int cid, List<StationEDSM> stationsEDSM)
         {
             try
             {
@@ -407,7 +403,7 @@ namespace ImportData
                 {
                     var data = client.DownloadString(url + cid);
 
-                    HtmlDocument doc = new HtmlDocument();
+                    var doc = new HtmlDocument();
                     doc.LoadHtml(data);
 
                     var stationInfo = doc.DocumentNode.SelectSingleNode("//table[@id='table-stations-max-sell']")
@@ -421,7 +417,7 @@ namespace ImportData
                             Price = Convert.ToInt32(tr[2].Replace(",","").Replace(".", "")),
                             Demand = Convert.ToInt32(tr[4].Replace(",","").Replace(".", "")),
                             Pad = tr[5],
-                            AgoSec = Convert.ToInt32(tr[6].Substring(2, tr[6].IndexOf("}")-2))
+                            AgoSec = Convert.ToInt32(tr[6].Substring(2, tr[6].IndexOf("}", StringComparison.Ordinal)-2))
                         })
                         .ToList();
 
@@ -432,20 +428,19 @@ namespace ImportData
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                Log.Error(ex);
             }
         }
 
         static void Main(string[] args)
         {
-            log.Info("ImportData started");
+            Log.Info("ImportData started");
 
             try
             {
                 List<StationEDSM> stationsEDSM = null;
-                Dictionary<string,StationEDDB> stationsEDDB = null;
-                Dictionary<int, PopulatedSystemEDDB> populatedSystemsEDDBbyEdsmId = null;
-                Dictionary<string,PopulatedSystemEDDB> populatedSystemsEDDBbyName = null;
+                Dictionary<string,StationEDDB> stationsEDDB;
+                Dictionary<int, PopulatedSystemEDDB> populatedSystemsEDDBbyEdsmId;
 
                 var wasAnyUpdated = false;
 
@@ -465,7 +460,7 @@ namespace ImportData
 
                 if (NeedToUpdateFile(@"Data\cnbsystems.json", 1440))
                 {
-                    populatedSystemsEDDBbyName = JsonConvert
+                    var populatedSystemsEDDBbyName = JsonConvert
                         .DeserializeObject<List<PopulatedSystemEDDB>>(jsonPopulatedsystemsEDDBText)
                         .ToDictionary(x => x.Name);
 
@@ -714,10 +709,10 @@ namespace ImportData
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                Log.Error(ex);
             }
 
-            log.Info("ImportData ended");
+            Log.Info("ImportData ended");
         }
     }
 }

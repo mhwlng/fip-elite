@@ -25,7 +25,7 @@ namespace Elite
                             Application.Current.MainWindow = new MainWindow();
                             Application.Current.MainWindow.ShowActivated = false;
                             Application.Current.MainWindow.Show();
-                            App.fipHandler.RefreshDevicePages();
+                            App.FipHandler.RefreshDevicePages();
 
                             Properties.Settings.Default.Visible = true;
                         }
@@ -41,16 +41,16 @@ namespace Elite
                             else
                             {
                                 Application.Current.MainWindow.Show();
-                                App.fipHandler.RefreshDevicePages();
+                                App.FipHandler.RefreshDevicePages();
 
 
                                 Properties.Settings.Default.Visible = true;
                             }
                         }
 
-                        Elite.Properties.Settings.Default.Save();
+                        Properties.Settings.Default.Save();
                     },
-                    CanExecuteFunc = () => App.jsonTask != null
+                    CanExecuteFunc = () => App.JsonTask != null
                 };
             }
         }
@@ -64,7 +64,7 @@ namespace Elite
             {
                 return new DelegateCommand {CommandAction = () =>
                     {
-                        if (App.jsonTask?.Status.Equals(TaskStatus.Running) == true)
+                        if (App.JsonTask?.Status.Equals(TaskStatus.Running) == true)
                         {
                             MessageBox.Show("Waiting for background tasks to complete...","fip-elite", MessageBoxButton.OK,
                                 MessageBoxImage.Information, MessageBoxResult.OK,
@@ -102,8 +102,8 @@ namespace Elite
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }

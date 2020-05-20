@@ -2,12 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 // ReSharper disable IdentifierTypo
 
@@ -114,7 +109,7 @@ namespace Elite
             }
             catch (Exception ex)
             {
-                App.log.Error(ex);
+                App.Log.Error(ex);
             }
 
             return new List<MiningStationData>();
@@ -126,19 +121,19 @@ namespace Elite
             {
                 data.ForEach(systemItem =>
                 {
-                    var Xs = starPos[0];
-                    var Ys = starPos[1];
-                    var Zs = starPos[2];
+                    var xs = starPos[0];
+                    var ys = starPos[1];
+                    var zs = starPos[2];
 
-                    var Xd = systemItem.X;
-                    var Yd = systemItem.Y;
-                    var Zd = systemItem.Z;
+                    var xd = systemItem.X;
+                    var yd = systemItem.Y;
+                    var zd = systemItem.Z;
 
-                    double deltaX = Xs - Xd;
-                    double deltaY = Ys - Yd;
-                    double deltaZ = Zs - Zd;
+                    var deltaX = xs - xd;
+                    var deltaY = ys - yd;
+                    var deltaZ = zs - zd;
 
-                    systemItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                    systemItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
                 return data.Where(x => x.Distance >= 0)

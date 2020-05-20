@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
 using EliteJournalReader.Events;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Module = EliteJournalReader.Module;
 
 namespace Elite
 {
@@ -54,8 +47,8 @@ namespace Elite
 
         public static Dictionary<string, List<double>> VisitedSystemList = new Dictionary<string, List<double>>();
 
-        public static double ImageWidth { get; set; }
-        public static double ImageHeight { get; set; }
+        private static double ImageWidth { get; set; }
+        private static double ImageHeight { get; set; }
 
         private class UnsafeNativeMethods
         {
@@ -68,12 +61,12 @@ namespace Elite
         /// <summary>
         /// The standard Directory of the Player Journal files (C:\Users\%username%\Saved Games\Frontier Developments\Elite Dangerous).
         /// </summary>
-        public static DirectoryInfo StandardDirectory
+        private static DirectoryInfo StandardDirectory
         {
             get
             {
-                int result = UnsafeNativeMethods.SHGetKnownFolderPath(new Guid("4C5C32FF-BB9D-43B0-B5B4-2D72E54EAAA4"),
-                    0, new IntPtr(0), out IntPtr path);
+                var result = UnsafeNativeMethods.SHGetKnownFolderPath(new Guid("4C5C32FF-BB9D-43B0-B5B4-2D72E54EAAA4"),
+                    0, new IntPtr(0), out var path);
                 if (result >= 0)
                 {
                     try
@@ -119,7 +112,7 @@ namespace Elite
 
             if (!Directory.Exists(journalDirectory.FullName))
             {
-                App.log.Error($"Directory {journalDirectory.FullName} not found.");
+                App.Log.Error($"Directory {journalDirectory.FullName} not found.");
                 return null;
             }
 
@@ -133,10 +126,10 @@ namespace Elite
 
                 foreach (var journalFile in journalFiles)
                 {
-                    using (FileStream fileStream =
+                    using (var fileStream =
                         journalFile.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
-                        using (StreamReader streamReader = new StreamReader(fileStream))
+                        using (var streamReader = new StreamReader(fileStream))
                         {
                             while (!streamReader.EndOfStream)
                             {
@@ -290,7 +283,7 @@ namespace Elite
                                 }
                                 catch (Exception ex)
                                 {
-                                    App.log.Error(ex);
+                                    App.Log.Error(ex);
                                 }
                             }
                         }
@@ -299,7 +292,7 @@ namespace Elite
             }
             catch (Exception ex)
             {
-                App.log.Error(ex);
+                App.Log.Error(ex);
             }
 
             return journalDirectory.FullName;

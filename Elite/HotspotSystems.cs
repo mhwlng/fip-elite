@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 // ReSharper disable IdentifierTypo
 
@@ -56,9 +52,9 @@ namespace Elite
             public double Distance { get; set; }
         }
 
-        public static string StripHTML(string input)
+        private static string StripHtml(string input)
         {
-            return Regex.Replace(input, "<.*?>", String.Empty);
+            return Regex.Replace(input, "<.*?>", string.Empty);
         }
 
         public static List<HotspotSystemData> GetAllHotspotSystems(string path)
@@ -71,13 +67,13 @@ namespace Elite
                 {
                     var data = JsonConvert.DeserializeObject<List<HotspotSystemData>>(File.ReadAllText(path));
 
-                    data.ForEach(x => { x.Comment = StripHTML(x.Comment); });
+                    data.ForEach(x => { x.Comment = StripHtml(x.Comment); });
                     return data;
                 }
             }
             catch (Exception ex)
             {
-                App.log.Error(ex);
+                App.Log.Error(ex);
             }
 
             return new List<HotspotSystemData>();
@@ -89,19 +85,19 @@ namespace Elite
             {
                 data.ForEach(systemItem =>
                 {
-                    var Xs = starPos[0];
-                    var Ys = starPos[1];
-                    var Zs = starPos[2];
+                    var xs = starPos[0];
+                    var ys = starPos[1];
+                    var zs = starPos[2];
 
-                    var Xd = systemItem.Coords.X;
-                    var Yd = systemItem.Coords.Y;
-                    var Zd = systemItem.Coords.Z;
+                    var xd = systemItem.Coords.X;
+                    var yd = systemItem.Coords.Y;
+                    var zd = systemItem.Coords.Z;
 
-                    double deltaX = Xs - Xd;
-                    double deltaY = Ys - Yd;
-                    double deltaZ = Zs - Zd;
+                    var deltaX = xs - xd;
+                    var deltaY = ys - yd;
+                    var deltaZ = zs - zd;
 
-                    systemItem.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                    systemItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
                 return data.Where(x => x.Distance >= 0).OrderBy(x => x.Distance)/*.Take(10)*/.ToList();

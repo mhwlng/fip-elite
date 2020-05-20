@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EliteJournalReader;
 using EliteJournalReader.Events;
 
 namespace Elite
@@ -36,7 +31,7 @@ namespace Elite
 
                 if (info.Inventory == null)
                 {
-                    info = App.watcher.ReadCargoJson();
+                    info = App.Watcher.ReadCargoJson();
                 }
 
                 if (info.Inventory != null)

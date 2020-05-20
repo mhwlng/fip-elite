@@ -43,7 +43,7 @@ that is NOT a mirror of a FIP display.
 
 **This window will also work WITHOUT any connected FIP display.**
 
-WindowWidth/WindowHeight in joysticksettings.config can be adjusted if the window is NOT a mirror of a FIP display. 
+WindowWidth/WindowHeight in joysticksettings.config can only be adjusted if the window is NOT a mirror of a FIP display. 
 Otherwise these values are ignored.
 
 You can then use a tool like [OVR Toolkit](https://store.steampowered.com/app/1068820/OVR_Toolkit/) to display this window in VR. 

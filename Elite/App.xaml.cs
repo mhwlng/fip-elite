@@ -1,20 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
-using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
-using CsvHelper.TypeConversion;
 using Hardcodet.Wpf.TaskbarNotification;
 using log4net;
 using RazorEngine;
@@ -22,11 +13,8 @@ using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using TheArtOfDev.HtmlRenderer.Core;
 using EliteJournalReader;
-using EliteJournalReader.Events;
-using log4net.Repository.Hierarchy;
 using SharpDX.DirectInput;
 using System.Collections.Specialized;
-using System.Windows.Controls;
 
 
 // ReSharper disable StringLiteralTypo
@@ -43,54 +31,55 @@ namespace Elite
 
         public static readonly object RefreshJsonLock = new object();
 
-        public static Task jsonTask;
-        public static CancellationTokenSource jsonTokenSource = new CancellationTokenSource();
+        public static Task JsonTask;
+        private static CancellationTokenSource _jsonTokenSource = new CancellationTokenSource();
 
-        public static Task joystickTask;
-        public static CancellationTokenSource joystickTokenSource = new CancellationTokenSource();
+        private static Task _joystickTask;
+        private static CancellationTokenSource _joystickTokenSource = new CancellationTokenSource();
 
-        private static Mutex _mutex = null;
+        private static Mutex _mutex;
 
-        private TaskbarIcon notifyIcon;
+        private TaskbarIcon _notifyIcon;
 
-        public static FipHandler fipHandler = new FipHandler();
+        public static readonly FipHandler FipHandler = new FipHandler();
 
-        public static JournalWatcher watcher;
+        public static JournalWatcher Watcher;
 
-        public static StatusWatcher statusWatcher;
+        private static StatusWatcher _statusWatcher;
 
-        public static readonly ILog log =
+        public static readonly ILog Log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static CssData cssData;
+        public static CssData CssData;
 
         // Initialize DirectInput
-        public static DirectInput directInput = new DirectInput();
+        private static readonly DirectInput DirectInput = new DirectInput();
 
-        public static Joystick joystick = null;
+        private static Joystick _joystick;
 
-        private static string PID;
-        private static string VID;
-        private static int UpButton;
-        private static int DownButton;
-        private static int LeftButton;
-        private static int RightButton;
-        private static int PushButton;
+        private static string _pid;
+        private static string _vid;
+        private static int _upButton;
+        private static int _downButton;
+        private static int _leftButton;
+        private static int _rightButton;
+        private static int _pushButton;
+        private static int _windowWidth;
+        private static int _windowHeight;
+
         public static string FipSerialNumber;
-        private static int WindowWidth;
-        private static int WindowHeight;
 
-        private static bool[] lastButtonState = new bool[256];
+        private static bool[] _lastButtonState = new bool[256];
 
         public static string ExePath;
 
         private static void GetExePath()
         {
-            string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             ExePath = Path.GetDirectoryName(strExeFilePath);
         }
 
-        public static void RefreshJson(SplashScreenWindow splashScreen = null)
+        private static void RefreshJson(SplashScreenWindow splashScreen = null)
         {
             lock (RefreshJsonLock)
             {
@@ -156,7 +145,7 @@ namespace Elite
 
         private static void RunProcess(string fileName)
         {
-            Process process = new Process();
+            var process = new Process();
             // Configure the process using the StartInfo properties.
             process.StartInfo.FileName = fileName;
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
@@ -169,19 +158,19 @@ namespace Elite
             if (state.Buttons.Length >= buttonId)
             {
                 var buttonState = state.Buttons[buttonId - 1];
-                var oldButtonState = lastButtonState[buttonId - 1];
+                var oldButtonState = _lastButtonState[buttonId - 1];
 
                 if (buttonState && buttonState == oldButtonState)
                 {
-                    fipHandler.HandleJoystickButton(button, false, false);
+                    FipHandler.HandleJoystickButton(button, false, false);
                 }
 
                 if (buttonState || buttonState != oldButtonState)
                 {
-                    fipHandler.HandleJoystickButton(button, buttonState, oldButtonState);
+                    FipHandler.HandleJoystickButton(button, buttonState, oldButtonState);
                 }
 
-                lastButtonState[buttonId - 1] = buttonState;
+                _lastButtonState[buttonId - 1] = buttonState;
             }
 
         }
@@ -210,7 +199,7 @@ namespace Elite
             if (!createdNew)
             {
                 //app is already running! Exiting the application  
-                Application.Current.Shutdown();
+                Current.Shutdown();
             }
 
             GetExePath();
@@ -222,10 +211,10 @@ namespace Elite
             MigrateSettings();
 
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
-            notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+            _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
 
-            notifyIcon.IconSource = new BitmapImage(new Uri("pack://application:,,,/Elite;component/Hourglass.ico"));
-            notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel [WORKING]";
+            _notifyIcon.IconSource = new BitmapImage(new Uri("pack://application:,,,/Elite;component/Hourglass.ico"));
+            _notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel [WORKING]";
 
             var splashScreen = new SplashScreenWindow();
             splashScreen.Show();
@@ -268,7 +257,7 @@ namespace Elite
                 Engine.Razor.Compile("mining.cshtml", null);
                 Engine.Razor.Compile("events.cshtml", null);
 
-                cssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
+                CssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
                     File.ReadAllText(Path.Combine(ExePath, "Templates\\styles.css")), true);
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
@@ -281,38 +270,38 @@ namespace Elite
 
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Status Watcher...");
-                statusWatcher = new StatusWatcher(path);
+                _statusWatcher = new StatusWatcher(path);
 
-                statusWatcher.StatusUpdated += Data.HandleStatusEvents;
+                _statusWatcher.StatusUpdated += Data.HandleStatusEvents;
 
-                statusWatcher.StartWatching();
+                _statusWatcher.StartWatching();
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Watcher...");
-                watcher = new JournalWatcher(path);
+                Watcher = new JournalWatcher(path);
 
-                watcher.AllEventHandler += Data.HandleEliteEvents;
+                Watcher.AllEventHandler += Data.HandleEliteEvents;
 
-                watcher.StartWatching().Wait();
+                Watcher.StartWatching().Wait();
                 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Initializing FIP...");
-                if (!fipHandler.Initialize())
+                if (!FipHandler.Initialize())
                 {
-                    Application.Current.Shutdown();
+                    Current.Shutdown();
                 }
 
-                log.Info("Fip-Elite started");
+                Log.Info("Fip-Elite started");
 
                 if (File.Exists(Path.Combine(ExePath, "joystickSettings.config")) && ConfigurationManager.GetSection("joystickSettings") is NameValueCollection section)
                 {
-                    PID = section["PID"];
-                    VID = section["VID"];
-                    UpButton = Convert.ToInt32(section["UpButton"]);
-                    DownButton = Convert.ToInt32(section["DownButton"]);
-                    LeftButton = Convert.ToInt32(section["LeftButton"]);
-                    RightButton = Convert.ToInt32(section["RightButton"]);
-                    PushButton = Convert.ToInt32(section["PushButton"]);
+                    _pid = section["PID"];
+                    _vid = section["VID"];
+                    _upButton = Convert.ToInt32(section["UpButton"]);
+                    _downButton = Convert.ToInt32(section["DownButton"]);
+                    _leftButton = Convert.ToInt32(section["LeftButton"]);
+                    _rightButton = Convert.ToInt32(section["RightButton"]);
+                    _pushButton = Convert.ToInt32(section["PushButton"]);
 
-                    if (!string.IsNullOrEmpty(PID) && !string.IsNullOrEmpty(VID) && UpButton > 0 && DownButton > 0 && LeftButton > 0 && RightButton > 0 && PushButton > 0)
+                    if (!string.IsNullOrEmpty(_pid) && !string.IsNullOrEmpty(_vid) && _upButton > 0 && _downButton > 0 && _leftButton > 0 && _rightButton > 0 && _pushButton > 0)
                     {
                         splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Looking for Joystick...");
 
@@ -320,22 +309,22 @@ namespace Elite
 
                         if (!string.IsNullOrEmpty(FipSerialNumber))
                         {
-                            log.Info($"Sending joystick button presses to FIP panel with serial number : {FipSerialNumber}");
+                            Log.Info($"Sending joystick button presses to FIP panel with serial number : {FipSerialNumber}");
 
                             if (FipSerialNumber.ToLower().Contains("window"))
                             {
-                                WindowWidth = Convert.ToInt32(section["WindowWidth"]);
-                                WindowHeight = Convert.ToInt32(section["WindowHeight"]);
+                                _windowWidth = Convert.ToInt32(section["WindowWidth"]);
+                                _windowHeight = Convert.ToInt32(section["WindowHeight"]);
 
-                                fipHandler.AddWindow("window",(IntPtr)0, WindowWidth, WindowHeight);
+                                FipHandler.AddWindow("window",(IntPtr)0, _windowWidth, _windowHeight);
                             }
                         }
 
-                        log.Info($"Looking for directinput devices with PID={PID} and VID={VID}");
+                        Log.Info($"Looking for directinput devices with PID={_pid} and VID={_vid}");
 
-                        log.Info($"Button numbers : Up={UpButton} Down={DownButton} Left={LeftButton} Right={RightButton} Push={PushButton}");
+                        Log.Info($"Button numbers : Up={_upButton} Down={_downButton} Left={_leftButton} Right={_rightButton} Push={_pushButton}");
 
-                        foreach (var deviceInstance in directInput.GetDevices())
+                        foreach (var deviceInstance in DirectInput.GetDevices())
                         {
 
                             //Device = 17,
@@ -356,19 +345,19 @@ namespace Elite
                             if (deviceInstance.Type >= DeviceType.Joystick &&
                                 deviceInstance.Type <= DeviceType.FirstPerson)
                             {
-                                log.Info("P:" + deviceInstance.ProductGuid.ToString().Substring(0, 4) + " - V:" +
+                                Log.Info("P:" + deviceInstance.ProductGuid.ToString().Substring(0, 4) + " - V:" +
                                          deviceInstance.ProductGuid.ToString().Substring(4, 4) + " - " +
                                          deviceInstance.Type.ToString().PadRight(11) + " - " +
                                          deviceInstance.ProductGuid + " - " + deviceInstance.InstanceGuid + " - " +
                                          deviceInstance.InstanceName.Trim().Replace("\0", ""));
 
-                                if (joystick == null &&
-                                    deviceInstance.ProductGuid.ToString().ToUpper().StartsWith(PID + VID))
+                                if (_joystick == null &&
+                                    deviceInstance.ProductGuid.ToString().ToUpper().StartsWith(_pid + _vid))
                                 {
-                                    log.Info(
+                                    Log.Info(
                                         $"Using Joystick {deviceInstance.InstanceName.Trim().Replace("\0", "")} with Instance Guid {deviceInstance.InstanceGuid}");
 
-                                    joystick = new Joystick(directInput, deviceInstance.InstanceGuid);
+                                    _joystick = new Joystick(DirectInput, deviceInstance.InstanceGuid);
 
                                     //joystick.Properties.BufferSize = 128;
 
@@ -376,13 +365,13 @@ namespace Elite
                                     joystick.SetCooperativeLevel(wih,
                                       CooperativeLevel.Background | CooperativeLevel.NonExclusive);*/
 
-                                    joystick.Acquire();
+                                    _joystick.Acquire();
 
-                                    var joystickToken = joystickTokenSource.Token;
+                                    var joystickToken = _joystickTokenSource.Token;
 
-                                    joystickTask = Task.Run(async () =>
+                                    _joystickTask = Task.Run(async () =>
                                     {
-                                        log.Info("joystick task started");
+                                        Log.Info("joystick task started");
 
                                         while (true)
                                         {
@@ -391,15 +380,15 @@ namespace Elite
                                                 joystickToken.ThrowIfCancellationRequested();
                                             }
 
-                                            joystick.Poll();
+                                            _joystick.Poll();
 
-                                            var state = joystick.GetCurrentState();
+                                            var state = _joystick.GetCurrentState();
 
-                                            HandleJoystickButton(state, JoystickButton.Up, UpButton);
-                                            HandleJoystickButton(state, JoystickButton.Down, DownButton);
-                                            HandleJoystickButton(state, JoystickButton.Left, LeftButton);
-                                            HandleJoystickButton(state, JoystickButton.Right, RightButton);
-                                            HandleJoystickButton(state, JoystickButton.Push, PushButton);
+                                            HandleJoystickButton(state, JoystickButton.Up, _upButton);
+                                            HandleJoystickButton(state, JoystickButton.Down, _downButton);
+                                            HandleJoystickButton(state, JoystickButton.Left, _leftButton);
+                                            HandleJoystickButton(state, JoystickButton.Right, _rightButton);
+                                            HandleJoystickButton(state, JoystickButton.Push, _pushButton);
 
                                             /*
                                              TODO 
@@ -434,7 +423,7 @@ namespace Elite
                                                 }
                                             }*/
 
-                                            await Task.Delay(50, jsonTokenSource.Token);
+                                            await Task.Delay(50, _jsonTokenSource.Token);
                                         }
 
                                     }, joystickToken);
@@ -442,25 +431,25 @@ namespace Elite
                             }
                         }
 
-                        if (joystick == null)
+                        if (_joystick == null)
                         {
-                            log.Info($"No joystick found with PID={PID} and VID={VID}");
+                            Log.Info($"No joystick found with PID={_pid} and VID={_vid}");
                         }
                     }
                 }
 
-                this.Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
                     var window = Current.MainWindow = new MainWindow();
                     window.ShowActivated = false;
                     var im = (System.Windows.Controls.Image)window.FindName("im");
-                    if (im != null && WindowWidth > 0 && WindowHeight > 0)
+                    if (im != null && _windowWidth > 0 && _windowHeight > 0)
                     {
-                        im.Width = WindowWidth;
-                        im.Height = WindowHeight;
+                        im.Width = _windowWidth;
+                        im.Height = _windowHeight;
                     }
 
-                    if ((evtArgs.Args.Length >= 1 && evtArgs.Args[0].ToLower().Contains("mirror")) || !fipHandler.InitOk)
+                    if (evtArgs.Args.Length >= 1 && evtArgs.Args[0].ToLower().Contains("mirror") || !FipHandler.InitOk)
                     {
                         Elite.Properties.Settings.Default.Visible = true;
                         Elite.Properties.Settings.Default.Save();
@@ -469,19 +458,19 @@ namespace Elite
                     if (Elite.Properties.Settings.Default.Visible)
                     {
                         Current.MainWindow.Show();
-                        fipHandler.RefreshDevicePages();
+                        FipHandler.RefreshDevicePages();
                     }
                     else
                         Current.MainWindow.Hide();
                 });
 
-                this.Dispatcher.Invoke(() => { splashScreen.Close(); });
+                Dispatcher.Invoke(() => { splashScreen.Close(); });
 
-                var jsonToken = jsonTokenSource.Token;
+                var jsonToken = _jsonTokenSource.Token;
 
-                jsonTask = Task.Run(async () =>
+                JsonTask = Task.Run(async () =>
                 {
-                    log.Info("json task started");
+                    Log.Info("json task started");
 
                     while (true)
                     {
@@ -490,27 +479,27 @@ namespace Elite
                             jsonToken.ThrowIfCancellationRequested();
                         }
 
-                        this.Dispatcher.Invoke(() =>
+                        Dispatcher.Invoke(() =>
                         {
-                            notifyIcon.IconSource =
+                            _notifyIcon.IconSource =
                                 new BitmapImage(new Uri("pack://application:,,,/Elite;component/Hourglass.ico"));
 
-                            notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel [WORKING]";
+                            _notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel [WORKING]";
                         });
 
                         RunProcess(Path.Combine(ExePath, "ImportData.exe"));
 
                         RefreshJson();
 
-                        this.Dispatcher.Invoke(() =>
+                        Dispatcher.Invoke(() =>
                         {
-                            notifyIcon.IconSource =
+                            _notifyIcon.IconSource =
                                 new BitmapImage(new Uri("pack://application:,,,/Elite;component/Elite.ico"));
 
-                            notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel";
+                            _notifyIcon.ToolTipText = "Elite Dangerous Flight Instrument Panel";
                         });
 
-                        await Task.Delay(30 * 60 * 1000, jsonTokenSource.Token); // repeat every 30 minutes
+                        await Task.Delay(30 * 60 * 1000, _jsonTokenSource.Token); // repeat every 30 minutes
                     }
 
                 }, jsonToken);
@@ -522,59 +511,59 @@ namespace Elite
 
         protected override void OnExit(ExitEventArgs e)
         {
-            statusWatcher.StatusUpdated -= Data.HandleStatusEvents;
+            _statusWatcher.StatusUpdated -= Data.HandleStatusEvents;
 
-            statusWatcher.StopWatching();
+            _statusWatcher.StopWatching();
 
-            watcher.AllEventHandler -= Data.HandleEliteEvents;
+            Watcher.AllEventHandler -= Data.HandleEliteEvents;
 
-            watcher.StopWatching();
+            Watcher.StopWatching();
 
-            fipHandler.Close();
+            FipHandler.Close();
 
-            notifyIcon.Dispose(); //the icon would clean up automatically, but this is cleaner
+            _notifyIcon.Dispose(); //the icon would clean up automatically, but this is cleaner
 
-            jsonTokenSource.Cancel();
+            _jsonTokenSource.Cancel();
 
-            var jsonToken = jsonTokenSource.Token;
+            var jsonToken = _jsonTokenSource.Token;
 
             try
             {
-                jsonTask?.Wait(jsonToken);
+                JsonTask?.Wait(jsonToken);
             }
             catch (OperationCanceledException)
             {
-                log.Info("json background task ended");
+                Log.Info("json background task ended");
             }
             finally
             {
-                jsonTokenSource.Dispose();
+                _jsonTokenSource.Dispose();
             }
 
-            if (joystick != null)
+            if (_joystick != null)
             {
-                joystickTokenSource.Cancel();
+                _joystickTokenSource.Cancel();
 
-                var joystickToken = joystickTokenSource.Token;
+                var joystickToken = _joystickTokenSource.Token;
 
                 try
                 {
-                    joystickTask?.Wait(joystickToken);
+                    _joystickTask?.Wait(joystickToken);
                 }
                 catch (OperationCanceledException)
                 {
-                    log.Info("joystick background task ended");
+                    Log.Info("joystick background task ended");
                 }
                 finally
                 {
-                    joystickTokenSource.Dispose();
+                    _joystickTokenSource.Dispose();
 
-                    joystick?.Unacquire();
-                    joystick?.Dispose();
+                    _joystick?.Unacquire();
+                    _joystick?.Dispose();
                 }
             }
 
-            log.Info("exiting");
+            Log.Info("exiting");
 
             base.OnExit(e);
         }

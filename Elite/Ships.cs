@@ -1,20 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security.Policy;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
-using EliteJournalReader;
 using EliteJournalReader.Events;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using ModuleItem = EliteJournalReader.Module;
 // ReSharper disable StringLiteralTypo
 
@@ -23,7 +10,7 @@ namespace Elite
     public static class Ships
     {
        
-        public static readonly Dictionary<string, string> ShipsByEliteID = new Dictionary<string, string>
+        public static readonly Dictionary<string, string> ShipsByEliteId = new Dictionary<string, string>
         {
             {"sidewinder", "Sidewinder"},
             {"eagle", "Eagle"},
@@ -85,7 +72,7 @@ namespace Elite
             {
                 get
                 {
-                    ShipsByEliteID.TryGetValue(ShipType.ToLower(), out var shipTypeFull);
+                    ShipsByEliteId.TryGetValue(ShipType.ToLower(), out var shipTypeFull);
                     return shipTypeFull?.Trim() ?? ShipType?.Trim();
                 }
             }
@@ -177,8 +164,8 @@ namespace Elite
 
                         var fuel = Math.Min(CurrentFuelMain, MaxFuelPerJump);
 
-                        return (massRatio * Math.Pow((double) (1000.0 * fuel / RatingConstant),
-                            (double) (1.0 / PowerConstant))) + BoostConstant;
+                        return massRatio * Math.Pow(1000.0 * fuel / RatingConstant,
+                            1.0 / PowerConstant) + BoostConstant;
                     }
                     else
                     {
@@ -197,7 +184,7 @@ namespace Elite
             return ShipsList.FirstOrDefault(x => x.Stored == false);
         }
 
-        public static void AddShip(int shipId, string shipType, string starSystem, string stationName,
+        private static void AddShip(int shipId, string shipType, string starSystem, string stationName,
             List<double> starPos, bool stored)
         {
             if (shipType == "testbuggy") return;
@@ -206,7 +193,7 @@ namespace Elite
 
             if (!ShipsList.Any(x => x.ShipType == shipType?.ToLower() && x.ShipID == shipId))
             {
-                ShipsList.Add(new ShipData()
+                ShipsList.Add(new ShipData
                 {
                     ShipID = shipId,
                     ShipType = shipType.ToLower(),
@@ -219,7 +206,7 @@ namespace Elite
             }
         }
 
-        public static void RemoveShip(int shipId, string shipType)
+        private static void RemoveShip(int shipId, string shipType)
         {
             if (shipType == "testbuggy") return;
 
@@ -232,7 +219,7 @@ namespace Elite
             }
         }
 
-        public static void SetCurrentShip(int shipId, string shipType, string starSystem, string stationName,
+        private static void SetCurrentShip(int shipId, string shipType, string starSystem, string stationName,
             List<double> starPos)
         {
             if (shipType == "testbuggy") return;
@@ -244,7 +231,7 @@ namespace Elite
 
             foreach (var s in ShipsList)
             {
-                s.Stored = (s.ShipType != shipType?.ToLower() && s.ShipID != shipId);
+                s.Stored = s.ShipType != shipType?.ToLower() && s.ShipID != shipId;
             }
         }
 
@@ -254,19 +241,19 @@ namespace Elite
             {
                 ShipsList.ForEach(item =>
                 {
-                    var Xs = starPos[0];
-                    var Ys = starPos[1];
-                    var Zs = starPos[2];
+                    var xs = starPos[0];
+                    var ys = starPos[1];
+                    var zs = starPos[2];
 
-                    var Xd = item.StarPos[0];
-                    var Yd = item.StarPos[1];
-                    var Zd = item.StarPos[2];
+                    var xd = item.StarPos[0];
+                    var yd = item.StarPos[1];
+                    var zd = item.StarPos[2];
 
-                    double deltaX = Xs - Xd;
-                    double deltaY = Ys - Yd;
-                    double deltaZ = Zs - Zd;
+                    var deltaX = xs - xd;
+                    var deltaY = ys - yd;
+                    var deltaZ = zs - zd;
 
-                    item.Distance = (double) Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                    item.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
             }
         }

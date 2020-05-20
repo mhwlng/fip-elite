@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Elite
 {
     #region License
@@ -35,28 +30,27 @@ namespace Elite
         /// A generic ring buffer with fixed capacity.
         /// </summary>
         /// <typeparam name="T">The type of data stored in the buffer</typeparam>
-        public class RingBuffer<T> : IEnumerable<T>, IEnumerable, ICollection<T>,
+        public class RingBuffer<T> : ICollection<T>,
             ICollection
         {
+            private int _head;
+            private int _tail;
+            private int _size;
 
-            protected int head = 0;
-            protected int tail = 0;
-            protected int size = 0;
-
-            protected T[] buffer;
+            private T[] _buffer;
 
             private bool allowOverflow;
-            public bool AllowOverflow { get { return allowOverflow; } }
+            public bool AllowOverflow => allowOverflow;
 
             /// <summary>
             /// The total number of elements the buffer can store (grows).
             /// </summary>
-            public int Capacity { get { return buffer.Length; } }
+            private int Capacity => _buffer.Length;
 
             /// <summary>
             /// The number of elements currently contained in the buffer.
             /// </summary>
-            public int Size { get { return size; } }
+            public int Size => _size;
 
             /// <summary>
             /// Retrieve the next item from the buffer.
@@ -64,11 +58,11 @@ namespace Elite
             /// <returns>The oldest item added to the buffer.</returns>
             public T Get()
             {
-                if (size == 0) throw new System.InvalidOperationException("Buffer is empty.");
-                T _item = buffer[head];
-                head = (head + 1) % Capacity;
-                size--;
-                return _item;
+                if (_size == 0) throw new InvalidOperationException("Buffer is empty.");
+                var item = _buffer[_head];
+                _head = (_head + 1) % Capacity;
+                _size--;
+                return item;
             }
 
             /// <summary>
@@ -79,47 +73,47 @@ namespace Elite
             {
                 // If tail & head are equal and the buffer is not empty, assume
                 // that it will overflow and throw an exception.
-                if (tail == head && size != 0)
+                if (_tail == _head && _size != 0)
                 {
                     if (allowOverflow)
                     {
-                        addToBuffer(item, true);
+                        AddToBuffer(item, true);
                     }
                     else
                     {
-                        throw new System.InvalidOperationException("The RingBuffer is full");
+                        throw new InvalidOperationException("The RingBuffer is full");
                     }
                 }
                 // If the buffer will not overflow, just add the item.
                 else
                 {
-                    addToBuffer(item, false);
+                    AddToBuffer(item, false);
                 }
             }
 
-            protected void addToBuffer(T toAdd, bool overflow)
+            private void AddToBuffer(T toAdd, bool overflow)
             {
                 if (overflow)
                 {
-                    head = (head + 1) % Capacity;
+                    _head = (_head + 1) % Capacity;
                 }
                 else
                 {
-                    size++;
+                    _size++;
                 }
-                buffer[tail] = toAdd;
-                tail = (tail + 1) % Capacity;
+                _buffer[_tail] = toAdd;
+                _tail = (_tail + 1) % Capacity;
             }
 
             #region Constructors
             // Default capacity is 4, default overflow behavior is false.
             public RingBuffer() : this(4) { }
 
-            public RingBuffer(int capacity) : this(capacity, false) { }
+            private RingBuffer(int capacity) : this(capacity, false) { }
 
             public RingBuffer(int capacity, bool overflow)
             {
-                buffer = new T[capacity];
+                _buffer = new T[capacity];
                 allowOverflow = overflow;
             }
             #endregion
@@ -127,10 +121,10 @@ namespace Elite
             #region IEnumerable Members
             public IEnumerator<T> GetEnumerator()
             {
-                int _index = head;
-                for (int i = 0; i < size; i++, _index = (_index + 1) % Capacity)
+                var index = _head;
+                for (var i = 0; i < _size; i++, index = (index + 1) % Capacity)
                 {
-                    yield return buffer[_index];
+                    yield return _buffer[index];
                 }
             }
 
@@ -141,13 +135,13 @@ namespace Elite
 
             IEnumerator IEnumerable.GetEnumerator()
             {
-                return (IEnumerator)GetEnumerator();
+                return GetEnumerator();
             }
             #endregion
 
             #region ICollection<T> Members
-            public int Count { get { return size; } }
-            public bool IsReadOnly { get { return false; } }
+            public int Count => _size;
+            public bool IsReadOnly => false;
 
             public void Add(T item)
             {
@@ -163,11 +157,11 @@ namespace Elite
             /// </returns>
             public bool Contains(T item)
             {
-                EqualityComparer<T> comparer = EqualityComparer<T>.Default;
-                int _index = head;
-                for (int i = 0; i < size; i++, _index = (_index + 1) % Capacity)
+                var comparer = EqualityComparer<T>.Default;
+                var index = _head;
+                for (var i = 0; i < _size; i++, index = (index + 1) % Capacity)
                 {
-                    if (comparer.Equals(item, buffer[_index])) return true;
+                    if (comparer.Equals(item, _buffer[index])) return true;
                 }
                 return false;
             }
@@ -177,13 +171,13 @@ namespace Elite
             /// </summary>
             public void Clear()
             {
-                for (int i = 0; i < Capacity; i++)
+                for (var i = 0; i < Capacity; i++)
                 {
-                    buffer[i] = default(T);
+                    _buffer[i] = default;
                 }
-                head = 0;
-                tail = 0;
-                size = 0;
+                _head = 0;
+                _tail = 0;
+                _size = 0;
             }
 
             /// <summary>
@@ -195,11 +189,11 @@ namespace Elite
             /// where the buffer should begin copying to.</param>
             public void CopyTo(T[] array, int arrayIndex)
             {
-                int _index = head;
-                for (int i = 0; i < size; i++, arrayIndex++, _index = (_index + 1) %
-                    Capacity)
+                var index = _head;
+                for (var i = 0; i < _size; i++, arrayIndex++, index = (index + 1) %
+                                                                      Capacity)
                 {
-                    array[arrayIndex] = buffer[_index];
+                    array[arrayIndex] = _buffer[index];
                 }
             }
 
@@ -213,41 +207,41 @@ namespace Elite
             /// </returns>
             public bool Remove(T item)
             {
-                int _index = head;
-                int _removeIndex = 0;
-                bool _foundItem = false;
-                EqualityComparer<T> _comparer = EqualityComparer<T>.Default;
-                for (int i = 0; i < size; i++, _index = (_index + 1) % Capacity)
+                var index = _head;
+                var removeIndex = 0;
+                var foundItem = false;
+                var comparer = EqualityComparer<T>.Default;
+                for (var i = 0; i < _size; i++, index = (index + 1) % Capacity)
                 {
-                    if (_comparer.Equals(item, buffer[_index]))
+                    if (comparer.Equals(item, _buffer[index]))
                     {
-                        _removeIndex = _index;
-                        _foundItem = true;
+                        removeIndex = index;
+                        foundItem = true;
                         break;
                     }
                 }
-                if (_foundItem)
+                if (foundItem)
                 {
-                    T[] _newBuffer = new T[size - 1];
-                    _index = head;
-                    bool _pastItem = false;
-                    for (int i = 0; i < size - 1; i++, _index = (_index + 1) % Capacity)
+                    var newBuffer = new T[_size - 1];
+                    index = _head;
+                    var pastItem = false;
+                    for (var i = 0; i < _size - 1; i++, index = (index + 1) % Capacity)
                     {
-                        if (_index == _removeIndex)
+                        if (index == removeIndex)
                         {
-                            _pastItem = true;
+                            pastItem = true;
                         }
-                        if (_pastItem)
+                        if (pastItem)
                         {
-                            _newBuffer[_index] = buffer[(_index + 1) % Capacity];
+                            newBuffer[index] = _buffer[(index + 1) % Capacity];
                         }
                         else
                         {
-                            _newBuffer[_index] = buffer[_index];
+                            newBuffer[index] = _buffer[index];
                         }
                     }
-                    size--;
-                    buffer = _newBuffer;
+                    _size--;
+                    _buffer = newBuffer;
                     return true;
                 }
                 return false;
@@ -259,13 +253,13 @@ namespace Elite
             /// Gets an object that can be used to synchronize access to the
             /// RingBuffer.
             /// </summary>
-            public Object SyncRoot { get { return this; } }
+            public object SyncRoot => this;
 
             /// <summary>
             /// Gets a value indicating whether access to the RingBuffer is 
             /// synchronized (thread safe).
             /// </summary>
-            public bool IsSynchronized { get { return false; } }
+            public bool IsSynchronized => false;
 
             /// <summary>
             /// Copies the elements of the RingBuffer to <paramref name="array"/>, 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EliteJournalReader;
 using EliteJournalReader.Events;
 
@@ -11,7 +9,7 @@ namespace Elite
     public static class Module
     {
         // Frame Shift Drive Constants
-        public static Dictionary<string, double> BaseOptimalMass = new Dictionary<string, double>
+        private static Dictionary<string, double> BaseOptimalMass = new Dictionary<string, double>
         {
             {"2E", 48.0}, {"2D", 54.0}, {"2C", 60.0}, {"2B", 75.0}, {"2A", 90.0},
             {"3E", 80.0}, {"3D", 90.0}, {"3C", 100.0}, {"3B", 125.0}, {"3A", 150.0},
@@ -21,7 +19,7 @@ namespace Elite
             {"7E", 1440.0}, {"7D", 1620.0}, {"7C", 1800.0}, {"7B", 2250.0}, {"7A", 2700.0}
         };
 
-        public static Dictionary<string, double> BaseMaxFuelPerJump = new Dictionary<string, double>
+        private static Dictionary<string, double> BaseMaxFuelPerJump = new Dictionary<string, double>
         {
             {"2E", 0.60}, {"2D", 0.60}, {"2C", 0.60}, {"2B", 0.80}, {"2A", 0.90},
             {"3E", 1.20}, {"3D", 1.20}, {"3C", 1.20}, {"3B", 1.50}, {"3A", 1.80},
@@ -32,38 +30,38 @@ namespace Elite
         };
 
 
-        public static Dictionary<int, double> GuardianBoostFSD = new Dictionary<int, double>
+        private static Dictionary<int, double> GuardianBoostFSD = new Dictionary<int, double>
         {
             {1, 4.00}, {2, 6.00}, {3, 7.75}, {4, 9.25}, {5, 10.50}
         };
 
-        public static Dictionary<string, double> RatingConstantFSD = new Dictionary<string, double>
+        private static Dictionary<string, double> RatingConstantFSD = new Dictionary<string, double>
         {
             {"A", 12.0}, {"B", 10.0}, {"C", 8.0}, {"D", 10.0}, {"E", 11.0}
         };
 
-        public static Dictionary<int, double> PowerConstantFSD = new Dictionary<int, double>
+        private static Dictionary<int, double> PowerConstantFSD = new Dictionary<int, double>
         {
             {2, 2.00}, {3, 2.15}, {4, 2.30}, {5, 2.45}, {6, 2.60}, {7, 2.75}, {8, 2.90}
         };
 
 
-        public enum ModuleType
+        private enum ModuleType
         {
             Weapon,
             SingleModule,
             MultipleModules
         }
 
-        public class ModuleDataItem
+        private class ModuleDataItem
         {
             public string Key { get; set; }
-            public List<string> ExcludeKeys { get; set; } = null;
+            public List<string> ExcludeKeys { get; set; }
 
             public ModuleType ModuleType { get; set; }
         }
 
-        public static readonly Dictionary<string, ModuleDataItem> ModuleData = new Dictionary<string, ModuleDataItem>
+        private static readonly Dictionary<string, ModuleDataItem> ModuleData = new Dictionary<string, ModuleDataItem>
         {
             {"Fuel Scoop", new ModuleDataItem { Key = "_fuelscoop_", ModuleType = ModuleType.SingleModule} },
             {"Fighter Bay", new ModuleDataItem { Key = "_fighterbay_", ModuleType = ModuleType.SingleModule} },
@@ -152,11 +150,11 @@ namespace Elite
             {"Point Defence" , new ModuleDataItem { Key = "_plasmapointdefence_turret_", ModuleType = ModuleType.Weapon} },
             {"Xeno Scanner" , new ModuleDataItem { Key = "_xenoscanner_basic_", ModuleType = ModuleType.Weapon} },
             {"Shutdown Field Neutraliser" , new ModuleDataItem { Key = "_antiunknownshutdown_", ModuleType = ModuleType.Weapon} },
-            {"Det. Surface Scanner" , new ModuleDataItem { Key = "_detailedsurfacescanner_", ModuleType = ModuleType.Weapon} },
+            {"Det. Surface Scanner" , new ModuleDataItem { Key = "_detailedsurfacescanner_", ModuleType = ModuleType.Weapon} }
 
         };
 
-        public static int GetModuleSize(string item)
+        private static int GetModuleSize(string item)
         {
             var size = item.Substring(item.IndexOf("_size", StringComparison.OrdinalIgnoreCase) + 5);
 
@@ -173,7 +171,7 @@ namespace Elite
             return Convert.ToInt32(size);
         }
 
-        public static string GetModuleClass(string item)
+        private static string GetModuleClass(string item)
         {
             var cl = item.Substring(item.IndexOf("_class", StringComparison.OrdinalIgnoreCase) + 6);
 
@@ -208,7 +206,7 @@ namespace Elite
                         return moduleList.FirstOrDefault();
                     case ModuleType.Weapon:
                     case ModuleType.MultipleModules:
-                        return String.Join(" + ",
+                        return string.Join(" + ",
                             moduleList.GroupBy(x => x).Select(x => x.Count() + "&#10799;" + x.Key));
                 }
             }
@@ -216,7 +214,7 @@ namespace Elite
             return "?";
         }
 
-        public static string GetModuleArmourGrade(string item)
+        private static string GetModuleArmourGrade(string item)
         {
             if (item.IndexOf("_grade1", StringComparison.OrdinalIgnoreCase) >= 0)
             {
@@ -246,12 +244,12 @@ namespace Elite
             return "?";
         }
 
-        public static int UpdateFuelCapacity(string item)
+        private static int UpdateFuelCapacity(string item)
         {
             if (item?.Contains("_fueltank_") == true)
             {
                 var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
+                //var cl = GetModuleClass(item);
 
                 return Convert.ToInt32(Math.Pow(2, size));
             }
@@ -259,12 +257,12 @@ namespace Elite
             return 0;
         }
 
-        public static int UpdateCargoCapacity(string item)
+        private static int UpdateCargoCapacity(string item)
         {
             if (item?.Contains("cargorack_") == true)
             {
                 var size = GetModuleSize(item);
-                var cl = GetModuleClass(item);
+                //var cl = GetModuleClass(item);
 
                 return Convert.ToInt32(Math.Pow(2, size));
             }
@@ -272,7 +270,7 @@ namespace Elite
             return 0;
         }
 
-        public static int UpdatePassengerCabinCapacity(string item, string cls)
+        private static int UpdatePassengerCabinCapacity(string item, string cls)
         {
             if (item?.Contains("_passengercabin_") == true)
             {
@@ -325,7 +323,7 @@ namespace Elite
             return 0;
         }
 
-        public static string UpdatePowerPlant(string item, string data, bool remove)
+        private static string UpdatePowerPlant(string item, string data, bool remove)
         {
             if (item?.Contains("powerplant_") == true)
             {
@@ -339,13 +337,13 @@ namespace Elite
                     cl += " guardian";
                 }
 
-                return size.ToString() + cl;
+                return size + cl;
             }
 
             return data;
         }
 
-        public static string UpdatePowerDistributor(string item, string data, bool remove)
+        private static string UpdatePowerDistributor(string item, string data, bool remove)
         {
             if (item?.Contains("powerdistributor_") == true)
             {
@@ -359,13 +357,13 @@ namespace Elite
                     cl += " guardian";
                 }
 
-                return size.ToString() + cl;
+                return size + cl;
             }
 
             return data;
         }
 
-        public static string UpdateShieldGenerator(string item, string data, bool remove)
+        private static string UpdateShieldGenerator(string item, string data, bool remove)
         {
             if (item?.Contains("_shieldgenerator_") == true)
             {
@@ -383,13 +381,13 @@ namespace Elite
                     cl += " bi-weave";
                 }
 
-                return size.ToString() + cl;
+                return size + cl;
             }
 
             return data;
         }
 
-        public static string UpdateEngine(string item, string data, bool remove)
+        private static string UpdateEngine(string item, string data, bool remove)
         {
             if (item?.Contains("_engine_") == true)
             {
@@ -403,19 +401,19 @@ namespace Elite
                     cl += " enhanced";
                 }
 
-                return size.ToString() + cl;
+                return size + cl;
             }
 
             return data;
         }
 
-        public static string UpdateGuardianFSDBooster(string item, string data, bool remove)
+        private static string UpdateGuardianFsdBooster(string item, string data, bool remove)
         {
             if (item?.Contains("_guardianfsdbooster_") == true)
             {
                 if (remove) return null;
 
-                var size = GetModuleSize(item);
+                //var size = GetModuleSize(item);
 
                 return " + booster"; //size.ToString();
             }
@@ -423,7 +421,7 @@ namespace Elite
             return data;
         }
 
-        public static string UpdateArmour(string item, string data, bool remove)
+        private static string UpdateArmour(string item, string data, bool remove)
         {
             if (item?.Contains("_armour_") == true)
             {
@@ -437,7 +435,7 @@ namespace Elite
             return data;
         }
 
-        public static string UpdateSizeClass(string key, string item, string data, bool remove)
+        private static string UpdateSizeClass(string key, string item, string data, bool remove)
         {
             if (item?.Contains(key) == true)
             {
@@ -446,13 +444,13 @@ namespace Elite
                 var size = GetModuleSize(item);
                 var cl = GetModuleClass(item);
 
-                return size.ToString() + cl;
+                return size + cl;
             }
 
             return data;
         }
 
-        public static void UpdateSizeClass(string key, List<string> excludeKeys, string item, Dictionary<string, List<string>> moduleList, bool remove, string moduleName)
+        private static void UpdateSizeClass(string key, List<string> excludeKeys, string item, Dictionary<string, List<string>> moduleList, bool remove, string moduleName)
         {
             if (item?.Contains(key) == true)
             {
@@ -467,7 +465,7 @@ namespace Elite
                 var size = GetModuleSize(item);
                 var cl = GetModuleClass(item);
 
-                var c = size.ToString() + cl;
+                var c = size + cl;
 
                 moduleList.TryGetValue(moduleName, out var data);
                 if (data == null)
@@ -487,7 +485,7 @@ namespace Elite
             }
         }
 
-        public static void UpdateWeapons(string key, List<string> excludeKeys, string item, Dictionary<string, List<string>> moduleList, bool remove, string moduleName)
+        private static void UpdateWeapons(string key, List<string> excludeKeys, string item, Dictionary<string, List<string>> moduleList, bool remove, string moduleName)
         {
             if (item?.Contains(key) == true)
             {
@@ -501,11 +499,11 @@ namespace Elite
 
                 var c = "";
 
-                if (item.Contains("small") == true) c += "S";
-                else if (item.Contains("medium") == true) c += "M";
-                else if (item.Contains("large") == true) c += "L";
-                else if (item.Contains("huge") == true) c += "H";
-                else if (item.Contains("tiny") == true) c += "T";
+                if (item.Contains("small")) c += "S";
+                else if (item.Contains("medium")) c += "M";
+                else if (item.Contains("large")) c += "L";
+                else if (item.Contains("huge")) c += "H";
+                else if (item.Contains("tiny")) c += "T";
 
                 //if (item.Contains("fixed") == true) c += "-F";
                 //else if (item.Contains("gimbal") == true) c += "-G";
@@ -531,7 +529,7 @@ namespace Elite
             }
         }
 
-        public static void HandleJumpRange(Ships.ShipData ship, EliteJournalReader.Module module)
+        private static void HandleJumpRange(Ships.ShipData ship, EliteJournalReader.Module module)
         {
             if (module.Item.Contains("_hyperdrive_"))
             {
@@ -550,20 +548,20 @@ namespace Elite
                     ship.PowerConstant = powerConstant;
                 }
 
-                BaseMaxFuelPerJump.TryGetValue(size.ToString() + cl, out var maxFuelPerJump);
+                BaseMaxFuelPerJump.TryGetValue(size + cl, out var maxFuelPerJump);
                 if (maxFuelPerJump > 0)
                 {
                     ship.MaxFuelPerJump = maxFuelPerJump;
                 }
 
-                BaseOptimalMass.TryGetValue(size.ToString() + cl, out var optimalMass);
+                BaseOptimalMass.TryGetValue(size + cl, out var optimalMass);
 
                 if (module.Engineering?.Modifiers != null)
                 {
                     var mod = module.Engineering.Modifiers.Where(x =>
                         x.Label == ModuleAttribute.FSDOptimalMass).ToList();
 
-                    if (mod.Any() == true)
+                    if (mod.Any())
                     {
                         optimalMass = mod.FirstOrDefault().Value;
                     }
@@ -589,7 +587,7 @@ namespace Elite
 
         }
 
-        public static void HandleModules(Ships.ShipData ship, string item, bool remove)
+        private static void HandleModules(Ships.ShipData ship, string item, bool remove)
         {
             if (remove)
             {
@@ -619,7 +617,7 @@ namespace Elite
             ship.Engine = UpdateEngine(item, ship.Engine, remove);
 
             ship.FrameShiftDrive = UpdateSizeClass("_hyperdrive_", item, ship.FrameShiftDrive, remove);
-            ship.GuardianFSDBooster = UpdateGuardianFSDBooster(item, ship.GuardianFSDBooster, remove);
+            ship.GuardianFSDBooster = UpdateGuardianFsdBooster(item, ship.GuardianFSDBooster, remove);
 
             //-----------
 
@@ -780,9 +778,9 @@ namespace Elite
 
                     foreach (var m in info.Modules)
                     {
-                        Module.HandleModules(ship, m.Item, false);
+                        HandleModules(ship, m.Item, false);
 
-                        Module.HandleJumpRange(ship, m);
+                        HandleJumpRange(ship, m);
                     }
                 }
 

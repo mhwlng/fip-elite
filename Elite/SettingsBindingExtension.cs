@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
+﻿using System.Windows.Data;
 
 namespace Elite
 {
@@ -22,8 +17,8 @@ namespace Elite
 
         private void Initialize()
         {
-            this.Source = Properties.Settings.Default;
-            this.Mode = BindingMode.TwoWay;
+            Source = Properties.Settings.Default;
+            Mode = BindingMode.TwoWay;
         }
     }
 }

@@ -50,7 +50,7 @@ div.menu {
 .menu table {
     border-right: 1px solid #FFB000;
     border-bottom: 1px solid #FFB000;
-    border-spacing: 0px;
+    border-spacing: 0;
     text-align: center;
 }
 

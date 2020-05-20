@@ -1,19 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Elite.RingBuffer;
 using EliteJournalReader;
 using EliteJournalReader.Events;
-using Module = EliteJournalReader.Module;
 // ReSharper disable StringLiteralTypo
 
 
@@ -233,7 +222,7 @@ namespace Elite
         public class Commander
         {
             public string Name { get; set; } = "";
-            public uint Credits { get; set; } = 0;
+            public uint Credits { get; set; }
 
             public double FederationReputation { get; set; } = -99999;
             public double AllianceReputation { get; set; } = -99999;
@@ -325,7 +314,7 @@ namespace Elite
 
             public string Powers { get; set; }
 
-            public bool HideBody { get; set; } = false;
+            public bool HideBody { get; set; }
 
             public List<double> StarPos { get; set; } // array[x, y, z], in light years
         }
@@ -453,7 +442,7 @@ namespace Elite
                 shipData.CurrentCargo = evt.Cargo;
             }
 
-            App.fipHandler.RefreshDevicePages();
+            App.FipHandler.RefreshDevicePages();
         }
 
 
@@ -489,7 +478,7 @@ namespace Elite
 
         public static void HandleEliteEvents(object sender, JournalEventArgs e)
         {
-            var evt = ((JournalEventArgs) e).OriginalEvent.Value<string>("event");
+            var evt = e.OriginalEvent.Value<string>("event");
 
             if (string.IsNullOrWhiteSpace(evt))
             {
@@ -840,7 +829,7 @@ namespace Elite
 
                 case "Undocked":
                     //When written: liftoff from a landing pad in a station, outpost or settlement
-                    var undockedInfo = (UndockedEvent.UndockedEventArgs) e;
+                    //var undockedInfo = (UndockedEvent.UndockedEventArgs) e;
 
                     //StationName
                     //StationType
@@ -1037,7 +1026,7 @@ namespace Elite
 
                     TargetData.Power = shipTargetedInfo.Power;
 
-                    Ships.ShipsByEliteID.TryGetValue(shipTargetedInfo.Ship?.ToLower() ?? "???", out var targetShip);
+                    Ships.ShipsByEliteId.TryGetValue(shipTargetedInfo.Ship?.ToLower() ?? "???", out var targetShip);
 
                     TargetData.Ship = shipTargetedInfo.Ship_Localised ?? targetShip ?? shipTargetedInfo.Ship;
 
@@ -1260,7 +1249,7 @@ namespace Elite
 
                 case "ShipyardTransfer":
                     //When Written: when requesting a ship at another station be transported to this station
-                    var shipyardTransferInfo = (ShipyardTransferEvent.ShipyardTransferEventArgs)e;
+                    //var shipyardTransferInfo = (ShipyardTransferEvent.ShipyardTransferEventArgs)e;
 
                     //ShipID
 
@@ -1340,9 +1329,9 @@ namespace Elite
                     )
                     {
                         // Give priority to player messages
-                        var source = channel == "squadron" ? "Squadron mate" :
-                            channel == "wing" ? "Wing mate" :
-                            channel == null ? "Crew mate" : "Commander";
+                        //var source = channel == "squadron" ? "Squadron mate" :
+                        //    channel == "wing" ? "Wing mate" :
+                        //    channel == null ? "Crew mate" : "Commander";
 
                         //var channel = receiveTextInfo.Channel ?? "multicrew";
 
@@ -1361,7 +1350,7 @@ namespace Elite
                             //var from = receiveTextInfo.FromLocalized;
 
                         }
-                        else if ((receiveTextInfo.Message.StartsWith("$STATION_")) ||
+                        else if (receiveTextInfo.Message.StartsWith("$STATION_") ||
                                  receiveTextInfo.Message.Contains("$Docking"))
                         {
                             //var source = "Station";
@@ -1415,7 +1404,7 @@ namespace Elite
 
             }
 
-            App.fipHandler.RefreshDevicePages();
+            App.FipHandler.RefreshDevicePages();
 
         }
     }

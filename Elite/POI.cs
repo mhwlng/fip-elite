@@ -4,8 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
@@ -168,7 +166,7 @@ namespace Elite
 
         // see https://docs.google.com/spreadsheets/d/11E05a-hLGyOQ84B9dQUu0Z53ow1Xt-uqJ-xXJmtYq5A/edit#gid=594549382
 
-        public const string PoiSpreadsheet =
+        private const string PoiSpreadsheet =
             @"https://docs.google.com/spreadsheets/d/11E05a-hLGyOQ84B9dQUu0Z53ow1Xt-uqJ-xXJmtYq5A/export?format=csv&gid=594549382";
 
 
@@ -176,12 +174,12 @@ namespace Elite
         {
             try
             {
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(PoiSpreadsheet);
+                var req = (HttpWebRequest)WebRequest.Create(PoiSpreadsheet);
                 req.KeepAlive = false;
                 req.ProtocolVersion = HttpVersion.Version10;
-                HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+                var resp = (HttpWebResponse)req.GetResponse();
 
-                using (StreamReader streamReader = new StreamReader(resp.GetResponseStream()))
+                using (var streamReader = new StreamReader(resp.GetResponseStream()))
                 {
                     var csvread = new CsvReader(streamReader, new CultureInfo("en-US"));
                     csvread.Configuration.HasHeaderRecord = true;
@@ -192,7 +190,7 @@ namespace Elite
                     csvread.Configuration.MissingFieldFound = null;
                     //csvread.Configuration.HeaderValidated = null;
                     csvread.Configuration.IgnoreBlankLines = true;
-                    csvread.Configuration.ShouldSkipRecord = (records) => string.IsNullOrEmpty(records[0]);
+                    csvread.Configuration.ShouldSkipRecord = records => string.IsNullOrEmpty(records[0]);
                     csvread.Configuration.TypeConverterOptionsCache.GetOptions<DateTime>().Formats =
                         new[] { "yyyy-MM-dd" };
 
@@ -203,7 +201,7 @@ namespace Elite
             }
             catch (Exception ex)
             {
-                App.log.Error(ex);
+                App.Log.Error(ex);
             }
 
             return new List<PoiItem>();
@@ -216,22 +214,22 @@ namespace Elite
             {
                 FullPoiList.ForEach(poiItem =>
                 {
-                    var Xs = starPos[0];
-                    var Ys = starPos[1];
-                    var Zs = starPos[2];
+                    var xs = starPos[0];
+                    var ys = starPos[1];
+                    var zs = starPos[2];
 
-                    var Xd = poiItem.GalacticX;
-                    var Yd = poiItem.GalacticY;
-                    var Zd = poiItem.GalacticZ;
+                    var xd = poiItem.GalacticX;
+                    var yd = poiItem.GalacticY;
+                    var zd = poiItem.GalacticZ;
 
-                    double deltaX = Xs - Xd;
-                    double deltaY = Ys - Yd;
-                    double deltaZ = Zs - Zd;
+                    var deltaX = xs - xd;
+                    var deltaY = ys - yd;
+                    var deltaZ = zs - zd;
 
-                    poiItem.Distance = (double)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                    poiItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
-                return Enumerable.Where<PoiItem>(FullPoiList, x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+                return FullPoiList.Where<PoiItem>(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
             }
 
             return new List<PoiItem>();
