@@ -77,6 +77,8 @@ namespace Elite
         private static int RightButton;
         private static int PushButton;
         public static string FipSerialNumber;
+        private static int WindowWidth;
+        private static int WindowHeight;
 
         private static bool[] lastButtonState = new bool[256];
 
@@ -309,11 +311,12 @@ namespace Elite
                     LeftButton = Convert.ToInt32(section["LeftButton"]);
                     RightButton = Convert.ToInt32(section["RightButton"]);
                     PushButton = Convert.ToInt32(section["PushButton"]);
-                    FipSerialNumber = section["FipSerialNumber"];
 
                     if (!string.IsNullOrEmpty(PID) && !string.IsNullOrEmpty(VID) && UpButton > 0 && DownButton > 0 && LeftButton > 0 && RightButton > 0 && PushButton > 0)
                     {
                         splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Looking for Joystick...");
+
+                        FipSerialNumber = section["FipSerialNumber"];
 
                         if (!string.IsNullOrEmpty(FipSerialNumber))
                         {
@@ -321,7 +324,10 @@ namespace Elite
 
                             if (FipSerialNumber.ToLower().Contains("window"))
                             {
-                                fipHandler.AddWindow("window",(IntPtr)0);
+                                WindowWidth = Convert.ToInt32(section["WindowWidth"]);
+                                WindowHeight = Convert.ToInt32(section["WindowHeight"]);
+
+                                fipHandler.AddWindow("window",(IntPtr)0, WindowWidth, WindowHeight);
                             }
                         }
 
@@ -445,8 +451,14 @@ namespace Elite
 
                 this.Dispatcher.Invoke(() =>
                 {
-                    Current.MainWindow = new MainWindow();
-                    Current.MainWindow.ShowActivated = false;
+                    var window = Current.MainWindow = new MainWindow();
+                    window.ShowActivated = false;
+                    var im = (System.Windows.Controls.Image)window.FindName("im");
+                    if (im != null && WindowWidth > 0 && WindowHeight > 0)
+                    {
+                        im.Width = WindowWidth;
+                        im.Height = WindowHeight;
+                    }
 
                     if ((evtArgs.Args.Length >= 1 && evtArgs.Args[0].ToLower().Contains("mirror")) || !fipHandler.InitOk)
                     {

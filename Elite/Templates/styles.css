@@ -49,6 +49,7 @@ div.menu {
 
 .menu table {
     border-right: 1px solid #FFB000;
+    border-bottom: 1px solid #FFB000;
     border-spacing: 0px;
     text-align: center;
 }
@@ -89,7 +90,8 @@ div.menu {
 .main table {
     border-spacing: 5px;
     /*max-width: 100%;*/
-    width: 300px;
+    /*width: 300px;*/
+    width: 99%;
 }
 
 .menu table {
@@ -102,13 +104,15 @@ div.menu {
 }
 
 .main table td.nowrap {
-    width: 240px;
+    /*width: 240px;*/
+    width: 83%;
     overflow: hidden;
     white-space: nowrap;
 }
 
 .main table td.wrap {
-    width: 240px;
+    /*width: 240px;*/
+    width: 83%;
 }
 
 

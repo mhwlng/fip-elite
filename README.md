@@ -1,5 +1,5 @@
 # fip-elite
-Logitech Flight Instrument Panel and VR application for Elite Dangerous
+Information Display for Logitech Flight Instrument Panel and for VR
 
 ![Logitech Flight Instrument Panel with Elgato Stream Deck](https://i.imgur.com/bE2ODlF.jpg)
 
@@ -30,6 +30,8 @@ The joystick is configured via joysticksettings.config
   <add key="RightButton" value="22" />
   <add key="PushButton" value="25" />
   <add key="FipSerialNumber" value="MZAAFAA883" />
+  <add key="WindowWidth" value="320" />
+  <add key="WindowHeight" value="240" />
 </joystickSettings>
 ```
 
@@ -39,7 +41,10 @@ This option mirrors the FIP display, that is being controlled by the HOTAS hat s
 If FipSerialNumber in joysticksettings.config has the special value "window", then a separate window is created, 
 that is NOT a mirror of a FIP display. 
 
-**So this window will also work WITHOUT any connected FIP display.**
+**This window will also work WITHOUT any connected FIP display.**
+
+WindowWidth/WindowHeight in joysticksettings.config can be adjusted if the window is NOT a mirror of a FIP display. 
+Otherwise these values are ignored.
 
 You can then use a tool like [OVR Toolkit](https://store.steampowered.com/app/1068820/OVR_Toolkit/) to display this window in VR. 
 

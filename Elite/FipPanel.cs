@@ -170,13 +170,29 @@ namespace Elite
         private Image menuHtmlImage = null;
         private Image cardcaptionHtmlImage = null;
 
-        private const int HtmlMenuWindowWidth = 110; //69;
+        private static int HtmlMenuWindowWidth = 110; //69;
+        private static int HtmlMenuWindowHeight = 259;
+        private static int HtmlWindowXOffset = 1;
 
-        private const int HtmlWindowHeight = 240;
+        private int HtmlWindowWidth = 320;
+        private int HtmlWindowHeight = 240;
 
-        private const int HtmlWindowXOffset = /*HtmlMenuWindowWidth*/ + 1;
-        private const int HtmlWindowWidth = 311- HtmlWindowXOffset;
+        private int HtmlWindowUsableWidth
+        {
+            get
+            {
+                return HtmlWindowWidth - 9 - HtmlWindowXOffset;
+            }
+        }
 
+
+        private double ScrollBarHeight
+        {
+            get
+            {
+                return (double)HtmlWindowHeight -7.0;
+            }
+        }
 
         protected bool DoShutdown;
 
@@ -251,10 +267,12 @@ namespace Elite
 
         }
 
-        public void InitalizeWindow(string serialNumber)
+        public void InitalizeWindow(string serialNumber, int windowWidth, int windowHeight)
         {
             SerialNumber = serialNumber;
             InitOk = false;
+            HtmlWindowWidth = windowWidth;
+            HtmlWindowHeight = windowHeight;
 
             App.log.Info("FipPanel Serial Number : " + SerialNumber);
 
@@ -1084,7 +1102,7 @@ namespace Elite
                     SetTab(LCDTab.Map);
                 }
 
-                using (var fipImage = new Bitmap(320, 240))
+                using (var fipImage = new Bitmap(HtmlWindowWidth, HtmlWindowHeight))
                 {
                     using (var graphics = Graphics.FromImage(fipImage))
                     {
@@ -1575,7 +1593,7 @@ namespace Elite
 
                             if (mustRender)
                             {
-                                var measureData =HtmlRender.Measure(graphics, str, HtmlWindowWidth, App.cssData,null, OnImageLoad);
+                                var measureData =HtmlRender.Measure(graphics, str, HtmlWindowUsableWidth, App.cssData,null, OnImageLoad);
 
                                 CurrentLCDHeight = (int)measureData.Height;
                             }
@@ -1588,31 +1606,29 @@ namespace Elite
                                 if (mustRender)
                                 {
                                     htmlImage = HtmlRender.RenderToImage(str,
-                                        new Size(HtmlWindowWidth, CurrentLCDHeight + 20), Color.Black, App.cssData,
+                                        new Size(HtmlWindowUsableWidth, CurrentLCDHeight + 20), Color.Black, App.cssData,
                                         null, OnImageLoad);
                                 }
 
                                 if (htmlImage != null)
                                 {
                                     graphics.DrawImage(htmlImage, new Rectangle(new Point(HtmlWindowXOffset, 0),
-                                            new Size(HtmlWindowWidth, HtmlWindowHeight + 20)),
+                                            new Size(HtmlWindowUsableWidth, HtmlWindowHeight + 20)),
                                         new Rectangle(new Point(0, CurrentLCDYOffset),
-                                            new Size(HtmlWindowWidth, HtmlWindowHeight + 20)),
+                                            new Size(HtmlWindowUsableWidth, HtmlWindowHeight + 20)),
                                         GraphicsUnit.Pixel);
                                 }
                             }
 
                             if (CurrentLCDHeight > HtmlWindowHeight)
                             {
-                                double scrollBarHeight = 233.0;
-                                
-                                double scrollThumbHeight = ((double)HtmlWindowHeight / (double)CurrentLCDHeight * (double)scrollBarHeight);
-                                double scrollThumbYOffset = (double)CurrentLCDYOffset / (double)CurrentLCDHeight * scrollBarHeight;
+                                double scrollThumbHeight = ((double)HtmlWindowHeight / (double)CurrentLCDHeight * (double)ScrollBarHeight);
+                                double scrollThumbYOffset = (double)CurrentLCDYOffset / (double)CurrentLCDHeight * ScrollBarHeight;
 
-                                graphics.DrawRectangle(_scrollPen, new Rectangle(new Point(320-9, 2),
-                                                                   new Size(5, (int)scrollBarHeight)));
+                                graphics.DrawRectangle(_scrollPen, new Rectangle(new Point(HtmlWindowWidth - 9, 2),
+                                                                   new Size(5, (int)ScrollBarHeight)));
 
-                                graphics.FillRectangle(_scrollBrush, new Rectangle(new Point(320 - 9, 2 + (int)scrollThumbYOffset),
+                                graphics.FillRectangle(_scrollBrush, new Rectangle(new Point(HtmlWindowWidth - 9, 2 + (int)scrollThumbYOffset),
                                     new Size(5, 1 + (int)scrollThumbHeight)));
 
                             }
@@ -1632,7 +1648,7 @@ namespace Elite
                                     });
 
                                 cardcaptionHtmlImage = HtmlRender.RenderToImage(cardcaptionstr,
-                                    new Size(HtmlWindowWidth, 26), Color.Black, App.cssData, null,
+                                    new Size(HtmlWindowUsableWidth, 26), Color.Black, App.cssData, null,
                                     null);
                             }
 
@@ -1663,7 +1679,7 @@ namespace Elite
                                     });
 
                                 menuHtmlImage = HtmlRender.RenderToImage(menustr,
-                                    new Size(HtmlMenuWindowWidth, HtmlWindowHeight), Color.Black, App.cssData, null,
+                                    new Size(HtmlMenuWindowWidth, HtmlMenuWindowHeight), Color.Black, App.cssData, null,
                                     OnImageLoad);
                             }
 

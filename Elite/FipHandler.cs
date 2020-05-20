@@ -119,7 +119,7 @@ namespace Elite
             return (string.Compare(mGuid.ToString(), "3E083CD8-6A37-4A58-80A8-3D6A2C07513E", true, CultureInfo.InvariantCulture) == 0);
         }
 
-        public void AddWindow(string serialNumber, IntPtr device)
+        public void AddWindow(string serialNumber, IntPtr device, int windowWidth, int windowHeight)
         {
             var mGuid = Guid.Empty;
 
@@ -127,7 +127,7 @@ namespace Elite
 
             var fipPanel = new FipPanel(device);
             _fipPanels.Add(fipPanel);
-            fipPanel.InitalizeWindow(serialNumber);
+            fipPanel.InitalizeWindow(serialNumber, windowWidth, windowHeight);
         }
 
         private void EnumerateCallback(IntPtr device, IntPtr context)
