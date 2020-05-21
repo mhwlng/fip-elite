@@ -1,9 +1,9 @@
 # fip-elite
-Information Display for Logitech Flight Instrument Panel and for VR
+Information Display for Logitech Flight Instrument Panel and for VR for Elite Dangerous
+
+You don't need a Flight Instrument Panel, if you only want to use this for VR.
 
 ![Logitech Flight Instrument Panel with Elgato Stream Deck](https://i.imgur.com/bE2ODlF.jpg)
-
-This application displays data from Elite Dangerous on Logitech Flight Instrument Panels or in a window for VR.
 
 ![VR](https://i.imgur.com/qhICACC.jpg)
 
@@ -39,7 +39,7 @@ There is a Toggle Mirror Window menu option in the tray icon context menu.
 This option mirrors the FIP display, that is being controlled by the HOTAS hat switch, to a window for use in VR.
 
 If FipSerialNumber in joysticksettings.config has the special value "window", then a separate window is created, 
-that is NOT a mirror of a FIP display. 
+that is NOT a mirror of a FIP display. This window can be resized.
 
 **This window will also work WITHOUT any connected FIP display.**
 
