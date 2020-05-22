@@ -11,10 +11,19 @@ namespace Elite
 {
     public static class History
     {
-        public const double SpaceMinX = -41715.0;
-        public const double SpaceMaxX = 41205.0;
-        public const double SpaceMinZ = -19737.0;
-        public const double SpaceMaxZ = 68073.0;
+        // 1478 x 1125
+
+        public const double SpaceMinXL = -41715.0;
+        public const double SpaceMaxXL = 41205.0;
+        public const double SpaceMinZL = -19737.0;
+        public const double SpaceMaxZL = 68073.0;
+
+        // 1125 x 1478
+
+        public const double SpaceMinXP = -31812.8;
+        public const double SpaceMaxXP = 31302.85;
+        public const double SpaceMinZP = -33513.4;
+        public const double SpaceMaxZP = 81849.41;
 
         public class FSDJumpInfo
         {
@@ -22,7 +31,8 @@ namespace Elite
             public List<double> StarPos { get; set; }
         }
 
-        public static List<PointF> TravelHistoryPoints = new List<PointF>();
+        public static List<PointF> TravelHistoryPointsL = new List<PointF>();
+        public static List<PointF> TravelHistoryPointsP = new List<PointF>();
 
         public class LocationInfo
 
@@ -47,8 +57,10 @@ namespace Elite
 
         public static Dictionary<string, List<double>> VisitedSystemList = new Dictionary<string, List<double>>();
 
-        private static double ImageWidth { get; set; }
-        private static double ImageHeight { get; set; }
+        public static double GalaxyImageLWidth { get; set; }
+        public static double GalaxyImageLHeight { get; set; }
+        public static double GalaxyImagePWidth { get; set; }
+        public static double GalaxyImagePHeight { get; set; }
 
         private class UnsafeNativeMethods
         {
@@ -94,13 +106,22 @@ namespace Elite
                 var y = starPos[1];
                 var z = starPos[2];
 
-                var imgX = (x - SpaceMinX) / (SpaceMaxX - SpaceMinX) * ImageWidth;
-                var imgY = (SpaceMaxZ - z) / (SpaceMaxZ - SpaceMinZ) * ImageHeight;
+                var imgX = (x - SpaceMinXL) / (SpaceMaxXL - SpaceMinXL) * GalaxyImageLWidth;
+                var imgY = (SpaceMaxZL - z) / (SpaceMaxZL - SpaceMinZL) * GalaxyImageLHeight;
 
-                TravelHistoryPoints.Add(new PointF
+                TravelHistoryPointsL.Add(new PointF
                 {
                     X = (float) imgX,
                     Y = (float) imgY
+                });
+
+                imgX = (x - SpaceMinXP) / (SpaceMaxXP - SpaceMinXP) * GalaxyImagePWidth;
+                imgY = (SpaceMaxZP - z) / (SpaceMaxZP - SpaceMinZP) * GalaxyImagePHeight;
+
+                TravelHistoryPointsP.Add(new PointF
+                {
+                    X = (float)imgX,
+                    Y = (float)imgY
                 });
             }
         }
@@ -118,9 +139,13 @@ namespace Elite
 
             try
             {
-                var image = Image.FromFile(Path.Combine(App.ExePath, "Templates\\images\\galaxy.png"));
-                ImageWidth = image.Width;
-                ImageHeight = image.Height;
+                var imageL = Image.FromFile(Path.Combine(App.ExePath, "Templates\\images\\galaxyL.png"));
+                GalaxyImageLWidth = imageL.Width;
+                GalaxyImageLHeight = imageL.Height;
+
+                var imageP = Image.FromFile(Path.Combine(App.ExePath, "Templates\\images\\galaxyP.png"));
+                GalaxyImagePWidth = imageP.Width;
+                GalaxyImagePHeight = imageP.Height;
 
                 var journalFiles = journalDirectory.GetFiles("Journal.*").OrderBy(x => x.LastWriteTime);
 

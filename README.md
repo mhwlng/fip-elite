@@ -35,7 +35,7 @@ The joystick is configured via joysticksettings.config
 </joystickSettings>
 ```
 
-There is a Toggle Mirror Window menu option in the tray icon context menu.
+There is a Toggle Window menu option in the tray icon context menu.
 This option mirrors the FIP display, that is being controlled by the HOTAS hat switch, to a window for use in VR.
 
 If FipSerialNumber in joysticksettings.config has the special value "window", then a separate window is created, 

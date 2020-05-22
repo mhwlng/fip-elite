@@ -2,6 +2,6 @@
     Layout = "layout.cshtml";
 }
 
-<div class="main">
-    <div class="imgcenter"><img src="galaxy.png" width="310" height="236" /></div>
+<div class="main" style="margin-top:@Model.GalaxyImageMarginTop">
+    <div class="imgcenter"><img src="@Model.GalaxyImageFileName" width="@Model.GalaxyImageDisplayWidth" height="@Model.GalaxyImageDisplayHeight" /></div>
 </div>

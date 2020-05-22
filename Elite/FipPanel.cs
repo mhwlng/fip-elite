@@ -135,7 +135,7 @@ namespace Elite
         private int[] _currentZoomLevel = new int[100];
 
 
-        private int _currentLcdyOffset;
+        private int _currentLcdYOffset;
         private int _currentLcdHeight;
 
         public IntPtr FipDevicePointer;
@@ -166,6 +166,32 @@ namespace Elite
         private int HtmlWindowUsableWidth => _htmlWindowWidth - 9 - HtmlWindowXOffset;
 
         private double ScrollBarHeight => _htmlWindowHeight -7.0;
+
+        private int GalaxyImageDisplayWidth => _htmlWindowWidth - 10;
+
+        private int GalaxyImageDisplayHeight
+        {
+            get
+            {
+                double aspectRatio;
+
+                if (_htmlWindowWidth >= _htmlWindowHeight)
+                {
+                    aspectRatio = History.GalaxyImageLHeight / History.GalaxyImageLWidth;
+                }
+                else
+                {
+                    aspectRatio = History.GalaxyImagePHeight / History.GalaxyImagePWidth;
+                }
+
+                return (int)(GalaxyImageDisplayWidth * aspectRatio);
+
+            }
+        }
+
+        private string GalaxyImageFileName => _htmlWindowWidth >= _htmlWindowHeight ? "galaxyl.png" : "galaxyp.png";
+
+        private int GalaxyImageMarginTop => (int)((_htmlWindowHeight - GalaxyImageDisplayHeight) / 2.0);
 
         private DirectOutputClass.PageCallback _pageCallbackDelegate;
         private DirectOutputClass.SoftButtonCallback _softButtonCallbackDelegate;
@@ -307,7 +333,7 @@ namespace Elite
 
                 _currentTabCursor = LcdTab.None;
 
-                _currentLcdyOffset = 0;
+                _currentLcdYOffset = 0;
 
                 File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
             }
@@ -618,7 +644,7 @@ namespace Elite
 
                             _currentCard[(int) _currentTab]++;
                             _currentZoomLevel[(int) _currentTab]++;
-                            _currentLcdyOffset = 0;
+                            _currentLcdYOffset = 0;
 
                             mustRefresh = true;
                         }
@@ -632,16 +658,16 @@ namespace Elite
                         {
                             _currentCard[(int) _currentTab]--;
                             _currentZoomLevel[(int) _currentTab]--;
-                            _currentLcdyOffset = 0;
+                            _currentLcdYOffset = 0;
 
                             mustRefresh = true;
                         }
 
                         break;
                     case 2: // scroll clockwise
-                        if (state)
+                        if (state && _currentTab != LcdTab.Map)
                         {
-                            _currentLcdyOffset += 50;
+                            _currentLcdYOffset += 50;
 
                             mustRender = false;
 
@@ -651,14 +677,14 @@ namespace Elite
                         break;
                     case 4: // scroll anti-clockwise
 
-                        if (_currentLcdyOffset == 0) return;
+                        if (_currentLcdYOffset == 0) return;
 
-                        if (state)
+                        if (state && _currentTab != LcdTab.Map)
                         {
-                            _currentLcdyOffset -= 50;
-                            if (_currentLcdyOffset < 0)
+                            _currentLcdYOffset -= 50;
+                            if (_currentLcdYOffset < 0)
                             {
-                                _currentLcdyOffset = 0;
+                                _currentLcdYOffset = 0;
                             }
 
                             mustRender = false;
@@ -825,15 +851,15 @@ namespace Elite
         {
             if (_currentLcdHeight <= _htmlWindowHeight)
             {
-                _currentLcdyOffset = 0;
+                _currentLcdYOffset = 0;
             }
 
-            if (_currentLcdyOffset + _htmlWindowHeight > _currentLcdHeight )
+            if (_currentLcdYOffset + _htmlWindowHeight > _currentLcdHeight )
             {
-                _currentLcdyOffset = _currentLcdHeight - _htmlWindowHeight + 4;
+                _currentLcdYOffset = _currentLcdHeight - _htmlWindowHeight + 4;
             }
 
-            if (_currentLcdyOffset < 0) _currentLcdyOffset = 0;
+            if (_currentLcdYOffset < 0) _currentLcdYOffset = 0;
         }
 
         private ReturnValues AddPage(uint pageNumber, bool setActive)
@@ -909,9 +935,16 @@ namespace Elite
 
                 using (var graphics = Graphics.FromImage(image))
                 {
-                    if (e.Src.ToLower() == "galaxy.png" && _currentTab == LcdTab.Map)
+                    if (e.Src.ToLower().StartsWith("galaxy") && _currentTab == LcdTab.Map)
                     {
-                        graphics.DrawPolygon(_whitePen, History.TravelHistoryPoints.ToArray());
+                        if (e.Src.ToLower().StartsWith("galaxyl"))
+                        {
+                            graphics.DrawPolygon(_whitePen, History.TravelHistoryPointsL.ToArray());
+                        }
+                        else
+                        {
+                            graphics.DrawPolygon(_whitePen, History.TravelHistoryPointsP.ToArray());
+                        }
 
                         var zoomLevel = _currentZoomLevel[(int)_currentTab] / 2.0 + 1;
 
@@ -929,8 +962,19 @@ namespace Elite
                             var spaceX = Data.LocationData.StarPos[0];
                             var spaceZ = Data.LocationData.StarPos[2];
 
-                            var imgX = (spaceX - History.SpaceMinX) / (History.SpaceMaxX - History.SpaceMinX) * image.Width;
-                            var imgY = (History.SpaceMaxZ - spaceZ) / (History.SpaceMaxZ - History.SpaceMinZ) * image.Height;
+                            var imgX = 0.0;
+                            var imgY = 0.0;
+
+                            if (e.Src.ToLower().StartsWith("galaxyl"))
+                            {
+                                imgX = (spaceX - History.SpaceMinXL) / (History.SpaceMaxXL - History.SpaceMinXL) * image.Width;
+                                imgY = (History.SpaceMaxZL - spaceZ) / (History.SpaceMaxZL - History.SpaceMinZL) * image.Height;
+                            }
+                            else
+                            {
+                                imgX = (spaceX - History.SpaceMinXP) / (History.SpaceMaxXP - History.SpaceMinXP) * image.Width;
+                                imgY = (History.SpaceMaxZP - spaceZ) / (History.SpaceMaxZP - History.SpaceMinZP) * image.Height;
+                            }
 
                             imgX -= markerWidth / 2.0;
                             imgY -= markerHeight / 2.0;
@@ -1388,6 +1432,10 @@ namespace Elite
                                             {
                                                 CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
+                                                GalaxyImageDisplayHeight = GalaxyImageDisplayHeight,
+                                                GalaxyImageDisplayWidth = GalaxyImageDisplayWidth,
+                                                GalaxyImageMarginTop = GalaxyImageMarginTop + "px",
+                                                GalaxyImageFileName = GalaxyImageFileName,
 
                                                 _currentZoomLevel = _currentZoomLevel[(int) _currentTab]
 
@@ -1562,16 +1610,16 @@ namespace Elite
                                 {
                                     graphics.DrawImage(_htmlImage, new Rectangle(new Point(HtmlWindowXOffset, 0),
                                             new Size(HtmlWindowUsableWidth, _htmlWindowHeight + 20)),
-                                        new Rectangle(new Point(0, _currentLcdyOffset),
+                                        new Rectangle(new Point(0, _currentLcdYOffset),
                                             new Size(HtmlWindowUsableWidth, _htmlWindowHeight + 20)),
                                         GraphicsUnit.Pixel);
                                 }
                             }
 
-                            if (_currentLcdHeight > _htmlWindowHeight)
+                            if (_currentLcdHeight > _htmlWindowHeight && _currentTab != LcdTab.Map)
                             {
                                 var scrollThumbHeight = _htmlWindowHeight / (double)_currentLcdHeight * ScrollBarHeight;
-                                var scrollThumbYOffset = _currentLcdyOffset / (double)_currentLcdHeight * ScrollBarHeight;
+                                var scrollThumbYOffset = _currentLcdYOffset / (double)_currentLcdHeight * ScrollBarHeight;
 
                                 graphics.DrawRectangle(_scrollPen, new Rectangle(new Point(_htmlWindowWidth - 9, 2),
                                                                    new Size(5, (int)ScrollBarHeight)));
