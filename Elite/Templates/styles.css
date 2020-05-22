@@ -110,10 +110,23 @@ div.menu {
     white-space: nowrap;
 }
 
+.main table.zebratable {
+    border-spacing: 0;
+}
+
+
 .main table td.wrap {
     /*width: 240px;*/
     width: 83%;
 }
 
+tr.zebraodd td {
+    padding-right: 5px;
+    padding-left: 5px;
+}
 
-
+tr.zebraeven td {
+    background-color: #191919;
+    padding-right: 5px;
+    padding-left: 5px;
+}

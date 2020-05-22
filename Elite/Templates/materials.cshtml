@@ -5,43 +5,47 @@
 @using System.Linq
 @{
     Layout = "layout.cshtml";
+    var odd = true;
 }
 
 <div class="main">
 
     <div class="cardcaption">&nbsp;</div>
 
-    <table class="">
+    <table class="zebratable">
         <tbody>
 
         @if (Model.CurrentCard == 0)
         {
             foreach (var m in Model.Raw)
             {
-                <tr>
+                <tr class="@(odd ? "zebraodd": "zebraeven")">
                     <td class="caption nowrap">@m.Value.Name</td>
                     <td class="data right">@m.Value.Count</td>
                 </tr>
+                odd = !odd;
             }
         }
         else if (Model.CurrentCard == 1)
         {
             foreach (var m in Model.Manufactured)
             {
-                <tr>
+                <tr class="@(odd ? "zebraodd": "zebraeven")">
                     <td class="caption nowrap">@m.Value.Name</td>
                     <td class="data right">@m.Value.Count</td>
                 </tr>
+                odd = !odd;
             }
         }
         else if (Model.CurrentCard == 2)
         {
             foreach (var m in Model.Encoded)
             {
-                <tr>
+                <tr class="@(odd ? "zebraodd": "zebraeven")">
                     <td class="caption nowrap">@m.Value.Name</td>
                     <td class="data right">@m.Value.Count</td>
                 </tr>
+                odd = !odd;
             }
         }
         </tbody>
