@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,9 +15,13 @@ namespace Elite
 {
     public static class Engineer
     {
-        public static List<Blueprint> BlueprintList;
+        public static Dictionary<(string, string, int?), Blueprint> Blueprints;
 
         public static Dictionary<string,EntryData> EngineeringMaterials;
+
+        public static string CommanderName;
+
+        public static ShoppingList ShoppingList = new ShoppingList();
 
         public static Dictionary<string,EntryData> GetAllEngineeringMaterials(string path)
         {
@@ -37,7 +43,7 @@ namespace Elite
             return new Dictionary<string, EntryData>();
         }
 
-        public static List<Blueprint> GetAllBlueprints(string path, Dictionary<string, EntryData> engineeringMaterials)
+        public static Dictionary<(string, string, int?), Blueprint> GetAllBlueprints(string path, Dictionary<string, EntryData> engineeringMaterials)
         {
             try
             {
@@ -49,7 +55,7 @@ namespace Elite
 
                     return JsonConvert.DeserializeObject<List<Blueprint>>(File.ReadAllText(path), blueprintConverter)
                         .Where(b => b.Ingredients.Any())
-                        .ToList();
+                        .ToDictionary(x => (x.BlueprintName, x.Type, x.Grade), x => x);
                 }
             }
             catch (Exception ex)
@@ -57,9 +63,90 @@ namespace Elite
                 App.Log.Error(ex);
             }
 
-            return new List<Blueprint>();
+            return new Dictionary<(string, string, int?), Blueprint>();
           
 
+        }
+
+        private static string GetJson(string url)
+        {
+            try
+            {
+                using (var client = new WebClient())
+                {
+                    return client.DownloadString(url);
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+
+            return null;
+        }
+
+        public static void GetCommanderName()
+        {
+            var commanderData  = GetJson("http://localhost:44405/commanders");
+
+            if (string.IsNullOrEmpty(commanderData)) return;
+
+            CommanderName = JsonConvert.DeserializeObject<List<string>>(commanderData)
+                .FirstOrDefault();
+        }
+
+        public static void RefreshMaterialList()
+        {
+            if (Engineer.ShoppingList?.IngredientList?.Any() == true && Material.MaterialList?.Any() == true)
+            {
+                foreach (var i in Engineer.ShoppingList?.IngredientList)
+                {
+                    var materialData = Material.MaterialList.FirstOrDefault(x => x.Value.Name == i.Name).Value;
+
+                    i.Inventory = materialData?.Count ?? 0;
+                }
+            }
+        }
+
+        public static void GetShoppingList()
+        {
+            if (string.IsNullOrEmpty(CommanderName)) return;
+
+            var shoppingListData = GetJson("http://localhost:44405/" + CommanderName + "/shopping-list");
+
+            if (string.IsNullOrEmpty(shoppingListData)) return;
+
+            var bluePrintList =
+                JsonConvert.DeserializeObject<List<ShoppingListBlueprintItem>>(shoppingListData);
+
+            foreach (var item in bluePrintList)
+            {
+                Blueprints.TryGetValue(
+                    (item.Blueprint.BlueprintName, item.Blueprint.Type, item.Blueprint.Grade),
+                    out var bluePrintData);
+
+                item.BluePrintData = bluePrintData;
+            }
+
+            ShoppingList.BlueprintList = bluePrintList;
+
+            ShoppingList.IngredientList = bluePrintList.Select(
+                    x => new
+                    {
+                        x.Blueprint.BlueprintName, x.Blueprint.Type, x.Blueprint.Grade,
+                        Ingredients = x.BluePrintData.Ingredients.Select(y => new
+                            BlueprintIngredient(y.EntryData, y.Size * x.Count))
+                    })
+
+                .SelectMany(x => x.Ingredients)
+                .GroupBy(x => x.EntryData.Name)
+                .Select(x => new IngredientItem()
+                {
+                    Name = x.Key,
+                    RequiredCount = x.Sum(y => y.Size),
+                    EntryData = x.First().EntryData
+
+                }).ToList();
         }
 
     }

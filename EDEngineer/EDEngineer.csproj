@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EDEngineer.Models\Blueprint.cs" />
+    <Compile Include="EDEngineer.Models\ShoppingList.cs" />
     <Compile Include="EDEngineer.Models\BlueprintCategory.cs" />
     <Compile Include="EDEngineer.Models\BlueprintEffect.cs" />
     <Compile Include="EDEngineer.Models\BlueprintIngredient.cs" />

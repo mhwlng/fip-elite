@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Media.Imaging;
+using EDEngineer.Models;
 using TheArtOfDev.HtmlRenderer.WinForms;
 using RazorEngine;
 using RazorEngine.Templating;
@@ -56,8 +57,8 @@ namespace Elite
         Ship = 8,
         Materials = 9,
         Cargo = 10,
-        Events = 11,
-        // empty
+        Engineer = 11,
+        Events = 12,
 
         //---------------
 
@@ -143,7 +144,7 @@ namespace Elite
 
         private uint _prevButtons;
 
-        private bool[] _ledState = new bool[6];
+        private bool[] _ledState = new bool[7];
 
         private List<uint> _pageList = new List<uint>();
 
@@ -409,7 +410,7 @@ namespace Elite
                                     _currentTabCursor = Material.MaterialList.Count > 0 ? _currentTabCursor - 1 : _currentTabCursor - 2;
                                     break;
 
-                                case LcdTab.Events:
+                                case LcdTab.Engineer:
                                     if (Cargo.CargoList.Count > 0)
                                     {
                                         _currentTabCursor -= 1;
@@ -789,10 +790,11 @@ namespace Elite
                                         }
                                         break;
                                     case 512:
-                                        mustRefresh = SetTab(LcdTab.Events);
+                                        Engineer.GetShoppingList();
+                                        mustRefresh = SetTab(LcdTab.Engineer);
                                         break;
                                     case 1024:
-                                        // empty
+                                        mustRefresh = SetTab(LcdTab.Events);
                                         break;
                                     case 2048:
                                         mustRefresh = true;
@@ -1552,6 +1554,37 @@ namespace Elite
 
                                         break;
 
+                                    case LcdTab.Engineer:
+
+                                        Engineer.RefreshMaterialList();
+
+                                        str =
+                                            Engine.Razor.Run("engineer.cshtml", null, new
+                                            {
+                                                CurrentTab = _currentTab,
+                                                CurrentPage = _currentPage,
+                                                CurrentCard = _currentCard[(int)_currentTab],
+
+                                                Raw = Engineer.ShoppingList.IngredientList?
+                                                    .Where(x => x.EntryData.Subkind == Subkind.Raw)
+                                                    .OrderBy(x => x.Name).ToList() ?? new List<IngredientItem>(),
+
+                                                Manufactured = Engineer.ShoppingList.IngredientList?
+                                                    .Where(x => x.EntryData.Subkind == Subkind.Manufactured)
+                                                    .OrderBy(x => x.Name).ToList() ?? new List<IngredientItem>(),
+
+                                                Encoded = Engineer.ShoppingList.IngredientList?
+                                                    .Where(x => x.EntryData.Kind == Kind.Data)
+                                                    .OrderBy(x => x.Name).ToList() ?? new List<IngredientItem>(),
+
+                                                Commodity = Engineer.ShoppingList.IngredientList?
+                                                .Where(x => x.EntryData.Kind == Kind.Commodity)
+                                                .OrderBy(x => x.Name).ToList() ?? new List<IngredientItem>()
+
+
+                                            });
+
+                                        break;
 
                                     case LcdTab.Events:
 

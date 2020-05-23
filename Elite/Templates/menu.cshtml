@@ -81,11 +81,13 @@
                 </tr>
                 <tr>
                     <td>
-                        <div class="@(Model.CurrentTab == LcdTab.Events ? "highlight" : "") @(Model.Cursor == LcdTab.Events ? "menucursor" : "")">EVENTS</div>
+                        <div class="@(Model.CurrentTab == LcdTab.Engineer ? "highlight" : "") @(Model.Cursor == LcdTab.Engineer ? "menucursor" : "")">ENGINEER</div>
                     </td>
                 </tr>
                 <tr>
-                    <td><div>&nbsp;</div></td>
+                    <td>
+                        <div class="@(Model.CurrentTab == LcdTab.Events ? "highlight" : "") @(Model.Cursor == LcdTab.Events ? "menucursor" : "")">EVENTS</div>
+                    </td>
                 </tr>
             </tbody>
         </table>

@@ -255,6 +255,7 @@ namespace Elite
                 Engine.Razor.Compile("powers.cshtml", null);
                 Engine.Razor.Compile("materials.cshtml", null);
                 Engine.Razor.Compile("cargo.cshtml", null);
+                Engine.Razor.Compile("engineer.cshtml", null);
                 Engine.Razor.Compile("mining.cshtml", null);
                 Engine.Razor.Compile("events.cshtml", null);
 
@@ -265,7 +266,11 @@ namespace Elite
                 Engineer.EngineeringMaterials = Engineer.GetAllEngineeringMaterials(@"Data\entryData.json");
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Blueprints...");
-                Engineer.BlueprintList = Engineer.GetAllBlueprints(@"Data\blueprints.json", Engineer.EngineeringMaterials);
+                Engineer.Blueprints = Engineer.GetAllBlueprints(@"Data\blueprints.json", Engineer.EngineeringMaterials);
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Getting Shopping List from EDEngineer...");
+                Engineer.GetCommanderName();
+                Engineer.GetShoppingList();
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
                 Poi.FullPoiList = Poi.GetAllPois(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
