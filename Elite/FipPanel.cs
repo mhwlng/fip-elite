@@ -1687,7 +1687,7 @@ namespace Elite
 
 
 #if DEBUG
-                        fipImage.Save(@"screenshot"+(int)_currentTab+"_"+ _currentCard[(int)_currentTab] + ".png", ImageFormat.Png);
+                        fipImage.Save("screenshot"+ SerialNumber+"_"+(int)_currentTab+"_"+ _currentCard[(int)_currentTab] + ".png", ImageFormat.Png);
 #endif
                         RefreshMirrorWindow(fipImage);
                        

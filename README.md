@@ -60,7 +60,7 @@ You can then use a tool like [OVR Toolkit](https://store.steampowered.com/app/10
 ![Screenshot 9](https://i.imgur.com/SaMQ2H2.png)
 ![Screenshot 10](https://i.imgur.com/X5kL0fn.png)
 ![Screenshot 11](https://i.imgur.com/ZOcUfyI.png)
-![Screenshot 12](https://i.imgur.com/v8aUFMT.png)
+![Screenshot 12](https://i.imgur.com/LyfdMTh.png)
 ![Screenshot 13](https://i.imgur.com/iqZVk2Y.png)
 ![Screenshot 14](https://i.imgur.com/ofaRPKm.png)
 ![Screenshot 15](https://i.imgur.com/zm3Xrm9.png)
