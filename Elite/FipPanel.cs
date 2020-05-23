@@ -392,35 +392,88 @@ namespace Elite
 
                             switch (_currentTabCursor)
                             {
-                                case LcdTab.Missions:
-                                    _currentTabCursor = Data.TargetData.TargetLocked ? _currentTabCursor - 1 : _currentTabCursor - 2;
-                                    break;
                                 case LcdTab.ShipMenu:
-                                    if (Missions.MissionList.Count > 0)
+                                    //LocationsMenu > ShipMenu > Missions > Target > Navigation > Commander
+
+                                    _currentTabCursor -= 1;
+
+                                    if (Missions.MissionList.Count == 0)
                                     {
                                         _currentTabCursor -= 1;
                                     }
-                                    else
+                                    else break;
+
+                                    if (!Data.TargetData.TargetLocked)
                                     {
-                                        _currentTabCursor = Data.TargetData.TargetLocked ? _currentTabCursor -2 : _currentTabCursor - 3;
+                                        _currentTabCursor -= 1;
+                                    }
+
+                                    break;
+
+                                case LcdTab.Missions:
+                                    //LocationsMenu > ShipMenu > Missions > Target > Navigation > Commander
+
+                                    _currentTabCursor -= 1;
+
+                                    if (!Data.TargetData.TargetLocked)
+                                    {
+                                        _currentTabCursor -= 1;
+                                    }
+
+                                    break;
+
+                                case LcdTab.Events:
+                                    //Events > Engineer > Cargo > Materials > Ship >  ShipBack
+
+                                    _currentTabCursor -= 1;
+
+                                    if (string.IsNullOrEmpty(Engineer.CommanderName))
+                                    {
+                                        _currentTabCursor -= 1;
+                                    }
+                                    else break;
+
+                                    if (Cargo.CargoList.Count == 0)
+                                    {
+                                        _currentTabCursor -= 1;
+                                    }
+                                    else break;
+
+                                    if (Material.MaterialList.Count == 0)
+                                    {
+                                        _currentTabCursor -= 1;
+                                    }
+
+                                    break;
+
+                                case LcdTab.Engineer:
+                                    //Events > Engineer > Cargo > Materials > Ship >  ShipBack
+
+                                    _currentTabCursor -= 1;
+
+                                    if (Cargo.CargoList.Count == 0)
+                                    {
+                                        _currentTabCursor -= 1;
+                                    }
+                                    else break;
+
+                                    if (Material.MaterialList.Count == 0)
+                                    {
+                                        _currentTabCursor -= 1;
                                     }
                                     break;
 
                                 case LcdTab.Cargo:
-                                    _currentTabCursor = Material.MaterialList.Count > 0 ? _currentTabCursor - 1 : _currentTabCursor - 2;
-                                    break;
+                                    //Events > Engineer > Cargo > Materials > Ship >  ShipBack
 
-                                case LcdTab.Engineer:
-                                    if (Cargo.CargoList.Count > 0)
+                                    _currentTabCursor -= 1;
+
+                                    if (Material.MaterialList.Count == 0)
                                     {
                                         _currentTabCursor -= 1;
                                     }
-                                    else
-                                    {
-                                        _currentTabCursor = Material.MaterialList.Count > 0 ? _currentTabCursor -2  : _currentTabCursor - 3;
-                                    }
-                                    break;
 
+                                    break;
                                 case LcdTab.Commander:
                                     _currentTabCursor = LcdTab.LocationsMenu;
                                     break;
@@ -456,32 +509,83 @@ namespace Elite
                             switch (_currentTabCursor)
                             {
                                 case LcdTab.Navigation:
-                                    if (Data.TargetData.TargetLocked)
+
+                                    //Commander > Navigation > Target > Missions > ShipMenu > LocationsMenu
+
+                                    _currentTabCursor += 1;
+
+                                    if (!Data.TargetData.TargetLocked)
                                     {
                                         _currentTabCursor += 1;
                                     }
-                                    else
+                                    else break;
+
+                                    if (Missions.MissionList.Count == 0)
                                     {
-                                        _currentTabCursor = Missions.MissionList.Count > 0 ? _currentTabCursor + 2 : _currentTabCursor + 3;
+                                        _currentTabCursor += 1;
                                     }
                                     break;
                                 case LcdTab.Target:
-                                    _currentTabCursor = Missions.MissionList.Count > 0 ? _currentTabCursor + 1 : _currentTabCursor + 2;
-                                    break;
+                                    //Commander > Navigation > Target > Missions > ShipMenu > LocationsMenu
 
-                                case LcdTab.Ship:
-                                    if (Material.MaterialList.Count > 0)
+                                    _currentTabCursor += 1;
+
+                                    if (Missions.MissionList.Count == 0)
                                     {
                                         _currentTabCursor += 1;
                                     }
-                                    else
+                                    break;
+
+                                case LcdTab.Ship:
+                                    //ShipBack > Ship > Materials > Cargo > Engineer > Events 
+
+                                    _currentTabCursor += 1;
+
+                                    if (Material.MaterialList.Count == 0)
                                     {
-                                        _currentTabCursor = Cargo.CargoList.Count > 0 ? _currentTabCursor + 2 : _currentTabCursor + 3;
+                                        _currentTabCursor += 1;
                                     }
+                                    else break;
+
+                                    if (Cargo.CargoList.Count == 0)
+                                    {
+                                        _currentTabCursor += 1;
+                                    }
+                                    else break;
+
+                                    if (string.IsNullOrEmpty(Engineer.CommanderName))
+                                    {
+                                        _currentTabCursor += 1;
+                                    }
+
                                     break;
 
                                 case LcdTab.Materials:
-                                    _currentTabCursor = Cargo.CargoList.Count > 0 ? _currentTabCursor + 1 : _currentTabCursor + 2;
+                                    //ShipBack > Ship > Materials > Cargo > Engineer > Events 
+                                    _currentTabCursor += 1;
+
+                                    if (Cargo.CargoList.Count == 0)
+                                    {
+                                        _currentTabCursor += 1;
+                                    }
+                                    else break;
+
+                                    if (string.IsNullOrEmpty(Engineer.CommanderName))
+                                    {
+                                        _currentTabCursor += 1;
+                                    }
+
+                                    break;
+
+                                case LcdTab.Cargo:
+                                    //ShipBack > Ship > Materials > Cargo > Engineer > Events 
+                                    _currentTabCursor += 1;
+
+                                    if (string.IsNullOrEmpty(Engineer.CommanderName))
+                                    {
+                                        _currentTabCursor += 1;
+                                    }
+
                                     break;
 
                                 case LcdTab.LocationsMenu:
@@ -640,7 +744,8 @@ namespace Elite
                     case 8: // scroll clockwise
                         if (state && (_currentTab == LcdTab.POI || _currentTab == LcdTab.Powers ||
                                       _currentTab == LcdTab.Materials || _currentTab == LcdTab.Map ||
-                                      _currentTab == LcdTab.Ship || _currentTab == LcdTab.Mining))
+                                      _currentTab == LcdTab.Ship || _currentTab == LcdTab.Mining || 
+                                      _currentTab == LcdTab.Engineer))
                         {
 
                             _currentCard[(int) _currentTab]++;
@@ -655,7 +760,8 @@ namespace Elite
 
                         if (state && (_currentTab == LcdTab.POI || _currentTab == LcdTab.Powers ||
                                       _currentTab == LcdTab.Materials || _currentTab == LcdTab.Map ||
-                                      _currentTab == LcdTab.Ship || _currentTab == LcdTab.Mining))
+                                      _currentTab == LcdTab.Ship || _currentTab == LcdTab.Mining || 
+                                      _currentTab == LcdTab.Engineer))
                         {
                             _currentCard[(int) _currentTab]--;
                             _currentZoomLevel[(int) _currentTab]--;
@@ -744,7 +850,6 @@ namespace Elite
                                         {
                                             mustRefresh = SetTab(LcdTab.Missions);
                                         }
-
                                         break;
                                     case 512:
                                         mustRefresh = true;
@@ -781,7 +886,6 @@ namespace Elite
                                         {
                                             mustRefresh = SetTab(LcdTab.Materials);
                                         }
-
                                         break;
                                     case 256:
                                         if (Cargo.CargoList.Count > 0)
@@ -790,8 +894,11 @@ namespace Elite
                                         }
                                         break;
                                     case 512:
-                                        Engineer.GetShoppingList();
-                                        mustRefresh = SetTab(LcdTab.Engineer);
+                                        if (!string.IsNullOrEmpty(Engineer.CommanderName))
+                                        {
+                                            Engineer.GetShoppingList();
+                                            mustRefresh = SetTab(LcdTab.Engineer);
+                                        }
                                         break;
                                     case 1024:
                                         mustRefresh = SetTab(LcdTab.Events);
@@ -1089,11 +1196,15 @@ namespace Elite
                 }
                 else if (Material.MaterialList.Count == 0 && _currentTab == LcdTab.Materials)
                 {
-                    SetTab(LcdTab.Map);
+                    SetTab(LcdTab.Ship);
                 }
                 else if (Cargo.CargoList.Count == 0 && _currentTab == LcdTab.Cargo)
                 {
-                    SetTab(LcdTab.Map);
+                    SetTab(LcdTab.Ship);
+                }
+                else if (Engineer.BlueprintShoppingList.Count == 0 && _currentTab == LcdTab.Engineer)
+                {
+                    SetTab(LcdTab.Ship);
                 }
 
                 using (var fipImage = new Bitmap(_htmlWindowWidth, _htmlWindowHeight))
@@ -1126,6 +1237,20 @@ namespace Elite
                                 }
                                 else
                                 if (_currentCard[(int)_currentTab] > 7)
+                                {
+                                    _currentCard[(int)_currentTab] = 0;
+                                }
+
+                                break;
+
+                            case LcdTab.Engineer:
+
+                                if (_currentCard[(int)_currentTab] < 0)
+                                {
+                                    _currentCard[(int)_currentTab] = 1;
+                                }
+                                else
+                                if (_currentCard[(int)_currentTab] > 1)
                                 {
                                     _currentCard[(int)_currentTab] = 0;
                                 }
@@ -1563,25 +1688,34 @@ namespace Elite
                                             {
                                                 CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
-                                                CurrentCard = _currentCard[(int)_currentTab],
+                                                CurrentCard = _currentCard[(int) _currentTab],
 
-                                                Raw = Engineer.ShoppingList.IngredientList?
-                                                    .Where(x => x.EntryData.Subkind == Subkind.Raw)
-                                                    .OrderBy(x => x.Name).ToList() ?? new List<IngredientItem>(),
+                                                Raw = Engineer.IngredientShoppingList?
+                                                          .Where(x => x.EntryData.Subkind == Subkind.Raw)
+                                                          .OrderBy(x => x.Name).ToList() ??
+                                                      new List<IngredientShoppingListItem>(),
 
-                                                Manufactured = Engineer.ShoppingList.IngredientList?
-                                                    .Where(x => x.EntryData.Subkind == Subkind.Manufactured)
-                                                    .OrderBy(x => x.Name).ToList() ?? new List<IngredientItem>(),
+                                                Manufactured = Engineer.IngredientShoppingList?
+                                                                   .Where(x => x.EntryData.Subkind ==
+                                                                               Subkind.Manufactured)
+                                                                   .OrderBy(x => x.Name).ToList() ??
+                                                               new List<IngredientShoppingListItem>(),
 
-                                                Encoded = Engineer.ShoppingList.IngredientList?
-                                                    .Where(x => x.EntryData.Kind == Kind.Data)
-                                                    .OrderBy(x => x.Name).ToList() ?? new List<IngredientItem>(),
+                                                Encoded = Engineer.IngredientShoppingList?
+                                                              .Where(x => x.EntryData.Kind == Kind.Data)
+                                                              .OrderBy(x => x.Name).ToList() ??
+                                                          new List<IngredientShoppingListItem>(),
 
-                                                Commodity = Engineer.ShoppingList.IngredientList?
-                                                .Where(x => x.EntryData.Kind == Kind.Commodity)
-                                                .OrderBy(x => x.Name).ToList() ?? new List<IngredientItem>()
+                                                Commodity = Engineer.IngredientShoppingList?
+                                                                .Where(x => x.EntryData.Kind == Kind.Commodity)
+                                                                .OrderBy(x => x.Name).ToList() ??
+                                                            new List<IngredientShoppingListItem>(),
 
-
+                                                BlueprintShoppingList = Engineer.BlueprintShoppingList
+                                                    .OrderBy (x => x.Blueprint.Type)
+                                                    .ThenBy(x => x.Blueprint.BlueprintName)
+                                                    .ThenBy(x => x.Blueprint.Grade)
+                                                    .ToList() ?? new List<BlueprintShoppingListItem>()
                                             });
 
                                         break;
@@ -1704,7 +1838,9 @@ namespace Elite
 
                                         MaterialCount = Material.MaterialList.Count,
 
-                                        CargoCount = Cargo.CargoList.Count
+                                        CargoCount = Cargo.CargoList.Count,
+
+                                        ShowEngineer = !string.IsNullOrEmpty(Engineer.CommanderName)
                                     });
 
                                 _menuHtmlImage = HtmlRender.RenderToImage(menustr,

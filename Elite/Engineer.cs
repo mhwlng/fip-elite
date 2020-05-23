@@ -21,7 +21,9 @@ namespace Elite
 
         public static string CommanderName;
 
-        public static ShoppingList ShoppingList = new ShoppingList();
+        public static List<BlueprintShoppingListItem> BlueprintShoppingList = new List<BlueprintShoppingListItem>();
+
+        public static List<IngredientShoppingListItem> IngredientShoppingList = new List<IngredientShoppingListItem>();
 
         public static Dictionary<string,EntryData> GetAllEngineeringMaterials(string path)
         {
@@ -97,9 +99,9 @@ namespace Elite
 
         public static void RefreshMaterialList()
         {
-            if (Engineer.ShoppingList?.IngredientList?.Any() == true && Material.MaterialList?.Any() == true)
+            if (Engineer.IngredientShoppingList?.Any() == true && Material.MaterialList?.Any() == true)
             {
-                foreach (var i in Engineer.ShoppingList?.IngredientList)
+                foreach (var i in Engineer.IngredientShoppingList)
                 {
                     var materialData = Material.MaterialList.FirstOrDefault(x => x.Value.Name == i.Name).Value;
 
@@ -117,7 +119,7 @@ namespace Elite
             if (string.IsNullOrEmpty(shoppingListData)) return;
 
             var bluePrintList =
-                JsonConvert.DeserializeObject<List<ShoppingListBlueprintItem>>(shoppingListData);
+                JsonConvert.DeserializeObject<List<BlueprintShoppingListItem>>(shoppingListData);
 
             foreach (var item in bluePrintList)
             {
@@ -128,9 +130,9 @@ namespace Elite
                 item.BluePrintData = bluePrintData;
             }
 
-            ShoppingList.BlueprintList = bluePrintList;
+            BlueprintShoppingList = bluePrintList ?? new List<BlueprintShoppingListItem>();
 
-            ShoppingList.IngredientList = bluePrintList.Select(
+            IngredientShoppingList = bluePrintList.Select(
                     x => new
                     {
                         x.Blueprint.BlueprintName, x.Blueprint.Type, x.Blueprint.Grade,
@@ -140,7 +142,7 @@ namespace Elite
 
                 .SelectMany(x => x.Ingredients)
                 .GroupBy(x => x.EntryData.Name)
-                .Select(x => new IngredientItem()
+                .Select(x => new IngredientShoppingListItem()
                 {
                     Name = x.Key,
                     RequiredCount = x.Sum(y => y.Size),

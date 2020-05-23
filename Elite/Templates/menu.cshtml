@@ -79,11 +79,18 @@
                         }
                     </td>
                 </tr>
-                <tr>
-                    <td>
+            <tr>
+                <td>
+                    @if (Model.ShowEngineer)
+                    {
                         <div class="@(Model.CurrentTab == LcdTab.Engineer ? "highlight" : "") @(Model.Cursor == LcdTab.Engineer ? "menucursor" : "")">ENGINEER</div>
-                    </td>
-                </tr>
+                    }
+                    else
+                    {
+                        <div class="disabled">ENGINEER</div>
+                    }
+                </td>
+            </tr>
                 <tr>
                     <td>
                         <div class="@(Model.CurrentTab == LcdTab.Events ? "highlight" : "") @(Model.Cursor == LcdTab.Events ? "menucursor" : "")">EVENTS</div>

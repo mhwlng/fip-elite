@@ -9,15 +9,7 @@ using Newtonsoft.Json;
 
 namespace EDEngineer.Models
 {
-    public class ShoppingList
-    {
-        public List<ShoppingListBlueprintItem> BlueprintList { get; set; }
-
-        public List<IngredientItem> IngredientList { get; set; }
-    }
-
-
-    public class IngredientItem
+    public class IngredientShoppingListItem
     {
         public string Name { get; set; }
         public int RequiredCount { get; set; }
@@ -25,7 +17,7 @@ namespace EDEngineer.Models
         public EntryData EntryData { get; set; }
     }
 
-    public class ShoppingListBlueprintItem
+    public class BlueprintShoppingListItem
     {
         [JsonProperty("Blueprint")]
 
