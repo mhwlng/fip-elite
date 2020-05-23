@@ -22,6 +22,7 @@
                 <tr class="@(odd ? "zebraodd": "zebraeven")">
                     <td class="caption nowrap">@m.Value.Name</td>
                     <td class="data right">@m.Value.Count</td>
+                    <td class="data right @(m.Value.Count == m.Value.MaximumCapacity? "alarm" : "")">@m.Value.MaximumCapacity</td>
                 </tr>
                 odd = !odd;
             }
@@ -33,6 +34,7 @@
                 <tr class="@(odd ? "zebraodd": "zebraeven")">
                     <td class="caption nowrap">@m.Value.Name</td>
                     <td class="data right">@m.Value.Count</td>
+                    <td class="data right @(m.Value.Count == m.Value.MaximumCapacity? "alarm" : "")">@m.Value.MaximumCapacity</td>
                 </tr>
                 odd = !odd;
             }
@@ -44,6 +46,7 @@
                 <tr class="@(odd ? "zebraodd": "zebraeven")">
                     <td class="caption nowrap">@m.Value.Name</td>
                     <td class="data right">@m.Value.Count</td>
+                    <td class="data right @(m.Value.Count == m.Value.MaximumCapacity? "alarm" : "")">@m.Value.MaximumCapacity</td>
                 </tr>
                 odd = !odd;
             }

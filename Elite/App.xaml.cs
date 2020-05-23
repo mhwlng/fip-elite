@@ -261,6 +261,12 @@ namespace Elite
                 CssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
                     File.ReadAllText(Path.Combine(ExePath, "Templates\\styles.css")), true);
 
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Engineering Materials...");
+                Engineer.EngineeringMaterials = Engineer.GetAllEngineeringMaterials(@"Data\entryData.json");
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Blueprints...");
+                Engineer.BlueprintList = Engineer.GetAllBlueprints(@"Data\blueprints.json", Engineer.EngineeringMaterials);
+
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
                 Poi.FullPoiList = Poi.GetAllPois(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
 

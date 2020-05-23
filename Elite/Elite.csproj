@@ -125,6 +125,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cargo.cs" />
+    <Compile Include="Engineer.cs" />
     <Compile Include="MiningStations.cs" />
     <Compile Include="HotspotSystems.cs" />
     <Compile Include="Missions.cs" />
@@ -409,6 +410,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EDEngineer\EDEngineer.csproj">
+      <Project>{cb38a7ff-d797-4b43-9efd-f22932fb2294}</Project>
+      <Name>EDEngineer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EliteJournalReader\EliteJournalReader.csproj">
       <Project>{7790285b-e2ee-440b-8ea6-d27bbe6006d9}</Project>
       <Name>EliteJournalReader</Name>

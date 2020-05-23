@@ -103,17 +103,16 @@ div.menu {
     width: 100%;
 }
 
-.main table td.nowrap {
-    /*width: 240px;*/
-    width: 83%;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
 .main table.zebratable {
     border-spacing: 0;
 }
 
+.main table td.nowrap {
+    /*width: 240px;*/
+    width: 77%;
+    overflow: hidden;
+    white-space: nowrap;
+}
 
 .main table td.wrap {
     /*width: 240px;*/

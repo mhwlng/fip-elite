@@ -90,6 +90,8 @@ https://github.com/Filtik/EliteDangerousLCD
 
 https://github.com/jdahlblom/DCSFIPS
 
+https://github.com/msarilar/EDEngineer
+
 DaftMav for POI list [see here](https://www.reddit.com/r/EliteDangerous/comments/9mfiug/edison_a_tool_which_helps_getting_to_planet/)
 
 https://eddb.io/ and https://www.edsm.net/ for station and system data
