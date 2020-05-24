@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Elite.RingBuffer;
 using EliteJournalReader;
 using EliteJournalReader.Events;
@@ -1087,6 +1088,15 @@ namespace Elite
                     var materialCollectedInfo = (MaterialCollectedEvent.MaterialCollectedEventArgs)e;
 
                     Material.HandleMaterialCollectedEvent(materialCollectedInfo);
+
+                    if (!string.IsNullOrEmpty(LocationData.StarSystem))
+                    {
+                        var name = (materialCollectedInfo.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(materialCollectedInfo.Name.ToLower())).Trim();
+
+                        //TODO could possibly count some materials again, that were already added via GetEliteHistory() 
+
+                        Material.AddHistory(name, LocationData.StarSystem, materialCollectedInfo.Count);
+                    }
 
                     break;
                 case "MaterialDiscarded":

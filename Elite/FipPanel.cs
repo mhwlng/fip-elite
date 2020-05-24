@@ -897,6 +897,9 @@ namespace Elite
                                         if (!string.IsNullOrEmpty(Engineer.CommanderName))
                                         {
                                             Engineer.GetShoppingList();
+
+                                            Engineer.GetBestSystems();
+
                                             mustRefresh = SetTab(LcdTab.Engineer);
                                         }
                                         break;

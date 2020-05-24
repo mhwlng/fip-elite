@@ -271,10 +271,6 @@ namespace Elite
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Blueprints...");
                 Engineer.Blueprints = Engineer.GetAllBlueprints(@"Data\blueprints.json", Engineer.EngineeringMaterials);
 
-                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Getting Shopping List from EDEngineer...");
-                Engineer.GetCommanderName();
-                Engineer.GetShoppingList();
-
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
                 Poi.FullPoiList = Poi.GetAllPois(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
 
@@ -283,6 +279,10 @@ namespace Elite
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading History...");
                 var path = History.GetEliteHistory();
 
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Getting Shopping List from EDEngineer...");
+                Engineer.GetCommanderName();
+                Engineer.GetShoppingList();
+                Engineer.GetBestSystems();
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Status Watcher...");
                 _statusWatcher = new StatusWatcher(path);

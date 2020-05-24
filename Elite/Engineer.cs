@@ -110,6 +110,28 @@ namespace Elite
             }
         }
 
+        public static void GetBestSystems()
+        {
+            if (string.IsNullOrEmpty(CommanderName)) return;
+
+            if (IngredientShoppingList?.Any() == true)
+            {
+                foreach (var i in IngredientShoppingList)
+                {
+                    Material.MaterialHistoryList.TryGetValue(i.EntryData.Name, out var materialHistoryData);
+
+                    if (materialHistoryData != null)
+                    {
+                        i.BestSystems = materialHistoryData.Values
+                            .OrderByDescending(x => x.Count)
+                            .Select(x => x.System + " [" + x.Count + "]")
+                            .Take(5)
+                            .ToList();
+                    }
+                }
+            }
+        }
+
         public static void GetShoppingList()
         {
             if (string.IsNullOrEmpty(CommanderName)) return;

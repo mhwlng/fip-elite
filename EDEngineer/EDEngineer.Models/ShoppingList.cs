@@ -15,6 +15,8 @@ namespace EDEngineer.Models
         public int RequiredCount { get; set; }
         public int Inventory { get; set; }
         public EntryData EntryData { get; set; }
+
+        public List<string> BestSystems { get; set; } = new List<string>();
     }
 
     public class BlueprintShoppingListItem

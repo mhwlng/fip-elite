@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -149,6 +150,8 @@ namespace Elite
 
                 var journalFiles = journalDirectory.GetFiles("Journal.*").OrderBy(x => x.LastWriteTime);
 
+                string lastJumpedSystem = string.Empty;
+
                 foreach (var journalFile in journalFiles)
                 {
                     using (var fileStream =
@@ -169,6 +172,7 @@ namespace Elite
                                         if (info.StarPos?.Count == 3)
                                         {
                                             AddTravelPos(info.StarPos);
+                                            lastJumpedSystem = info.StarSystem;
                                         }
 
                                         Ships.HandleShipFsdJump(info.StarSystem, info.StarPos.ToList());
@@ -303,6 +307,27 @@ namespace Elite
                                             .DeserializeObject<MassModuleStoreEvent.MassModuleStoreEventArgs>(json);
 
                                         Module.HandleMassModuleStore(info);
+                                    }
+
+                                    /*else if (json?.Contains("\"event\":\"MissionCompleted\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<MissionCompletedEvent.MissionCompletedEventArgs>(json);
+
+                                    }*/
+                                    else if (json?.Contains("\"event\":\"MaterialCollected\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<MaterialCollectedEvent.MaterialCollectedEventArgs>(json);
+
+                                        if (!string.IsNullOrEmpty(lastJumpedSystem))
+                                        {
+                                            var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(info.Name.ToLower())).Trim();
+
+                                            // { "timestamp":"2018-08-11T15:29:20Z", "event":"MaterialCollected", "Category":"Encoded", "Name":"shielddensityreports", "Name_Localised":"Untypical Shield Scans ", "Count":3 }
+
+                                            Material.AddHistory(name, lastJumpedSystem, info.Count);
+                                        }
                                     }
 
                                 }

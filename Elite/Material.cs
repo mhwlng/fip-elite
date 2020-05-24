@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using EliteJournalReader.Events;
@@ -16,7 +17,52 @@ namespace Elite
             public int MaximumCapacity { get; set; }
         }
 
+        public class MaterialHistoryItem
+        {
+            public string Name { get; set; }
+
+            public string System { get; set; }
+            public int Count { get; set; }
+        }
+
         public static Dictionary<string, MaterialItem> MaterialList = new Dictionary<string, MaterialItem>();
+
+        public static Dictionary<string, Dictionary<string,MaterialHistoryItem>> MaterialHistoryList = new Dictionary<string, Dictionary<string,MaterialHistoryItem>>();
+
+        public static void AddHistory(string name, string system, int count)
+        {
+            MaterialHistoryList.TryGetValue(name, out var materialData);
+            if (materialData == null)
+            {
+                var m = new Dictionary<string, MaterialHistoryItem>();
+                var mhi = new MaterialHistoryItem
+                {
+                    Name = name, 
+                    System = system, 
+                    Count = count
+                };
+                m.Add(system, mhi);
+                MaterialHistoryList.Add(name, m);
+            }
+            else
+            {
+                materialData.TryGetValue(system, out var systemData);
+                if (systemData == null)
+                {
+                    var mhi = new MaterialHistoryItem
+                    {
+                        Name = name,
+                        System = system,
+                        Count = count
+                    };
+                    materialData.Add(system, mhi);
+                }
+                else
+                {
+                    systemData.Count += count;
+                }
+            }
+        }
 
         private static int GetMaximumCapacity(string name)
         {
