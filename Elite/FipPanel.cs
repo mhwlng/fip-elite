@@ -1182,6 +1182,19 @@ namespace Elite
             }
         }
 
+        public void CheckCardSelectionLimits(int limit)
+        {
+            if (_currentCard[(int)_currentTab] < 0)
+            {
+                _currentCard[(int)_currentTab] = limit;
+            }
+            else
+            if (_currentCard[(int)_currentTab] > limit)
+            {
+                _currentCard[(int)_currentTab] = 0;
+            }
+        }
+
         public void RefreshDevicePage(bool mustRender = true)
         {
             lock (_refreshDevicePageLock)
@@ -1216,91 +1229,24 @@ namespace Elite
                         switch (_currentTab)
                         {
                             case LcdTab.Ship:
-
-                                if (_currentCard[(int)_currentTab] < 0)
-                                {
-                                    _currentCard[(int)_currentTab] = 1;
-                                }
-                                else
-                                if (_currentCard[(int)_currentTab] > 1)
-                                {
-                                    _currentCard[(int)_currentTab] = 0;
-                                }
-
+                                CheckCardSelectionLimits(1);
                                 break;
-
                             case LcdTab.POI:
-
-                                if (_currentCard[(int)_currentTab] < 0)
-                                {
-                                    _currentCard[(int)_currentTab] = 7;
-                                }
-                                else
-                                if (_currentCard[(int)_currentTab] > 7)
-                                {
-                                    _currentCard[(int)_currentTab] = 0;
-                                }
-
+                                CheckCardSelectionLimits(7);
                                 break;
-
                             case LcdTab.Engineer:
-
-                                if (_currentCard[(int)_currentTab] < 0)
-                                {
-                                    _currentCard[(int)_currentTab] = 1;
-                                }
-                                else
-                                if (_currentCard[(int)_currentTab] > 1)
-                                {
-                                    _currentCard[(int)_currentTab] = 0;
-                                }
-
+                                CheckCardSelectionLimits(2);
                                 break;
-
                             case LcdTab.Powers:
-
-                                if (_currentCard[(int)_currentTab] < 0)
-                                {
-                                    _currentCard[(int)_currentTab] = 10;
-                                }
-                                else
-                                if (_currentCard[(int)_currentTab] > 10)
-                                {
-                                    _currentCard[(int)_currentTab] = 0;
-                                }
-
+                                CheckCardSelectionLimits(10);
                                 break;
-
                             case LcdTab.Materials:
-
-                                if (_currentCard[(int)_currentTab] < 0)
-                                {
-                                    _currentCard[(int)_currentTab] = 2;
-                                }
-                                else
-                                if (_currentCard[(int)_currentTab] > 2)
-                                {
-                                    _currentCard[(int)_currentTab] = 0;
-                                }
-
+                                CheckCardSelectionLimits(2);
                                 break;
-
                             case LcdTab.Mining:
-
-                                if (_currentCard[(int)_currentTab] < 0)
-                                {
-                                    _currentCard[(int)_currentTab] = 3;
-                                }
-                                else
-                                if (_currentCard[(int)_currentTab] > 3)
-                                {
-                                    _currentCard[(int)_currentTab] = 0;
-                                }
-
+                                CheckCardSelectionLimits(3);
                                 break;
-
                             case LcdTab.Map:
-
 
                                 if (_currentZoomLevel[(int)_currentTab] < 0)
                                 {
@@ -1313,7 +1259,6 @@ namespace Elite
                                 }
 
                                 break;
-
                         }
 
                         if (mustRender)
@@ -1698,12 +1643,12 @@ namespace Elite
                                                 Manufactured = Engineer.IngredientShoppingList?
                                                                    .Where(x => x.EntryData.Subkind ==
                                                                                Subkind.Manufactured)
-                                                                   .OrderBy(x => x.Name).ToList() ??
+                                                                    .OrderBy(x => x.Name).ToList() ??
                                                                new List<IngredientShoppingListItem>(),
 
                                                 Encoded = Engineer.IngredientShoppingList?
-                                                              .Where(x => x.EntryData.Kind == Kind.Data)
-                                                              .OrderBy(x => x.Name).ToList() ??
+                                                                .Where(x => x.EntryData.Kind == Kind.Data)
+                                                                .OrderBy(x => x.Name).ToList() ??
                                                           new List<IngredientShoppingListItem>(),
 
                                                 Commodity = Engineer.IngredientShoppingList?
@@ -1715,7 +1660,29 @@ namespace Elite
                                                     .OrderBy (x => x.Blueprint.Type)
                                                     .ThenBy(x => x.Blueprint.BlueprintName)
                                                     .ThenBy(x => x.Blueprint.Grade)
-                                                    .ToList() ?? new List<BlueprintShoppingListItem>()
+                                                    .ToList(),
+
+                                                MissingRaw = Engineer.IngredientShoppingList?
+                                                                .Where(x => x.EntryData.Subkind == Subkind.Raw && x.RequiredCount > x.Inventory)
+                                                                .OrderBy(x => x.Name).ToList() ??
+                                                            new List<IngredientShoppingListItem>(),
+
+                                                MissingManufactured = Engineer.IngredientShoppingList?
+                                                                   .Where(x => x.EntryData.Subkind ==
+                                                                               Subkind.Manufactured && x.RequiredCount > x.Inventory)
+                                                                   .OrderBy(x => x.Name).ToList() ??
+                                                               new List<IngredientShoppingListItem>(),
+
+                                                MissingEncoded = Engineer.IngredientShoppingList?
+                                                              .Where(x => x.EntryData.Kind == Kind.Data && x.RequiredCount > x.Inventory)
+                                                              .OrderBy(x => x.Name).ToList() ??
+                                                          new List<IngredientShoppingListItem>(),
+
+                                                MissingCommodity = Engineer.IngredientShoppingList?
+                                                                .Where(x => x.EntryData.Kind == Kind.Commodity && x.RequiredCount > x.Inventory)
+                                                                .OrderBy(x => x.Name).ToList() ??
+                                                            new List<IngredientShoppingListItem>()
+
                                             });
 
                                         break;

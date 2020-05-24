@@ -68,8 +68,8 @@ The local api must be active in EDengineer and listening on port 44405
 ![Screenshot 14](https://i.imgur.com/ofaRPKm.png)
 ![Screenshot 15](https://i.imgur.com/zm3Xrm9.png)
 ![Screenshot 16](https://i.imgur.com/wFsMD4t.png)
-![Screenshot 17](https://i.imgur.com/fGCBdzH.png)
-![Screenshot 18](https://i.imgur.com/cND15WL.png)
+![Screenshot 17](https://i.imgur.com/zGm6qOR.png)
+![Screenshot 18](https://i.imgur.com/ncHyT8X.png)
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 

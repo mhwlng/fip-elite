@@ -130,6 +130,10 @@ tr.zebraeven td {
     padding-left: 5px;
 }
 
+td.indent {
+    padding-left: 20px;
+}
+
 ul {
-    margin: 20px;
+    margin-left: 20px;
 }

@@ -124,14 +124,7 @@ namespace Elite
             else if (message.StartsWith("$Police"))
             {
                 // Police messages appear to be re-used by bounty hunters.  Check from to see if it really is police
-                if (from.Contains("Police"))
-                {
-                    by = "Police";
-                }
-                else
-                {
-                    by = "Bounty hunter";
-                }
+                by = from.Contains("Police") ? "Police" : "Bounty hunter";
             }
             else if (message.StartsWith("$PowersAssassin"))
             {

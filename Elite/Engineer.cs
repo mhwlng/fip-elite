@@ -99,9 +99,9 @@ namespace Elite
 
         public static void RefreshMaterialList()
         {
-            if (Engineer.IngredientShoppingList?.Any() == true && Material.MaterialList?.Any() == true)
+            if (IngredientShoppingList?.Any() == true && Material.MaterialList?.Any() == true)
             {
-                foreach (var i in Engineer.IngredientShoppingList)
+                foreach (var i in IngredientShoppingList)
                 {
                     var materialData = Material.MaterialList.FirstOrDefault(x => x.Value.Name == i.Name).Value;
 
@@ -130,7 +130,7 @@ namespace Elite
                 item.BluePrintData = bluePrintData;
             }
 
-            BlueprintShoppingList = bluePrintList ?? new List<BlueprintShoppingListItem>();
+            BlueprintShoppingList = bluePrintList;
 
             IngredientShoppingList = bluePrintList.Select(
                     x => new
@@ -142,7 +142,7 @@ namespace Elite
 
                 .SelectMany(x => x.Ingredients)
                 .GroupBy(x => x.EntryData.Name)
-                .Select(x => new IngredientShoppingListItem()
+                .Select(x => new IngredientShoppingListItem
                 {
                     Name = x.Key,
                     RequiredCount = x.Sum(y => y.Size),

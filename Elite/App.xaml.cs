@@ -188,7 +188,10 @@ namespace Elite
                 }
 
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
         protected override void OnStartup(StartupEventArgs evtArgs)

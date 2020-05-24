@@ -76,10 +76,6 @@ namespace Elite
             {
                 return default(double);
             }
-            catch
-            {
-                throw;
-            }
         }
     }
 
@@ -99,10 +95,6 @@ namespace Elite
             catch (TypeConverterException)
             {
                 return default(DateTime);
-            }
-            catch
-            {
-                throw;
             }
         }
     }
@@ -229,7 +221,7 @@ namespace Elite
                     poiItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
-                return FullPoiList.Where<PoiItem>(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+                return FullPoiList.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
             }
 
             return new List<PoiItem>();

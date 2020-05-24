@@ -6,158 +6,323 @@
 @{
     Layout = "layout.cshtml";
     var odd = true;
-    var displaydivider = true;
+    var displaydivider = false;
 }
 
-    <div class="main">
+<div class="main">
 
-        <div class="cardcaption">&nbsp;</div>
+    <div class="cardcaption">&nbsp;</div>
 
-        @if (Model.CurrentCard == 0)
+    @if (Model.CurrentCard == 0)
+    {
+        if (Model.BlueprintShoppingList.Count > 0)
         {
-            if (Model.BlueprintShoppingList.Count > 0)
-            {
-                <ul>
-                    @foreach (var m in Model.BlueprintShoppingList)
-                    {
+            <ul>
+                @foreach (var m in Model.BlueprintShoppingList)
+                {
                     <li>
-                        @m.Blueprint.Type @m.Blueprint.BlueprintName<br /><span class="data">@(m.Blueprint.Grade > 0 ? "Grade " + m.Blueprint.Grade.ToString() + ", " : "") @m.Count Roll@(m.Count > 1 ? "s" : "")</span>
+                        @m.Blueprint.Type - @m.Blueprint.BlueprintName<br /><span class="data">@(m.Blueprint.Grade > 0 ? "Grade " + m.Blueprint.Grade.ToString() + ", " : "") @m.Count Roll@(m.Count > 1 ? "s" : "")</span>
                     </li>
-                    }
-                </ul>
-            }
+                }
+            </ul>
         }
-        else if (Model.CurrentCard == 1)
+    }
+    else if (Model.CurrentCard == 1)
+    {
+        if (Model.Raw.Count > 0)
         {
-            if (Model.Raw.Count > 0)
-            {
-                odd = true;
+            odd = true;
 
-                <table>
-                    <tbody>
-                        <tr>
-                            <td class="caption center">Raw Materials</td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="caption center">Raw Materials</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                    @foreach (var m in Model.Raw)
+                    {
+                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
+                            <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
                         </tr>
-                    </tbody>
-                </table>
-
-                displaydivider = true;
-
-                <table class="zebratable">
-                    <tbody>
-                        @foreach (var m in Model.Raw)
-                        {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
-                                <td class="caption nowrap">@m.Name</td>
-                                <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
-                                <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
-                            </tr>
-                            odd = !odd;
-                        }
-                    </tbody>
-                </table>
-            }
-            if (Model.Manufactured.Count > 0)
-            {
-                odd = true;
-
-                <table>
-                    <tbody>
-                        @if (displaydivider)
-                        {
-                            <tr>
-                                <td class="divider">&nbsp;</td>
-                            </tr>
-                        }
-                        <tr>
-                            <td class="caption center">Manufactured Materials</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                displaydivider = true;
-
-                <table class="zebratable">
-                    <tbody>
-                        @foreach (var m in Model.Manufactured)
-                        {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
-                                <td class="caption nowrap">@m.Name</td>
-                                <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
-                                <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
-                            </tr>
-                            odd = !odd;
-                        }
-                    </tbody>
-                </table>
-            }
-            if (Model.Encoded.Count > 0)
-            {
-                odd = true;
-
-                <table>
-                    <tbody>
-                        @if (displaydivider)
-                        {
-                            <tr>
-                                <td class="divider">&nbsp;</td>
-                            </tr>
-                        }
-                        <tr>
-                            <td class="caption center">Encoded Materials</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                displaydivider = true;
-
-                <table class="zebratable">
-                    <tbody>
-                        @foreach (var m in Model.Encoded)
-                        {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
-                                <td class="caption nowrap">@m.Name</td>
-                                <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
-                                <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
-                            </tr>
-                            odd = !odd;
-                        }
-                    </tbody>
-                </table>
-            }
-            if (Model.Commodity.Count > 0)
-            {
-                odd = true;
-
-                <table>
-                    <tbody>
-                        @if (displaydivider)
-                        {
-                            <tr>
-                                <td class="divider">&nbsp;</td>
-                            </tr>
-                        }
-                        <tr>
-                            <td class="caption center">Commodities</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                displaydivider = true;
-
-                <table class="zebratable">
-                    <tbody>
-                        @foreach (var m in Model.Commodity)
-                        {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
-                                <td class="caption nowrap">@m.Name</td>
-                                <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
-                                <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
-                            </tr>
-                            odd = !odd;
-                        }
-                    </tbody>
-                </table>
-            }
+                        odd = !odd;
+                    }
+                </tbody>
+            </table>
         }
-    </div>
+        if (Model.Manufactured.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                    @if (displaydivider)
+                    {
+                        <tr>
+                            <td class="divider">&nbsp;</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="caption center">Manufactured Materials</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                    @foreach (var m in Model.Manufactured)
+                    {
+                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
+                            <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
+                        </tr>
+                        odd = !odd;
+                    }
+                </tbody>
+            </table>
+        }
+        if (Model.Encoded.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                    @if (displaydivider)
+                    {
+                        <tr>
+                            <td class="divider">&nbsp;</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="caption center">Encoded Materials</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                    @foreach (var m in Model.Encoded)
+                    {
+                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
+                            <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
+                        </tr>
+                        odd = !odd;
+                    }
+                </tbody>
+            </table>
+        }
+        if (Model.Commodity.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                    @if (displaydivider)
+                    {
+                        <tr>
+                            <td class="divider">&nbsp;</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="caption center">Commodities</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                    @foreach (var m in Model.Commodity)
+                    {
+                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
+                            <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
+                        </tr>
+                        odd = !odd;
+                    }
+                </tbody>
+            </table>
+        }
+    }
+    else if (Model.CurrentCard == 2)
+    {
+        if (Model.MissingRaw.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="caption center">Raw Materials</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                    @foreach (var m in Model.MissingRaw)
+                    {
+                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right">@m.Inventory</td>
+                            <td class="data right">@m.RequiredCount</td>
+                        </tr>
+
+                        foreach (var n in m.EntryData.OriginDetails)
+                        {
+                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                                <td class ="data indent" colspan="3">@n</td>
+                            </tr>
+                        }
+
+                        odd = !odd;
+                    }
+                </tbody>
+            </table>
+        }
+        if (Model.MissingManufactured.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                    @if (displaydivider)
+                    {
+                        <tr>
+                            <td class="divider">&nbsp;</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="caption center">Manufactured Materials</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                    @foreach (var m in Model.MissingManufactured)
+                    {
+                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right">@m.Inventory</td>
+                            <td class="data right">@m.RequiredCount</td>
+                        </tr>
+
+                        foreach (var n in m.EntryData.OriginDetails)
+                        {
+                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                                <td class ="data indent" colspan="3">@n</td>
+                            </tr>
+                        }
+
+                        odd = !odd;
+                    }
+                </tbody>
+            </table>
+        }
+        if (Model.MissingEncoded.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                    @if (displaydivider)
+                    {
+                        <tr>
+                            <td class="divider">&nbsp;</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="caption center">Encoded Materials</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                    @foreach (var m in Model.MissingEncoded)
+                    {
+                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right">@m.Inventory</td>
+                            <td class="data right">@m.RequiredCount</td>
+                        </tr>
+
+                        foreach (var n in m.EntryData.OriginDetails)
+                        {
+                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                                <td class ="data indent" colspan="3">@n</td>
+                            </tr>
+                        }
+
+                        odd = !odd;
+                    }
+                </tbody>
+            </table>
+        }
+        if (Model.MissingCommodity.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                    @if (displaydivider)
+                    {
+                        <tr>
+                            <td class="divider">&nbsp;</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="caption center">Commodities</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                    @foreach (var m in Model.MissingCommodity)
+                    {
+                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right">@m.Inventory</td>
+                            <td class="data right">@m.RequiredCount</td>
+                        </tr>
+
+                        foreach (var n in m.EntryData.OriginDetails)
+                        {
+                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                                <td class ="data indent" colspan="3">@n</td>
+                            </tr>
+                        }
+
+                        odd = !odd;
+                    }
+                </tbody>
+            </table>
+        }
+    }
+</div>
