@@ -431,18 +431,6 @@ namespace Elite
                                     {
                                         _currentTabCursor -= 1;
                                     }
-                                    else break;
-
-                                    if (Cargo.CargoList.Count == 0)
-                                    {
-                                        _currentTabCursor -= 1;
-                                    }
-                                    else break;
-
-                                    if (Material.MaterialList.Count == 0)
-                                    {
-                                        _currentTabCursor -= 1;
-                                    }
 
                                     break;
 
@@ -451,16 +439,6 @@ namespace Elite
 
                                     _currentTabCursor -= 1;
 
-                                    if (Cargo.CargoList.Count == 0)
-                                    {
-                                        _currentTabCursor -= 1;
-                                    }
-                                    else break;
-
-                                    if (Material.MaterialList.Count == 0)
-                                    {
-                                        _currentTabCursor -= 1;
-                                    }
                                     break;
 
                                 case LcdTab.Cargo:
@@ -545,40 +523,19 @@ namespace Elite
                                     {
                                         _currentTabCursor += 1;
                                     }
-                                    else break;
-
-                                    if (Cargo.CargoList.Count == 0)
-                                    {
-                                        _currentTabCursor += 1;
-                                    }
-                                    else break;
-
-                                    if (string.IsNullOrEmpty(Engineer.CommanderName))
-                                    {
-                                        _currentTabCursor += 1;
-                                    }
 
                                     break;
 
                                 case LcdTab.Materials:
                                     //ShipBack > Ship > Materials > Cargo > Engineer > Events 
+
                                     _currentTabCursor += 1;
-
-                                    if (Cargo.CargoList.Count == 0)
-                                    {
-                                        _currentTabCursor += 1;
-                                    }
-                                    else break;
-
-                                    if (string.IsNullOrEmpty(Engineer.CommanderName))
-                                    {
-                                        _currentTabCursor += 1;
-                                    }
 
                                     break;
 
                                 case LcdTab.Cargo:
                                     //ShipBack > Ship > Materials > Cargo > Engineer > Events 
+
                                     _currentTabCursor += 1;
 
                                     if (string.IsNullOrEmpty(Engineer.CommanderName))
@@ -888,10 +845,7 @@ namespace Elite
                                         }
                                         break;
                                     case 256:
-                                        if (Cargo.CargoList.Count > 0)
-                                        {
-                                            mustRefresh = SetTab(LcdTab.Cargo);
-                                        }
+                                        mustRefresh = SetTab(LcdTab.Cargo);
                                         break;
                                     case 512:
                                         if (!string.IsNullOrEmpty(Engineer.CommanderName))
@@ -1211,10 +1165,6 @@ namespace Elite
                     SetTab(LcdTab.Navigation);
                 }
                 else if (Material.MaterialList.Count == 0 && _currentTab == LcdTab.Materials)
-                {
-                    SetTab(LcdTab.Ship);
-                }
-                else if (Cargo.CargoList.Count == 0 && _currentTab == LcdTab.Cargo)
                 {
                     SetTab(LcdTab.Ship);
                 }
@@ -1595,7 +1545,7 @@ namespace Elite
                                                 CurrentCard = _currentCard[(int) _currentTab],
 
                                                 Cargo = cargo,
-                                                CargoCargoCount = cargo.Count,
+                                                CargoCount = cargo.Count,
 
                                                 MissionCargo = missionCargo,
                                                 MissionCargoCount = missionCargo.Count,

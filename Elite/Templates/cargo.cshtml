@@ -5,20 +5,27 @@
 @using System.Linq
 @{
     Layout = "layout.cshtml";
+    var odd = true;
 }
 
 <div class="main">
     
     <div class="cardcaption">&nbsp;</div>
 
-    <table class="">
+    @if (Model.MissionCargoCount == 0 && Model.StolenCargoCount == 0 && Model.CargoCount == 0)
+    {
+        <div class="cardcaption data">CARGO HOLD EMPTY</div>
+    }
+
+    <table class="zebratable">
         <tbody>
         @foreach (var m in Model.Cargo)
         {
-            <tr>
+            <tr  class="@(odd ? "zebraodd": "zebraeven")">
                 <td class="caption wrap">@m.Name</td>
                 <td class="data right">@m.Count</td>
             </tr>
+            odd = !odd;
         }
 
         @if (Model.MissionCargoCount > 0)

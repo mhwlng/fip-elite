@@ -164,8 +164,6 @@
     {
         if (Model.MissingRaw.Count > 0)
         {
-            odd = true;
-
             <table>
                 <tbody>
                     <tr>
@@ -176,11 +174,11 @@
 
             displaydivider = true;
 
-            <table class="zebratable">
+            <table>
                 <tbody>
                     @foreach (var m in Model.MissingRaw)
                     {
-                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <tr>
                             <td class="caption nowrap">@m.Name</td>
                             <td class="data right">@m.Inventory</td>
                             <td class="data right">@m.RequiredCount</td>
@@ -188,27 +186,23 @@
 
                         foreach (var n in m.EntryData.OriginDetails)
                         {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <tr>
                                 <td class="data indent" colspan="3">@n</td>
                             </tr>
                         }
 
                         foreach (var n in m.BestSystems)
                         {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <tr>
                                 <td class="data indent" colspan="3">@n</td>
                             </tr>
                         }
-
-                        odd = !odd;
                     }
                 </tbody>
             </table>
         }
         if (Model.MissingManufactured.Count > 0)
         {
-            odd = true;
-
             <table>
                 <tbody>
                     @if (displaydivider)
@@ -225,11 +219,11 @@
 
             displaydivider = true;
 
-            <table class="zebratable">
+            <table>
                 <tbody>
                     @foreach (var m in Model.MissingManufactured)
                     {
-                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <tr>
                             <td class="caption nowrap">@m.Name</td>
                             <td class="data right">@m.Inventory</td>
                             <td class="data right">@m.RequiredCount</td>
@@ -237,27 +231,23 @@
 
                         foreach (var n in m.EntryData.OriginDetails)
                         {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <tr>
                                 <td class="data indent" colspan="3">@n</td>
                             </tr>
                         }
 
                         foreach (var n in m.BestSystems)
                         {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <tr>
                                 <td class="data indent" colspan="3">@n</td>
                             </tr>
                         }
-
-                        odd = !odd;
                     }
                 </tbody>
             </table>
         }
         if (Model.MissingEncoded.Count > 0)
         {
-            odd = true;
-
             <table>
                 <tbody>
                     @if (displaydivider)
@@ -274,11 +264,11 @@
 
             displaydivider = true;
 
-            <table class="zebratable">
+            <table>
                 <tbody>
                     @foreach (var m in Model.MissingEncoded)
                     {
-                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <tr>
                             <td class="caption nowrap">@m.Name</td>
                             <td class="data right">@m.Inventory</td>
                             <td class="data right">@m.RequiredCount</td>
@@ -286,27 +276,23 @@
 
                         foreach (var n in m.EntryData.OriginDetails)
                         {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <tr>
                                 <td class="data indent" colspan="3">@n</td>
                             </tr>
                         }
 
                         foreach (var n in m.BestSystems)
                         {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <tr>
                                 <td class="data indent" colspan="3">@n</td>
                             </tr>
                         }
-
-                        odd = !odd;
                     }
                 </tbody>
             </table>
         }
         if (Model.MissingCommodity.Count > 0)
         {
-            odd = true;
-
             <table>
                 <tbody>
                     @if (displaydivider)
@@ -323,11 +309,11 @@
 
             displaydivider = true;
 
-            <table class="zebratable">
+            <table>
                 <tbody>
                     @foreach (var m in Model.MissingCommodity)
                     {
-                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <tr>
                             <td class="caption nowrap">@m.Name</td>
                             <td class="data right">@m.Inventory</td>
                             <td class="data right">@m.RequiredCount</td>
@@ -335,19 +321,17 @@
 
                         foreach (var n in m.EntryData.OriginDetails)
                         {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <tr>
                                 <td class="data indent" colspan="3">@n</td>
                             </tr>
                         }
 
                         foreach (var n in m.BestSystems)
                         {
-                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <tr>
                                 <td class="data indent" colspan="3">@n</td>
                             </tr>
                         }
-
-                        odd = !odd;
                     }
                 </tbody>
             </table>

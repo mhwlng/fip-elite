@@ -25,33 +25,25 @@ namespace Elite
         
         public static void HandleCargoEvent(CargoEvent.CargoEventArgs info)
         {
-            if (info.Vessel == "Ship")
+            if (info?.Inventory == null || info?.Vessel != "Ship") return;
+
+            CargoList = new Dictionary<string, CargoItem>();
+
+            foreach (var e in info.Inventory)
             {
-                CargoList = new Dictionary<string, CargoItem>();
-
-                if (info.Inventory == null)
-                {
-                    info = App.Watcher.ReadCargoJson();
-                }
-
-                if (info.Inventory != null)
-                {
-                    foreach (var e in info.Inventory)
+                CargoList.Add(e.Name + "_" + e.MissionID,
+                    new CargoItem
                     {
-                        CargoList.Add(e.Name + "_" + e.MissionID,
-                            new CargoItem
-                            {
-                                Name = e.Name_Localised ??
-                                       CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower()),
-                                Count = e.Count,
-                                Stolen = e.Stolen,
-                                MissionID = e.MissionID
-                            });
-                    }
-                }
+                        Name = e.Name_Localised ??
+                               CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower()),
+                        Count = e.Count,
+                        Stolen = e.Stolen,
+                        MissionID = e.MissionID
+                    });
             }
-        }
 
+        }
+        
         public static void HandleDiedEvent(DiedEvent.DiedEventArgs info)
         {
             CargoList = new Dictionary<string, CargoItem>();

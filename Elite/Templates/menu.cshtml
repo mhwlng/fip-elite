@@ -69,14 +69,7 @@
                 </tr>
                 <tr>
                     <td>
-                        @if (Model.CargoCount > 0)
-                        {
-                            <div class="@(Model.CurrentTab == LcdTab.Cargo ? "highlight" : "") @(Model.Cursor == LcdTab.Cargo ? "menucursor" : "")">CARGO</div>
-                        }
-                        else
-                        {
-                            <div class="disabled">CARGO</div>
-                        }
+                        <div class="@(Model.CurrentTab == LcdTab.Cargo ? "highlight" : "") @(Model.Cursor == LcdTab.Cargo ? "menucursor" : "")">CARGO</div>
                     </td>
                 </tr>
             <tr>

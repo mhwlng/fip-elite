@@ -43,7 +43,8 @@ namespace Elite
 
         public static readonly FipHandler FipHandler = new FipHandler();
 
-        public static JournalWatcher Watcher;
+        public static JournalWatcher journalWatcher;
+        public static CargoWatcher cargoWatcher;
 
         private static StatusWatcher _statusWatcher;
 
@@ -292,12 +293,19 @@ namespace Elite
                 _statusWatcher.StartWatching();
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Watcher...");
-                Watcher = new JournalWatcher(path);
+                journalWatcher = new JournalWatcher(path);
 
-                Watcher.AllEventHandler += Data.HandleEliteEvents;
+                journalWatcher.AllEventHandler += Data.HandleEliteEvents;
 
-                Watcher.StartWatching().Wait();
-                
+                journalWatcher.StartWatching().Wait();
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Cargo Watcher...");
+                cargoWatcher = new CargoWatcher(path);
+
+                cargoWatcher.CargoUpdated += Data.HandleCargoEvent;
+
+                cargoWatcher.StartWatching();
+
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Initializing FIP...");
                 if (!FipHandler.Initialize())
                 {
@@ -453,6 +461,8 @@ namespace Elite
                     }
                 }
 
+                Dispatcher.Invoke(() => { splashScreen.Close(); });
+
                 Dispatcher.Invoke(() =>
                 {
                     var window = Current.MainWindow = new MainWindow();
@@ -479,7 +489,6 @@ namespace Elite
                         Current.MainWindow.Hide();
                 });
 
-                Dispatcher.Invoke(() => { splashScreen.Close(); });
 
                 var jsonToken = _jsonTokenSource.Token;
 
@@ -532,9 +541,14 @@ namespace Elite
 
             _statusWatcher.StopWatching();
 
-            Watcher.AllEventHandler -= Data.HandleEliteEvents;
+            journalWatcher.AllEventHandler -= Data.HandleEliteEvents;
 
-            Watcher.StopWatching();
+            journalWatcher.StopWatching();
+
+            cargoWatcher.CargoUpdated -= Data.HandleCargoEvent;
+
+            cargoWatcher.StopWatching();
+
 
             FipHandler.Close();
 

@@ -470,6 +470,14 @@ namespace Elite
             return "";
         }
 
+        public static void HandleCargoEvent(object sender, CargoEvent.CargoEventArgs e)
+        {
+            if (e?.Inventory == null) return;
+
+            Cargo.HandleCargoEvent(e);
+
+        }
+
         public static void HandleEliteEvents(object sender, JournalEventArgs e)
         {
             var evt = e.OriginalEvent.Value<string>("event");
