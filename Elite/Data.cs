@@ -1163,7 +1163,7 @@ namespace Elite
 
                     var cargoInfo = (CargoEvent.CargoEventArgs)e;
 
-                    Cargo.HandleCargoEvent(cargoInfo);
+                    //Cargo.HandleCargoEvent(cargoInfo);
 
                     break;
 
