@@ -285,35 +285,6 @@ namespace Elite
                 Engineer.GetShoppingList();
                 Engineer.GetBestSystems();
 
-                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Status Watcher...");
-                _statusWatcher = new StatusWatcher(path);
-
-                _statusWatcher.StatusUpdated += Data.HandleStatusEvents;
-
-                _statusWatcher.StartWatching();
-
-                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Watcher...");
-                journalWatcher = new JournalWatcher(path);
-
-                journalWatcher.AllEventHandler += Data.HandleEliteEvents;
-
-                journalWatcher.StartWatching().Wait();
-
-                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Cargo Watcher...");
-                cargoWatcher = new CargoWatcher(path);
-
-                cargoWatcher.CargoUpdated += Data.HandleCargoEvent;
-
-                cargoWatcher.StartWatching();
-
-                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Initializing FIP...");
-                if (!FipHandler.Initialize())
-                {
-                    Current.Shutdown();
-                }
-
-                Log.Info("Fip-Elite started");
-
                 if (File.Exists(Path.Combine(ExePath, "joystickSettings.config")) && ConfigurationManager.GetSection("joystickSettings") is NameValueCollection section)
                 {
                     _pid = section["PID"];
@@ -461,8 +432,6 @@ namespace Elite
                     }
                 }
 
-                Dispatcher.Invoke(() => { splashScreen.Close(); });
-
                 Dispatcher.Invoke(() =>
                 {
                     var window = Current.MainWindow = new MainWindow();
@@ -473,6 +442,40 @@ namespace Elite
                         im.Width = WindowWidth;
                         im.Height = WindowHeight;
                     }
+                });
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Status Watcher...");
+                _statusWatcher = new StatusWatcher(path);
+
+                _statusWatcher.StatusUpdated += Data.HandleStatusEvents;
+
+                _statusWatcher.StartWatching();
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Watcher...");
+                journalWatcher = new JournalWatcher(path);
+
+                journalWatcher.AllEventHandler += Data.HandleEliteEvents;
+
+                journalWatcher.StartWatching().Wait();
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Cargo Watcher...");
+                cargoWatcher = new CargoWatcher(path);
+
+                cargoWatcher.CargoUpdated += Data.HandleCargoEvent;
+
+                cargoWatcher.StartWatching();
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Initializing FIP...");
+                if (!FipHandler.Initialize())
+                {
+                    Current.Shutdown();
+                }
+
+                Log.Info("Fip-Elite started");
+
+                Dispatcher.Invoke(() =>
+                {
+                    var window = Current.MainWindow;
 
                     if (evtArgs.Args.Length >= 1 && evtArgs.Args[0].ToLower().Contains("mirror") || !FipHandler.InitOk)
                     {
@@ -480,15 +483,16 @@ namespace Elite
                         Elite.Properties.Settings.Default.Save();
                     }
 
-                    if (Elite.Properties.Settings.Default.Visible)
+                    if (window != null && Elite.Properties.Settings.Default.Visible)
                     {
-                        Current.MainWindow.Show();
+                        window.Show();
                         FipHandler.RefreshDevicePages();
                     }
                     else
-                        Current.MainWindow.Hide();
+                        window.Hide();
                 });
 
+                Dispatcher.Invoke(() => { splashScreen.Close(); });
 
                 var jsonToken = _jsonTokenSource.Token;
 
