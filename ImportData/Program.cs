@@ -391,7 +391,60 @@ namespace ImportData
             }
         }
 
-        private static void DownloadMiningStationsHtml(string path, string url, string material, int cid, List<StationEDSM> stationsEDSM)
+        public static double ConvertToUnixTimestamp(DateTime date)
+        {
+            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            TimeSpan diff = date.ToUniversalTime() - origin;
+            return Math.Floor(diff.TotalSeconds);
+        }
+
+        private static void DownloadInaraMiningStationsHtml(string path, string url, string material, List<StationEDSM> stationsEDSM)
+        {
+            try
+            {
+                path = Path.Combine(GetExePath(), path);
+
+                Console.WriteLine("looking up " + material + " Stations");
+
+                using (var client = new WebClient())
+                {
+                    var data = client.DownloadString(url);
+
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(data);
+
+                    var currentTime = ConvertToUnixTimestamp(DateTime.UtcNow);
+
+
+                    var stationInfo = doc.DocumentNode.SelectSingleNode("//table[@id='commodtable']")
+                        .Descendants("tr")
+                        .Skip(1)
+                        .Where(tr => !tr.HasClass("hideable1") /*&& !tr.HasClass("hideable2")*/ && !tr.HasClass("hideable3"))
+                        .Select(tr => tr.Elements("td").ToList())
+                        .Select(td => new HotspotStationData
+                        {
+                            Station = td[0].Descendants("span").Skip(1).FirstOrDefault()?.InnerText ?? "?",
+                            System = td[0].Descendants("span").Skip(3).FirstOrDefault()?.InnerText ?? "?",
+                            Price = Convert.ToInt32(td[5].GetAttributeValue("data-order", "0")),
+                            Demand = Convert.ToInt32(td[4].GetAttributeValue("data-order","0")),
+                            Pad = td[1].InnerText, //tr[5],
+                            AgoSec = (int)(currentTime - Convert.ToInt64(td[7].GetAttributeValue("data-order", "0")))
+                        })
+                        .ToList();
+
+                    var stationsData = GetMiningStationsData(stationInfo, stationsEDSM);
+
+                    MiningStationsSerialize(stationsData, path);
+                        
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        private static void DownloadEddbMiningStationsHtml(string path, string url, string material, int cid, List<StationEDSM> stationsEDSM, bool sell)
         {
             try
             {
@@ -406,7 +459,13 @@ namespace ImportData
                     var doc = new HtmlDocument();
                     doc.LoadHtml(data);
 
-                    var stationInfo = doc.DocumentNode.SelectSingleNode("//table[@id='table-stations-max-sell']")
+                    var id = "table-stations-max-sell";
+                    if (!sell)
+                    {
+                        id = "table-stations-min-buy";
+                    }
+
+                    var stationInfo = doc.DocumentNode.SelectSingleNode("//table[@id='"+id+"']")
                         .Descendants("tr")
                         .Where(tr => tr.Elements("td").Count() == 7)
                         .Select(tr => tr.Elements("td").Select(td => td.InnerText.Trim()).ToList())
@@ -501,8 +560,15 @@ namespace ImportData
                         }
                     });
 
-                    DownloadMiningStationsHtml(@"Data\painitestations.json", "https://eddb.io/commodity/", "Painite", 83, stationsEDSM);
-                    DownloadMiningStationsHtml(@"Data\ltdstations.json", "https://eddb.io/commodity/", "LTD", 276, stationsEDSM);
+                    DownloadInaraMiningStationsHtml(@"Data\painitestations.json", "https://inara.cz/ajaxaction.php?act=goodsdata&refid2=1261&refname=sellmax&refid=84", "Painite", stationsEDSM);
+                    DownloadInaraMiningStationsHtml(@"Data\ltdstations.json", "https://inara.cz/ajaxaction.php?act=goodsdata&refid2=1261&refname=sellmax&refid=144", "LTD", stationsEDSM);
+                    DownloadInaraMiningStationsHtml(@"Data\tritiumstations.json", "https://inara.cz/ajaxaction.php?act=goodsdata&refid2=1261&refname=sellmax&refid=10269", "Tritium",stationsEDSM);
+                    DownloadInaraMiningStationsHtml(@"Data\tritiumbuystations.json", "https://inara.cz/ajaxaction.php?act=goodsdata&refid2=1261&refname=buymin&refid=10269", "Tritium", stationsEDSM);
+
+                    //DownloadEddbMiningStationsHtml(@"Data\painitestations.json", "https://eddb.io/commodity/", "Painite", 83, stationsEDSM, true);
+                    //DownloadEddbMiningStationsHtml(@"Data\ltdstations.json", "https://eddb.io/commodity/", "LTD", 276, stationsEDSM, true);
+                    //DownloadEddbMiningStationsHtml(@"Data\tritiumstations.json", "https://eddb.io/commodity/", "Tritium", 362, stationsEDSM, true);
+                    //DownloadEddbMiningStationsHtml(@"Data\tritiumbuystations.json", "https://eddb.io/commodity/", "Tritium", 362, stationsEDSM, false);
                 }
 
                 if (wasAnyUpdated)

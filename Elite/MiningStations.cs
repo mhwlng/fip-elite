@@ -14,13 +14,17 @@ namespace Elite
         public enum MaterialTypes
         {
             Painite = 1,
-            LTD = 3
+            LTD = 3,
+            TritiumBuy = 4,
+            TritiumSell = 5
         }
 
         public static Dictionary<MaterialTypes, List<MiningStationData>> FullMiningStationsList = new Dictionary<MaterialTypes, List<MiningStationData>>
         {
             {MaterialTypes.Painite, new List<MiningStationData>()},
-            {MaterialTypes.LTD, new List<MiningStationData>()}
+            {MaterialTypes.LTD, new List<MiningStationData>()},
+            {MaterialTypes.TritiumBuy, new List<MiningStationData>()},
+            {MaterialTypes.TritiumSell, new List<MiningStationData>()}
         };
 
         public class MiningStationData
@@ -115,7 +119,7 @@ namespace Elite
             return new List<MiningStationData>();
         }
 
-        public static List<MiningStationData> GetNearestMiningStations(List<double> starPos, List<MiningStationData> data)
+        public static List<MiningStationData> GetNearestMiningStations(List<double> starPos, List<MiningStationData> data, bool sell)
         {
             if (data?.Any() == true && starPos?.Count == 3)
             {
@@ -136,12 +140,18 @@ namespace Elite
                     systemItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
-                return data.Where(x => x.Distance >= 0)
-                    .OrderByDescending(x => x.Price).ThenBy(x => x.AgoSec)/*.OrderBy(x => x.Distance).Take(10)*/.ToList();
+                if (sell)
+                    return data.Where(x => x.Distance >= 0)
+                        .OrderByDescending(x => x.Price).ThenBy(x => x.AgoSec)/*.OrderBy(x => x.Distance)*/.Take(20).ToList();
+                else
+                    return data.Where(x => x.Distance >= 0)
+                        .OrderBy(x => x.Price).ThenBy(x => x.AgoSec)/*.OrderBy(x => x.Distance)*/.Take(20).ToList();
             }
 
             return new List<MiningStationData>();
 
         }
+
+
     }
 }

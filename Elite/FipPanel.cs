@@ -1197,7 +1197,7 @@ namespace Elite
                                 CheckCardSelectionLimits(2);
                                 break;
                             case LcdTab.Mining:
-                                CheckCardSelectionLimits(3);
+                                CheckCardSelectionLimits(5);
                                 break;
                             case LcdTab.Map:
 

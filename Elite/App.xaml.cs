@@ -136,6 +136,11 @@ namespace Elite
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading LTD Mining Stations...");
                 MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.LTD] = MiningStations.GetAllMiningStations(@"Data\ltdstations.json");
 
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Tritium Buy Stations...");
+                MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumBuy] = MiningStations.GetAllMiningStations(@"Data\tritiumbuystations.json");
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Tritium Sell Stations...");
+                MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumSell] = MiningStations.GetAllMiningStations(@"Data\tritiumstations.json");
             }
 
             if (splashScreen == null)
