@@ -124,6 +124,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Route.cs" />
     <Compile Include="Cargo.cs" />
     <Compile Include="Engineer.cs" />
     <Compile Include="MiningStations.cs" />

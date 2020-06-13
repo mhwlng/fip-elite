@@ -73,7 +73,14 @@
     }
     else if (Model.CurrentTab == LcdTab.Navigation)
     {
-        <div class="cardcaption">Navigation</div>
+        if (Model.CurrentCard == 0)
+        {
+            <div class="cardcaption">&#x25c0; Navigation &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 1)
+        {
+            <div class="cardcaption">&#x25c0; Route &#x25b6;</div>
+        }
     }
     else if (Model.CurrentTab == LcdTab.POI)
     {

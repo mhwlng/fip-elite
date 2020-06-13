@@ -101,6 +101,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CargoTransfer.cs" />
+    <Compile Include="RouteItem.cs" />
+    <Compile Include="Events\NavRouteEvent.cs" />
+    <Compile Include="NavRouteWatcher.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Commodity.cs" />
     <Compile Include="Economy.cs" />
     <Compile Include="EngineeredModule.cs" />

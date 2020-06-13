@@ -702,7 +702,7 @@ namespace Elite
                         if (state && (_currentTab == LcdTab.POI || _currentTab == LcdTab.Powers ||
                                       _currentTab == LcdTab.Materials || _currentTab == LcdTab.Map ||
                                       _currentTab == LcdTab.Ship || _currentTab == LcdTab.Mining || 
-                                      _currentTab == LcdTab.Engineer))
+                                      _currentTab == LcdTab.Navigation || _currentTab == LcdTab.Engineer))
                         {
 
                             _currentCard[(int) _currentTab]++;
@@ -717,8 +717,8 @@ namespace Elite
 
                         if (state && (_currentTab == LcdTab.POI || _currentTab == LcdTab.Powers ||
                                       _currentTab == LcdTab.Materials || _currentTab == LcdTab.Map ||
-                                      _currentTab == LcdTab.Ship || _currentTab == LcdTab.Mining || 
-                                      _currentTab == LcdTab.Engineer))
+                                      _currentTab == LcdTab.Ship || _currentTab == LcdTab.Mining ||
+                                      _currentTab == LcdTab.Navigation || _currentTab == LcdTab.Engineer))
                         {
                             _currentCard[(int) _currentTab]--;
                             _currentZoomLevel[(int) _currentTab]--;
@@ -1184,6 +1184,9 @@ namespace Elite
                             case LcdTab.Ship:
                                 CheckCardSelectionLimits(1);
                                 break;
+                            case LcdTab.Navigation:
+                                CheckCardSelectionLimits(1);
+                                break;
                             case LcdTab.POI:
                                 CheckCardSelectionLimits(7);
                                 break;
@@ -1305,11 +1308,36 @@ namespace Elite
 
                                     case LcdTab.Navigation:
 
+                                        var routeList = new List<RouteItem>();
+
+                                        if (Data.LocationData.StarSystem != Data.LocationData.FsdTargetName &&
+                                            Data.LocationData.RemainingJumpsInRoute > 0 && Route.RouteList.Count >= Data.LocationData.RemainingJumpsInRoute)
+                                        {
+                                            routeList = Route.RouteList
+                                                .Skip(Route.RouteList.Count - Data.LocationData.RemainingJumpsInRoute)
+                                                .ToList();
+                                        }
+
+                                        var jumpDistance = 0.0;
+                                        if (routeList.Count >= 1)
+                                        {
+                                            var nextJump = routeList[0];
+                                            if (nextJump.StarSystem == Data.LocationData.FsdTargetName)
+                                            {
+                                                jumpDistance = nextJump.Distance;
+                                            }
+                                        }
+
+
+
+
+
                                         str =
                                             Engine.Razor.Run("navigation.cshtml", null, new
                                             {
                                                 CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
+                                                CurrentCard = _currentCard[(int)_currentTab],
 
                                                 StarSystem = Data.LocationData.StarSystem,
 
@@ -1353,6 +1381,8 @@ namespace Elite
 
                                                 RemainingJumpsInRoute = Data.LocationData.RemainingJumpsInRoute,
 
+                                                StarClass = Data.LocationData.StarClass,
+
                                                 FsdTargetName = Data.LocationData.FsdTargetName,
 
                                                 Settlement = Data.LocationData.Settlement,
@@ -1372,8 +1402,13 @@ namespace Elite
                                                 Population = Data.LocationData.Population,
 
                                                 PowerplayState = Data.LocationData.PowerplayState,
-                                                Powers = Data.LocationData.Powers
+                                                Powers = Data.LocationData.Powers,
 
+                                                RouteList = routeList,
+                                                RouteListCount = routeList.Count,
+                                                RouteListDistance = routeList.Sum( x => x.Distance),
+                                                RouteDestination = routeList.LastOrDefault()?.StarSystem ?? "",
+                                                JumpDistance = jumpDistance
 
                                             });
 

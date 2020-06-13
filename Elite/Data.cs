@@ -289,6 +289,7 @@ namespace Elite
             public string JumpToStarClass { get; set; }
 
             public int RemainingJumpsInRoute { get; set; }
+            public string StarClass { get; set; }
 
             public string FsdTargetName { get; set; }
 
@@ -472,6 +473,13 @@ namespace Elite
             }
 
             return "";
+        }
+
+        public static void HandleNavRouteEvent(object sender, NavRouteEvent.NavRouteEventArgs e)
+        {
+            if (e?.Route == null) return;
+
+            Route.HandleRouteEvent(e);
         }
 
         public static void HandleCargoEvent(object sender, CargoEvent.CargoEventArgs e)
@@ -974,6 +982,8 @@ namespace Elite
                     LocationData.FsdTargetName = fSdTargetInfo.Name;
 
                     LocationData.RemainingJumpsInRoute = fSdTargetInfo.RemainingJumpsInRoute;
+
+                    LocationData.StarClass = fSdTargetInfo.StarClass;
 
                     break;
 
