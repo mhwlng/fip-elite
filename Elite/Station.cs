@@ -110,6 +110,8 @@ namespace Elite
             {PowerTypes.ZeminaTorval, new List<StationData>()}
         };
 
+        public static Dictionary<string,List<StationData>> SystemStations = new Dictionary<string, List<StationData>>();
+
         public static List<StationData> GetAllStations(string path)
         {
             try

@@ -15,6 +15,7 @@ using TheArtOfDev.HtmlRenderer.Core;
 using EliteJournalReader;
 using SharpDX.DirectInput;
 using System.Collections.Specialized;
+using System.Linq;
 
 
 // ReSharper disable StringLiteralTypo
@@ -121,6 +122,10 @@ namespace Elite
                 Station.FullPowerStationList[Station.PowerTypes.ZacharyHudson] = Station.GetAllStations(@"Data\zacharyhudson.json");
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Zemina Torval Stations...");
                 Station.FullPowerStationList[Station.PowerTypes.ZeminaTorval] = Station.GetAllStations(@"Data\zeminatorval.json");
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading All System Stations ...");
+                Station.SystemStations = Station.GetAllStations(@"Data\fullstationlist.json").GroupBy(x => x.SystemName)
+                    .ToDictionary(x => x.Key, x => x.OrderBy(y => y.DistanceToArrival).ToList());
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading CNB Systems...");
                 CnbSystems.FullCnbSystemsList = CnbSystems.GetAllCnbSystems(@"Data\cnbsystems.json");

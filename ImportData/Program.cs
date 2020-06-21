@@ -578,6 +578,7 @@ namespace ImportData
                     Console.WriteLine("finding Aisling Duval stations");
                     var aislingDuval = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Aisling Duval" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -588,6 +589,7 @@ namespace ImportData
                     Console.WriteLine("finding Archon Delaine stations");
                     var archonDelaine = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Archon Delaine" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -598,6 +600,7 @@ namespace ImportData
                     Console.WriteLine("finding Arissa Lavigny-Duval stations");
                     var arissaLavignyDuval = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Arissa Lavigny-Duval" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -608,6 +611,7 @@ namespace ImportData
                     Console.WriteLine("finding Denton Patreus stations");
                     var dentonPatreus = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Denton Patreus" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -618,6 +622,7 @@ namespace ImportData
                     Console.WriteLine("finding Edmund Mahon stations");
                     var edmundMahon = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Edmund Mahon" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -628,6 +633,7 @@ namespace ImportData
                     Console.WriteLine("finding Felicia Winters stations");
                     var feliciaWinters = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Felicia Winters" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -638,6 +644,7 @@ namespace ImportData
                     Console.WriteLine("finding Li Yong-Rui stations");
                     var liYongRui = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Li Yong-Rui" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -648,6 +655,7 @@ namespace ImportData
                     Console.WriteLine("finding Pranav Antal stations");
                     var pranavAntal = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Pranav Antal" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -658,6 +666,7 @@ namespace ImportData
                     Console.WriteLine("finding Yuri Grom stations");
                     var yuriGrom = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Yuri Grom" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -668,6 +677,7 @@ namespace ImportData
                     Console.WriteLine("finding Zachary Hudson stations");
                     var zacharyHudson = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Zachary Hudson" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -678,6 +688,7 @@ namespace ImportData
                     Console.WriteLine("finding Zemina Torval stations");
                     var zeminaTorval = stationsEDSM
                         .Where(x =>
+                            x.Type != "Fleet Carrier" &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Zemina Torval" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -690,7 +701,9 @@ namespace ImportData
                     Console.WriteLine("finding interstellar factors");
 
                     var interStellarFactors = stationsEDSM
-                        .Where(x => x.OtherServices.Any(y => y == "Interstellar Factors Contact") &&
+                        .Where(x =>
+                                    x.Type != "Fleet Carrier" &&
+                                    x.OtherServices.Any(y => y == "Interstellar Factors Contact") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
@@ -703,7 +716,9 @@ namespace ImportData
                     //Found in systems with medium-high security, an 'extraction' or 'refinery' economy
                     var rawMaterialEconomies = new List<string> {"Extraction", "Refinery"};
                     var rawMaterialTraders = stationsEDSM
-                        .Where(x => rawMaterialEconomies.Contains(x.Economy) &&
+                        .Where(x =>
+                                    x.Type != "Fleet Carrier" &&
+                                    rawMaterialEconomies.Contains(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Material Trader") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
@@ -717,7 +732,9 @@ namespace ImportData
                     //Found in systems with medium-high security, an 'industrial' economy
                     var manufacturedMaterialEconomies = new List<string> {"Industrial"};
                     var manufacturedMaterialTraders = stationsEDSM
-                        .Where(x => manufacturedMaterialEconomies.Contains(x.Economy) &&
+                        .Where(x =>
+                                    x.Type != "Fleet Carrier" &&
+                                    manufacturedMaterialEconomies.Contains(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Material Trader") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
@@ -731,7 +748,9 @@ namespace ImportData
                     //Found in systems with medium-high security, a 'high tech' or 'military' economy
                     var encodedDataEconomies = new List<string> {"High Tech", "Military"};
                     var encodedDataTraders = stationsEDSM
-                        .Where(x => encodedDataEconomies.Contains(x.Economy) &&
+                        .Where(x =>
+                                    x.Type != "Fleet Carrier" &&
+                                    encodedDataEconomies.Contains(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Material Trader") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
@@ -745,7 +764,9 @@ namespace ImportData
                     //Found in systems with an 'Industrial' economy
                     var humanTechnologyEconomies = new List<string> {"Industrial"};
                     var humanTechnologyBrokers = stationsEDSM
-                        .Where(x => humanTechnologyEconomies.Contains(x.Economy) &&
+                        .Where(x =>
+                                    x.Type != "Fleet Carrier" &&
+                                    humanTechnologyEconomies.Contains(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Technology Broker") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
@@ -759,13 +780,28 @@ namespace ImportData
                     //Found in systems with a 'high tech' economy
                     var guardianTechnologyEconomies = new List<string> {"High Tech"};
                     var guardianTechnologyBrokers = stationsEDSM
-                        .Where(x => guardianTechnologyEconomies.Contains(x.Economy) &&
+                        .Where(x =>
+                                    x.Type != "Fleet Carrier" &&
+                                    guardianTechnologyEconomies.Contains(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Technology Broker") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
 
                     StationSerialize(guardianTechnologyBrokers, @"Data\guardiantechnologybrokers.json");
+
+                    Console.WriteLine("finding full station list");
+
+                    //Full Station List
+                    var fullStationList = stationsEDSM
+                        .Where(x =>
+                                    x.Type != "Fleet Carrier" &&
+                                    x.PopulatedSystemEDDB != null &&
+                                    x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                                    x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+
+                    StationSerialize(fullStationList, @"Data\fullstationlist.json");
+
                 }
 
                 DownloadHotspotSystems(@"Data\painitesystems.json", "http://edtools.ddns.net/miner?a=r&n=", "Painite");

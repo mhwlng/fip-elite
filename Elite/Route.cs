@@ -14,7 +14,7 @@ namespace Elite
         public List<double> StarPos { get; set; }
         public string StarClass { get; set; }
         public double Distance { get; set; }
-
+        public  List<StationData> StationsInSystem { get; set; } 
     }
 
     public static class Route
@@ -35,13 +35,16 @@ namespace Elite
                         StarClass = x.StarClass,
                         StarPos = x.StarPos.ToList(),
                         StarSystem = x.StarSystem,
-                        SystemAddress = x.SystemAddress
+                        SystemAddress = x.SystemAddress,
                     }).Skip(1).ToList();
 
                 var lastLocation = info.Route[0].StarPos.ToList();
 
                 foreach (var route in RouteList)
                 {
+                    Station.SystemStations.TryGetValue(route.StarSystem, out var stationsInSystem);
+                    route.StationsInSystem = stationsInSystem;
+
                     var xs = lastLocation[0];
                     var ys = lastLocation[1];
                     var zs = lastLocation[2];

@@ -4,6 +4,7 @@
 @using System.Linq
 @{
     Layout = "layout.cshtml";
+    var jumpcount = 1;
 }
 
 <div class="main">
@@ -12,6 +13,19 @@
     {
         <div class="cardcaption">&nbsp;</div>
 
+        if (Model.RouteListCount > 0)
+        {
+            if (Model.RouteListCount == 1)
+            {
+                <div class="caption">1 jump (@Model.RouteListDistance.ToString("N0") Ly) left to @Model.RouteDestination </div>
+            }
+            else
+            {
+                <div class="caption">@Model.RouteListCount jumps (@Model.RouteListDistance.ToString("N0") Ly) left to @Model.RouteDestination </div>
+            }
+            <div>&nbsp;</div>
+        }
+
         <table>
             <tbody>
                 @if (Model.StarSystem != Model.FsdTargetName && Model.RemainingJumpsInRoute > 0)
@@ -19,7 +33,7 @@
                     if (!string.IsNullOrEmpty(Model.FsdTargetName))
                     {
                         <tr>
-                            <td class="caption">FSD Target</td>
+                            <td class="caption">Next Jump</td>
                             <td class="data">@Model.FsdTargetName</td>
                         </tr>
                     }
@@ -37,10 +51,6 @@
                             <td class="data">@Model.StarClass</td>
                         </tr>
                     }
-                    <tr>
-                        <td class="caption">&nbsp;&nbsp;&nbsp;Jumps Left</td>
-                        <td class="data">@Model.RemainingJumpsInRoute @(Model.RouteListDistance > 0 ? " ("+Model.RouteListDistance.ToString("N0")+" Ly)" : "") @(!string.IsNullOrEmpty(Model.RouteDestination) ? "to " + Model.RouteDestination : "")   </td>
-                    </tr>
 
                     <tr>
                         <td class="divider" colspan="2">&nbsp;</td>
@@ -239,22 +249,48 @@
                 @foreach (var m in Model.RouteList)
                 {
                     <tr>
-                        <td class="caption">Star System</td>
+                        <td class="caption">Jump #@jumpcount</td>
                         <td class="data">@m.StarSystem</td>
                     </tr>
-                    if (!string.IsNullOrEmpty(m.StarClass))
-                    {
-                        <tr>
-                            <td class="caption">&nbsp;&nbsp;&nbsp;Star Class</td>
-                            <td class="data">@m.StarClass</td>
-                        </tr>
-                    }
                     if (m.Distance > 0)
                     {
                         <tr>
-                            <td class="caption">&nbsp;&nbsp;&nbsp;Distance</td>
+                            <td class="caption">Distance</td>
                             <td class="data">@m.Distance.ToString("N0") Ly</td>
                         </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.StarClass))
+                    {
+                        <tr>
+                            <td class="caption">Star Class</td>
+                            <td class="data">@m.StarClass</td>
+                        </tr>
+                    }
+
+
+                    if (m.StationsInSystem != null)
+                    {
+                        foreach (var n in m.StationsInSystem)
+                        {
+                            <tr>
+                                <td class="caption">&nbsp;&nbsp;Station</td>
+                                <td class="data">@n.Name</td>
+                            </tr>
+                            if (!string.IsNullOrEmpty(n.Type))
+                            {
+                                <tr>
+                                    <td class="caption">&nbsp;&nbsp;&nbsp;&nbsp;Type</td>
+                                    <td class="data">@n.Type</td>
+                                </tr>
+                            }
+                            if (n.DistanceToArrival > 0)
+                            {
+                                <tr>
+                                    <td class="caption">&nbsp;&nbsp;&nbsp;&nbsp;Dist. from star</td>
+                                    <td class="data">@n.DistanceToArrival.ToString("N1") Ls</td>
+                                </tr>
+                            }
+                        }
                     }
 
                     if (!((List<Elite.RouteItem>)Model.RouteList).Last().Equals((Elite.RouteItem)m))
@@ -263,6 +299,7 @@
                             <td class="divider" colspan="2">&nbsp;</td>
                         </tr>
                     }
+                    jumpcount++;
                 }
             </tbody>
         </table>
