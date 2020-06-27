@@ -519,8 +519,10 @@ namespace ImportData
 
                 if (NeedToUpdateFile(@"Data\cnbsystems.json", 1440))
                 {
+                    // there are multiple stations with the same name ???
                     var populatedSystemsEDDBbyName = JsonConvert
                         .DeserializeObject<List<PopulatedSystemEDDB>>(jsonPopulatedsystemsEDDBText)
+                        .GroupBy(x => x.Name).Select(x => x.First())
                         .ToDictionary(x => x.Name);
 
                     DownloadCnbSystems(@"Data\cnbsystems.json", populatedSystemsEDDBbyName);
