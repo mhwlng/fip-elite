@@ -912,6 +912,46 @@ namespace Elite
                     LocationData.BodyType = "Station";
                     break;
 
+                case "CarrierJump":
+                    //When written: when jumping from one star system to another when docked on a a carrier
+                    var carrierJumpInfo = (CarrierJumpEvent.CarrierJumpEventArgs)e;
+
+                    if (carrierJumpInfo.Docked)
+                    {
+                        Ships.HandleShipFsdJump(carrierJumpInfo.StarSystem, carrierJumpInfo.StarPos.ToList());
+
+                        LocationData.Body = carrierJumpInfo.Body;
+
+                        LocationData.StarSystem = carrierJumpInfo.StarSystem;
+
+                        LocationData.StarPos = carrierJumpInfo.StarPos.ToList();
+
+                        Ships.HandleShipDistance(LocationData.StarPos);
+
+                        History.AddTravelPos(LocationData.StarPos);
+
+                        Poi.NearbyPoiList = Poi.GetNearestPois(LocationData.StarPos);
+
+                        HandleJson();
+
+                        LocationData.StartJump = false;
+                        LocationData.JumpToSystem = "";
+                        LocationData.JumpToStarClass = "";
+                        LocationData.JumpType = "";
+
+                        LocationData.PowerplayState = carrierJumpInfo.PowerplayState.ToString();
+                        LocationData.Powers = string.Join(", ", carrierJumpInfo.Powers);
+
+                        LocationData.SystemAllegiance = carrierJumpInfo.SystemAllegiance;
+                        LocationData.SystemFaction = carrierJumpInfo.SystemFaction?.Name;
+                        LocationData.SystemSecurity = carrierJumpInfo.SystemSecurity_Localised;
+                        LocationData.SystemEconomy = carrierJumpInfo.SystemEconomy_Localised;
+                        LocationData.SystemGovernment = carrierJumpInfo.SystemGovernment_Localised;
+                        LocationData.Population = carrierJumpInfo.Population;
+                    }
+
+                    break;
+
                 case "FSDJump":
                     //When written: when jumping from one star system to another
                     var fsdJumpInfo = (FSDJumpEvent.FSDJumpEventArgs) e;

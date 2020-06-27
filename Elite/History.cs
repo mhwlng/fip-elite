@@ -32,6 +32,13 @@ namespace Elite
             public List<double> StarPos { get; set; }
         }
 
+        public class CarrierJumpInfo
+        {
+            public bool Docked { get; set; }
+            public string StarSystem { get; set; }
+            public List<double> StarPos { get; set; }
+        }
+
         public static List<PointF> TravelHistoryPointsL = new List<PointF>();
         public static List<PointF> TravelHistoryPointsP = new List<PointF>();
 
@@ -165,6 +172,22 @@ namespace Elite
                                 {
                                     var json = streamReader.ReadLine();
 
+                                    if (json?.Contains("\"event\":\"CarrierJump\",") == true)
+                                    {
+                                        var info = JsonConvert.DeserializeObject<CarrierJumpInfo>(json);
+
+                                        if (info.Docked)
+                                        {
+                                            if (info.StarPos?.Count == 3)
+                                            {
+                                                AddTravelPos(info.StarPos);
+                                                lastJumpedSystem = info.StarSystem;
+                                            }
+
+                                            Ships.HandleShipFsdJump(info.StarSystem, info.StarPos.ToList());
+                                        }
+                                    }
+                                    else
                                     if (json?.Contains("\"event\":\"FSDJump\",") == true)
                                     {
                                         var info = JsonConvert.DeserializeObject<FSDJumpInfo>(json);

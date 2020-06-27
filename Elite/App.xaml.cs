@@ -350,14 +350,14 @@ namespace Elite
                             if (deviceInstance.Type >= DeviceType.Joystick &&
                                 deviceInstance.Type <= DeviceType.FirstPerson)
                             {
-                                Log.Info("P:" + deviceInstance.ProductGuid.ToString().Substring(0, 4) + " - V:" +
+                                Log.Info("PID:" + deviceInstance.ProductGuid.ToString().Substring(0, 4) + " - VID:" +
                                          deviceInstance.ProductGuid.ToString().Substring(4, 4) + " - " +
                                          deviceInstance.Type.ToString().PadRight(11) + " - " +
                                          deviceInstance.ProductGuid + " - " + deviceInstance.InstanceGuid + " - " +
                                          deviceInstance.InstanceName.Trim().Replace("\0", ""));
 
                                 if (_joystick == null &&
-                                    deviceInstance.ProductGuid.ToString().ToUpper().StartsWith(_pid + _vid))
+                                    deviceInstance.ProductGuid.ToString().ToUpper().StartsWith(_pid.ToUpper() + _vid.ToUpper()))
                                 {
                                     Log.Info(
                                         $"Using Joystick {deviceInstance.InstanceName.Trim().Replace("\0", "")} with Instance Guid {deviceInstance.InstanceGuid}");
