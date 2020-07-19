@@ -13,6 +13,19 @@ namespace Elite
         public long SystemAddress { get; set; }
         public List<double> StarPos { get; set; }
         public string StarClass { get; set; }
+        public string IsFuelStar
+        {
+            get
+            {
+                string[] fuelStars = { "K", "G", "B", "F", "O", "A", "M" };
+
+                return fuelStars.Contains(StarClass) ? "(Fuel Star)" : "";
+            }
+        }
+
+        public double FuelCost { get; set; }
+        public string FuelWarning { get; set; }
+
         public double Distance { get; set; }
         public  List<StationData> StationsInSystem { get; set; } 
     }

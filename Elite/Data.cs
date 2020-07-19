@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
+using System.Linq;
 using Elite.RingBuffer;
 using EliteJournalReader;
 using EliteJournalReader.Events;
@@ -290,6 +292,16 @@ namespace Elite
 
             public int RemainingJumpsInRoute { get; set; }
             public string StarClass { get; set; }
+
+            public string IsFuelStar
+            {
+                get
+                {
+                    string[] fuelStars = { "K", "G", "B", "F", "O", "A", "M" };
+
+                    return fuelStars.Contains(StarClass) ? "(Fuel Star)" : "";
+                }
+            }
 
             public string FsdTargetName { get; set; }
 

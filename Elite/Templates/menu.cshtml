@@ -12,28 +12,10 @@
                     <td><div class="@(Model.CurrentTab == LcdTab.Navigation ? "highlight" : "") @(Model.Cursor == LcdTab.Navigation ? "menucursor" : "")">NAVIGATION</div></td>
                 </tr>
                 <tr>
-                    <td>
-                    @if (Model.TargetLocked)
-                    {
-                        <div class="@(Model.CurrentTab == LcdTab.Target ? "highlight" : "") @(Model.Cursor == LcdTab.Target ? "menucursor" : "")">TARGET</div>
-                    }
-                    else
-                    {
-                        <div class="disabled">TARGET</div>
-                    }
-                    </td>
+                    <td><div class="@(Model.CurrentTab == LcdTab.Target ? "highlight" : "") @(Model.Cursor == LcdTab.Target ? "menucursor" : "")">TARGET</div></td>
                 </tr>
                 <tr>
-                    <td>
-                    @if (Model.MissionCount > 0)
-                    {
-                        <div class="@(Model.CurrentTab == LcdTab.Missions ? "highlight" : "") @(Model.Cursor == LcdTab.Missions ? "menucursor" : "")">MISSIONS</div>
-                    }
-                    else
-                    {
-                        <div class="disabled">MISSIONS</div>
-                    }
-                    </td>
+                    <td><div class="@(Model.CurrentTab == LcdTab.Missions ? "highlight" : "") @(Model.Cursor == LcdTab.Missions ? "menucursor" : "")">MISSIONS</div></td>
                 </tr>
                 <tr>
                     <td><div class="navigation @(Model.Cursor == LcdTab.ShipMenu ? "menucursor" : "")">SHIP &#x25b6;</div></td>
@@ -56,16 +38,7 @@
                     <td><div class="@(Model.CurrentTab == LcdTab.Ship ? "highlight" : "") @(Model.Cursor == LcdTab.Ship ? "menucursor" : "")">SHIP</div></td>
                 </tr>
                 <tr>
-                    <td>
-                        @if (Model.MaterialCount > 0)
-                        {
-                            <div class="@(Model.CurrentTab == LcdTab.Materials ? "highlight" : "") @(Model.Cursor == LcdTab.Materials ? "menucursor" : "")">MATERIALS</div>
-                        }
-                        else
-                        {
-                            <div class="disabled">MATERIALS</div>
-                        }
-                    </td>
+                    <td><div class="@(Model.CurrentTab == LcdTab.Materials ? "highlight" : "") @(Model.Cursor == LcdTab.Materials ? "menucursor" : "")">MATERIALS</div></td>
                 </tr>
                 <tr>
                     <td>

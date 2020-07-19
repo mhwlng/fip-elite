@@ -5,7 +5,12 @@
 <div class="main">
     
     <div class="cardcaption">&nbsp;</div>
-
+    
+    @if (!Model.TargetLocked)
+    {
+        <div class="cardcaption data">NO TARGET</div>
+    }
+    
     <table>
         <tbody>
         @if (Model.TargetLocked)

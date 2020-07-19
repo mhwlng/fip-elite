@@ -5,6 +5,7 @@
 @{
     Layout = "layout.cshtml";
     var jumpcount = 1;
+    var fuelMain = Model.CurrentShip.CurrentFuelMain;
 }
 
 <div class="main">
@@ -44,11 +45,26 @@
                             <td class="data">@Model.JumpDistance.ToString("N0") Ly</td>
                         </tr>
                     }
+                    if (Model.FuelCost > 0 && Model.CurrentShip.CurrentFuelMain > 0 && Model.CurrentShip.CurrentFuelMain > Model.FuelCost)
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Fuel Cost</td>
+                            <td class="data">@Model.FuelCost.ToString("N1") T (remaining @((Model.CurrentShip.CurrentFuelMain - Model.FuelCost).ToString("N1")) T)</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(Model.FuelWarning))
+                    {
+                        <tr>
+                            <td class="caption">&nbsp;&nbsp;&nbsp;Warning</td>
+                            <td class="data alarm">@Model.FuelWarning</td>
+                        </tr>
+                    }
+
                     if (!string.IsNullOrEmpty(Model.StarClass))
                     {
                         <tr>
                             <td class="caption">&nbsp;&nbsp;&nbsp;Star Class</td>
-                            <td class="data">@Model.StarClass</td>
+                            <td class="data">@Model.StarClass @Model.IsFuelStar</td>
                         </tr>
                     }
 
@@ -259,11 +275,25 @@
                             <td class="data">@m.Distance.ToString("N0") Ly</td>
                         </tr>
                     }
+                    if (m.FuelCost > 0 && fuelMain > 0 && fuelMain > m.FuelCost)
+                    {
+                        <tr>
+                            <td class="caption">Fuel Cost</td>
+                            <td class="data">@m.FuelCost.ToString("N1") T (remaining @((fuelMain - m.FuelCost).ToString("N1")) T)</td>
+                        </tr>
+                    }
+                    if (!string.IsNullOrEmpty(m.FuelWarning))
+                    {
+                        <tr>
+                            <td class="caption">Warning</td>
+                            <td class="data alarm">@m.FuelWarning</td>
+                        </tr>
+                    }
                     if (!string.IsNullOrEmpty(m.StarClass))
                     {
                         <tr>
                             <td class="caption">Star Class</td>
-                            <td class="data">@m.StarClass</td>
+                            <td class="data">@m.StarClass @m.IsFuelStar</td>
                         </tr>
                     }
 
@@ -300,6 +330,7 @@
                         </tr>
                     }
                     jumpcount++;
+                    fuelMain -= m.FuelCost;
                 }
             </tbody>
         </table>

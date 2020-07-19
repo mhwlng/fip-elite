@@ -47,11 +47,11 @@
                 {
                     <tr>
                         <td class="caption">Fuel Capacity</td>
-                        <td class="data">@Model.CurrentShip.FuelCapacity.ToString("N0") T</td>
+                        <td class="data">@Model.CurrentShip.FuelCapacity.ToString("N1") T</td>
                     </tr>
                     <tr>
                         <td class="caption">Fuel Level</td>
-                        <td class="data">@Model.CurrentShip.FuelPercent %</td>
+                        <td class="data">@Model.CurrentShip.FuelPercent.ToString("N1") % (@Model.CurrentShip.CurrentFuelMain.ToString("N1") T)</td>
                     </tr>
                 }
                 @if (Model.CurrentShip.HullHealth >= 0 && Model.CurrentShip.HullHealth < 100)

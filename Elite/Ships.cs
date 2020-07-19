@@ -179,6 +179,41 @@ namespace Elite
 
         public static List<ShipData> ShipsList = new List<ShipData>();
 
+        public static double GetFuelCostForNextJump(double jumpDistance, double fuelMain)
+        {
+            // Thanks to https://forums.frontier.co.uk/threads/the-science-of-the-guardian-fsd-booster-2-0.436365/ for the formula
+
+            /* test data
+            RatingConstant = 12;
+            MaxFuelPerJump = 5;
+            OptimalMass = 1050;
+            UnladenMass = 308.12;
+            CurrentFuelMain = 1;
+            CurrentCargo = 0;
+            PowerConstant = 2.45;
+            BoostConstant = 7.75;*/
+
+
+            var shipData = GetCurrentShip();
+
+            if (shipData != null && fuelMain > 0 && shipData.UnladenMass > 0 && shipData.RatingConstant > 0 && shipData.PowerConstant > 0)
+            {
+                var massRatio = shipData.OptimalMass / (shipData.UnladenMass + fuelMain + shipData.CurrentCargo);
+
+                var maxJumpRange = massRatio * Math.Pow(1000.0 * shipData.MaxFuelPerJump / shipData.RatingConstant, 1.0 / shipData.PowerConstant);
+
+                var boostFactor = maxJumpRange / (maxJumpRange + shipData.BoostConstant);
+
+                var fuel = shipData.RatingConstant * 0.001 * Math.Pow(jumpDistance / massRatio * boostFactor, shipData.PowerConstant);
+
+                return fuel;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         public static ShipData GetCurrentShip()
         {
             return ShipsList.FirstOrDefault(x => x.Stored == false);

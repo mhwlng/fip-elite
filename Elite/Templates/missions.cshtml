@@ -10,6 +10,11 @@
 <div class="main">
     
     <div class="cardcaption">&nbsp;</div>
+    
+    @if (Model.MissionList.Count == 0)
+    {
+        <div class="cardcaption data">NO MISSIONS</div>
+    }
 
     <table>
         <tbody>

@@ -11,6 +11,11 @@
 <div class="main">
 
     <div class="cardcaption">&nbsp;</div>
+    
+    @if (Model.MaterialCount == 0)
+    {
+        <div class="cardcaption data">NO MATERIALS</div>
+    }
 
     <table class="zebratable">
         <tbody>

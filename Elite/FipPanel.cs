@@ -392,35 +392,6 @@ namespace Elite
 
                             switch (_currentTabCursor)
                             {
-                                case LcdTab.ShipMenu:
-                                    //LocationsMenu > ShipMenu > Missions > Target > Navigation > Commander
-
-                                    _currentTabCursor -= 1;
-
-                                    if (Missions.MissionList.Count == 0)
-                                    {
-                                        _currentTabCursor -= 1;
-                                    }
-                                    else break;
-
-                                    if (!Data.TargetData.TargetLocked)
-                                    {
-                                        _currentTabCursor -= 1;
-                                    }
-
-                                    break;
-
-                                case LcdTab.Missions:
-                                    //LocationsMenu > ShipMenu > Missions > Target > Navigation > Commander
-
-                                    _currentTabCursor -= 1;
-
-                                    if (!Data.TargetData.TargetLocked)
-                                    {
-                                        _currentTabCursor -= 1;
-                                    }
-
-                                    break;
 
                                 case LcdTab.Events:
                                     //Events > Engineer > Cargo > Materials > Ship >  ShipBack
@@ -434,24 +405,6 @@ namespace Elite
 
                                     break;
 
-                                case LcdTab.Engineer:
-                                    //Events > Engineer > Cargo > Materials > Ship >  ShipBack
-
-                                    _currentTabCursor -= 1;
-
-                                    break;
-
-                                case LcdTab.Cargo:
-                                    //Events > Engineer > Cargo > Materials > Ship >  ShipBack
-
-                                    _currentTabCursor -= 1;
-
-                                    if (Material.MaterialList.Count == 0)
-                                    {
-                                        _currentTabCursor -= 1;
-                                    }
-
-                                    break;
                                 case LcdTab.Commander:
                                     _currentTabCursor = LcdTab.LocationsMenu;
                                     break;
@@ -486,52 +439,6 @@ namespace Elite
 
                             switch (_currentTabCursor)
                             {
-                                case LcdTab.Navigation:
-
-                                    //Commander > Navigation > Target > Missions > ShipMenu > LocationsMenu
-
-                                    _currentTabCursor += 1;
-
-                                    if (!Data.TargetData.TargetLocked)
-                                    {
-                                        _currentTabCursor += 1;
-                                    }
-                                    else break;
-
-                                    if (Missions.MissionList.Count == 0)
-                                    {
-                                        _currentTabCursor += 1;
-                                    }
-                                    break;
-                                case LcdTab.Target:
-                                    //Commander > Navigation > Target > Missions > ShipMenu > LocationsMenu
-
-                                    _currentTabCursor += 1;
-
-                                    if (Missions.MissionList.Count == 0)
-                                    {
-                                        _currentTabCursor += 1;
-                                    }
-                                    break;
-
-                                case LcdTab.Ship:
-                                    //ShipBack > Ship > Materials > Cargo > Engineer > Events 
-
-                                    _currentTabCursor += 1;
-
-                                    if (Material.MaterialList.Count == 0)
-                                    {
-                                        _currentTabCursor += 1;
-                                    }
-
-                                    break;
-
-                                case LcdTab.Materials:
-                                    //ShipBack > Ship > Materials > Cargo > Engineer > Events 
-
-                                    _currentTabCursor += 1;
-
-                                    break;
 
                                 case LcdTab.Cargo:
                                     //ShipBack > Ship > Materials > Cargo > Engineer > Events 
@@ -796,17 +703,10 @@ namespace Elite
                                         mustRefresh = SetTab(LcdTab.Navigation);
                                         break;
                                     case 128:
-                                        if (Data.TargetData.TargetLocked)
-                                        {
-                                            mustRefresh = SetTab(LcdTab.Target);
-                                        }
-
+                                        mustRefresh = SetTab(LcdTab.Target);
                                         break;
                                     case 256:
-                                        if (Missions.MissionList.Count > 0)
-                                        {
-                                            mustRefresh = SetTab(LcdTab.Missions);
-                                        }
+                                        mustRefresh = SetTab(LcdTab.Missions);
                                         break;
                                     case 512:
                                         mustRefresh = true;
@@ -839,10 +739,7 @@ namespace Elite
                                         mustRefresh = SetTab(LcdTab.Ship);
                                         break;
                                     case 128:
-                                        if (Material.MaterialList.Count > 0)
-                                        {
-                                            mustRefresh = SetTab(LcdTab.Materials);
-                                        }
+                                        mustRefresh = SetTab(LcdTab.Materials);
                                         break;
                                     case 256:
                                         mustRefresh = SetTab(LcdTab.Cargo);
@@ -1156,19 +1053,7 @@ namespace Elite
         {
             lock (_refreshDevicePageLock)
             {
-                if (Missions.MissionList.Count == 0 && _currentTab == LcdTab.Missions)
-                {
-                    SetTab(LcdTab.Navigation);
-                }
-                else if (!Data.TargetData.TargetLocked && _currentTab == LcdTab.Target)
-                {
-                    SetTab(LcdTab.Navigation);
-                }
-                else if (Material.MaterialList.Count == 0 && _currentTab == LcdTab.Materials)
-                {
-                    SetTab(LcdTab.Ship);
-                }
-                else if (Engineer.BlueprintShoppingList.Count == 0 && _currentTab == LcdTab.Engineer)
+                if (Engineer.BlueprintShoppingList.Count == 0 && _currentTab == LcdTab.Engineer)
                 {
                     SetTab(LcdTab.Ship);
                 }
@@ -1308,6 +1193,8 @@ namespace Elite
 
                                     case LcdTab.Navigation:
 
+                                        var currentShip = Ships.ShipsList.FirstOrDefault(x => x.Stored == false);
+
                                         var routeList = new List<RouteItem>();
 
                                         if (Data.LocationData.StarSystem != Data.LocationData.FsdTargetName &&
@@ -1319,18 +1206,55 @@ namespace Elite
                                         }
 
                                         var jumpDistance = 0.0;
+                                        var fuelCost = 0.0;
+                                        var fuelWarning = "";
+
+                                        var fuelMain = currentShip?.CurrentFuelMain ?? 0;
+
+                                        if (fuelMain > 0)
+                                        {
+                                            for (var index = 0; index < routeList.Count; index++)
+                                            {
+                                                var r = routeList[index];
+
+                                                if (fuelMain > 0)
+                                                {
+                                                    r.FuelCost = Ships.GetFuelCostForNextJump(r.Distance, fuelMain);
+                                                }
+
+                                                if (index > 0 && (fuelMain <= 0 || r.FuelCost > fuelMain))
+                                                {
+                                                    for (var index2 = index - 1; index2 >= 0; index2--)
+                                                    {
+                                                        var r2 = routeList[index2];
+
+                                                        if (!string.IsNullOrEmpty(r2.IsFuelStar))
+                                                        {
+                                                            r2.FuelWarning = "Last chance to scoop fuel";
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    break;
+                                                }
+
+                                                if (fuelMain > 0)
+                                                {
+                                                    fuelMain -= r.FuelCost;
+                                                }
+                                            }
+                                        }
+
                                         if (routeList.Count >= 1)
                                         {
                                             var nextJump = routeList[0];
                                             if (nextJump.StarSystem == Data.LocationData.FsdTargetName)
                                             {
                                                 jumpDistance = nextJump.Distance;
+                                                fuelCost = nextJump.FuelCost;
+                                                fuelWarning = nextJump.FuelWarning;
                                             }
                                         }
-
-
-
-
 
                                         str =
                                             Engine.Razor.Run("navigation.cshtml", null, new
@@ -1338,6 +1262,8 @@ namespace Elite
                                                 CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
                                                 CurrentCard = _currentCard[(int)_currentTab],
+
+                                                CurrentShip = currentShip,
 
                                                 StarSystem = Data.LocationData.StarSystem,
 
@@ -1383,6 +1309,8 @@ namespace Elite
 
                                                 StarClass = Data.LocationData.StarClass,
 
+                                                IsFuelStar = Data.LocationData.IsFuelStar,
+
                                                 FsdTargetName = Data.LocationData.FsdTargetName,
 
                                                 Settlement = Data.LocationData.Settlement,
@@ -1408,7 +1336,9 @@ namespace Elite
                                                 RouteListCount = routeList.Count,
                                                 RouteListDistance = routeList.Sum( x => x.Distance),
                                                 RouteDestination = routeList.LastOrDefault()?.StarSystem ?? "",
-                                                JumpDistance = jumpDistance
+                                                JumpDistance = jumpDistance,
+                                                FuelCost = fuelCost,
+                                                FuelWarning = fuelWarning
 
                                             });
 
@@ -1532,6 +1462,8 @@ namespace Elite
                                                 CurrentTab = _currentTab,
                                                 CurrentPage = _currentPage,
                                                 CurrentCard = _currentCard[(int) _currentTab],
+
+                                                MaterialCount = Material.MaterialList.Count,
 
                                                 Raw = Material.MaterialList.Where(x => x.Value.Category == "Raw")
                                                     .OrderBy(x => x.Value.Name),
