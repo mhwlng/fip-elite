@@ -416,7 +416,7 @@ namespace ImportData
                     var currentTime = ConvertToUnixTimestamp(DateTime.UtcNow);
 
 
-                    var stationInfo = doc.DocumentNode.SelectSingleNode("//table[@id='commodtable']")
+                    var stationInfo = doc.DocumentNode.SelectSingleNode("//table[@class='tablesorter']")
                         .Descendants("tr")
                         .Skip(1)
                         .Where(tr => !tr.HasClass("hideable1") /*&& !tr.HasClass("hideable2")*/ && !tr.HasClass("hideable3"))
