@@ -21,25 +21,32 @@ namespace Elite
 
         }
 
+        public static readonly object RefreshCargoLock = new object();
+
+
         public static Dictionary<string, CargoItem> CargoList = new Dictionary<string, CargoItem>();
         
         public static void HandleCargoEvent(CargoEvent.CargoEventArgs info)
         {
-            if (info?.Inventory == null || info?.Vessel != "Ship") return;
-
-            CargoList = new Dictionary<string, CargoItem>();
-
-            foreach (var e in info.Inventory)
+            lock (RefreshCargoLock)
             {
-                CargoList.Add(e.Name + "_" + e.MissionID,
-                    new CargoItem
-                    {
-                        Name = e.Name_Localised ??
-                               CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower()),
-                        Count = e.Count,
-                        Stolen = e.Stolen,
-                        MissionID = e.MissionID
-                    });
+
+                if (info?.Inventory == null || info?.Vessel != "Ship") return;
+
+                CargoList = new Dictionary<string, CargoItem>();
+
+                foreach (var e in info.Inventory)
+                {
+                    CargoList.Add(e.Name + "_" + e.MissionID,
+                        new CargoItem
+                        {
+                            Name = e.Name_Localised ??
+                                   CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower()),
+                            Count = e.Count,
+                            Stolen = e.Stolen,
+                            MissionID = e.MissionID
+                        });
+                }
             }
 
         }

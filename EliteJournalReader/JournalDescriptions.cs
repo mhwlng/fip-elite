@@ -269,18 +269,6 @@ namespace EliteJournalReader
         Console
     }
 
-    public enum PowerplayState
-    {
-        Unknown,
-        InPrepareRadius,
-        Prepared,
-        Exploited,
-        Contested,
-        Controlled,
-        Turmoil,
-        HomeSystem
-    }
-
     public enum TerraformState
     {
         Unknown,

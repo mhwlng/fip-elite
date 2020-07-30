@@ -581,6 +581,10 @@ namespace ImportData
                     var aislingDuval = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Aisling Duval" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -592,6 +596,10 @@ namespace ImportData
                     var archonDelaine = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Archon Delaine" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -603,6 +611,10 @@ namespace ImportData
                     var arissaLavignyDuval = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Arissa Lavigny-Duval" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -614,6 +626,10 @@ namespace ImportData
                     var dentonPatreus = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Denton Patreus" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -625,6 +641,10 @@ namespace ImportData
                     var edmundMahon = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Edmund Mahon" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -636,6 +656,10 @@ namespace ImportData
                     var feliciaWinters = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Felicia Winters" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -647,6 +671,10 @@ namespace ImportData
                     var liYongRui = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Li Yong-Rui" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -658,6 +686,10 @@ namespace ImportData
                     var pranavAntal = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Pranav Antal" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -669,6 +701,10 @@ namespace ImportData
                     var yuriGrom = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Yuri Grom" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -680,6 +716,10 @@ namespace ImportData
                     var zacharyHudson = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Zachary Hudson" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -691,6 +731,10 @@ namespace ImportData
                     var zeminaTorval = stationsEDSM
                         .Where(x =>
                             x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
                             x.PopulatedSystemEDDB.Power == "Zemina Torval" &&
                             x.PopulatedSystemEDDB.PowerState == "Control" &&
@@ -705,6 +749,10 @@ namespace ImportData
                     var interStellarFactors = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
+                                    x.Government != "Fleet Carrier" &&
+                                    x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Government) &&
+                                    !string.IsNullOrEmpty(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Interstellar Factors Contact") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
@@ -720,6 +768,10 @@ namespace ImportData
                     var rawMaterialTraders = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
+                                    x.Government != "Fleet Carrier" &&
+                                    x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Government) &&
+                                    !string.IsNullOrEmpty(x.Economy) &&
                                     rawMaterialEconomies.Contains(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Material Trader") &&
                                     x.PopulatedSystemEDDB != null &&
@@ -736,6 +788,10 @@ namespace ImportData
                     var manufacturedMaterialTraders = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
+                                    x.Government != "Fleet Carrier" &&
+                                    x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Government) &&
+                                    !string.IsNullOrEmpty(x.Economy) &&
                                     manufacturedMaterialEconomies.Contains(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Material Trader") &&
                                     x.PopulatedSystemEDDB != null &&
@@ -752,6 +808,10 @@ namespace ImportData
                     var encodedDataTraders = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
+                                    x.Government != "Fleet Carrier" &&
+                                    x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Government) &&
+                                    !string.IsNullOrEmpty(x.Economy) &&
                                     encodedDataEconomies.Contains(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Material Trader") &&
                                     x.PopulatedSystemEDDB != null &&
@@ -768,6 +828,10 @@ namespace ImportData
                     var humanTechnologyBrokers = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
+                                    x.Government != "Fleet Carrier" &&
+                                    x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Government) &&
+                                    !string.IsNullOrEmpty(x.Economy) &&
                                     humanTechnologyEconomies.Contains(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Technology Broker") &&
                                     x.PopulatedSystemEDDB != null &&
@@ -784,6 +848,10 @@ namespace ImportData
                     var guardianTechnologyBrokers = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
+                                    x.Government != "Fleet Carrier" &&
+                                    x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Government) &&
+                                    !string.IsNullOrEmpty(x.Economy) &&
                                     guardianTechnologyEconomies.Contains(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Technology Broker") &&
                                     x.PopulatedSystemEDDB != null &&
@@ -798,6 +866,10 @@ namespace ImportData
                     var fullStationList = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
+                                    x.Government != "Fleet Carrier" &&
+                                    x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Government) &&
+                                    !string.IsNullOrEmpty(x.Economy) &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();

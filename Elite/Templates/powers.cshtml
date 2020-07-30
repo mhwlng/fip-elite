@@ -10,12 +10,16 @@
 <div class="main">
 
     <div class="cardcaption">&nbsp;</div>
+    
+    
+    @if (Model.NearbyPowerStationList != null)
+    {
 
-    <div class="imgcenter"><img src="powers\@(((List<StationData>)Model.NearbyPowerStationList[(Station.PowerTypes)Model.CurrentCard]).FirstOrDefault().Powers).png" /></div>
+        <div class="imgcenter"><img src="powers\@(((List<StationData>) Model.NearbyPowerStationList[(Station.PowerTypes) Model.CurrentCard]).FirstOrDefault().Powers).png"/></div>
 
-    <table>
-        <tbody>
-            @foreach (var m in Model.NearbyPowerStationList[(Station.PowerTypes)Model.CurrentCard])
+        <table>
+            <tbody>
+            @foreach (var m in Model.NearbyPowerStationList[(Station.PowerTypes) Model.CurrentCard])
             {
                 if (!string.IsNullOrEmpty(m.SystemName))
                 {
@@ -104,15 +108,16 @@
                     </tr>
                 }
 
-                if (!((List<StationData>)Model.NearbyPowerStationList[(Station.PowerTypes)Model.CurrentCard]).Last().Equals((StationData)m))
+                if (!((List<StationData>) Model.NearbyPowerStationList[(Station.PowerTypes) Model.CurrentCard]).Last().Equals((StationData) m))
                 {
                     <tr>
                         <td class="divider" colspan="2">&nbsp;</td>
                     </tr>
                 }
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
+    }
 
 </div>

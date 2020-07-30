@@ -63,17 +63,18 @@ The local api must be active in EDengineer and listening on port 44405
 ![Screenshot 9](https://i.imgur.com/WJHBVIX.png)
 ![Screenshot 10](https://i.imgur.com/SaMQ2H2.png)
 ![Screenshot 11](https://i.imgur.com/X5kL0fn.png)
-![Screenshot 12](https://i.imgur.com/ZOcUfyI.png)
-![Screenshot 13](https://i.imgur.com/LyfdMTh.png)
-![Screenshot 14](https://i.imgur.com/iqZVk2Y.png)
-![Screenshot 15](https://i.imgur.com/ofaRPKm.png)
-![Screenshot 16](https://i.imgur.com/zm3Xrm9.png)
-![Screenshot 17](https://i.imgur.com/p8gW2Fr.png)
-![Screenshot 18](https://i.imgur.com/QoBYgCT.png)
-![Screenshot 19](https://i.imgur.com/wFsMD4t.png)
-![Screenshot 20](https://i.imgur.com/zGm6qOR.png)
-![Screenshot 21](https://i.imgur.com/ncHyT8X.png)
-![Screenshot 22](https://i.imgur.com/1ngN8cF.png)
+![Screenshot 12](https://i.imgur.com/WepiQbs.png)
+![Screenshot 13](https://i.imgur.com/ZOcUfyI.png)
+![Screenshot 14](https://i.imgur.com/LyfdMTh.png)
+![Screenshot 15](https://i.imgur.com/iqZVk2Y.png)
+![Screenshot 16](https://i.imgur.com/ofaRPKm.png)
+![Screenshot 17](https://i.imgur.com/zm3Xrm9.png)
+![Screenshot 18](https://i.imgur.com/p8gW2Fr.png)
+![Screenshot 19](https://i.imgur.com/QoBYgCT.png)
+![Screenshot 20](https://i.imgur.com/wFsMD4t.png)
+![Screenshot 21](https://i.imgur.com/zGm6qOR.png)
+![Screenshot 22](https://i.imgur.com/ncHyT8X.png)
+![Screenshot 23](https://i.imgur.com/1ngN8cF.png)
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 
@@ -103,7 +104,7 @@ https://github.com/msarilar/EDEngineer
 
 DaftMav for POI list [see here](https://www.reddit.com/r/EliteDangerous/comments/9mfiug/edison_a_tool_which_helps_getting_to_planet/)
 
-https://eddb.io/ and https://www.edsm.net/ for station and system data
+https://eddb.io/ and https://www.edsm.net/ for station, system and body data
 
 https://inara.cz/ for pricing data
 

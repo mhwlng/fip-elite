@@ -64,10 +64,10 @@ namespace Elite
 
         LocationsBack = 13, // <- back
         POI = 14,
-        Map = 15,
-        Powers = 16,
-        Mining = 17
-        // empty
+        Galaxy = 15,
+        System = 16,
+        Powers = 17,
+        Mining = 18
 
     }
 
@@ -94,6 +94,238 @@ namespace Elite
 
     public class MyHtmlHelper
     {
+        public IEncodedString MaterialsString(int i)
+        {
+            var ms = "";
+
+            var materials = SystemInfo.SystemData.Data.bodies[i].materials;
+
+            foreach (var m in materials)
+            {
+                SystemInfo.PeriodicElements.TryGetValue(m.Key, out var elem);
+                if (!string.IsNullOrEmpty(elem))
+                {
+                    ms += elem;
+                }
+                else
+                {
+                    ms += m.Key;
+                }
+                ms +=  "&nbsp;(" + m.Value.ToString("N1") + "%) ";
+
+            }
+
+            return new RawString(ms.Trim());
+
+        }
+
+        public IEncodedString BodyTreeElement1(int i)
+        {
+            var parents = SystemInfo.SystemData.Data.bodies[i].parents;
+
+            var colcount = parents?.Where(x => !x.ContainsKey("Null")).ToList().Count ?? 0;
+
+            int[] topLineHide = new int[100];
+
+            for (int k = i ; k < SystemInfo.SystemData.Data.bodies.Count; k++)
+            {
+                var rowParents = SystemInfo.SystemData.Data.bodies[k].parents;
+                var rowColcount = rowParents?.Where(x => !x.ContainsKey("Null")).ToList().Count ?? 0;
+
+                for (int j = 0; j < rowColcount; j++)
+                {
+                    if (topLineHide[j] != 2)
+                    {
+                        if (rowColcount > 0 && j < rowColcount - 1)
+                        {
+                            topLineHide[j] = 1;
+                        }
+                        else
+                        {
+                            topLineHide[j] = 2;
+                        }
+                    }
+                }
+
+                if (rowColcount == 0)
+                    break;
+            }
+
+            var s = "";
+
+            for (int j = 0; j < colcount; j++)
+            {
+                s += "<td style=\"";
+                s += "width:10px;";
+                s += "\">&nbsp;</td>";
+
+                var leftLine = "border-left: 2px solid #ffffff;";
+
+                if (j < colcount - 1 && i == SystemInfo.SystemData.Data.bodies.Count - 1)
+                {
+                    leftLine = "";
+                }
+
+                if (topLineHide[j] == 1)
+                {
+                    leftLine = "";
+                }
+
+                s += "<td style=\"";
+                s += "width:10px;";
+                s += leftLine;
+                s += "\">&nbsp;</td>";
+            }
+
+
+            return new RawString(s);
+        }
+
+        public IEncodedString BodyTreeElement2(int i)
+        {
+            var parents = SystemInfo.SystemData.Data.bodies[i].parents;
+
+            var colcount = parents?.Where(x => !x.ContainsKey("Null")).ToList().Count ?? 0;
+            var nextColcount = colcount;
+
+            if (i < SystemInfo.SystemData.Data.bodies.Count - 1)
+            {
+                var nextParents = SystemInfo.SystemData.Data.bodies[i+1].parents;
+                nextColcount = nextParents?.Where(x => !x.ContainsKey("Null")).ToList().Count ?? 0;
+            }
+
+            int[] topLineHide = new int[100];
+
+            for (int k = i + 1; k < SystemInfo.SystemData.Data.bodies.Count; k++)
+            {
+                var rowParents = SystemInfo.SystemData.Data.bodies[k].parents;
+                var rowColcount = rowParents?.Where(x => !x.ContainsKey("Null")).ToList().Count ?? 0;
+
+                for (int j = 0; j < rowColcount; j++)
+                {
+                    if (topLineHide[j] != 2)
+                    {
+                        if (rowColcount > 0 && j < rowColcount - 1)
+                        {
+                            topLineHide[j] = 1;
+                        }
+                        else
+                        {
+                            topLineHide[j] = 2;
+                        }
+                    }
+                }
+
+                if (rowColcount == 0)
+                    break;
+            }
+
+            var s = "";
+
+            for (int j = 0; j < colcount; j++)
+            {
+                s += "<td style=\"";
+                s += "width:10px;";
+                s += "\">&nbsp;</td>";
+
+                
+                var topLine = "border-top: 2px solid #ffffff; ";
+                if (colcount > 1 && j < colcount - 1)
+                {
+                    topLine = "";
+                }
+
+                var leftLine = "border-left: 2px solid #ffffff;";
+
+                if (nextColcount == 0 || (j == colcount-1 && nextColcount < colcount) || i == SystemInfo.SystemData.Data.bodies.Count-1)
+                {
+                    leftLine = "";
+                }
+
+                if (topLineHide[j] == 1)
+                {
+                    leftLine = "";
+                }
+
+
+                s += "<td style=\"";
+                s += "width:10px;";
+                s += leftLine + topLine;
+                s += "\">&nbsp;</td>";
+            }
+
+            return new RawString(s);
+        }
+
+
+        public IEncodedString BodyTreeElement3(int i)
+        {
+            var parents = SystemInfo.SystemData.Data.bodies[i].parents;
+
+            var colcount = parents?.Where(x => !x.ContainsKey("Null")).ToList().Count ?? 0;
+            var nextColcount = colcount;
+
+            if (i < SystemInfo.SystemData.Data.bodies.Count - 1)
+            {
+                var nextParents = SystemInfo.SystemData.Data.bodies[i + 1].parents;
+                nextColcount = nextParents?.Where(x => !x.ContainsKey("Null")).ToList().Count ?? 0;
+            }
+
+            int[] topLineHide = new int[100];
+
+            for (int k = i + 1; k < SystemInfo.SystemData.Data.bodies.Count; k++)
+            {
+                var rowParents = SystemInfo.SystemData.Data.bodies[k].parents;
+                var rowColcount = rowParents?.Where(x => !x.ContainsKey("Null")).ToList().Count ?? 0;
+
+                for (int j = 0; j < rowColcount; j++)
+                {
+                    if (topLineHide[j] != 2)
+                    {
+                        if (rowColcount > 0 && j < rowColcount - 1)
+                        {
+                            topLineHide[j] = 1;
+                        }
+                        else
+                        {
+                            topLineHide[j] = 2;
+                        }
+                    }
+                }
+
+                if (rowColcount == 0)
+                    break;
+            }
+
+            var s = "";
+
+            for (int j = 0; j < colcount; j++)
+            {
+                s += "<td style=\"font-size: 3px; ";
+                s += "width:10px;";
+                s += "\">&nbsp;</td>";
+
+                var leftLine = "border-left: 2px solid #ffffff;";
+
+                if (nextColcount == 0 || (j == colcount - 1 && nextColcount < colcount) || i == SystemInfo.SystemData.Data.bodies.Count-1)
+                {
+                    leftLine = "";
+                }
+
+                if (topLineHide[j] == 1)
+                {
+                    leftLine = "";
+                }
+
+                s += "<td style=\"font-size: 3px; "; 
+                s += "width:10px;";
+                s += leftLine;
+                s += "\">&nbsp;</td>";
+            }
+
+            return new RawString(s);
+        }
+
         public IEncodedString SinceText(int agodec, DateTime updatedTime)
         {
 
@@ -125,8 +357,9 @@ namespace Elite
 
         private bool _initOk;
 
+        public LcdTab CurrentTab = LcdTab.None;
+
         private LcdPage _currentPage = LcdPage.Collapsed;
-        private LcdTab _currentTab = LcdTab.None;
         private LcdTab _currentTabCursor = LcdTab.None;
         private LcdTab _lastTab = LcdTab.Init;
         private const int DEFAULT_PAGE = 0;
@@ -242,18 +475,18 @@ namespace Elite
                 {
                     try
                     {
-                        _currentTab = (LcdTab) uint.Parse(File.ReadAllText(_settingsPath));
+                        CurrentTab = (LcdTab) uint.Parse(File.ReadAllText(_settingsPath));
                     }
                     catch
                     {
-                        _currentTab = LcdTab.None;
+                        CurrentTab = LcdTab.None;
                     }
                 }
                 else
                 {
                     new FileInfo(_settingsPath).Directory?.Create();
 
-                    File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
+                    File.WriteAllText(_settingsPath, ((int)CurrentTab).ToString());
                 }
 
                 _initOk = true;
@@ -281,18 +514,18 @@ namespace Elite
             {
                 try
                 {
-                    _currentTab = (LcdTab)uint.Parse(File.ReadAllText(_settingsPath));
+                    CurrentTab = (LcdTab)uint.Parse(File.ReadAllText(_settingsPath));
                 }
                 catch
                 {
-                    _currentTab = LcdTab.None;
+                    CurrentTab = LcdTab.None;
                 }
             }
             else
             {
                 new FileInfo(_settingsPath).Directory?.Create();
 
-                File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
+                File.WriteAllText(_settingsPath, ((int)CurrentTab).ToString());
             }
 
             RefreshDevicePage();
@@ -327,16 +560,16 @@ namespace Elite
 
         private bool SetTab(LcdTab tab)
         {
-            if (_currentTab != tab)
+            if (CurrentTab != tab)
             {
-                _lastTab = _currentTab;
-                _currentTab = tab;
+                _lastTab = CurrentTab;
+                CurrentTab = tab;
 
                 _currentTabCursor = LcdTab.None;
 
                 _currentLcdYOffset = 0;
 
-                File.WriteAllText(_settingsPath, ((int)_currentTab).ToString());
+                File.WriteAllText(_settingsPath, ((int)CurrentTab).ToString());
             }
 
             _currentPage = LcdPage.Collapsed;
@@ -366,8 +599,8 @@ namespace Elite
         {
             uint buttons = 0;
 
-            var currentPage = (LcdPage)(((uint)_currentTab - 1) / 6);
-            if (_currentTab == LcdTab.None)
+            var currentPage = (LcdPage)(((uint)CurrentTab - 1) / 6);
+            if (CurrentTab == LcdTab.None)
             {
                 currentPage = LcdPage.HomeMenu;
             }
@@ -474,7 +707,7 @@ namespace Elite
 
                         if (_currentPage == LcdPage.Collapsed)
                         {
-                            if (_currentTab != LcdTab.Map && oldState) return;
+                            if (CurrentTab != LcdTab.Galaxy && oldState) return;
 
                             buttons = 16;
                         }
@@ -504,7 +737,7 @@ namespace Elite
 
                         if (_currentPage == LcdPage.Collapsed)
                         {
-                            if (_currentTab != LcdTab.Map && oldState) return;
+                            if (CurrentTab != LcdTab.Galaxy && oldState) return;
 
                             buttons = 8;
                         }
@@ -538,9 +771,9 @@ namespace Elite
                         {
                             if (_currentTabCursor == LcdTab.None)
                             {
-                                if (_currentTab != LcdTab.None)
+                                if (CurrentTab != LcdTab.None)
                                 {
-                                    _currentTabCursor = _currentTab;
+                                    _currentTabCursor = CurrentTab;
                                 }
                                 else
                                 {
@@ -606,14 +839,14 @@ namespace Elite
                 switch (button)
                 {
                     case 8: // scroll clockwise
-                        if (state && (_currentTab == LcdTab.POI || _currentTab == LcdTab.Powers ||
-                                      _currentTab == LcdTab.Materials || _currentTab == LcdTab.Map ||
-                                      _currentTab == LcdTab.Ship || _currentTab == LcdTab.Mining || 
-                                      _currentTab == LcdTab.Navigation || _currentTab == LcdTab.Engineer))
+                        if (state && (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
+                                      CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
+                                      CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining || 
+                                      CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer))
                         {
 
-                            _currentCard[(int) _currentTab]++;
-                            _currentZoomLevel[(int) _currentTab]++;
+                            _currentCard[(int) CurrentTab]++;
+                            _currentZoomLevel[(int) CurrentTab]++;
                             _currentLcdYOffset = 0;
 
                             mustRefresh = true;
@@ -622,13 +855,13 @@ namespace Elite
                         break;
                     case 16: // scroll anti-clockwise
 
-                        if (state && (_currentTab == LcdTab.POI || _currentTab == LcdTab.Powers ||
-                                      _currentTab == LcdTab.Materials || _currentTab == LcdTab.Map ||
-                                      _currentTab == LcdTab.Ship || _currentTab == LcdTab.Mining ||
-                                      _currentTab == LcdTab.Navigation || _currentTab == LcdTab.Engineer))
+                        if (state && (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
+                                      CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
+                                      CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
+                                      CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer))
                         {
-                            _currentCard[(int) _currentTab]--;
-                            _currentZoomLevel[(int) _currentTab]--;
+                            _currentCard[(int) CurrentTab]--;
+                            _currentZoomLevel[(int) CurrentTab]--;
                             _currentLcdYOffset = 0;
 
                             mustRefresh = true;
@@ -636,7 +869,7 @@ namespace Elite
 
                         break;
                     case 2: // scroll clockwise
-                        if (state && _currentTab != LcdTab.Map)
+                        if (state && CurrentTab != LcdTab.Galaxy)
                         {
                             _currentLcdYOffset += 50;
 
@@ -650,7 +883,7 @@ namespace Elite
 
                         if (_currentLcdYOffset == 0) return;
 
-                        if (state && _currentTab != LcdTab.Map)
+                        if (state && CurrentTab != LcdTab.Galaxy)
                         {
                             _currentLcdYOffset -= 50;
                             if (_currentLcdYOffset < 0)
@@ -678,8 +911,8 @@ namespace Elite
                                 {
                                     case 32:
                                         mustRefresh = true;
-                                        _currentPage = (LcdPage) (((uint) _currentTab - 1) / 6);
-                                        if (_currentTab == LcdTab.None)
+                                        _currentPage = (LcdPage) (((uint) CurrentTab - 1) / 6);
+                                        if (CurrentTab == LcdTab.None)
                                         {
                                             _currentPage = LcdPage.HomeMenu;
                                         }
@@ -779,16 +1012,16 @@ namespace Elite
                                         mustRefresh = SetTab(LcdTab.POI);
                                         break;
                                     case 128:
-                                        mustRefresh = SetTab(LcdTab.Map);
+                                        mustRefresh = SetTab(LcdTab.Galaxy);
                                         break;
                                     case 256:
-                                        mustRefresh = SetTab(LcdTab.Powers);
+                                        mustRefresh = SetTab(LcdTab.System);
                                         break;
                                     case 512:
-                                        mustRefresh = SetTab(LcdTab.Mining);
+                                        mustRefresh = SetTab(LcdTab.Powers);
                                         break;
                                     case 1024:
-                                        // empty
+                                        mustRefresh = SetTab(LcdTab.Mining);
                                         break;
                                     case 2048:
                                         mustRefresh = true;
@@ -898,7 +1131,7 @@ namespace Elite
 
                 using (var graphics = Graphics.FromImage(image))
                 {
-                    if (e.Src.ToLower().StartsWith("galaxy") && _currentTab == LcdTab.Map)
+                    if (e.Src.ToLower().StartsWith("galaxy") && CurrentTab == LcdTab.Galaxy)
                     {
                         if (e.Src.ToLower().StartsWith("galaxyl"))
                         {
@@ -909,7 +1142,7 @@ namespace Elite
                             graphics.DrawPolygon(_whitePen, History.TravelHistoryPointsP.ToArray());
                         }
 
-                        var zoomLevel = _currentZoomLevel[(int)_currentTab] / 2.0 + 1;
+                        var zoomLevel = _currentZoomLevel[(int)CurrentTab] / 2.0 + 1;
 
                         if (zoomLevel > 1)
                         {
@@ -1038,22 +1271,27 @@ namespace Elite
 
         public void CheckCardSelectionLimits(int limit)
         {
-            if (_currentCard[(int)_currentTab] < 0)
+            if (_currentCard[(int)CurrentTab] < 0)
             {
-                _currentCard[(int)_currentTab] = limit;
+                _currentCard[(int)CurrentTab] = limit;
             }
             else
-            if (_currentCard[(int)_currentTab] > limit)
+            if (_currentCard[(int)CurrentTab] > limit)
             {
-                _currentCard[(int)_currentTab] = 0;
+                _currentCard[(int)CurrentTab] = 0;
             }
         }
 
         public void RefreshDevicePage(bool mustRender = true)
         {
+            if (CurrentTab == LcdTab.System && !string.IsNullOrEmpty(Data.LocationData.StarSystem))
+            {
+                SystemInfo.GetSystemData(Data.LocationData.StarSystem);
+            }
+
             lock (_refreshDevicePageLock)
             {
-                if (Engineer.BlueprintShoppingList.Count == 0 && _currentTab == LcdTab.Engineer)
+                if (Engineer.BlueprintShoppingList.Count == 0 && CurrentTab == LcdTab.Engineer)
                 {
                     SetTab(LcdTab.Ship);
                 }
@@ -1064,7 +1302,7 @@ namespace Elite
                     {
                         var str = "";
 
-                        switch (_currentTab)
+                        switch (CurrentTab)
                         {
                             case LcdTab.Ship:
                                 CheckCardSelectionLimits(1);
@@ -1087,16 +1325,16 @@ namespace Elite
                             case LcdTab.Mining:
                                 CheckCardSelectionLimits(5);
                                 break;
-                            case LcdTab.Map:
+                            case LcdTab.Galaxy:
 
-                                if (_currentZoomLevel[(int)_currentTab] < 0)
+                                if (_currentZoomLevel[(int)CurrentTab] < 0)
                                 {
-                                    _currentZoomLevel[(int)_currentTab] = 0;
+                                    _currentZoomLevel[(int)CurrentTab] = 0;
                                 }
                                 else
-                                if (_currentZoomLevel[(int)_currentTab] > 15)
+                                if (_currentZoomLevel[(int)CurrentTab] > 15)
                                 {
-                                    _currentZoomLevel[(int)_currentTab] = 15;
+                                    _currentZoomLevel[(int)CurrentTab] = 15;
                                 }
 
                                 break;
@@ -1108,7 +1346,7 @@ namespace Elite
                             {
 
 
-                                switch (_currentTab)
+                                switch (CurrentTab)
                                 {
                                     //----------------------
 
@@ -1117,7 +1355,7 @@ namespace Elite
                                         str =
                                             Engine.Razor.Run("init.cshtml", null, new
                                             {
-                                                CurrentTab = _currentTab,
+                                                CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage
                                             });
 
@@ -1128,7 +1366,7 @@ namespace Elite
                                         str =
                                             Engine.Razor.Run("commander.cshtml", null, new
                                             {
-                                                CurrentTab = _currentTab,
+                                                CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
 
                                                 LegalState = Data.StatusData.LegalState,
@@ -1178,9 +1416,9 @@ namespace Elite
                                         str =
                                             Engine.Razor.Run("ship.cshtml", null, new
                                             {
-                                                CurrentTab = _currentTab,
+                                                CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
-                                                CurrentCard = _currentCard[(int) _currentTab],
+                                                CurrentCard = _currentCard[(int) CurrentTab],
 
                                                 CurrentShip = Ships.ShipsList.FirstOrDefault(x => x.Stored == false),
 
@@ -1195,152 +1433,163 @@ namespace Elite
 
                                         var currentShip = Ships.ShipsList.FirstOrDefault(x => x.Stored == false);
 
-                                        var routeList = new List<RouteItem>();
-
-                                        if (Data.LocationData.StarSystem != Data.LocationData.FsdTargetName &&
-                                            Data.LocationData.RemainingJumpsInRoute > 0 && Route.RouteList.Count >= Data.LocationData.RemainingJumpsInRoute)
+                                        lock (Route.RefreshRouteLock)
                                         {
-                                            routeList = Route.RouteList
-                                                .Skip(Route.RouteList.Count - Data.LocationData.RemainingJumpsInRoute)
-                                                .ToList();
-                                        }
+                                            var routeList = new List<RouteItem>();
 
-                                        var jumpDistance = 0.0;
-                                        var fuelCost = 0.0;
-                                        var fuelWarning = "";
-
-                                        var fuelMain = currentShip?.CurrentFuelMain ?? 0;
-
-                                        if (fuelMain > 0)
-                                        {
-                                            for (var index = 0; index < routeList.Count; index++)
+                                            if (Data.LocationData.StarSystem != Data.LocationData.FsdTargetName &&
+                                                Data.LocationData.RemainingJumpsInRoute > 0 && Route.RouteList.Count >=
+                                                Data.LocationData.RemainingJumpsInRoute)
                                             {
-                                                var r = routeList[index];
+                                                routeList = Route.RouteList
+                                                    .Skip(Route.RouteList.Count -
+                                                          Data.LocationData.RemainingJumpsInRoute)
+                                                    .ToList();
+                                            }
 
-                                                if (fuelMain > 0)
+                                            var jumpDistance = 0.0;
+                                            var fuelCost = 0.0;
+                                            var fuelWarning = "";
+
+                                            var fuelMain = currentShip?.CurrentFuelMain ?? 0;
+
+                                            if (fuelMain > 0)
+                                            {
+                                                foreach (var r in routeList)
                                                 {
-                                                    r.FuelCost = Ships.GetFuelCostForNextJump(r.Distance, fuelMain);
+                                                    r.FuelWarning = null;
                                                 }
 
-                                                if (index > 0 && (fuelMain <= 0 || r.FuelCost > fuelMain))
+                                                for (var index = 0; index < routeList.Count; index++)
                                                 {
-                                                    for (var index2 = index - 1; index2 >= 0; index2--)
-                                                    {
-                                                        var r2 = routeList[index2];
+                                                    var r = routeList[index];
 
-                                                        if (!string.IsNullOrEmpty(r2.IsFuelStar))
-                                                        {
-                                                            r2.FuelWarning = "Last chance to scoop fuel";
-                                                            break;
-                                                        }
+                                                    if (fuelMain > 0)
+                                                    {
+                                                        r.FuelCost = Ships.GetFuelCostForNextJump(r.Distance, fuelMain);
                                                     }
 
-                                                    break;
-                                                }
+                                                    if (index > 0 && (fuelMain <= 0 || r.FuelCost > fuelMain))
+                                                    {
+                                                        for (var index2 = index - 1; index2 >= 0; index2--)
+                                                        {
+                                                            var r2 = routeList[index2];
 
-                                                if (fuelMain > 0)
+                                                            if (!string.IsNullOrEmpty(r2.IsFuelStar))
+                                                            {
+                                                                r2.FuelWarning = "Last chance to scoop fuel";
+                                                                break;
+                                                            }
+                                                        }
+
+                                                        break;
+                                                    }
+
+                                                    if (fuelMain > 0)
+                                                    {
+                                                        fuelMain -= r.FuelCost;
+                                                    }
+                                                }
+                                            }
+
+                                            if (routeList.Count >= 1)
+                                            {
+                                                var nextJump = routeList[0];
+                                                if (nextJump.StarSystem == Data.LocationData.FsdTargetName)
                                                 {
-                                                    fuelMain -= r.FuelCost;
+                                                    jumpDistance = nextJump.Distance;
+                                                    fuelCost = nextJump.FuelCost;
+                                                    fuelWarning = nextJump.FuelWarning;
                                                 }
                                             }
+
+                                            str =
+                                                Engine.Razor.Run("navigation.cshtml", null, new
+                                                {
+                                                    CurrentTab = CurrentTab,
+                                                    CurrentPage = _currentPage,
+                                                    CurrentCard = _currentCard[(int) CurrentTab],
+
+                                                    CurrentShip = currentShip,
+
+                                                    StarSystem = Data.LocationData.StarSystem,
+
+                                                    Body = !string.IsNullOrEmpty(Data.LocationData.BodyType) &&
+                                                           !string.IsNullOrEmpty(Data.LocationData.Body)
+                                                        ? Data.LocationData.Body
+                                                        : null,
+
+                                                    //"Station""Star""Planet""PlanetaryRing""StellarRing""AsteroidCluster"
+
+                                                    BodyType = Data.LocationData.BodyType,
+
+                                                    Station = Data.LocationData.BodyType == "Station" &&
+                                                              !string.IsNullOrEmpty(Data.LocationData.Body)
+                                                        ? Data.LocationData.Body
+                                                        : Data.LocationData.Station,
+
+                                                    Docked = Data.StatusData.Docked,
+
+                                                    LandingPad = Data.DockData.LandingPad,
+
+                                                    StationType = Data.DockData.Type,
+
+                                                    Government = Data.DockData.Government,
+
+                                                    Allegiance = Data.DockData.Allegiance,
+
+                                                    Faction = Data.DockData.Faction,
+
+                                                    Economy = Data.DockData.Economy,
+
+                                                    DistFromStarLs = Data.DockData.DistFromStarLs,
+
+                                                    StartJump = Data.LocationData.StartJump,
+
+                                                    JumpType = Data.LocationData.JumpType,
+
+                                                    JumpToSystem = Data.LocationData.JumpToSystem,
+
+                                                    JumpToStarClass = Data.LocationData.JumpToStarClass,
+
+                                                    RemainingJumpsInRoute = Data.LocationData.RemainingJumpsInRoute,
+
+                                                    StarClass = Data.LocationData.StarClass,
+
+                                                    IsFuelStar = Data.LocationData.IsFuelStar,
+
+                                                    FsdTargetName = Data.LocationData.FsdTargetName,
+
+                                                    Settlement = Data.LocationData.Settlement,
+
+                                                    HideBody = Data.LocationData.HideBody,
+
+                                                    SystemAllegiance = Data.LocationData.SystemAllegiance,
+
+                                                    SystemFaction = Data.LocationData.SystemFaction,
+
+                                                    SystemSecurity = Data.LocationData.SystemSecurity,
+
+                                                    SystemEconomy = Data.LocationData.SystemEconomy,
+
+                                                    SystemGovernment = Data.LocationData.SystemGovernment,
+
+                                                    Population = Data.LocationData.Population,
+
+                                                    PowerplayState = Data.LocationData.PowerplayState,
+                                                    Powers = Data.LocationData.Powers,
+
+                                                    RouteList = routeList,
+                                                    RouteListCount = routeList.Count,
+                                                    RouteListDistance = routeList.Sum(x => x.Distance),
+                                                    RouteDestination = routeList.LastOrDefault()?.StarSystem ?? "",
+                                                    JumpDistance = jumpDistance,
+                                                    FuelCost = fuelCost,
+                                                    FuelWarning = fuelWarning
+
+                                                });
+
                                         }
-
-                                        if (routeList.Count >= 1)
-                                        {
-                                            var nextJump = routeList[0];
-                                            if (nextJump.StarSystem == Data.LocationData.FsdTargetName)
-                                            {
-                                                jumpDistance = nextJump.Distance;
-                                                fuelCost = nextJump.FuelCost;
-                                                fuelWarning = nextJump.FuelWarning;
-                                            }
-                                        }
-
-                                        str =
-                                            Engine.Razor.Run("navigation.cshtml", null, new
-                                            {
-                                                CurrentTab = _currentTab,
-                                                CurrentPage = _currentPage,
-                                                CurrentCard = _currentCard[(int)_currentTab],
-
-                                                CurrentShip = currentShip,
-
-                                                StarSystem = Data.LocationData.StarSystem,
-
-                                                Body = !string.IsNullOrEmpty(Data.LocationData.BodyType) &&
-                                                       !string.IsNullOrEmpty(Data.LocationData.Body)
-                                                    ? Data.LocationData.Body
-                                                    : null,
-
-                                                //"Station""Star""Planet""PlanetaryRing""StellarRing""AsteroidCluster"
-
-                                                BodyType = Data.LocationData.BodyType,
-
-                                                Station = Data.LocationData.BodyType == "Station" &&
-                                                          !string.IsNullOrEmpty(Data.LocationData.Body)
-                                                    ? Data.LocationData.Body
-                                                    : Data.LocationData.Station,
-
-                                                Docked = Data.StatusData.Docked,
-
-                                                LandingPad = Data.DockData.LandingPad,
-
-                                                StationType = Data.DockData.Type,
-
-                                                Government = Data.DockData.Government,
-
-                                                Allegiance = Data.DockData.Allegiance,
-
-                                                Faction = Data.DockData.Faction,
-
-                                                Economy = Data.DockData.Economy,
-
-                                                DistFromStarLs = Data.DockData.DistFromStarLs,
-
-                                                StartJump = Data.LocationData.StartJump,
-
-                                                JumpType = Data.LocationData.JumpType,
-
-                                                JumpToSystem = Data.LocationData.JumpToSystem,
-
-                                                JumpToStarClass = Data.LocationData.JumpToStarClass,
-
-                                                RemainingJumpsInRoute = Data.LocationData.RemainingJumpsInRoute,
-
-                                                StarClass = Data.LocationData.StarClass,
-
-                                                IsFuelStar = Data.LocationData.IsFuelStar,
-
-                                                FsdTargetName = Data.LocationData.FsdTargetName,
-
-                                                Settlement = Data.LocationData.Settlement,
-
-                                                HideBody = Data.LocationData.HideBody,
-
-                                                SystemAllegiance = Data.LocationData.SystemAllegiance,
-
-                                                SystemFaction = Data.LocationData.SystemFaction,
-
-                                                SystemSecurity = Data.LocationData.SystemSecurity,
-
-                                                SystemEconomy = Data.LocationData.SystemEconomy,
-
-                                                SystemGovernment = Data.LocationData.SystemGovernment,
-
-                                                Population = Data.LocationData.Population,
-
-                                                PowerplayState = Data.LocationData.PowerplayState,
-                                                Powers = Data.LocationData.Powers,
-
-                                                RouteList = routeList,
-                                                RouteListCount = routeList.Count,
-                                                RouteListDistance = routeList.Sum( x => x.Distance),
-                                                RouteDestination = routeList.LastOrDefault()?.StarSystem ?? "",
-                                                JumpDistance = jumpDistance,
-                                                FuelCost = fuelCost,
-                                                FuelWarning = fuelWarning
-
-                                            });
 
                                         break;
 
@@ -1349,7 +1598,7 @@ namespace Elite
                                         str =
                                             Engine.Razor.Run("target.cshtml", null, new
                                             {
-                                                CurrentTab = _currentTab,
+                                                CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
 
                                                 TargetLocked = Data.TargetData.TargetLocked,
@@ -1382,7 +1631,7 @@ namespace Elite
                                         str =
                                             Engine.Razor.Run("missions.cshtml", null, new
                                             {
-                                                CurrentTab = _currentTab,
+                                                CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
 
                                                 MissionList = Missions.MissionList
@@ -1397,9 +1646,9 @@ namespace Elite
                                             str =
                                                 Engine.Razor.Run("poi.cshtml", null, new
                                                 {
-                                                    CurrentTab = _currentTab,
+                                                    CurrentTab = CurrentTab,
                                                     CurrentPage = _currentPage,
-                                                    CurrentCard = _currentCard[(int) _currentTab],
+                                                    CurrentCard = _currentCard[(int) CurrentTab],
 
                                                     NearbyPoiList = Poi.NearbyPoiList,
 
@@ -1414,23 +1663,44 @@ namespace Elite
 
                                     //----------------------
 
-                                    case LcdTab.Map:
+                                    case LcdTab.Galaxy:
 
 
                                         str =
-                                            Engine.Razor.Run("map.cshtml", null, new
+                                            Engine.Razor.Run("galaxy.cshtml", null, new
                                             {
-                                                CurrentTab = _currentTab,
+                                                CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
                                                 GalaxyImageDisplayHeight = GalaxyImageDisplayHeight,
                                                 GalaxyImageDisplayWidth = GalaxyImageDisplayWidth,
                                                 GalaxyImageMarginTop = GalaxyImageMarginTop + "px",
                                                 GalaxyImageFileName = GalaxyImageFileName,
 
-                                                _currentZoomLevel = _currentZoomLevel[(int) _currentTab]
+                                                _currentZoomLevel = _currentZoomLevel[(int) CurrentTab]
 
 
                                             });
+
+                                        break;
+
+                                    case LcdTab.System:
+
+
+                                        lock (App.RefreshSystemLock)
+                                        {
+
+                                            str =
+                                                Engine.Razor.Run("system.cshtml", null, new
+                                                {
+                                                    CurrentTab = CurrentTab,
+                                                    CurrentPage = _currentPage,
+
+                                                    StarSystem = Data.LocationData.StarSystem,
+
+                                                    SystemData = SystemInfo.SystemData
+
+                                                });
+                                        }
 
                                         break;
 
@@ -1442,9 +1712,9 @@ namespace Elite
                                             str =
                                                 Engine.Razor.Run("powers.cshtml", null, new
                                                 {
-                                                    CurrentTab = _currentTab,
+                                                    CurrentTab = CurrentTab,
                                                     CurrentPage = _currentPage,
-                                                    CurrentCard = _currentCard[(int) _currentTab],
+                                                    CurrentCard = _currentCard[(int) CurrentTab],
 
                                                     NearbyPowerStationList = Data.NearbyPowerStationList
 
@@ -1459,9 +1729,9 @@ namespace Elite
                                         str =
                                             Engine.Razor.Run("materials.cshtml", null, new
                                             {
-                                                CurrentTab = _currentTab,
+                                                CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
-                                                CurrentCard = _currentCard[(int) _currentTab],
+                                                CurrentCard = _currentCard[(int) CurrentTab],
 
                                                 MaterialCount = Material.MaterialList.Count,
 
@@ -1479,47 +1749,52 @@ namespace Elite
 
                                     case LcdTab.Cargo:
 
-                                        var cargo = Cargo.CargoList
-                                            .Where(x => x.Value.Count > 0 && x.Value.MissionID == 0)
-                                            .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+                                        lock (Cargo.RefreshCargoLock)
+                                        {
 
-                                        var missionCargo = Cargo.CargoList
-                                            .Where(x => x.Value.Count > 0 && x.Value.MissionID > 0)
-                                            .Select(x => new Cargo.CargoItem
-                                            {
-                                                Count = x.Value.Count,
-                                                Name = x.Value.Name,
-                                                MissionID = x.Value.MissionID,
-                                                MissionName = Missions.GetMissionName(x.Value.MissionID),
-                                                System = Missions.GetMissionSystem(x.Value.MissionID),
-                                                Station = Missions.GetMissionStation(x.Value.MissionID)
-                                            })
-                                            .OrderBy(x => x.Name)
-                                            .GroupBy(x => x.MissionName)
-                                            .Select(grp => grp.ToList())
-                                            .ToList();
+                                            var cargo = Cargo.CargoList
+                                                .Where(x => x.Value.Count > 0 && x.Value.MissionID == 0)
+                                                .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                            var missionCargo = Cargo.CargoList
+                                                .Where(x => x.Value.Count > 0 && x.Value.MissionID > 0)
+                                                .Select(x => new Cargo.CargoItem
+                                                {
+                                                    Count = x.Value.Count,
+                                                    Name = x.Value.Name,
+                                                    MissionID = x.Value.MissionID,
+                                                    MissionName = Missions.GetMissionName(x.Value.MissionID),
+                                                    System = Missions.GetMissionSystem(x.Value.MissionID),
+                                                    Station = Missions.GetMissionStation(x.Value.MissionID)
+                                                })
+                                                .OrderBy(x => x.Name)
+                                                .GroupBy(x => x.MissionName)
+                                                .Select(grp => grp.ToList())
+                                                .ToList();
 
 
-                                        var stolenCargo = Cargo.CargoList.Where(x => x.Value.Stolen > 0)
-                                            .Select(x => x.Value)
-                                            .OrderBy(x => x.Name).ToList();
+                                            var stolenCargo = Cargo.CargoList.Where(x => x.Value.Stolen > 0)
+                                                .Select(x => x.Value)
+                                                .OrderBy(x => x.Name).ToList();
 
-                                        str =
-                                            Engine.Razor.Run("cargo.cshtml", null, new
-                                            {
-                                                CurrentTab = _currentTab,
-                                                CurrentPage = _currentPage,
-                                                CurrentCard = _currentCard[(int) _currentTab],
+                                            str =
+                                                Engine.Razor.Run("cargo.cshtml", null, new
+                                                {
+                                                    CurrentTab = CurrentTab,
+                                                    CurrentPage = _currentPage,
+                                                    CurrentCard = _currentCard[(int) CurrentTab],
 
-                                                Cargo = cargo,
-                                                CargoCount = cargo.Count,
+                                                    Cargo = cargo,
+                                                    CargoCount = cargo.Count,
 
-                                                MissionCargo = missionCargo,
-                                                MissionCargoCount = missionCargo.Count,
+                                                    MissionCargo = missionCargo,
+                                                    MissionCargoCount = missionCargo.Count,
 
-                                                StolenCargo = stolenCargo,
-                                                StolenCargoCount = stolenCargo.Count
-                                            });
+                                                    StolenCargo = stolenCargo,
+                                                    StolenCargoCount = stolenCargo.Count
+                                                });
+
+                                        }
 
                                         break;
 
@@ -1531,9 +1806,9 @@ namespace Elite
                                             str =
                                                 Engine.Razor.Run("mining.cshtml", null, new
                                                 {
-                                                    CurrentTab = _currentTab,
+                                                    CurrentTab = CurrentTab,
                                                     CurrentPage = _currentPage,
-                                                    CurrentCard = _currentCard[(int)_currentTab],
+                                                    CurrentCard = _currentCard[(int)CurrentTab],
 
                                                     NearbyHotspotSystemsList = Data.NearbyHotspotSystemsList,
 
@@ -1551,9 +1826,9 @@ namespace Elite
                                         str =
                                             Engine.Razor.Run("engineer.cshtml", null, new
                                             {
-                                                CurrentTab = _currentTab,
+                                                CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
-                                                CurrentCard = _currentCard[(int) _currentTab],
+                                                CurrentCard = _currentCard[(int) CurrentTab],
 
                                                 Raw = Engineer.IngredientShoppingList?
                                                           .Where(x => x.EntryData.Subkind == Subkind.Raw)
@@ -1618,7 +1893,7 @@ namespace Elite
                                         str =
                                             Engine.Razor.Run("events.cshtml", null, new
                                             {
-                                                CurrentTab = _currentTab,
+                                                CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
 
                                                 EventList = eventlist
@@ -1638,7 +1913,7 @@ namespace Elite
 
                         graphics.Clear(Color.Black);
 
-                        if (_currentTab >= 0)
+                        if (CurrentTab >= 0)
                         {
 
                             if (mustRender)
@@ -1670,7 +1945,7 @@ namespace Elite
                                 }
                             }
 
-                            if (_currentLcdHeight > _htmlWindowHeight && _currentTab != LcdTab.Map)
+                            if (_currentLcdHeight > _htmlWindowHeight && CurrentTab != LcdTab.Galaxy)
                             {
                                 var scrollThumbHeight = _htmlWindowHeight / (double)_currentLcdHeight * ScrollBarHeight;
                                 var scrollThumbYOffset = _currentLcdYOffset / (double)_currentLcdHeight * ScrollBarHeight;
@@ -1685,16 +1960,16 @@ namespace Elite
                         }
 
 
-                        if (_currentTab != LcdTab.Map)
+                        if (CurrentTab != LcdTab.Galaxy)
                         {
                             if (mustRender)
                             {
                                 var cardcaptionstr =
                                     Engine.Razor.Run("cardcaption.cshtml", null, new
                                     {
-                                        CurrentTab = _currentTab,
+                                        CurrentTab = CurrentTab,
                                         CurrentPage = _currentPage,
-                                        CurrentCard = _currentCard[(int)_currentTab]
+                                        CurrentCard = _currentCard[(int)CurrentTab]
                                     });
 
                                 _cardcaptionHtmlImage = HtmlRender.RenderToImage(cardcaptionstr,
@@ -1715,7 +1990,7 @@ namespace Elite
                                 var menustr =
                                     Engine.Razor.Run("menu.cshtml", null, new
                                     {
-                                        CurrentTab = _currentTab,
+                                        CurrentTab = CurrentTab,
                                         CurrentPage = _currentPage,
                                         Cursor = _currentTabCursor,
 
@@ -1724,8 +1999,6 @@ namespace Elite
                                         MissionCount = Missions.MissionList.Count,
 
                                         MaterialCount = Material.MaterialList.Count,
-
-                                        CargoCount = Cargo.CargoList.Count,
 
                                         ShowEngineer = !string.IsNullOrEmpty(Engineer.CommanderName)
                                     });
@@ -1743,14 +2016,14 @@ namespace Elite
 
 
 #if DEBUG
-                        fipImage.Save("screenshot"+ SerialNumber+"_"+(int)_currentTab+"_"+ _currentCard[(int)_currentTab] + ".png", ImageFormat.Png);
+                        fipImage.Save("screenshot"+ SerialNumber+"_"+(int)CurrentTab+"_"+ _currentCard[(int)CurrentTab] + ".png", ImageFormat.Png);
 #endif
                         RefreshMirrorWindow(fipImage);
                        
                         SendImageToFip(DEFAULT_PAGE, fipImage);
 
-                        var tabPage = (LcdPage)(((uint)_currentTab - 1) / 6);
-                        if (_currentTab == LcdTab.None)
+                        var tabPage = (LcdPage)(((uint)CurrentTab - 1) / 6);
+                        if (CurrentTab == LcdTab.None)
                         {
                             tabPage = LcdPage.HomeMenu;
                         }
@@ -1759,9 +2032,9 @@ namespace Elite
                         {
                             if (_currentPage == LcdPage.Collapsed)
                             {
-                                if (_currentTab > 0)
+                                if (CurrentTab > 0)
                                 {
-                                    SetLed((uint)_currentTab - ((uint)_currentTab - 1) / 6 * 6, false);
+                                    SetLed((uint)CurrentTab - ((uint)CurrentTab - 1) / 6 * 6, false);
                                 }
 
                                 if (_lastTab > 0)
@@ -1773,9 +2046,9 @@ namespace Elite
                             }
                             else if (tabPage != _currentPage)
                             {
-                                if (_currentTab > 0)
+                                if (CurrentTab > 0)
                                 {
-                                    SetLed((uint)_currentTab - ((uint)_currentTab - 1) / 6 * 6, false);
+                                    SetLed((uint)CurrentTab - ((uint)CurrentTab - 1) / 6 * 6, false);
                                 }
 
                                 if (_lastTab > 0)
@@ -1787,15 +2060,15 @@ namespace Elite
                             {
                                 SetLed(1, false);
 
-                                if (_currentTab > 0)
+                                if (CurrentTab > 0)
                                 {
-                                    SetLed((uint)_currentTab - ((uint)_currentTab - 1) / 6 * 6, true);
+                                    SetLed((uint)CurrentTab - ((uint)CurrentTab - 1) / 6 * 6, true);
                                 }
                             }
 
                         }
 
-                        _lastTab = _currentTab;
+                        _lastTab = CurrentTab;
                     }
                 }
             }

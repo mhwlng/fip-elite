@@ -95,11 +95,24 @@ namespace Elite
 
         public void RefreshDevicePages()
         {
-            foreach (var fipPanel in _fipPanels)
+            for (var index = 0; index < _fipPanels.Count; index++)
             {
+                var fipPanel = _fipPanels[index];
                 fipPanel.RefreshDevicePage();
             }
+        }
 
+        public void RefreshSystemDevicePages()
+        {
+            for (var index = 0; index < _fipPanels.Count; index++)
+            {
+                var fipPanel = _fipPanels[index];
+
+                if (fipPanel.CurrentTab == LcdTab.System)
+                {
+                    fipPanel.RefreshDevicePage();
+                }
+            }
         }
 
         private bool IsFipDevice(IntPtr device)

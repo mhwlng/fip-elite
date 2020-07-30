@@ -655,8 +655,8 @@ namespace Elite
                     LocationData.Body = locationInfo.Body;
                     LocationData.BodyType = locationInfo.BodyType.ToString();
 
-                    LocationData.PowerplayState = locationInfo.PowerplayState.ToString();
-                    LocationData.Powers = string.Join(",", locationInfo.Powers);
+                    LocationData.PowerplayState = locationInfo.PowerplayState;
+                    LocationData.Powers = locationInfo.Powers != null ? string.Join(",", locationInfo.Powers) : "";
 
                     LocationData.HideBody = false;
 
@@ -951,8 +951,8 @@ namespace Elite
                         LocationData.JumpToStarClass = "";
                         LocationData.JumpType = "";
 
-                        LocationData.PowerplayState = carrierJumpInfo.PowerplayState.ToString();
-                        LocationData.Powers = string.Join(", ", carrierJumpInfo.Powers);
+                        LocationData.PowerplayState = carrierJumpInfo.PowerplayState;
+                        LocationData.Powers = carrierJumpInfo.Powers != null ? string.Join(",", carrierJumpInfo.Powers) : "";
 
                         LocationData.SystemAllegiance = carrierJumpInfo.SystemAllegiance;
                         LocationData.SystemFaction = carrierJumpInfo.SystemFaction?.Name;
@@ -1001,8 +1001,9 @@ namespace Elite
                     LocationData.JumpToStarClass = "";
                     LocationData.JumpType = "";
 
-                    LocationData.PowerplayState = fsdJumpInfo.PowerplayState.ToString();
-                    LocationData.Powers = string.Join(", ", fsdJumpInfo.Powers);
+
+                    LocationData.PowerplayState = fsdJumpInfo.PowerplayState;
+                    LocationData.Powers = fsdJumpInfo.Powers != null ? string.Join(",", fsdJumpInfo.Powers) : "";
 
                     LocationData.SystemAllegiance = fsdJumpInfo.SystemAllegiance;
                     LocationData.SystemFaction = fsdJumpInfo.SystemFaction?.Name;
@@ -1481,7 +1482,10 @@ namespace Elite
 
             }
 
-            App.FipHandler.RefreshDevicePages();
+            if (evt != "FSSSignalDiscovered" && evt != "FSSDiscoveryScan" && evt != "Music" && evt != "ReceiveText" && evt != "FuelScoop" && evt != "ReservoirReplenished")
+            {
+                App.FipHandler.RefreshDevicePages();
+            }
 
         }
     }

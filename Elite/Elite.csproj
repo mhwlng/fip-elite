@@ -127,6 +127,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SystemInfo.cs" />
     <Compile Include="Route.cs" />
     <Compile Include="Cargo.cs" />
     <Compile Include="Engineer.cs" />
@@ -196,6 +197,9 @@
     <None Include="Templates\cargo.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Templates\system.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\mining.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -211,7 +215,7 @@
     <None Include="Templates\commander.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Templates\map.cshtml">
+    <None Include="Templates\galaxy.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Templates\ship.cshtml">

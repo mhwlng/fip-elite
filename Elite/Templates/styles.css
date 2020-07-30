@@ -137,3 +137,7 @@ td.indent {
 ul {
     margin-left: 20px;
 }
+
+.smallfont {
+    font-size: 11px;
+}

@@ -31,6 +31,7 @@ namespace Elite
         public static bool IsShuttingDown { get; set; }
 
         public static readonly object RefreshJsonLock = new object();
+        public static readonly object RefreshSystemLock = new object();
 
         public static Task JsonTask;
         private static CancellationTokenSource _jsonTokenSource = new CancellationTokenSource();
@@ -266,7 +267,8 @@ namespace Elite
                 Engine.Razor.Compile("missions.cshtml", null);
                 Engine.Razor.Compile("poi.cshtml", null);
 
-                Engine.Razor.Compile("map.cshtml", null);
+                Engine.Razor.Compile("galaxy.cshtml", null);
+                Engine.Razor.Compile("system.cshtml", null);
                 Engine.Razor.Compile("powers.cshtml", null);
                 Engine.Razor.Compile("materials.cshtml", null);
                 Engine.Razor.Compile("cargo.cshtml", null);
