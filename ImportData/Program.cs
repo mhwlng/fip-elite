@@ -583,6 +583,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -598,6 +599,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -613,6 +615,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -628,6 +631,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -643,6 +647,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -658,6 +663,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -673,6 +679,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -688,6 +695,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -703,6 +711,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -718,6 +727,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -733,6 +743,7 @@ namespace ImportData
                             x.Type != "Fleet Carrier" &&
                             x.Government != "Fleet Carrier" &&
                             x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
                             !string.IsNullOrEmpty(x.Government) &&
                             !string.IsNullOrEmpty(x.Economy) &&
                             x.PopulatedSystemEDDB != null &&
@@ -751,6 +762,7 @@ namespace ImportData
                                     x.Type != "Fleet Carrier" &&
                                     x.Government != "Fleet Carrier" &&
                                     x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
                                     x.OtherServices.Any(y => y == "Interstellar Factors Contact") &&
@@ -770,6 +782,7 @@ namespace ImportData
                                     x.Type != "Fleet Carrier" &&
                                     x.Government != "Fleet Carrier" &&
                                     x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
                                     rawMaterialEconomies.Contains(x.Economy) &&
@@ -790,6 +803,7 @@ namespace ImportData
                                     x.Type != "Fleet Carrier" &&
                                     x.Government != "Fleet Carrier" &&
                                     x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
                                     manufacturedMaterialEconomies.Contains(x.Economy) &&
@@ -810,6 +824,7 @@ namespace ImportData
                                     x.Type != "Fleet Carrier" &&
                                     x.Government != "Fleet Carrier" &&
                                     x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
                                     encodedDataEconomies.Contains(x.Economy) &&
@@ -830,6 +845,7 @@ namespace ImportData
                                     x.Type != "Fleet Carrier" &&
                                     x.Government != "Fleet Carrier" &&
                                     x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
                                     humanTechnologyEconomies.Contains(x.Economy) &&
@@ -850,6 +866,8 @@ namespace ImportData
                                     x.Type != "Fleet Carrier" &&
                                     x.Government != "Fleet Carrier" &&
                                     x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Type) &&
+                                    !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
                                     guardianTechnologyEconomies.Contains(x.Economy) &&
@@ -868,6 +886,7 @@ namespace ImportData
                                     x.Type != "Fleet Carrier" &&
                                     x.Government != "Fleet Carrier" &&
                                     x.Economy != "Fleet Carrier" &&
+                                    !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
                                     x.PopulatedSystemEDDB != null &&

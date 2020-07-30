@@ -224,6 +224,8 @@ namespace Elite
         {
             if (shipType == "testbuggy") return;
 
+            if (string.IsNullOrEmpty(shipType)) return;
+
             if (starPos == null) return;
 
             if (!ShipsList.Any(x => x.ShipType == shipType?.ToLower() && x.ShipID == shipId))
@@ -258,6 +260,8 @@ namespace Elite
             List<double> starPos)
         {
             if (shipType == "testbuggy") return;
+
+            if (string.IsNullOrEmpty(shipType)) return;
 
             if (!ShipsList.Any(x => x.ShipType == shipType?.ToLower() && x.ShipID == shipId))
             {
@@ -413,9 +417,9 @@ namespace Elite
         public static void HandleLoadGame(int shipId, string shipType, string name)
         {
             var ship = GetCurrentShip();
-            if (ship != null)
+            if (ship != null && !string.IsNullOrEmpty(shipType))
             {
-                SetCurrentShip(shipId, shipType?.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos);
+                SetCurrentShip(shipId, shipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos);
 
                 ship.Name = name?.Trim();
             }

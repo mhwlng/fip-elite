@@ -222,7 +222,7 @@ namespace Elite
         public class Commander
         {
             public string Name { get; set; } = "";
-            public uint Credits { get; set; }
+            public long Credits { get; set; }
 
             public double FederationReputation { get; set; } = -99999;
             public double AllianceReputation { get; set; } = -99999;
@@ -539,10 +539,13 @@ namespace Elite
 
                     //FuelLevel
 
-                    Ships.HandleLoadGame(loadGameInfo.ShipID, loadGameInfo.Ship, loadGameInfo.ShipName);
+                    if (!string.IsNullOrEmpty(loadGameInfo.Ship))
+                    {
+                        Ships.HandleLoadGame(loadGameInfo.ShipID, loadGameInfo.Ship, loadGameInfo.ShipName);
+                    }
 
                     CommanderData.Name = loadGameInfo.Commander;
-                    CommanderData.Credits = Convert.ToUInt32(loadGameInfo.Credits);
+                    CommanderData.Credits = loadGameInfo.Credits;
 
                     LocationData.Settlement = "";
 
@@ -742,49 +745,49 @@ namespace Elite
                     //When Written: when refuelling (full tank)
                     var refuelAllInfo = (RefuelAllEvent.RefuelAllEventArgs) e;
 
-                    CommanderData.Credits -= Convert.ToUInt32(refuelAllInfo.Cost);
+                    CommanderData.Credits -= refuelAllInfo.Cost;
                     break;
 
                 case "RepairAll":
                     //When Written: when repairing the ship
                     var repairAllInfo = (RepairAllEvent.RepairAllEventArgs) e;
 
-                    CommanderData.Credits -= Convert.ToUInt32(repairAllInfo.Cost);
+                    CommanderData.Credits -= repairAllInfo.Cost;
                     break;
 
                 case "Repair":
                     //When Written: when repairing the ship
                     var repairInfo = (RepairEvent.RepairEventArgs) e;
 
-                    CommanderData.Credits -= Convert.ToUInt32(repairInfo.Cost);
+                    CommanderData.Credits -= repairInfo.Cost;
                     break;
 
                 case "BuyTradeData":
                     //When Written: when buying trade data in the galaxy map
                     var buyTradeDataInfo = (BuyTradeDataEvent.BuyTradeDataEventArgs) e;
 
-                    CommanderData.Credits -= Convert.ToUInt32(buyTradeDataInfo.Cost);
+                    CommanderData.Credits -= buyTradeDataInfo.Cost;
                     break;
 
                 case "BuyExplorationData":
                     //When Written: when buying system data via the galaxy map
                     var buyExplorationDataInfo = (BuyExplorationDataEvent.BuyExplorationDataEventArgs) e;
 
-                    CommanderData.Credits -= Convert.ToUInt32(buyExplorationDataInfo.Cost);
+                    CommanderData.Credits -= buyExplorationDataInfo.Cost;
                     break;
 
                 case "BuyDrones":
                     //When Written: when purchasing drones
                     var buyDronesInfo = (BuyDronesEvent.BuyDronesEventArgs) e;
 
-                    CommanderData.Credits -= Convert.ToUInt32(buyDronesInfo.TotalCost);
+                    CommanderData.Credits -= buyDronesInfo.TotalCost;
                     break;
 
                 case "BuyAmmo":
                     //When Written: when purchasing ammunition
                     var buyAmmoInfo = (BuyAmmoEvent.BuyAmmoEventArgs) e;
 
-                    CommanderData.Credits -= Convert.ToUInt32(buyAmmoInfo.Cost);
+                    CommanderData.Credits -= buyAmmoInfo.Cost;
                     break;
 
                 case "PayBounties":
@@ -793,7 +796,7 @@ namespace Elite
 
                     // shipID
 
-                    CommanderData.Credits -= Convert.ToUInt32(payBountiesInfo.Amount);
+                    CommanderData.Credits -= payBountiesInfo.Amount;
                     break;
 
                 case "PayFines":
@@ -802,7 +805,7 @@ namespace Elite
 
                     // shipID
 
-                    CommanderData.Credits -= Convert.ToUInt32(payFinesInfo.Amount);
+                    CommanderData.Credits -= payFinesInfo.Amount;
                     break;
 
                 case "ApproachBody":
@@ -1141,7 +1144,7 @@ namespace Elite
 
                     var missionCompletedInfo = (MissionCompletedEvent.MissionCompletedEventArgs)e;
 
-                    CommanderData.Credits += Convert.ToUInt32(missionCompletedInfo.Reward);
+                    CommanderData.Credits += missionCompletedInfo.Reward;
 
                     Missions.HandleMissionCompletedEvent(missionCompletedInfo);
 

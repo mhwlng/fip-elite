@@ -85,6 +85,9 @@ namespace Elite
         {
             get
             {
+                //#if DEBUG
+                //return new DirectoryInfo(@"C:\Users\Marcel\Desktop\Elite Dangerous");
+                //#endif
                 var result = UnsafeNativeMethods.SHGetKnownFolderPath(new Guid("4C5C32FF-BB9D-43B0-B5B4-2D72E54EAAA4"),
                     0, new IntPtr(0), out var path);
                 if (result >= 0)
@@ -204,7 +207,10 @@ namespace Elite
                                     {
                                         var info = JsonConvert.DeserializeObject<LoadGameEvent.LoadGameEventArgs>(json);
 
-                                        Ships.HandleLoadGame(info.ShipID, info.Ship, info.ShipName);
+                                        if (!string.IsNullOrEmpty(info.Ship))
+                                        {
+                                            Ships.HandleLoadGame(info.ShipID, info.Ship, info.ShipName);
+                                        }
                                     }
                                     else if (json?.Contains("\"event\":\"SetUserShipName\",") == true)
                                     {
