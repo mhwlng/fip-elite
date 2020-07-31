@@ -6,93 +6,121 @@
 @{
     Layout = "layout.cshtml";
     var odd = true;
+    var displaydivider = false;
 }
 
-<div class="main">
-    
-    <div class="cardcaption">&nbsp;</div>
+    <div class="main">
 
-    @if (Model.MissionCargoCount == 0 && Model.StolenCargoCount == 0 && Model.CargoCount == 0)
-    {
-        <div class="cardcaption data">CARGO HOLD EMPTY</div>
-    }
+        <div class="cardcaption">&nbsp;</div>
 
-    <table class="zebratable">
-        <tbody>
-        @foreach (var m in Model.Cargo)
+        @if (Model.MissionCargoCount == 0 && Model.StolenCargoCount == 0 && Model.CargoCount == 0)
         {
-            <tr  class="@(odd ? "zebraodd": "zebraeven")">
-                <td class="caption wrap">@m.Name</td>
-                <td class="data right">@m.Count</td>
-            </tr>
-            odd = !odd;
+            <div class="cardcaption data">CARGO HOLD EMPTY</div>
+        }
+
+        @if (Model.CargoCount > 0)
+        {
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                    @foreach (var m in Model.Cargo)
+                    {
+                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <td class="caption wrap">@m.Name</td>
+                            <td class="data right">@m.Count</td>
+                        </tr>
+                        odd = !odd;
+                    }
+                </tbody>
+            </table>
         }
 
         @if (Model.MissionCargoCount > 0)
         {
-            if (Model.CargoCargoCount > 0)
-            {
-                <tr>
-                    <td class="divider" colspan="2">&nbsp;</td>
-                </tr>
-            }
-            <tr>
-                <td class="caption center" colspan="2">MISSION CARGO</td>
-            </tr>
-        }
+            odd = true;
 
-        @foreach (var mg in Model.MissionCargo)
-        {
-            foreach (var m in mg)
-            {
-                if (((List<Cargo.CargoItem>) mg).FirstOrDefault().Equals((Cargo.CargoItem) m))
-                {
+            <table>
+                <tbody>
+
+                    @if (displaydivider)
+                    {
+                        <tr>
+                            <td class="divider">&nbsp;</td>
+                        </tr>
+                    }
                     <tr>
-                        <td class="caption" colspan="2">@m.MissionName
-                            @if (!string.IsNullOrEmpty(m.System))
-                            {
-                                <text>to</text>
-                                @m.System
-                            }
-                            @if (!string.IsNullOrEmpty(m.Station))
-                            {
-                                <text>,</text>
-                                @m.Station
-                            }
-                        </td>
+                        <td class="caption center">MISSION CARGO</td>
                     </tr>
-                }
+                </tbody>
+            </table>
 
-                <tr>
-                    <td class="caption wrap">&nbsp;&nbsp;&nbsp;@m.Name</td>
-                    <td class="data right">@m.Count</td>
-                </tr>
+            displaydivider = true;
+
+            foreach (var mg in Model.MissionCargo)
+            {
+                Cargo.CargoItem mm = ((List<Cargo.CargoItem>) mg).FirstOrDefault();
+
+                <div>@mm.MissionName
+                    @if (!string.IsNullOrEmpty(mm.System))
+                    {
+                        <text>to</text>
+                        @mm.System
+                    }
+                    @if (!string.IsNullOrEmpty(mm.Station))
+                    {
+                        <text>,</text>
+                        @mm.Station
+                    }
+                </div>
+
+                <table class="zebratable">
+                    <tbody>
+                        @foreach (var m in mg)
+                        {
+                            <tr class="@(odd ? "zebraodd": "zebraeven")">
+                                <td class="caption wrap">&nbsp;&nbsp;&nbsp;@m.Name</td>
+                                <td class="data right">@m.Count</td>
+                            </tr>
+                            odd = !odd;
+                        }
+                    </tbody>
+                </table>
             }
+
         }
+
 
         @if (Model.StolenCargoCount > 0)
         {
-            if (Model.MissionCargoCount > 0 || Model.CargoCargoCount > 0)
-            {
-                <tr>
-                    <td class="divider" colspan="2">&nbsp;</td>
-                </tr>
-            }
-            <tr>
-                <td class="caption center" colspan="2">STOLEN</td>
-            </tr>
+            odd = true;
+
+            <table>
+                <tbody>
+
+                    @if (displaydivider)
+                    {
+                        <tr>
+                            <td class="divider">&nbsp;</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="caption center">STOLEN</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="zebratable">
+                <tbody>
+                    @foreach (var m in Model.StolenCargo)
+                    {
+                        <tr class="@(odd ? "zebraodd": "zebraeven")">
+                            <td class="caption wrap">@m.Name</td>
+                            <td class="data right">@m.Stolen</td>
+                        </tr>
+                        odd = !odd;
+                    }
+                </tbody>
+            </table>
         }
-
-        @foreach (var m in Model.StolenCargo)
-        {
-            <tr>
-                <td class="caption wrap">@m.Name</td>
-                <td class="data right">@m.Stolen</td>
-            </tr>
-        }
-
-        </tbody>
-    </table>
-
-
-</div>
+    </div>
