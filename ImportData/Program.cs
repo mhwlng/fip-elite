@@ -270,7 +270,7 @@ namespace ImportData
             {
                 Console.WriteLine("looking up Compromised Nav Beacons");
 
-                var cnbSystems = GetCnbSystems("http://edtools.ddns.net/res.json");
+                var cnbSystems = GetCnbSystems("http://edtools.cc/res.json");
 
                 cnbSystems.ForEach(z =>
                 {
@@ -423,8 +423,8 @@ namespace ImportData
                         .Select(tr => tr.Elements("td").ToList())
                         .Select(td => new HotspotStationData
                         {
-                            Station = td[0].Descendants("span").Skip(1).FirstOrDefault()?.InnerText ?? "?",
-                            System = td[0].Descendants("span").Skip(3).FirstOrDefault()?.InnerText ?? "?",
+                            Station = td[0].Descendants("span").FirstOrDefault()?.InnerText ?? "?",
+                            System = td[0].Descendants("span").Skip(2).FirstOrDefault()?.InnerText ?? "?",
                             Price = Convert.ToInt32(td[5].GetAttributeValue("data-order", "0")),
                             Demand = Convert.ToInt32(td[4].GetAttributeValue("data-order","0")),
                             Pad = td[1].InnerText, //tr[5],
@@ -897,8 +897,8 @@ namespace ImportData
 
                 }
 
-                DownloadHotspotSystems(@"Data\painitesystems.json", "http://edtools.ddns.net/miner?a=r&n=", "Painite");
-                DownloadHotspotSystems(@"Data\ltdsystems.json", "http://edtools.ddns.net/miner?a=r&n=", "LTD");
+                DownloadHotspotSystems(@"Data\painitesystems.json", "http://edtools.cc/miner?a=r&n=", "Painite");
+                DownloadHotspotSystems(@"Data\ltdsystems.json", "http://edtools.cc/miner?a=r&n=", "LTD");
 
 
             }
