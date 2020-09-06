@@ -64,8 +64,8 @@
                 @if (Model.CurrentShip.CargoCapacity > 0 && Model.CurrentShip.CargoCapacity >= Model.CurrentShip.CurrentCargo)
                 {
                     <tr>
-                        <td class="caption">Cargo</td>
-                        <td class="data">@Model.CurrentShip.CurrentCargo of @Model.CurrentShip.CargoCapacity T</td>
+                        <td class="caption">Cargo Capacity</td>
+                        <td class="data">@Model.CurrentShip.CurrentCargo / @Model.CurrentShip.CargoCapacity T</td>
                     </tr>
                 }
                 else

@@ -18,12 +18,26 @@
             <div class="cardcaption data">CARGO HOLD EMPTY</div>
         }
 
-        @if (Model.CargoCount > 0)
+        @if (Model.CargoCount > 0 || Model.CurrentShip.CargoCapacity > 0)
         {
             displaydivider = true;
 
             <table class="zebratable">
                 <tbody>
+                    @if (Model.CurrentShip.CargoCapacity > 0 && Model.CurrentShip.CargoCapacity >= Model.CurrentShip.CurrentCargo)
+                    {
+                        <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                            <td class="caption wrap">Cargo Capacity</td>
+                            <td class="data right">@Model.CurrentShip.CurrentCargo / @Model.CurrentShip.CargoCapacity</td>
+                        </tr>
+                        if (Model.CargoCount > 0)
+                        {
+                            <tr>
+                                <td class="divider" colspan="2">&nbsp;</td>
+                            </tr>
+                        }
+                    }
+
                     @foreach (var m in Model.Cargo)
                     {
                         <tr class="@(odd ? "zebraodd" : "zebraeven")">

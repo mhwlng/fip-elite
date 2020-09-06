@@ -1791,7 +1791,10 @@ namespace Elite
                                                     MissionCargoCount = missionCargo.Count,
 
                                                     StolenCargo = stolenCargo,
-                                                    StolenCargoCount = stolenCargo.Count
+                                                    StolenCargoCount = stolenCargo.Count,
+
+                                                    CurrentShip = Ships.ShipsList.FirstOrDefault(x => x.Stored == false)
+
                                                 });
 
                                         }
