@@ -52,6 +52,8 @@ The 'Engineer' tab is integrated with the material shopping list of the [EDengin
 
 The local api must be active in EDengineer and listening on port 44405
 
+This is optional, you don't have to have edengineer running.
+
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
 ![Screenshot 2](https://i.imgur.com/JTxiIBL.png)
 ![Screenshot 3](https://i.imgur.com/uXpUC6m.png)
