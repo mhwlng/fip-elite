@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -432,9 +434,66 @@ namespace Elite
 
         private bool _blockNextUpState;
 
+        private string _exePath;
+
+        private string _autoActivateTarget;
+        private DateTime _autoActivateTargetLastRefreshed = DateTime.Now;
+
         public FipPanel(IntPtr devicePtr) 
         {
             FipDevicePointer = devicePtr;
+        }
+
+
+        private void GetExePath()
+        {
+            var strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            _exePath = Path.GetDirectoryName(strExeFilePath);
+        }
+
+
+        private void InitFipPanelSerialNumber()
+        {
+            App.Log.Info("FipPanel Serial Number : " + SerialNumber);
+
+            _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                            "\\mhwlng\\fip-elite\\" + SerialNumber;
+
+            if (File.Exists(_settingsPath))
+            {
+                try
+                {
+                    CurrentTab = (LcdTab)uint.Parse(File.ReadAllText(_settingsPath));
+                }
+                catch
+                {
+                    CurrentTab = LcdTab.None;
+                }
+            }
+            else
+            {
+                new FileInfo(_settingsPath).Directory?.Create();
+
+                File.WriteAllText(_settingsPath, ((int)CurrentTab).ToString());
+            }
+
+            GetExePath();
+
+            if (File.Exists(Path.Combine(_exePath, "panelSettings.config")) &&
+                ConfigurationManager.GetSection("panelSettings") is NameValueCollection panelSection)
+            {
+                _autoActivateTarget = panelSection["AutoActivateTarget"];
+
+                if (_autoActivateTarget?.ToLower() != SerialNumber.ToLower())
+                {
+                    _autoActivateTarget = string.Empty;
+                }
+                else
+                {
+                    App.Log.Info("FipPanel AutoActivateTarget : " + SerialNumber);
+                    _autoActivateTargetLastRefreshed = DateTime.Now;
+                }
+            }
         }
 
         public void Initalize()
@@ -466,28 +525,8 @@ namespace Elite
             }
             else
             {
-                App.Log.Info("FipPanel Serial Number : " + SerialNumber);
 
-                _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                                "\\mhwlng\\fip-elite\\" + SerialNumber;
-
-                if (File.Exists(_settingsPath))
-                {
-                    try
-                    {
-                        CurrentTab = (LcdTab) uint.Parse(File.ReadAllText(_settingsPath));
-                    }
-                    catch
-                    {
-                        CurrentTab = LcdTab.None;
-                    }
-                }
-                else
-                {
-                    new FileInfo(_settingsPath).Directory?.Create();
-
-                    File.WriteAllText(_settingsPath, ((int)CurrentTab).ToString());
-                }
+                InitFipPanelSerialNumber();
 
                 _initOk = true;
 
@@ -505,28 +544,8 @@ namespace Elite
             _htmlWindowWidth = windowWidth;
             _htmlWindowHeight = windowHeight;
 
-            App.Log.Info("FipPanel Serial Number : " + SerialNumber);
 
-            _settingsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                            "\\mhwlng\\fip-elite\\" + serialNumber;
-
-            if (File.Exists(_settingsPath))
-            {
-                try
-                {
-                    CurrentTab = (LcdTab)uint.Parse(File.ReadAllText(_settingsPath));
-                }
-                catch
-                {
-                    CurrentTab = LcdTab.None;
-                }
-            }
-            else
-            {
-                new FileInfo(_settingsPath).Directory?.Create();
-
-                File.WriteAllText(_settingsPath, ((int)CurrentTab).ToString());
-            }
+            InitFipPanelSerialNumber();
 
             RefreshDevicePage();
 
@@ -1294,6 +1313,12 @@ namespace Elite
                 if (Engineer.BlueprintShoppingList.Count == 0 && CurrentTab == LcdTab.Engineer)
                 {
                     SetTab(LcdTab.Ship);
+                }
+
+                if (!string.IsNullOrEmpty(_autoActivateTarget) && Data.TargetData.Refreshed > _autoActivateTargetLastRefreshed)
+                {
+                    SetTab(LcdTab.Target);
+                    _autoActivateTargetLastRefreshed = Data.TargetData.Refreshed;
                 }
 
                 using (var fipImage = new Bitmap(_htmlWindowWidth, _htmlWindowHeight))

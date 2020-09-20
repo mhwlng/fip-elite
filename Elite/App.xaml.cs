@@ -298,21 +298,21 @@ namespace Elite
                 Engineer.GetShoppingList();
                 Engineer.GetBestSystems();
 
-                if (File.Exists(Path.Combine(ExePath, "joystickSettings.config")) && ConfigurationManager.GetSection("joystickSettings") is NameValueCollection section)
+                if (File.Exists(Path.Combine(ExePath, "joystickSettings.config")) && ConfigurationManager.GetSection("joystickSettings") is NameValueCollection joystickSection)
                 {
-                    _pid = section["PID"];
-                    _vid = section["VID"];
-                    _upButton = Convert.ToInt32(section["UpButton"]);
-                    _downButton = Convert.ToInt32(section["DownButton"]);
-                    _leftButton = Convert.ToInt32(section["LeftButton"]);
-                    _rightButton = Convert.ToInt32(section["RightButton"]);
-                    _pushButton = Convert.ToInt32(section["PushButton"]);
+                    _pid = joystickSection["PID"];
+                    _vid = joystickSection["VID"];
+                    _upButton = Convert.ToInt32(joystickSection["UpButton"]);
+                    _downButton = Convert.ToInt32(joystickSection["DownButton"]);
+                    _leftButton = Convert.ToInt32(joystickSection["LeftButton"]);
+                    _rightButton = Convert.ToInt32(joystickSection["RightButton"]);
+                    _pushButton = Convert.ToInt32(joystickSection["PushButton"]);
 
                     if (!string.IsNullOrEmpty(_pid) && !string.IsNullOrEmpty(_vid) && _upButton > 0 && _downButton > 0 && _leftButton > 0 && _rightButton > 0 && _pushButton > 0)
                     {
                         splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Looking for Joystick...");
 
-                        FipSerialNumber = section["FipSerialNumber"];
+                        FipSerialNumber = joystickSection["FipSerialNumber"];
 
                         if (!string.IsNullOrEmpty(FipSerialNumber))
                         {
@@ -320,8 +320,8 @@ namespace Elite
 
                             if (FipSerialNumber.ToLower().Contains("window"))
                             {
-                                WindowWidth = Convert.ToInt32(section["WindowWidth"]);
-                                WindowHeight = Convert.ToInt32(section["WindowHeight"]);
+                                WindowWidth = Convert.ToInt32(joystickSection["WindowWidth"]);
+                                WindowHeight = Convert.ToInt32(joystickSection["WindowHeight"]);
 
                                 FipHandler.AddWindow("window",(IntPtr)0, WindowWidth, WindowHeight);
                             }

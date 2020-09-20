@@ -48,17 +48,6 @@ namespace ImportData
             return Path.GetDirectoryName(strExeFilePath);
         }
 
-        private static string GetJson(string url)
-        {
-            using (var client = new WebClient())
-            {
-
-                client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
-                var data = client.DownloadData(url);
-                var decompress = Decompress(data);
-                return System.Text.Encoding.UTF8.GetString(decompress);
-            }
-        }
 
         private static List<StationData> GetStationsData(List<StationEDSM> stations)
         {
@@ -158,13 +147,19 @@ namespace ImportData
             }
             else
             {
-                var jsonText = GetJson(url);
+                using (var client = new WebClient())
+                {
+                    client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+                    var data = client.DownloadData(url);
+                    var decompress = Decompress(data);
 
-                File.WriteAllText(path, jsonText);
+                    File.WriteAllBytes(path, decompress);
 
-                wasUpdated = true;
+                    wasUpdated = true;
 
-                return jsonText;
+                    return File.ReadAllText(path); // not efficient, but gets around out of memory error
+
+                }
             }
         }
 

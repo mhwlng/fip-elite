@@ -278,6 +278,8 @@ namespace Elite
             public double ShieldHealth { get; set; }
             public double SubsystemHealth { get; set; }
 
+            public DateTime Refreshed { get; set; }
+
         }
 
         public class Location
@@ -1105,6 +1107,8 @@ namespace Elite
                     TargetData.SubsystemLocalised = shipTargetedInfo.Subsystem_Localised;
                     TargetData.TargetLocked = shipTargetedInfo.TargetLocked;
                     TargetData.SubsystemHealth = shipTargetedInfo.SubSystemHealth;
+
+                    TargetData.Refreshed = DateTime.Now;
 
                     break;
 
