@@ -54,14 +54,20 @@ The local api must be active in EDengineer and listening on port 44405
 
 This is optional, you don't have to have edengineer running.
 
-You can automatically open the 'Target' tab on ONE Flight Instrument Panel, when a ship is targeted.
-Configure the serial number of the fip panel, that needs this feature enabled, via panelsettings.config. 
+You can automatically open the 'Target' tab on ONE Flight Instrument Panel, when a ship is targeted (ShipTargeted event).
+
+You can automatically open the 'Navigation' tab on ONE Flight Instrument Panel, when a ship enters a system, approaches a station or a planet.
+(ApproachBody, ApproachSettlement, DockingRequested, DockingGranted, Docked, CarrierJump, FSDJump, SupercruiseExit events)
+
+Configure the serial number of the Flight Instrument Panel, that needs these features enabled, via panelsettings.config. 
+
 (The special value "window" will also work.)
 
 ```
 <?xml version="1.0" encoding="utf-8" ?>
 <panelSettings>
   <add key="AutoActivateTarget" value="MZE09FE2BC" />
+  <add key="AutoActivateNavigation" value="MZAAFAA883" />
 </panelSettings>
 ```
 

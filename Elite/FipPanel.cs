@@ -439,6 +439,9 @@ namespace Elite
         private string _autoActivateTarget;
         private DateTime _autoActivateTargetLastRefreshed = DateTime.Now;
 
+        private string _autoActivateNavigation;
+        private DateTime _autoActivateNavigationLastRefreshed = DateTime.Now;
+
         public FipPanel(IntPtr devicePtr) 
         {
             FipDevicePointer = devicePtr;
@@ -492,6 +495,18 @@ namespace Elite
                 {
                     App.Log.Info("FipPanel AutoActivateTarget : " + SerialNumber);
                     _autoActivateTargetLastRefreshed = DateTime.Now;
+                }
+
+                _autoActivateNavigation = panelSection["AutoActivateNavigation"];
+
+                if (_autoActivateNavigation?.ToLower() != SerialNumber.ToLower())
+                {
+                    _autoActivateNavigation = string.Empty;
+                }
+                else
+                {
+                    App.Log.Info("FipPanel AutoActivateNavigation : " + SerialNumber);
+                    _autoActivateNavigationLastRefreshed = DateTime.Now;
                 }
             }
         }
@@ -1319,6 +1334,12 @@ namespace Elite
                 {
                     SetTab(LcdTab.Target);
                     _autoActivateTargetLastRefreshed = Data.TargetData.Refreshed;
+                }
+
+                if (!string.IsNullOrEmpty(_autoActivateNavigation) && Data.LocationData.Refreshed > _autoActivateNavigationLastRefreshed)
+                {
+                    SetTab(LcdTab.Navigation);
+                    _autoActivateNavigationLastRefreshed = Data.LocationData.Refreshed;
                 }
 
                 using (var fipImage = new Bitmap(_htmlWindowWidth, _htmlWindowHeight))

@@ -330,6 +330,9 @@ namespace Elite
             public bool HideBody { get; set; }
 
             public List<double> StarPos { get; set; } // array[x, y, z], in light years
+
+            public DateTime Refreshed { get; set; }
+
         }
 
         public class Status
@@ -821,6 +824,8 @@ namespace Elite
 
                     LocationData.HideBody = false;
 
+                    LocationData.Refreshed = DateTime.Now;
+
                     break;
 
                 case "ApproachSettlement":
@@ -840,6 +845,7 @@ namespace Elite
 
                     LocationData.HideBody = false;
 
+                    LocationData.Refreshed = DateTime.Now;
 
                     break;
 
@@ -904,6 +910,8 @@ namespace Elite
                         shipData.AutomaticDocking = false;
                     }
 
+                    LocationData.Refreshed = DateTime.Now;
+
                     break;
 
                 case "DockingGranted":
@@ -916,6 +924,9 @@ namespace Elite
                     LocationData.BodyType = "Station";
 
                     DockData.LandingPad = Convert.ToInt32(dockingGrantedInfo.LandingPad);
+
+                    LocationData.Refreshed = DateTime.Now;
+
                     break;
 
                 case "DockingRequested":
@@ -927,6 +938,9 @@ namespace Elite
 
                     LocationData.Body = dockingRequestedInfo.StationName;
                     LocationData.BodyType = "Station";
+
+                    LocationData.Refreshed = DateTime.Now;
+
                     break;
 
                 case "CarrierJump":
@@ -965,6 +979,8 @@ namespace Elite
                         LocationData.SystemEconomy = carrierJumpInfo.SystemEconomy_Localised;
                         LocationData.SystemGovernment = carrierJumpInfo.SystemGovernment_Localised;
                         LocationData.Population = carrierJumpInfo.Population;
+
+                        LocationData.Refreshed = DateTime.Now;
                     }
 
                     break;
@@ -1016,6 +1032,8 @@ namespace Elite
                     LocationData.SystemEconomy = fsdJumpInfo.SystemEconomy_Localised;
                     LocationData.SystemGovernment = fsdJumpInfo.SystemGovernment_Localised;
                     LocationData.Population = fsdJumpInfo.Population;
+
+                    LocationData.Refreshed = DateTime.Now;
 
                     break;
 
@@ -1074,6 +1092,8 @@ namespace Elite
                     LocationData.Body = supercruiseExitInfo.Body;
                     LocationData.BodyType = supercruiseExitInfo.BodyType.ToString();
                     LocationData.HideBody = false;
+
+                    LocationData.Refreshed = DateTime.Now;
 
                     break;
 
