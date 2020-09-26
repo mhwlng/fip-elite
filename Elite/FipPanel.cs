@@ -49,7 +49,7 @@ namespace Elite
         Commander = 1,
         Navigation = 2,
         Target = 3,
-        Missions = 4,
+        Galnet = 4,
         ShipMenu = 5, // ship ->
         LocationsMenu = 6, // locations ->
 
@@ -60,7 +60,7 @@ namespace Elite
         Materials = 9,
         Cargo = 10,
         Engineer = 11,
-        Events = 12,
+        Missions = 12,
 
         //---------------
 
@@ -659,9 +659,8 @@ namespace Elite
 
                             switch (_currentTabCursor)
                             {
-
-                                case LcdTab.Events:
-                                    //Events > Engineer > Cargo > Materials > Ship >  ShipBack
+                                case LcdTab.Missions:
+                                    //Missions > Engineer > Cargo > Materials > Ship >  ShipBack
 
                                     _currentTabCursor -= 1;
 
@@ -676,7 +675,7 @@ namespace Elite
                                     _currentTabCursor = LcdTab.LocationsMenu;
                                     break;
                                 case LcdTab.ShipBack:
-                                    _currentTabCursor = LcdTab.Events;
+                                    _currentTabCursor = LcdTab.Missions;
                                     break;
                                 case LcdTab.LocationsBack:
                                     _currentTabCursor = LcdTab.Mining;
@@ -708,7 +707,7 @@ namespace Elite
                             {
 
                                 case LcdTab.Cargo:
-                                    //ShipBack > Ship > Materials > Cargo > Engineer > Events 
+                                    //ShipBack > Ship > Materials > Cargo > Engineer > Missions 
 
                                     _currentTabCursor += 1;
 
@@ -722,7 +721,7 @@ namespace Elite
                                 case LcdTab.LocationsMenu:
                                     _currentTabCursor = LcdTab.Commander;
                                     break;
-                                case LcdTab.Events:
+                                case LcdTab.Missions:
                                     _currentTabCursor = LcdTab.ShipBack;
                                     break;
                                 case LcdTab.Mining:
@@ -876,7 +875,8 @@ namespace Elite
                         if (state && (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
                                       CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                       CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining || 
-                                      CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer))
+                                      CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer || 
+                                      CurrentTab == LcdTab.Galnet))
                         {
 
                             _currentCard[(int) CurrentTab]++;
@@ -892,7 +892,8 @@ namespace Elite
                         if (state && (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
                                       CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                       CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
-                                      CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer))
+                                      CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer || 
+                                      CurrentTab == LcdTab.Galnet))
                         {
                             _currentCard[(int) CurrentTab]--;
                             _currentZoomLevel[(int) CurrentTab]--;
@@ -973,7 +974,7 @@ namespace Elite
                                         mustRefresh = SetTab(LcdTab.Target);
                                         break;
                                     case 256:
-                                        mustRefresh = SetTab(LcdTab.Missions);
+                                        mustRefresh = SetTab(LcdTab.Galnet);
                                         break;
                                     case 512:
                                         mustRefresh = true;
@@ -1022,7 +1023,7 @@ namespace Elite
                                         }
                                         break;
                                     case 1024:
-                                        mustRefresh = SetTab(LcdTab.Events);
+                                        mustRefresh = SetTab(LcdTab.Missions);
                                         break;
                                     case 2048:
                                         mustRefresh = true;
@@ -1384,6 +1385,20 @@ namespace Elite
                                 }
 
                                 break;
+                            case LcdTab.Galnet:
+
+                                if (_currentCard[(int)CurrentTab] < 0)
+                                {
+                                    _currentCard[(int)CurrentTab] = 0;
+                                }
+                                else
+                                if (_currentCard[(int)CurrentTab] > (Galnet.GalnetList?.Count ?? 1) - 1)
+                                {
+                                    _currentCard[(int)CurrentTab] = (Galnet.GalnetList?.Count ?? 1) - 1;
+                                }
+
+                                break;
+
                         }
 
                         if (mustRender)
@@ -1672,18 +1687,28 @@ namespace Elite
 
                                         break;
 
-                                    case LcdTab.Missions:
+                                    case LcdTab.Galnet:
+
+                                        var currentCard = _currentCard[(int)CurrentTab];
+
+                                        if (Galnet.GalnetList?.Count <= currentCard -1)
+                                        {
+                                            currentCard = _currentCard[(int) CurrentTab] = 0;
+                                        }
 
                                         str =
-                                            Engine.Razor.Run("missions.cshtml", null, new
+                                            Engine.Razor.Run("galnet.cshtml", null, new
                                             {
                                                 CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
+                                                CurrentCard = currentCard,
 
-                                                MissionList = Missions.MissionList
+                                                Galnet = Galnet.GalnetList.Skip(currentCard).FirstOrDefault().Value
+                                                
                                             });
 
                                         break;
+
 
                                     case LcdTab.POI:
 
@@ -1931,6 +1956,19 @@ namespace Elite
 
                                         break;
 
+                                    case LcdTab.Missions:
+
+                                        str =
+                                            Engine.Razor.Run("missions.cshtml", null, new
+                                            {
+                                                CurrentTab = CurrentTab,
+                                                CurrentPage = _currentPage,
+
+                                                MissionList = Missions.MissionList
+                                            });
+
+                                        break;
+/*
                                     case LcdTab.Events:
 
                                         var eventlist = "";
@@ -1949,7 +1987,7 @@ namespace Elite
                                             });
 
                                         break;
-
+*/
                                 }
 
 
@@ -2013,12 +2051,39 @@ namespace Elite
                         {
                             if (mustRender)
                             {
+                                var currentCard = _currentCard[(int) CurrentTab];
+
+                                var galnetDate = "???";
+                                var galnetCaption = "Galnet";
+
+                                var galNetCount = Galnet.GalnetList?.Count ?? 0;
+
+                                if (CurrentTab == LcdTab.Galnet && galNetCount > currentCard)
+                                {
+                                    galnetDate = Galnet.GalnetList.Skip(currentCard).FirstOrDefault().Value
+                                        .FirstOrDefault()?.Date;
+                                }
+
+                                if (currentCard > 0)
+                                {
+                                    galnetCaption = "&#x25c0; " + galnetCaption;
+                                }
+
+                                galnetCaption += " : " + galnetDate;
+
+                                if (currentCard < galNetCount -1)
+                                {
+                                    galnetCaption += " &#x25b6;";
+                                }
+
                                 var cardcaptionstr =
                                     Engine.Razor.Run("cardcaption.cshtml", null, new
                                     {
                                         CurrentTab = CurrentTab,
                                         CurrentPage = _currentPage,
-                                        CurrentCard = _currentCard[(int)CurrentTab]
+                                        CurrentCard = currentCard,
+
+                                        GalnetCaption = galnetCaption
                                     });
 
                                 _cardcaptionHtmlImage = HtmlRender.RenderToImage(cardcaptionstr,

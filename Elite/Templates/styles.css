@@ -141,3 +141,15 @@ ul {
 .smallfont {
     font-size: 11px;
 }
+
+.galnetbody {
+    margin-right: 10px;
+}
+
+.galnetbody br {
+    margin-bottom: 10px;
+}
+
+.galnettitle {
+    margin-bottom: 20px;
+}

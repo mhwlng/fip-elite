@@ -315,6 +315,97 @@ namespace ImportData
         }
 
 
+        private static void GalnetSerialize(List<GalnetData> systems, string fullPath)
+        {
+            new FileInfo(fullPath).Directory?.Create();
+
+            var serializer = new JsonSerializer
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+            using (var sw = new StreamWriter(fullPath))
+            using (var writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, systems);
+            }
+        }
+
+        private static bool RemoteFileExists(string url)
+        {
+            try
+            {
+                //Creating the HttpWebRequest
+                HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+                //Setting the Request method HEAD, you can also use GET too.
+                request.Method = "HEAD";
+                //Getting the Web Response.
+                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                //Returns TRUE if the Status code == 200
+                response.Close();
+                return (response.StatusCode == HttpStatusCode.OK);
+            }
+            catch
+            {
+                //Any exception will returns false.
+                return false;
+            }
+        }
+
+        private static void DownloadGalnet(string path, string url)
+        {
+            try
+            {
+                path = Path.Combine(GetExePath(), path);
+
+                DeleteExpiredFile(path, 720);
+
+                if (!File.Exists(path))
+                {
+                    Console.WriteLine("looking up galnet");
+
+                    using (var client = new WebClient())
+                    {
+                        var data = client.DownloadString(url);
+
+                        var galnetJson = JsonConvert.DeserializeObject<List<GalnetData>>(data)?.Take(100).ToList();
+
+                        if (galnetJson?.Any() == true)
+                        {
+                            galnetJson.ForEach(x =>
+                            {
+                                x.ImageList = new List<string>();
+
+                                if (!string.IsNullOrEmpty(x.Image))
+                                {
+                                    foreach (var i in x.Image.TrimStart(',').Split(',').ToList())
+                                    {
+                                        if (!string.IsNullOrEmpty(i))
+                                        {
+                                            if (RemoteFileExists("https://hosting.zaonce.net/elite-dangerous/galnet/" + i + ".png"))
+                                            {
+                                                x.ImageList.Add(i);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                x.Image = null;
+
+                            });
+
+                            GalnetSerialize(galnetJson, path);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+
         private class HotspotStationData
         {
             public string System { get; set; }
@@ -894,6 +985,8 @@ namespace ImportData
 
                 DownloadHotspotSystems(@"Data\painitesystems.json", "http://edtools.cc/miner?a=r&n=", "Painite");
                 DownloadHotspotSystems(@"Data\ltdsystems.json", "http://edtools.cc/miner?a=r&n=", "LTD");
+
+                DownloadGalnet(@"Data\galnet.json", "https://elitedangerous-website-backend-production.elitedangerous.com/api/galnet?_format=json");
 
 
             }

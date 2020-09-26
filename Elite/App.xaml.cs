@@ -148,6 +148,14 @@ namespace Elite
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Tritium Sell Stations...");
                 MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumSell] = MiningStations.GetAllMiningStations(@"Data\tritiumstations.json");
+
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Galnet News feed...");
+                Galnet.GalnetList = Galnet.GetGalnet(@"Data\galnet.json");
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Galnet Images...");
+                Galnet.GetGalnetImages(Galnet.GalnetList);
+
             }
 
             if (splashScreen == null)
@@ -264,7 +272,7 @@ namespace Elite
                 Engine.Razor.Compile("ship.cshtml", null);
                 Engine.Razor.Compile("navigation.cshtml", null);
                 Engine.Razor.Compile("target.cshtml", null);
-                Engine.Razor.Compile("missions.cshtml", null);
+                Engine.Razor.Compile("galnet.cshtml", null);
                 Engine.Razor.Compile("poi.cshtml", null);
 
                 Engine.Razor.Compile("galaxy.cshtml", null);
@@ -274,6 +282,7 @@ namespace Elite
                 Engine.Razor.Compile("cargo.cshtml", null);
                 Engine.Razor.Compile("engineer.cshtml", null);
                 Engine.Razor.Compile("mining.cshtml", null);
+                Engine.Razor.Compile("missions.cshtml", null);
                 Engine.Razor.Compile("events.cshtml", null);
 
                 CssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(

@@ -1,0 +1,41 @@
+@using System
+@using System.Collections.Generic
+@using Elite
+@using System.Linq
+@using System.Security.Cryptography.X509Certificates
+@{
+    Layout = "layout.cshtml";
+}
+
+<div class="main">
+
+    <div class="cardcaption">&nbsp;</div>
+    
+    @if (Model.Galnet != null)
+    {
+        foreach (var m in Model.Galnet)
+        {
+            <div class="galnettitle data">@m.Title</div>
+
+            if (m.ImageList != null)
+            {
+                foreach (var im in m.ImageList)
+                {
+                    if (!string.IsNullOrEmpty(im))
+                    {
+                        <div class="imgcenter" style="padding-bottom: 5px;"><img style="width: 100%;" src="galnet\@(im).png"/></div>
+                    }
+                }
+            }
+            <div class="galnetbody">@Html.Raw(m.Body)</div>
+
+            if (!((List<GalnetData>) Model.Galnet).Last().Equals((GalnetData) m))
+            {
+                <hr/>
+                <div>&nbsp;</div>
+            }
+
+        }
+    }
+
+</div>

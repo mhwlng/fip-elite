@@ -13,7 +13,7 @@ Use the right rotary encoder to scroll vertically on all tabs.
 
 Use the left rotary encoder to show another card on various tabs or zoom into the galaxy map.
 
-Use S1 to display the menu.
+Press the S1 button to display the menu.
 
 You can also control ONE Flight Instrument Panel with a HOTAS 4-way hat switch with pushbutton.
 
@@ -48,13 +48,13 @@ Otherwise these values are ignored.
 
 You can then use a tool like [OVR Toolkit](https://store.steampowered.com/app/1068820/OVR_Toolkit/) to display this window in VR. 
 
-The 'Engineer' tab is integrated with the material shopping list of the [EDengineer](https://github.com/msarilar/EDEngineer) application.
+The 'Engineer' tab is integrated with the material shopping list of the [EDEngineer](https://github.com/msarilar/EDEngineer) application.
 
-The local api must be active in EDengineer and listening on port 44405
+The local api must be active in EDEngineer and listening on port 44405
 
-This is optional, you don't have to have edengineer running.
+**This is optional, EDEngineer doesn't have to be installed or running.**
 
-You can automatically open the 'Target' tab on ONE Flight Instrument Panel, when a ship is targeted (ShipTargeted event).
+You can automatically open the 'Target' tab on ONE Flight Instrument Panel, when a ship is targeted. (ShipTargeted event).
 
 You can automatically open the 'Navigation' tab on ONE Flight Instrument Panel, when a ship enters a system, approaches a station or a planet.
 (ApproachBody, ApproachSettlement, DockingRequested, DockingGranted, Docked, CarrierJump, FSDJump, SupercruiseExit events)
@@ -94,6 +94,7 @@ Configure the serial number of the Flight Instrument Panel, that needs these fea
 ![Screenshot 21](https://i.imgur.com/zGm6qOR.png)
 ![Screenshot 22](https://i.imgur.com/ncHyT8X.png)
 ![Screenshot 23](https://i.imgur.com/1ngN8cF.png)
+![Screenshot 24](https://i.imgur.com/4gUny6G.png)
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 

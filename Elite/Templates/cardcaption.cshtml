@@ -22,10 +22,14 @@
     {
         <div class="cardcaption">Missions</div>
     }
-    else if (Model.CurrentTab == LcdTab.Events)
+    else if (Model.CurrentTab == LcdTab.Galnet)
+    {
+      <div class="cardcaption">@Html.Raw(Model.GalnetCaption)</div>
+    }
+    @*else if (Model.CurrentTab == LcdTab.Events)
     {
         <div class="cardcaption">Events</div>
-    }
+    }*@
     else if (Model.CurrentTab == LcdTab.Ship)
     {
         if (Model.CurrentCard == 0)

@@ -15,7 +15,7 @@
                     <td><div class="@(Model.CurrentTab == LcdTab.Target ? "highlight" : "") @(Model.Cursor == LcdTab.Target ? "menucursor" : "")">TARGET</div></td>
                 </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == LcdTab.Missions ? "highlight" : "") @(Model.Cursor == LcdTab.Missions ? "menucursor" : "")">MISSIONS</div></td>
+                    <td><div class="@(Model.CurrentTab == LcdTab.Galnet ? "highlight" : "") @(Model.Cursor == LcdTab.Galnet ? "menucursor" : "")">GALNET</div></td>
                 </tr>
                 <tr>
                     <td><div class="navigation @(Model.Cursor == LcdTab.ShipMenu ? "menucursor" : "")">SHIP &#x25b6;</div></td>
@@ -59,7 +59,7 @@
             </tr>
                 <tr>
                     <td>
-                        <div class="@(Model.CurrentTab == LcdTab.Events ? "highlight" : "") @(Model.Cursor == LcdTab.Events ? "menucursor" : "")">EVENTS</div>
+                        <div class="@(Model.CurrentTab == LcdTab.Missions ? "highlight" : "") @(Model.Cursor == LcdTab.Missions ? "menucursor" : "")">MISSIONS</div>
                     </td>
                 </tr>
             </tbody>
