@@ -855,6 +855,38 @@ namespace Elite
         }
 
 
+        private void HandleCardNavigationLeds()
+        {
+            var ledRight = false;
+            var ledLeft = false;
+
+            if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
+                CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
+                CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
+                CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
+                CurrentTab == LcdTab.Galnet)
+            {
+                ledLeft = true;
+                ledRight = true;
+
+                if (CurrentTab == LcdTab.Galnet)
+                {
+                    var currentCard = _currentCard[(int) CurrentTab];
+
+                    var galNetCount = Galnet.GalnetList?.Count ?? 0;
+
+                    ledLeft = currentCard > 0;
+
+                    ledRight = currentCard < galNetCount - 1;
+                }
+
+            }
+
+            SetLed(5, ledRight);
+            SetLed(6, ledLeft);
+
+        }
+
         private void SoftButtonCallback(IntPtr device, IntPtr buttons, IntPtr context)
         {
             if (device == FipDevicePointer & (uint) buttons != _prevButtons)
@@ -953,6 +985,39 @@ namespace Elite
                                         }
 
                                         _lastTab = LcdTab.Init;
+
+                                        break;
+
+                                    case 512:
+
+                                        if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
+                                            CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
+                                            CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
+                                            CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
+                                            CurrentTab == LcdTab.Galnet)
+                                        {
+                                            _currentCard[(int)CurrentTab]++;
+                                            _currentZoomLevel[(int)CurrentTab]++;
+                                            _currentLcdYOffset = 0;
+
+                                            mustRefresh = true;
+                                        }
+
+                                        break;
+                                    case 1024:
+
+                                        if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
+                                            CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
+                                            CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
+                                            CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
+                                            CurrentTab == LcdTab.Galnet)
+                                        {
+                                            _currentCard[(int)CurrentTab]--;
+                                            _currentZoomLevel[(int)CurrentTab]--;
+                                            _currentLcdYOffset = 0;
+
+                                            mustRefresh = true;
+                                        }
 
                                         break;
                                 }
@@ -1696,7 +1761,10 @@ namespace Elite
                                             currentCard = _currentCard[(int) CurrentTab] = 0;
                                         }
 
-                                        str =
+                                        lock (App.RefreshJsonLock)
+                                        {
+
+                                            str =
                                             Engine.Razor.Run("galnet.cshtml", null, new
                                             {
                                                 CurrentTab = CurrentTab,
@@ -1704,8 +1772,9 @@ namespace Elite
                                                 CurrentCard = currentCard,
 
                                                 Galnet = Galnet.GalnetList.Skip(currentCard).FirstOrDefault().Value
-                                                
+
                                             });
+                                        }
 
                                         break;
 
@@ -2157,6 +2226,9 @@ namespace Elite
                                 }
 
                                 SetLed(1, true);
+
+                                HandleCardNavigationLeds();
+
                             }
                             else if (tabPage != _currentPage)
                             {
@@ -2173,6 +2245,8 @@ namespace Elite
                             else
                             {
                                 SetLed(1, false);
+                                SetLed(5, false);
+                                SetLed(6, false);
 
                                 if (CurrentTab > 0)
                                 {

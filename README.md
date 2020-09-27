@@ -12,6 +12,7 @@ The menu area and each screen can be configured via razor (.cshtml) web page tem
 Use the right rotary encoder to scroll vertically on all tabs.
 
 Use the left rotary encoder to show another card on various tabs or zoom into the galaxy map.
+Also, the S5 button shows the next card and the S6 button shows the previous card.
 
 Press the S1 button to display the menu.
 
