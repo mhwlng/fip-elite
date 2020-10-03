@@ -315,7 +315,7 @@ namespace ImportData
         }
 
 
-        private static void GalnetSerialize(List<GalnetData> systems, string fullPath)
+        private static void GalnetSerialize(List<GalnetData> galnet, string fullPath)
         {
             new FileInfo(fullPath).Directory?.Create();
 
@@ -327,7 +327,23 @@ namespace ImportData
             using (var sw = new StreamWriter(fullPath))
             using (var writer = new JsonTextWriter(sw))
             {
-                serializer.Serialize(writer, systems);
+                serializer.Serialize(writer, galnet);
+            }
+        }
+
+        private static void CommunityGoalSerialize(List<CommunityGoal> cg, string fullPath)
+        {
+            new FileInfo(fullPath).Directory?.Create();
+
+            var serializer = new JsonSerializer
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+            using (var sw = new StreamWriter(fullPath))
+            using (var writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, cg);
             }
         }
 
@@ -395,6 +411,37 @@ namespace ImportData
                             });
 
                             GalnetSerialize(galnetJson, path);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        private static void DownloadCommunityGoals(string path, string url)
+        {
+            try
+            {
+                path = Path.Combine(GetExePath(), path);
+
+                DeleteExpiredFile(path, 180);
+
+                if (!File.Exists(path))
+                {
+                    Console.WriteLine("looking up community goals");
+
+                    using (var client = new WebClient())
+                    {
+                        var data = client.DownloadString(url);
+
+                        var cgJson = JsonConvert.DeserializeObject<CommunityGoalsData>(data);
+
+                        if (cgJson != null)
+                        {
+                            CommunityGoalSerialize(cgJson.ActiveInitiatives, path);
                         }
                     }
                 }
@@ -988,6 +1035,7 @@ namespace ImportData
 
                 DownloadGalnet(@"Data\galnet.json", "https://elitedangerous-website-backend-production.elitedangerous.com/api/galnet?_format=json");
 
+                DownloadCommunityGoals(@"Data\communitygoals.json", "https://elitedangerous-website-backend-production.elitedangerous.com/api/initiatives/list?_format=json&lang=en");
 
             }
             catch (Exception ex)

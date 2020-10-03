@@ -128,6 +128,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CommunityGoals.cs" />
     <Compile Include="Galnet.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="Route.cs" />

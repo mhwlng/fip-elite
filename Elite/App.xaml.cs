@@ -149,12 +149,16 @@ namespace Elite
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Tritium Sell Stations...");
                 MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumSell] = MiningStations.GetAllMiningStations(@"Data\tritiumstations.json");
 
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Community Goals...");
+                var cg = CommunityGoals.GetCommunityGoals(@"Data\communitygoals.json");
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Galnet News feed...");
-                Galnet.GalnetList = Galnet.GetGalnet(@"Data\galnet.json");
+                var galnet = Galnet.GetGalnet(@"Data\galnet.json");
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Galnet Images...");
-                Galnet.GetGalnetImages(Galnet.GalnetList);
+                Galnet.GetGalnetImages(galnet);
+
+                Galnet.GalnetList = cg.Concat(galnet).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             }
 

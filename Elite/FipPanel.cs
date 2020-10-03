@@ -2133,12 +2133,21 @@ namespace Elite
                                         .FirstOrDefault()?.Date;
                                 }
 
+                                if (galnetDate.StartsWith("Community"))
+                                {
+                                    galnetCaption = "";
+                                }
+                                else
+                                {
+                                    galnetDate = " : " + galnetDate;
+                                }
+
                                 if (currentCard > 0)
                                 {
                                     galnetCaption = "&#x25c0; " + galnetCaption;
                                 }
 
-                                galnetCaption += " : " + galnetDate;
+                                galnetCaption += galnetDate;
 
                                 if (currentCard < galNetCount -1)
                                 {

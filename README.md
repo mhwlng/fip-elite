@@ -91,11 +91,11 @@ Configure the serial number of the Flight Instrument Panel, that needs these fea
 ![Screenshot 17](https://i.imgur.com/zm3Xrm9.png)
 ![Screenshot 18](https://i.imgur.com/p8gW2Fr.png)
 ![Screenshot 19](https://i.imgur.com/QoBYgCT.png)
-![Screenshot 20](https://i.imgur.com/wFsMD4t.png)
-![Screenshot 21](https://i.imgur.com/zGm6qOR.png)
-![Screenshot 22](https://i.imgur.com/ncHyT8X.png)
-![Screenshot 23](https://i.imgur.com/1ngN8cF.png)
-![Screenshot 24](https://i.imgur.com/4gUny6G.png)
+![Screenshot 20](https://i.imgur.com/zGm6qOR.png)
+![Screenshot 21](https://i.imgur.com/ncHyT8X.png)
+![Screenshot 22](https://i.imgur.com/1ngN8cF.png)
+![Screenshot 23](https://i.imgur.com/4gUny6G.png)
+![Screenshot 24](https://i.imgur.com/W67Nci1.png)
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 
