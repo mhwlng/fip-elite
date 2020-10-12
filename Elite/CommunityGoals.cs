@@ -94,7 +94,7 @@ namespace Elite
                                 body.Append("</td></tr>");
 
                                 body.Append("<tr><td class=\"caption\">");
-                                body.Append("Expiry</td><td class=\"data\">");
+                                body.Append("Expires</td><td class=\"data\">");
                                 var expiry = DateTime.ParseExact(cg.Expiry, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                                 var ts = expiry - DateTime.Now.ToUniversalTime();
                                 body.Append(ts.ToHumanReadableString());

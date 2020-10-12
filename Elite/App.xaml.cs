@@ -78,6 +78,24 @@ namespace Elite
 
         public static string ExePath;
 
+        /*
+        private static CachedSound _clickSound = null;
+
+        public static void PlayClickSound()
+        {
+            if (_clickSound != null)
+            {
+                try
+                {
+                    AudioPlaybackEngine.Instance.PlaySound(_clickSound);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error( $"PlaySound: {ex}");
+                }
+            }
+        }*/
+
         private static void GetExePath()
         {
             var strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -238,6 +256,13 @@ namespace Elite
             log4net.Config.XmlConfigurator.Configure();
 
             MigrateSettings();
+
+            /*
+            _clickSound = null;
+            if (File.Exists(Path.Combine(ExePath, "Sounds", "471911__juanfg__button.wav")))
+            {
+                _clickSound = new CachedSound(Path.Combine(ExePath, "Sounds", "471911__juanfg__button.wav"));
+            }*/
 
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");

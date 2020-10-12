@@ -369,12 +369,15 @@ namespace Elite
 
         public static void HandleShipyardNew(ShipyardNewEvent.ShipyardNewEventArgs info)
         {
-            var ship = GetCurrentShip();
+            // follows ShipyardBuy, which removes the ship so GetCurrentShip returns null
 
-            if (ship != null)
-            {
-                AddShip(info.NewShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos, true);
-            }
+            //var ship = GetCurrentShip();
+            //if (ship != null)
+            //{
+            AddShip(info.NewShipID, info.ShipType.ToLower(), "?", "?", new List<double>{0,0,0}, false);
+
+                // is followed by docked (and loadout) which adds the location again
+            //}
         }
 
 
