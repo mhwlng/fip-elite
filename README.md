@@ -72,6 +72,9 @@ Configure the serial number of the Flight Instrument Panel, that needs these fea
 </panelSettings>
 ```
 
+A sound is played when menu options are selected.
+This sound can be changed or disabled by editing the 'clickSound' key in in appsettings.config
+
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
 ![Screenshot 2](https://i.imgur.com/JTxiIBL.png)
 ![Screenshot 3](https://i.imgur.com/uXpUC6m.png)

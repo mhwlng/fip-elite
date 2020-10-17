@@ -78,7 +78,6 @@ namespace Elite
 
         public static string ExePath;
 
-        /*
         private static CachedSound _clickSound = null;
 
         public static void PlayClickSound()
@@ -94,7 +93,7 @@ namespace Elite
                     Log.Error( $"PlaySound: {ex}");
                 }
             }
-        }*/
+        }
 
         private static void GetExePath()
         {
@@ -257,12 +256,27 @@ namespace Elite
 
             MigrateSettings();
 
-            /*
+            
             _clickSound = null;
-            if (File.Exists(Path.Combine(ExePath, "Sounds", "471911__juanfg__button.wav")))
+
+            if (File.Exists(Path.Combine(ExePath, "appSettings.config")) &&
+                ConfigurationManager.GetSection("appSettings") is NameValueCollection appSection)
             {
-                _clickSound = new CachedSound(Path.Combine(ExePath, "Sounds", "471911__juanfg__button.wav"));
-            }*/
+                if (File.Exists(Path.Combine(ExePath, "Sounds", appSection["clickSound"])))
+                {
+                    try
+                    {
+                        _clickSound = new CachedSound(Path.Combine(ExePath, "Sounds", appSection["clickSound"]));
+                    }
+                    catch (Exception ex)
+                    {
+                        _clickSound = null;
+
+                        Log.Error($"CachedSound: {ex}");
+                    }
+
+                }
+            }
 
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");

@@ -608,6 +608,8 @@ namespace Elite
 
             _currentPage = LcdPage.Collapsed;
 
+            App.PlayClickSound();
+
             return true;
         }
 
@@ -879,6 +881,15 @@ namespace Elite
 
                     ledRight = currentCard < galNetCount - 1;
                 }
+                else if (CurrentTab == LcdTab.Galaxy)
+                {
+                    var currentZoomLevel = _currentZoomLevel[(int)CurrentTab];
+
+                    ledLeft = currentZoomLevel > 0;
+
+                    ledRight = currentZoomLevel < 15;
+
+                }
 
             }
 
@@ -916,6 +927,26 @@ namespace Elite
                             _currentLcdYOffset = 0;
 
                             mustRefresh = true;
+
+                            var playSound = true;
+                            if (CurrentTab == LcdTab.Galnet)
+                            {
+                                var currentCard = _currentCard[(int)CurrentTab];
+
+                                var galNetCount = Galnet.GalnetList?.Count ?? 0;
+
+                                playSound = currentCard < galNetCount;
+                            }
+                            else if (CurrentTab == LcdTab.Galaxy)
+                            {
+                                playSound = _currentZoomLevel[(int) CurrentTab] < 16;
+                            }
+
+
+                            if (playSound)
+                            {
+                                App.PlayClickSound();
+                            }
                         }
 
                         break;
@@ -932,6 +963,21 @@ namespace Elite
                             _currentLcdYOffset = 0;
 
                             mustRefresh = true;
+
+                            var playSound = true;
+                            if (CurrentTab == LcdTab.Galnet)
+                            {
+                                playSound = _currentCard[(int)CurrentTab] >= 0;
+                            }
+                            else if (CurrentTab == LcdTab.Galaxy)
+                            {
+                                playSound = _currentZoomLevel[(int)CurrentTab] >= 0;
+                            }
+
+                            if (playSound)
+                            {
+                                App.PlayClickSound();
+                            }
                         }
 
                         break;
@@ -986,6 +1032,8 @@ namespace Elite
 
                                         _lastTab = LcdTab.Init;
 
+                                        App.PlayClickSound();
+
                                         break;
 
                                     case 512:
@@ -1001,6 +1049,25 @@ namespace Elite
                                             _currentLcdYOffset = 0;
 
                                             mustRefresh = true;
+
+                                            var playSound = true;
+                                            if (CurrentTab == LcdTab.Galnet)
+                                            {
+                                                var currentCard = _currentCard[(int)CurrentTab];
+
+                                                var galNetCount = Galnet.GalnetList?.Count ?? 0;
+
+                                                playSound = currentCard < galNetCount;
+                                            }
+                                            else if (CurrentTab == LcdTab.Galaxy)
+                                            {
+                                                playSound = _currentZoomLevel[(int)CurrentTab] < 16;
+                                            }
+
+                                            if (playSound)
+                                            {
+                                                App.PlayClickSound();
+                                            }
                                         }
 
                                         break;
@@ -1017,6 +1084,22 @@ namespace Elite
                                             _currentLcdYOffset = 0;
 
                                             mustRefresh = true;
+
+                                            var playSound = true;
+                                            if (CurrentTab == LcdTab.Galnet)
+                                            {
+                                                playSound = _currentCard[(int)CurrentTab] >= 0;
+                                            }
+                                            else if (CurrentTab == LcdTab.Galaxy)
+                                            {
+                                                playSound = _currentZoomLevel[(int)CurrentTab] >= 0;
+
+                                            }
+
+                                            if (playSound)
+                                            {
+                                                App.PlayClickSound();
+                                            }
                                         }
 
                                         break;
@@ -1045,14 +1128,17 @@ namespace Elite
                                         mustRefresh = true;
                                         _currentPage = LcdPage.ShipMenu;
                                         _lastTab = LcdTab.Init;
+                                        App.PlayClickSound();
                                         break;
                                     case 1024:
                                         mustRefresh = true;
                                         _currentPage = LcdPage.LocationsMenu;
                                         _lastTab = LcdTab.Init;
+                                        App.PlayClickSound();
                                         break;
                                     case 2048:
                                         mustRefresh = true;
+                                        App.PlayClickSound();
                                         break;
                                 }
                             }
@@ -1067,6 +1153,7 @@ namespace Elite
                                         mustRefresh = true;
                                         _currentPage = LcdPage.HomeMenu;
                                         _lastTab = LcdTab.Init;
+                                        App.PlayClickSound();
                                         break;
                                     case 64:
                                         mustRefresh = SetTab(LcdTab.Ship);
@@ -1092,6 +1179,7 @@ namespace Elite
                                         break;
                                     case 2048:
                                         mustRefresh = true;
+                                        App.PlayClickSound();
                                         break;
                                 }
                             }
@@ -1107,6 +1195,7 @@ namespace Elite
                                         mustRefresh = true;
                                         _currentPage = LcdPage.HomeMenu;
                                         _lastTab = LcdTab.Init;
+                                        App.PlayClickSound();
                                         break;
                                     case 64:
                                         mustRefresh = SetTab(LcdTab.POI);
@@ -1125,6 +1214,7 @@ namespace Elite
                                         break;
                                     case 2048:
                                         mustRefresh = true;
+                                        App.PlayClickSound();
                                         break;
                                 }
                             }
@@ -2224,43 +2314,25 @@ namespace Elite
                         {
                             if (_currentPage == LcdPage.Collapsed)
                             {
-                                if (CurrentTab > 0)
+                                for (uint i = 2; i <= 6; i++)
                                 {
-                                    SetLed((uint)CurrentTab - ((uint)CurrentTab - 1) / 6 * 6, false);
-                                }
-
-                                if (_lastTab > 0)
-                                {
-                                    SetLed((uint)_lastTab - ((uint)_lastTab - 1) / 6 * 6, false);
+                                    SetLed(i, false);
                                 }
 
                                 SetLed(1, true);
 
                                 HandleCardNavigationLeds();
-
-                            }
-                            else if (tabPage != _currentPage)
-                            {
-                                if (CurrentTab > 0)
-                                {
-                                    SetLed((uint)CurrentTab - ((uint)CurrentTab - 1) / 6 * 6, false);
-                                }
-
-                                if (_lastTab > 0)
-                                {
-                                    SetLed((uint)_lastTab - ((uint)_lastTab - 1) / 6 * 6, false);
-                                }
                             }
                             else
                             {
-                                SetLed(1, false);
-                                SetLed(5, false);
-                                SetLed(6, false);
-
-                                if (CurrentTab > 0)
+                                for (uint i = 1; i <= 6; i++)
                                 {
-                                    SetLed((uint)CurrentTab - ((uint)CurrentTab - 1) / 6 * 6, true);
+                                    if (_currentPage == LcdPage.ShipMenu && i == 5 && string.IsNullOrEmpty(Engineer.CommanderName))
+                                        SetLed(i, false);
+                                    else
+                                        SetLed(i, true);
                                 }
+
                             }
 
                         }
