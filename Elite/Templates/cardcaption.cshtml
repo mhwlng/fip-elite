@@ -24,12 +24,12 @@
     }
     else if (Model.CurrentTab == LcdTab.Galnet)
     {
-      <div class="cardcaption">@Html.Raw(Model.GalnetCaption)</div>
+        <div class="cardcaption">@Html.Raw(Model.GalnetCaption)</div>
     }
     @*else if (Model.CurrentTab == LcdTab.Events)
-    {
-        <div class="cardcaption">Events</div>
-    }*@
+        {
+            <div class="cardcaption">Events</div>
+        }*@
     else if (Model.CurrentTab == LcdTab.Ship)
     {
         if (Model.CurrentCard == 0)
@@ -85,6 +85,10 @@
         {
             <div class="cardcaption">&#x25c0; Route &#x25b6;</div>
         }
+        else if (Model.CurrentCard == 2)
+        {
+            <div class="cardcaption">&#x25c0; System Map &#x25b6;</div>
+        }
     }
     else if (Model.CurrentTab == LcdTab.POI)
     {
@@ -125,10 +129,9 @@
     {
 
     }
-    else if (Model.CurrentTab == LcdTab.System)
+    else if (Model.CurrentTab == LcdTab.Engineers)
     {
-        <div class="cardcaption">System Map</div>
-
+        <div class="cardcaption">&#x25c0; @(Model.EngineersList[Model.CurrentCard].Faction) &#x25b6;</div>
     }
     else if (Model.CurrentTab == LcdTab.Powers)
     {

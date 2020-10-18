@@ -54,6 +54,8 @@ namespace Elite
             {Station.PowerTypes.ZeminaTorval, new List<StationData>()}
         };
 
+        public static List<StationData> EngineersList = new List<StationData>();
+
         public static List<CnbSystems.CnbSystemData> NearbyCnbSystemsList = new List<CnbSystems.CnbSystemData>();
 
 
@@ -216,6 +218,7 @@ namespace Elite
                 NearbyMiningStationsList[MiningStations.MaterialTypes.TritiumBuy] = MiningStations.GetNearestMiningStations(LocationData.StarPos, MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumBuy], false);
                 NearbyMiningStationsList[MiningStations.MaterialTypes.TritiumSell] = MiningStations.GetNearestMiningStations(LocationData.StarPos, MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumSell], true);
 
+                EngineersList = Station.GetEngineersList(LocationData.StarPos, EngineersList);
             }
         }
 

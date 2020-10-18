@@ -99,6 +99,7 @@ This sound can be changed or disabled by editing the 'clickSound' key in in apps
 ![Screenshot 22](https://i.imgur.com/1ngN8cF.png)
 ![Screenshot 23](https://i.imgur.com/4gUny6G.png)
 ![Screenshot 24](https://i.imgur.com/W67Nci1.png)
+![Screenshot 25](https://i.imgur.com/z4ACs0q.png)
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 

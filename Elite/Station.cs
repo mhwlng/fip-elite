@@ -52,6 +52,8 @@ namespace Elite
         [JsonProperty("z")]
         public double Z { get; set; }
 
+        [JsonProperty("body")]
+        public Body Body { get; set; }
 
         [JsonIgnore]
         public double Distance { get; set; }
@@ -159,5 +161,34 @@ namespace Elite
             return new List<StationData>();
 
         }
+
+        public static List<StationData> GetEngineersList(List<double> starPos, List<StationData> stationData)
+        {
+            if (stationData?.Any() == true && starPos?.Count == 3)
+            {
+                stationData.ForEach(stationItem =>
+                {
+                    var xs = starPos[0];
+                    var ys = starPos[1];
+                    var zs = starPos[2];
+
+                    var xd = stationItem.X;
+                    var yd = stationItem.Y;
+                    var zd = stationItem.Z;
+
+                    var deltaX = xs - xd;
+                    var deltaY = ys - yd;
+                    var deltaZ = zs - zd;
+
+                    stationItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                });
+
+                return stationData.Where(x => x.Distance >= 0).OrderBy(x => x.Faction).ToList();
+            }
+
+            return new List<StationData>();
+
+        }
+
     }
 }

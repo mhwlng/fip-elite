@@ -108,7 +108,7 @@ namespace Elite
             {
                 var fipPanel = _fipPanels[index];
 
-                if (fipPanel.CurrentTab == LcdTab.System)
+                if (fipPanel.CurrentTab == LcdTab.Navigation && fipPanel.CurrentCard[(int)fipPanel.CurrentTab] == 2)
                 {
                     fipPanel.RefreshDevicePage();
                 }

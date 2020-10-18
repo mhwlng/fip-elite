@@ -83,6 +83,9 @@ namespace Elite
             [JsonProperty("demand")]
             public int Demand { get; set; }
 
+            [JsonProperty("body")]
+            public Body Body { get; set; }
+
             [JsonIgnore]
             public double Distance { get; set; }
 

@@ -71,7 +71,9 @@ namespace ImportData
 
                 X = x.PopulatedSystemEDDB?.X ?? 0,
                 Y = x.PopulatedSystemEDDB?.Y ?? 0,
-                Z = x.PopulatedSystemEDDB?.Z ?? 0
+                Z = x.PopulatedSystemEDDB?.Z ?? 0,
+
+                Body = x.Body
 
             }).ToList();
 
@@ -503,7 +505,10 @@ namespace ImportData
                 Allegiance = x.StationEDSM?.Allegiance,
                 Government = x.StationEDSM?.Government,
                 Economy = x.StationEDSM?.Economy,
-                Faction = x.StationEDSM?.ControllingFaction?.Name
+                Faction = x.StationEDSM?.ControllingFaction?.Name,
+
+                Body  = x.StationEDSM?.Body
+
             }).ToList();
         }
 
@@ -709,6 +714,14 @@ namespace ImportData
                 if (wasAnyUpdated)
                 {
                     //-------------------------
+
+                    Console.WriteLine("finding Engineers stations");
+                    var engineers = stationsEDSM
+                        .Where(x =>
+                            x.PopulatedSystemEDDB != null && // now missing Cloe Sedesi in an uninhabited system !!!!!!!!!
+                            x.Government == "Workshop (Engineer)").ToList();
+                    
+                    StationSerialize(engineers, @"Data\engineers.json");
 
                     Console.WriteLine("finding Aisling Duval stations");
                     var aislingDuval = stationsEDSM

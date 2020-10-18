@@ -67,7 +67,7 @@ namespace Elite
         LocationsBack = 13, // <- back
         POI = 14,
         Galaxy = 15,
-        System = 16,
+        Engineers = 16,
         Powers = 17,
         Mining = 18
 
@@ -360,6 +360,7 @@ namespace Elite
         private bool _initOk;
 
         public LcdTab CurrentTab = LcdTab.None;
+        public int[] CurrentCard = new int[100];
 
         private LcdPage _currentPage = LcdPage.Collapsed;
         private LcdTab _currentTabCursor = LcdTab.None;
@@ -367,7 +368,6 @@ namespace Elite
         private const int DEFAULT_PAGE = 0;
         private string _settingsPath;
 
-        private int[] _currentCard = new int[100];
         private int[] _currentZoomLevel = new int[100];
 
 
@@ -863,6 +863,7 @@ namespace Elite
             var ledLeft = false;
 
             if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
+                CurrentTab == LcdTab.Engineers ||
                 CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                 CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                 CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
@@ -873,7 +874,7 @@ namespace Elite
 
                 if (CurrentTab == LcdTab.Galnet)
                 {
-                    var currentCard = _currentCard[(int) CurrentTab];
+                    var currentCard = CurrentCard[(int) CurrentTab];
 
                     var galNetCount = Galnet.GalnetList?.Count ?? 0;
 
@@ -916,13 +917,14 @@ namespace Elite
                 {
                     case 8: // scroll clockwise
                         if (state && (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
+                                      CurrentTab == LcdTab.Engineers ||
                                       CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                       CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining || 
                                       CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer || 
                                       CurrentTab == LcdTab.Galnet))
                         {
 
-                            _currentCard[(int) CurrentTab]++;
+                            CurrentCard[(int) CurrentTab]++;
                             _currentZoomLevel[(int) CurrentTab]++;
                             _currentLcdYOffset = 0;
 
@@ -931,7 +933,7 @@ namespace Elite
                             var playSound = true;
                             if (CurrentTab == LcdTab.Galnet)
                             {
-                                var currentCard = _currentCard[(int)CurrentTab];
+                                var currentCard = CurrentCard[(int)CurrentTab];
 
                                 var galNetCount = Galnet.GalnetList?.Count ?? 0;
 
@@ -953,12 +955,13 @@ namespace Elite
                     case 16: // scroll anti-clockwise
 
                         if (state && (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
+                                      CurrentTab == LcdTab.Engineers ||
                                       CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                       CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                       CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer || 
                                       CurrentTab == LcdTab.Galnet))
                         {
-                            _currentCard[(int) CurrentTab]--;
+                            CurrentCard[(int) CurrentTab]--;
                             _currentZoomLevel[(int) CurrentTab]--;
                             _currentLcdYOffset = 0;
 
@@ -967,7 +970,7 @@ namespace Elite
                             var playSound = true;
                             if (CurrentTab == LcdTab.Galnet)
                             {
-                                playSound = _currentCard[(int)CurrentTab] >= 0;
+                                playSound = CurrentCard[(int)CurrentTab] >= 0;
                             }
                             else if (CurrentTab == LcdTab.Galaxy)
                             {
@@ -1039,12 +1042,13 @@ namespace Elite
                                     case 512:
 
                                         if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
+                                            CurrentTab == LcdTab.Engineers ||
                                             CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                             CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                             CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
                                             CurrentTab == LcdTab.Galnet)
                                         {
-                                            _currentCard[(int)CurrentTab]++;
+                                            CurrentCard[(int)CurrentTab]++;
                                             _currentZoomLevel[(int)CurrentTab]++;
                                             _currentLcdYOffset = 0;
 
@@ -1053,7 +1057,7 @@ namespace Elite
                                             var playSound = true;
                                             if (CurrentTab == LcdTab.Galnet)
                                             {
-                                                var currentCard = _currentCard[(int)CurrentTab];
+                                                var currentCard = CurrentCard[(int)CurrentTab];
 
                                                 var galNetCount = Galnet.GalnetList?.Count ?? 0;
 
@@ -1074,12 +1078,13 @@ namespace Elite
                                     case 1024:
 
                                         if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
+                                            CurrentTab == LcdTab.Engineers ||
                                             CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                             CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                             CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
                                             CurrentTab == LcdTab.Galnet)
                                         {
-                                            _currentCard[(int)CurrentTab]--;
+                                            CurrentCard[(int)CurrentTab]--;
                                             _currentZoomLevel[(int)CurrentTab]--;
                                             _currentLcdYOffset = 0;
 
@@ -1088,7 +1093,7 @@ namespace Elite
                                             var playSound = true;
                                             if (CurrentTab == LcdTab.Galnet)
                                             {
-                                                playSound = _currentCard[(int)CurrentTab] >= 0;
+                                                playSound = CurrentCard[(int)CurrentTab] >= 0;
                                             }
                                             else if (CurrentTab == LcdTab.Galaxy)
                                             {
@@ -1204,7 +1209,7 @@ namespace Elite
                                         mustRefresh = SetTab(LcdTab.Galaxy);
                                         break;
                                     case 256:
-                                        mustRefresh = SetTab(LcdTab.System);
+                                        mustRefresh = SetTab(LcdTab.Engineers);
                                         break;
                                     case 512:
                                         mustRefresh = SetTab(LcdTab.Powers);
@@ -1461,20 +1466,20 @@ namespace Elite
 
         public void CheckCardSelectionLimits(int limit)
         {
-            if (_currentCard[(int)CurrentTab] < 0)
+            if (CurrentCard[(int)CurrentTab] < 0)
             {
-                _currentCard[(int)CurrentTab] = limit;
+                CurrentCard[(int)CurrentTab] = limit;
             }
             else
-            if (_currentCard[(int)CurrentTab] > limit)
+            if (CurrentCard[(int)CurrentTab] > limit)
             {
-                _currentCard[(int)CurrentTab] = 0;
+                CurrentCard[(int)CurrentTab] = 0;
             }
         }
 
         public void RefreshDevicePage(bool mustRender = true)
         {
-            if (CurrentTab == LcdTab.System && !string.IsNullOrEmpty(Data.LocationData.StarSystem))
+            if (CurrentTab == LcdTab.Navigation && CurrentCard[(int)CurrentTab] == 2 && !string.IsNullOrEmpty(Data.LocationData.StarSystem))
             {
                 SystemInfo.GetSystemData(Data.LocationData.StarSystem);
             }
@@ -1510,7 +1515,7 @@ namespace Elite
                                 CheckCardSelectionLimits(1);
                                 break;
                             case LcdTab.Navigation:
-                                CheckCardSelectionLimits(1);
+                                CheckCardSelectionLimits(2);
                                 break;
                             case LcdTab.POI:
                                 CheckCardSelectionLimits(7);
@@ -1520,6 +1525,9 @@ namespace Elite
                                 break;
                             case LcdTab.Powers:
                                 CheckCardSelectionLimits(10);
+                                break;
+                            case LcdTab.Engineers:
+                                CheckCardSelectionLimits(Data.EngineersList.Count-1);
                                 break;
                             case LcdTab.Materials:
                                 CheckCardSelectionLimits(2);
@@ -1542,14 +1550,14 @@ namespace Elite
                                 break;
                             case LcdTab.Galnet:
 
-                                if (_currentCard[(int)CurrentTab] < 0)
+                                if (CurrentCard[(int)CurrentTab] < 0)
                                 {
-                                    _currentCard[(int)CurrentTab] = 0;
+                                    CurrentCard[(int)CurrentTab] = 0;
                                 }
                                 else
-                                if (_currentCard[(int)CurrentTab] > (Galnet.GalnetList?.Count ?? 1) - 1)
+                                if (CurrentCard[(int)CurrentTab] > (Galnet.GalnetList?.Count ?? 1) - 1)
                                 {
-                                    _currentCard[(int)CurrentTab] = (Galnet.GalnetList?.Count ?? 1) - 1;
+                                    CurrentCard[(int)CurrentTab] = (Galnet.GalnetList?.Count ?? 1) - 1;
                                 }
 
                                 break;
@@ -1634,7 +1642,7 @@ namespace Elite
                                             {
                                                 CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
-                                                CurrentCard = _currentCard[(int) CurrentTab],
+                                                CurrentCard = CurrentCard[(int) CurrentTab],
 
                                                 CurrentShip = Ships.ShipsList.FirstOrDefault(x => x.Stored == false),
 
@@ -1719,91 +1727,97 @@ namespace Elite
                                                 }
                                             }
 
-                                            str =
-                                                Engine.Razor.Run("navigation.cshtml", null, new
-                                                {
-                                                    CurrentTab = CurrentTab,
-                                                    CurrentPage = _currentPage,
-                                                    CurrentCard = _currentCard[(int) CurrentTab],
+                                            lock (App.RefreshSystemLock)
+                                            {
 
-                                                    CurrentShip = currentShip,
+                                                str =
+                                                    Engine.Razor.Run("navigation.cshtml", null, new
+                                                    {
+                                                        CurrentTab = CurrentTab,
+                                                        CurrentPage = _currentPage,
+                                                        CurrentCard = CurrentCard[(int) CurrentTab],
 
-                                                    StarSystem = Data.LocationData.StarSystem,
+                                                        CurrentShip = currentShip,
 
-                                                    Body = !string.IsNullOrEmpty(Data.LocationData.BodyType) &&
-                                                           !string.IsNullOrEmpty(Data.LocationData.Body)
-                                                        ? Data.LocationData.Body
-                                                        : null,
+                                                        StarSystem = Data.LocationData.StarSystem,
 
-                                                    //"Station""Star""Planet""PlanetaryRing""StellarRing""AsteroidCluster"
+                                                        SystemData = SystemInfo.SystemData,
 
-                                                    BodyType = Data.LocationData.BodyType,
+                                                        Body = !string.IsNullOrEmpty(Data.LocationData.BodyType) &&
+                                                               !string.IsNullOrEmpty(Data.LocationData.Body)
+                                                            ? Data.LocationData.Body
+                                                            : null,
 
-                                                    Station = Data.LocationData.BodyType == "Station" &&
-                                                              !string.IsNullOrEmpty(Data.LocationData.Body)
-                                                        ? Data.LocationData.Body
-                                                        : Data.LocationData.Station,
+                                                        //"Station""Star""Planet""PlanetaryRing""StellarRing""AsteroidCluster"
 
-                                                    Docked = Data.StatusData.Docked,
+                                                        BodyType = Data.LocationData.BodyType,
 
-                                                    LandingPad = Data.DockData.LandingPad,
+                                                        Station = Data.LocationData.BodyType == "Station" &&
+                                                                  !string.IsNullOrEmpty(Data.LocationData.Body)
+                                                            ? Data.LocationData.Body
+                                                            : Data.LocationData.Station,
 
-                                                    StationType = Data.DockData.Type,
+                                                        Docked = Data.StatusData.Docked,
 
-                                                    Government = Data.DockData.Government,
+                                                        LandingPad = Data.DockData.LandingPad,
 
-                                                    Allegiance = Data.DockData.Allegiance,
+                                                        StationType = Data.DockData.Type,
 
-                                                    Faction = Data.DockData.Faction,
+                                                        Government = Data.DockData.Government,
 
-                                                    Economy = Data.DockData.Economy,
+                                                        Allegiance = Data.DockData.Allegiance,
 
-                                                    DistFromStarLs = Data.DockData.DistFromStarLs,
+                                                        Faction = Data.DockData.Faction,
 
-                                                    StartJump = Data.LocationData.StartJump,
+                                                        Economy = Data.DockData.Economy,
 
-                                                    JumpType = Data.LocationData.JumpType,
+                                                        DistFromStarLs = Data.DockData.DistFromStarLs,
 
-                                                    JumpToSystem = Data.LocationData.JumpToSystem,
+                                                        StartJump = Data.LocationData.StartJump,
 
-                                                    JumpToStarClass = Data.LocationData.JumpToStarClass,
+                                                        JumpType = Data.LocationData.JumpType,
 
-                                                    RemainingJumpsInRoute = Data.LocationData.RemainingJumpsInRoute,
+                                                        JumpToSystem = Data.LocationData.JumpToSystem,
 
-                                                    StarClass = Data.LocationData.StarClass,
+                                                        JumpToStarClass = Data.LocationData.JumpToStarClass,
 
-                                                    IsFuelStar = Data.LocationData.IsFuelStar,
+                                                        RemainingJumpsInRoute = Data.LocationData.RemainingJumpsInRoute,
 
-                                                    FsdTargetName = Data.LocationData.FsdTargetName,
+                                                        StarClass = Data.LocationData.StarClass,
 
-                                                    Settlement = Data.LocationData.Settlement,
+                                                        IsFuelStar = Data.LocationData.IsFuelStar,
 
-                                                    HideBody = Data.LocationData.HideBody,
+                                                        FsdTargetName = Data.LocationData.FsdTargetName,
 
-                                                    SystemAllegiance = Data.LocationData.SystemAllegiance,
+                                                        Settlement = Data.LocationData.Settlement,
 
-                                                    SystemFaction = Data.LocationData.SystemFaction,
+                                                        HideBody = Data.LocationData.HideBody,
 
-                                                    SystemSecurity = Data.LocationData.SystemSecurity,
+                                                        SystemAllegiance = Data.LocationData.SystemAllegiance,
 
-                                                    SystemEconomy = Data.LocationData.SystemEconomy,
+                                                        SystemFaction = Data.LocationData.SystemFaction,
 
-                                                    SystemGovernment = Data.LocationData.SystemGovernment,
+                                                        SystemSecurity = Data.LocationData.SystemSecurity,
 
-                                                    Population = Data.LocationData.Population,
+                                                        SystemEconomy = Data.LocationData.SystemEconomy,
 
-                                                    PowerplayState = Data.LocationData.PowerplayState,
-                                                    Powers = Data.LocationData.Powers,
+                                                        SystemGovernment = Data.LocationData.SystemGovernment,
 
-                                                    RouteList = routeList,
-                                                    RouteListCount = routeList.Count,
-                                                    RouteListDistance = routeList.Sum(x => x.Distance),
-                                                    RouteDestination = routeList.LastOrDefault()?.StarSystem ?? "",
-                                                    JumpDistance = jumpDistance,
-                                                    FuelCost = fuelCost,
-                                                    FuelWarning = fuelWarning
+                                                        Population = Data.LocationData.Population,
 
-                                                });
+                                                        PowerplayState = Data.LocationData.PowerplayState,
+                                                        Powers = Data.LocationData.Powers,
+
+                                                        RouteList = routeList,
+                                                        RouteListCount = routeList.Count,
+                                                        RouteListDistance = routeList.Sum(x => x.Distance),
+                                                        RouteDestination = routeList.LastOrDefault()?.StarSystem ?? "",
+                                                        JumpDistance = jumpDistance,
+                                                        FuelCost = fuelCost,
+                                                        FuelWarning = fuelWarning
+
+                                                    });
+                                            }
 
                                         }
 
@@ -1844,11 +1858,11 @@ namespace Elite
 
                                     case LcdTab.Galnet:
 
-                                        var currentCard = _currentCard[(int)CurrentTab];
+                                        var currentCard = CurrentCard[(int)CurrentTab];
 
                                         if (Galnet.GalnetList?.Count <= currentCard -1)
                                         {
-                                            currentCard = _currentCard[(int) CurrentTab] = 0;
+                                            currentCard = CurrentCard[(int) CurrentTab] = 0;
                                         }
 
                                         lock (App.RefreshJsonLock)
@@ -1878,7 +1892,7 @@ namespace Elite
                                                 {
                                                     CurrentTab = CurrentTab,
                                                     CurrentPage = _currentPage,
-                                                    CurrentCard = _currentCard[(int) CurrentTab],
+                                                    CurrentCard = CurrentCard[(int) CurrentTab],
 
                                                     NearbyPoiList = Poi.NearbyPoiList,
 
@@ -1913,21 +1927,18 @@ namespace Elite
 
                                         break;
 
-                                    case LcdTab.System:
+                                    case LcdTab.Engineers:
 
-
-                                        lock (App.RefreshSystemLock)
+                                        lock (App.RefreshJsonLock)
                                         {
-
                                             str =
-                                                Engine.Razor.Run("system.cshtml", null, new
+                                                Engine.Razor.Run("engineers.cshtml", null, new
                                                 {
                                                     CurrentTab = CurrentTab,
                                                     CurrentPage = _currentPage,
+                                                    CurrentCard = CurrentCard[(int)CurrentTab],
 
-                                                    StarSystem = Data.LocationData.StarSystem,
-
-                                                    SystemData = SystemInfo.SystemData
+                                                    Engineer = Data.EngineersList[CurrentCard[(int)CurrentTab]]
 
                                                 });
                                         }
@@ -1944,7 +1955,7 @@ namespace Elite
                                                 {
                                                     CurrentTab = CurrentTab,
                                                     CurrentPage = _currentPage,
-                                                    CurrentCard = _currentCard[(int) CurrentTab],
+                                                    CurrentCard = CurrentCard[(int) CurrentTab],
 
                                                     NearbyPowerStationList = Data.NearbyPowerStationList
 
@@ -1961,7 +1972,7 @@ namespace Elite
                                             {
                                                 CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
-                                                CurrentCard = _currentCard[(int) CurrentTab],
+                                                CurrentCard = CurrentCard[(int) CurrentTab],
 
                                                 MaterialCount = Material.MaterialList.Count,
 
@@ -2012,7 +2023,7 @@ namespace Elite
                                                 {
                                                     CurrentTab = CurrentTab,
                                                     CurrentPage = _currentPage,
-                                                    CurrentCard = _currentCard[(int) CurrentTab],
+                                                    CurrentCard = CurrentCard[(int) CurrentTab],
 
                                                     Cargo = cargo,
                                                     CargoCount = cargo.Count,
@@ -2041,7 +2052,7 @@ namespace Elite
                                                 {
                                                     CurrentTab = CurrentTab,
                                                     CurrentPage = _currentPage,
-                                                    CurrentCard = _currentCard[(int)CurrentTab],
+                                                    CurrentCard = CurrentCard[(int)CurrentTab],
 
                                                     NearbyHotspotSystemsList = Data.NearbyHotspotSystemsList,
 
@@ -2061,7 +2072,7 @@ namespace Elite
                                             {
                                                 CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
-                                                CurrentCard = _currentCard[(int) CurrentTab],
+                                                CurrentCard = CurrentCard[(int) CurrentTab],
 
                                                 Raw = Engineer.IngredientShoppingList?
                                                           .Where(x => x.EntryData.Subkind == Subkind.Raw)
@@ -2210,7 +2221,7 @@ namespace Elite
                         {
                             if (mustRender)
                             {
-                                var currentCard = _currentCard[(int) CurrentTab];
+                                var currentCard = CurrentCard[(int) CurrentTab];
 
                                 var galnetDate = "???";
                                 var galnetCaption = "Galnet";
@@ -2251,7 +2262,9 @@ namespace Elite
                                         CurrentPage = _currentPage,
                                         CurrentCard = currentCard,
 
-                                        GalnetCaption = galnetCaption
+                                        GalnetCaption = galnetCaption,
+
+                                        EngineersList = Data.EngineersList
                                     });
 
                                 _cardcaptionHtmlImage = HtmlRender.RenderToImage(cardcaptionstr,
@@ -2298,7 +2311,7 @@ namespace Elite
 
 
 #if DEBUG
-                        fipImage.Save("screenshot"+ SerialNumber+"_"+(int)CurrentTab+"_"+ _currentCard[(int)CurrentTab] + ".png", ImageFormat.Png);
+                        fipImage.Save("screenshot"+ SerialNumber+"_"+(int)CurrentTab+"_"+ CurrentCard[(int)CurrentTab] + ".png", ImageFormat.Png);
 #endif
                         RefreshMirrorWindow(fipImage);
                        

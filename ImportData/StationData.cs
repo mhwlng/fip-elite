@@ -48,5 +48,9 @@ namespace ImportData
         [JsonProperty("z")]
         public double Z { get; set; }
 
+        [JsonProperty("body")]
+        public Body Body { get; set; }
+
+
     }
 }

@@ -141,6 +141,9 @@ namespace Elite
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Zemina Torval Stations...");
                 Station.FullPowerStationList[Station.PowerTypes.ZeminaTorval] = Station.GetAllStations(@"Data\zeminatorval.json");
 
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Engineers...");
+                Data.EngineersList = Station.GetAllStations(@"Data\engineers.json");
+
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading All System Stations ...");
                 Station.SystemStations = Station.GetAllStations(@"Data\fullstationlist.json").GroupBy(x => x.SystemName)
                     .ToDictionary(x => x.Key, x => x.OrderBy(y => y.DistanceToArrival).ToList());
@@ -319,7 +322,7 @@ namespace Elite
                 Engine.Razor.Compile("poi.cshtml", null);
 
                 Engine.Razor.Compile("galaxy.cshtml", null);
-                Engine.Razor.Compile("system.cshtml", null);
+                Engine.Razor.Compile("engineers.cshtml", null);
                 Engine.Razor.Compile("powers.cshtml", null);
                 Engine.Razor.Compile("materials.cshtml", null);
                 Engine.Razor.Compile("cargo.cshtml", null);

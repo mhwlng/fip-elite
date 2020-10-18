@@ -57,5 +57,8 @@ namespace ImportData
         [JsonProperty("demand")]
         public int Demand { get; set; }
 
+        [JsonProperty("body")]
+        public Body Body { get; set; }
+
     }
 }
