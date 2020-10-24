@@ -28,13 +28,6 @@
                         <td class="data">@m.SystemName</td>
                     </tr>
                 }
-                if (m.Body != null && !string.IsNullOrEmpty(m.Body.name))
-                {
-                    <tr>
-                        <td class="caption">Body</td>
-                        <td class="data">@m.Body.name</td>
-                    </tr>
-                }
                 if (m.Distance > 0)
                 {
                     <tr>
@@ -42,6 +35,14 @@
                         <td class="data">@m.Distance.ToString("N0") Ly</td>
                     </tr>
                 }
+                if (m.Body != null && !string.IsNullOrEmpty(m.Body.name))
+                {
+                    <tr>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;Body</td>
+                        <td class="data">@m.Body.name</td>
+                    </tr>
+                }
+
                 if (!string.IsNullOrEmpty(m.Name))
                 {
                     <tr>

@@ -212,6 +212,12 @@ namespace Elite
                                             Ships.HandleLoadGame(info.ShipID, info.Ship, info.ShipName);
                                         }
                                     }
+                                    else if (json?.Contains("\"event\":\"EngineerProgress\",") == true)
+                                    {
+                                        var info = JsonConvert.DeserializeObject<EngineerProgressEvent.EngineerProgressEventArgs>(json);
+
+                                        Data.HandleEngineerProgressEvent(info);
+                                    }
                                     else if (json?.Contains("\"event\":\"SetUserShipName\",") == true)
                                     {
                                         var info = JsonConvert.DeserializeObject<SetUserShipNameEvent.SetUserShipNameEventArgs>(json);

@@ -114,6 +114,26 @@ namespace Elite
 
         public static Dictionary<string,List<StationData>> SystemStations = new Dictionary<string, List<StationData>>();
 
+
+        public static List<Data.EngineerData> GetEngineers(string path)
+        {
+            try
+            {
+                path = Path.Combine(App.ExePath, path);
+
+                if (File.Exists(path))
+                {
+                    return JsonConvert.DeserializeObject<List<Data.EngineerData>>(File.ReadAllText(path));
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Log.Error(ex);
+            }
+
+            return new List<Data.EngineerData>();
+
+        }
         public static List<StationData> GetAllStations(string path)
         {
             try
@@ -162,7 +182,7 @@ namespace Elite
 
         }
 
-        public static List<StationData> GetEngineersList(List<double> starPos, List<StationData> stationData)
+        public static List<Data.EngineerData> UpdateEngineersLocation(List<double> starPos, List<Data.EngineerData> stationData)
         {
             if (stationData?.Any() == true && starPos?.Count == 3)
             {
@@ -186,7 +206,7 @@ namespace Elite
                 return stationData.Where(x => x.Distance >= 0).OrderBy(x => x.Faction).ToList();
             }
 
-            return new List<StationData>();
+            return new List<Data.EngineerData>();
 
         }
 

@@ -141,9 +141,6 @@ namespace Elite
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Zemina Torval Stations...");
                 Station.FullPowerStationList[Station.PowerTypes.ZeminaTorval] = Station.GetAllStations(@"Data\zeminatorval.json");
 
-                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Engineers...");
-                Data.EngineersList = Station.GetAllStations(@"Data\engineers.json");
-
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading All System Stations ...");
                 Station.SystemStations = Station.GetAllStations(@"Data\fullstationlist.json").GroupBy(x => x.SystemName)
                     .ToDictionary(x => x.Key, x => x.OrderBy(y => y.DistanceToArrival).ToList());
@@ -334,11 +331,17 @@ namespace Elite
                 CssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
                     File.ReadAllText(Path.Combine(ExePath, "Templates\\styles.css")), true);
 
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Engineers...");
+                Data.EngineersList = Station.GetEngineers(@"Data\engineers.json");
+
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Engineering Materials...");
                 Engineer.EngineeringMaterials = Engineer.GetAllEngineeringMaterials(@"Data\entryData.json");
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Blueprints...");
                 Engineer.Blueprints = Engineer.GetAllBlueprints(@"Data\blueprints.json", Engineer.EngineeringMaterials);
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Engineer Blueprints...");
+                Engineer.EngineerBlueprints = Engineer.GetEngineerBlueprints(@"Data\blueprints.json", Engineer.EngineeringMaterials);
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
                 Poi.FullPoiList = Poi.GetAllPois(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());

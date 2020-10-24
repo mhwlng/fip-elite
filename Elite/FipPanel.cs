@@ -1931,6 +1931,10 @@ namespace Elite
 
                                         lock (App.RefreshJsonLock)
                                         {
+                                            Engineer.EngineerBlueprints.TryGetValue(
+                                                Data.EngineersList[CurrentCard[(int) CurrentTab]].Faction,
+                                                out var blueprints);
+
                                             str =
                                                 Engine.Razor.Run("engineers.cshtml", null, new
                                                 {
@@ -1938,7 +1942,9 @@ namespace Elite
                                                     CurrentPage = _currentPage,
                                                     CurrentCard = CurrentCard[(int)CurrentTab],
 
-                                                    Engineer = Data.EngineersList[CurrentCard[(int)CurrentTab]]
+                                                    Engineer = Data.EngineersList[CurrentCard[(int)CurrentTab]],
+
+                                                    Blueprints = blueprints
 
                                                 });
                                         }

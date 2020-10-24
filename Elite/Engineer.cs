@@ -17,6 +17,8 @@ namespace Elite
     {
         public static Dictionary<(string, string, int?), Blueprint> Blueprints;
 
+        public static Dictionary<string, List<Blueprint>> EngineerBlueprints;
+
         public static Dictionary<string,EntryData> EngineeringMaterials;
 
         public static string CommanderName;
@@ -67,6 +69,47 @@ namespace Elite
 
             return new Dictionary<(string, string, int?), Blueprint>();
           
+
+        }
+
+        public static Dictionary<string, List<Blueprint>> GetEngineerBlueprints(string path, Dictionary<string, EntryData> engineeringMaterials)
+        {
+            try
+            {
+                path = Path.Combine(App.ExePath, path);
+
+                if (File.Exists(path))
+                {
+
+                    var blueprintConverter = new BlueprintConverter(engineeringMaterials);
+
+                    var blueprints = JsonConvert
+                        .DeserializeObject<List<Blueprint>>(File.ReadAllText(path), blueprintConverter)
+                        .Where(b => b.Ingredients.Any()).ToList();
+
+
+                    var engineerBlueprints = blueprints
+                        .Where(x => x.Category !=  BlueprintCategory.Experimental && x.Category != BlueprintCategory.Unlock)
+                        .SelectMany(blueprint => blueprint.Engineers, (blueprint, engineer) => new {blueprint, engineer})
+                        .Where(x => !x.engineer.StartsWith("@"))
+                        .GroupBy(x => x.engineer)
+                        .ToDictionary(x => x.Key, 
+                            x => x.Select( z => (Blueprint)z.blueprint)
+                                .GroupBy(a => a.Type).Select(b => b.First(c => c.Grade == b.Max(d => d.Grade)))
+                                .OrderByDescending(e => e.Grade).ThenBy(e => e.Type).ToList())
+                        ;
+
+                    return engineerBlueprints;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Log.Error(ex);
+            }
+
+            return new Dictionary<string, List<Blueprint>>();
+
 
         }
 

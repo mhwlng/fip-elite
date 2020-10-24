@@ -17,35 +17,58 @@
 
         <table>
             <tbody>
-                if (!string.IsNullOrEmpty(Model.Engineer.SystemName))
+                @if (!string.IsNullOrEmpty(Model.Engineer.Progress))
+                {
+                <tr>
+                    <td class="caption">State</td>
+                    <td class="data">@Model.Engineer.Progress
+                        @if (Model.Engineer.Rank != null)
+                        {
+                            <text> (Grade</text> @Model.Engineer.Rank<text>)</text>
+                        }
+                    </td>
+                </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td class="caption">State</td>
+                        <td class="alarm">Locked</td>
+                    </tr>
+
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Engineer.SystemName))
                 {
                 <tr>
                     <td class="caption">In System</td>
                     <td class="data">@Model.Engineer.SystemName</td>
                 </tr>
                 }
-                if (Model.Engineer.Body != null && !string.IsNullOrEmpty(Model.Engineer.Body.name))
-                {
-                <tr>
-                    <td class="caption">Body</td>
-                    <td class="data">@Model.Engineer.Body.name</td>
-                </tr>
-                }
-                if (Model.Engineer.Distance > 0)
+                @if (Model.Engineer.Distance > 0)
                 {
                 <tr>
                     <td class="caption">Distance</td>
                     <td class="data">@Model.Engineer.Distance.ToString("N0") Ly</td>
                 </tr>
                 }
-                if (!string.IsNullOrEmpty(Model.Engineer.Name))
+
+                @if (Model.Engineer.Body != null && !string.IsNullOrEmpty(Model.Engineer.Body.name))
+                {
+                <tr>
+                    <td class="caption">&nbsp;&nbsp;&nbsp;Body</td>
+                    <td class="data">@Model.Engineer.Body.name</td>
+                </tr>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Engineer.Name))
                 {
                 <tr>
                     <td class="caption">&nbsp;&nbsp;&nbsp;Outpost</td>
                     <td class="data">@Model.Engineer.Name</td>
                 </tr>
                 }
-                if (Model.Engineer.DistanceToArrival > 0)
+                @if (Model.Engineer.DistanceToArrival > 0)
                 {
                 <tr>
                     <td class="caption">&nbsp;&nbsp;&nbsp;Dist. from star</td>
@@ -53,29 +76,44 @@
                 </tr>
                 }
 
-
-                if (!string.IsNullOrEmpty(Model.Engineer.SystemSecurity))
+                @if (!string.IsNullOrEmpty(Model.Engineer.SystemSecurity))
                 {
                 <tr>
                     <td class="caption">&nbsp;&nbsp;&nbsp;Security</td>
                     <td class="data">@Model.Engineer.SystemSecurity</td>
                 </tr>
                 }
-                if (Model.Engineer.SystemPopulation > 0)
+                @if (Model.Engineer.SystemPopulation > 0)
                 {
                 <tr>
                     <td class="caption">&nbsp;&nbsp;&nbsp;Population</td>
                     <td class="data">@Model.Engineer.SystemPopulation.ToString("N0")</td>
                 </tr>
                 }
-                if (!string.IsNullOrEmpty(Model.Engineer.Allegiance))
+                @if (!string.IsNullOrEmpty(Model.Engineer.Allegiance))
                 {
                 <tr>
                     <td class="caption">&nbsp;&nbsp;&nbsp;Allegiance</td>
                     <td class="data">@Model.Engineer.Allegiance</td>
                 </tr>
                 }
+                    
+                <tr>
+                    <td colspan="2" class="divider">&nbsp;</td>
+                </tr>
 
+            </tbody>
+        </table>
+
+        <table>
+            <tbody>
+            @foreach (var m in Model.Blueprints)
+            {
+                <tr>
+                    <td class="data" style="width: 50px;">&nbsp;&nbsp;&nbsp;@m.GradeString</td>
+                    <td class="caption">@m.Type</td>
+                </tr>
+            }
             </tbody>
         </table>
 

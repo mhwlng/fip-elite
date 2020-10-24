@@ -6,6 +6,8 @@ using System.Linq;
 using Elite.RingBuffer;
 using EliteJournalReader;
 using EliteJournalReader.Events;
+using NAudio.Utils;
+
 // ReSharper disable StringLiteralTypo
 
 
@@ -54,7 +56,15 @@ namespace Elite
             {Station.PowerTypes.ZeminaTorval, new List<StationData>()}
         };
 
-        public static List<StationData> EngineersList = new List<StationData>();
+
+        public class EngineerData : StationData
+        {
+            public int? Rank { get; set; }
+            public string Progress { get; set; }
+
+        }
+
+        public static List<EngineerData> EngineersList = new List<EngineerData>();
 
         public static List<CnbSystems.CnbSystemData> NearbyCnbSystemsList = new List<CnbSystems.CnbSystemData>();
 
@@ -218,7 +228,7 @@ namespace Elite
                 NearbyMiningStationsList[MiningStations.MaterialTypes.TritiumBuy] = MiningStations.GetNearestMiningStations(LocationData.StarPos, MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumBuy], false);
                 NearbyMiningStationsList[MiningStations.MaterialTypes.TritiumSell] = MiningStations.GetNearestMiningStations(LocationData.StarPos, MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumSell], true);
 
-                EngineersList = Station.GetEngineersList(LocationData.StarPos, EngineersList);
+                EngineersList = Station.UpdateEngineersLocation(LocationData.StarPos, EngineersList);
             }
         }
 
@@ -509,6 +519,34 @@ namespace Elite
             Cargo.HandleCargoEvent(e);
 
         }
+
+        private static void UpdateEngineerProgress(string engineer, string engineerID, int? rank, string progress)
+        {
+            var engineerItem = EngineersList.FirstOrDefault(x => x.Faction == engineer);
+
+            if (engineerItem != null)
+            {
+                engineerItem.Progress = progress?.Trim();
+                engineerItem.Rank = rank;
+            }
+        }
+
+        public static void HandleEngineerProgressEvent(EngineerProgressEvent.EngineerProgressEventArgs info)
+        {
+            if (info?.Engineers?.Any() == true)
+            {
+                foreach (var engineer in info?.Engineers)
+                {
+                    UpdateEngineerProgress(engineer.Engineer, engineer.EngineerID, engineer.Rank, engineer.Progress);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(info?.Engineer))
+            {
+                UpdateEngineerProgress(info.Engineer, info.EngineerID, info.Rank, info.Progress);
+            }
+        }
+
 
         public static void HandleEliteEvents(object sender, JournalEventArgs e)
         {
@@ -1232,6 +1270,15 @@ namespace Elite
                     Material.HandleSynthesisedEvent(synthesisInfo);
 
                     break;
+
+                case "EngineerProgress":
+
+                    var engineerProgressInfo = (EngineerProgressEvent.EngineerProgressEventArgs)e;
+
+                    HandleEngineerProgressEvent(engineerProgressInfo);
+
+                    break;
+
                 case "EngineerCraft":
 
                     var engineerCraftInfo = (EngineerCraftEvent.EngineerCraftEventArgs)e;
