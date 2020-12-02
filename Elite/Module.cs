@@ -168,7 +168,12 @@ namespace Elite
                 size = "1";
             }
 
-            return Convert.ToInt32(size);
+            if (!int.TryParse(size, out var ms))
+            {
+                return 1;
+            }
+
+            return ms;
         }
 
         private static string GetModuleClass(string item)

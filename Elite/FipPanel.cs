@@ -1614,7 +1614,7 @@ namespace Elite
                                                 ExplorationRank = Data.CommanderData.ExplorationRank,
                                                 ExplorationRankProgress = Data.CommanderData.ExplorationRankProgress,
 
-                                                CqcRank = Data.CommanderData.CqcRank,
+                                                CqcRank = Data.CommanderData.CqcRank.Replace("SemiProfessional", "SemiPro"),
 
                                                 CqcRankProgress = Data.CommanderData.CqcRankProgress,
 
