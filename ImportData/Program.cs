@@ -1048,7 +1048,9 @@ namespace ImportData
 
                 DownloadGalnet(@"Data\galnet.json", "https://elitedangerous-website-backend-production.elitedangerous.com/api/galnet?_format=json");
 
-                DownloadCommunityGoals(@"Data\communitygoals.json", "https://elitedangerous-website-backend-production.elitedangerous.com/api/initiatives/list?_format=json&lang=en");
+                // stopped working 1 dec 2020
+                //DownloadCommunityGoals(@"Data\communitygoals.json", "https://elitedangerous-website-backend-production.elitedangerous.com/api/initiatives/list?_format=json&lang=en"); 
+                DownloadCommunityGoals(@"Data\communitygoals.json", "https://api.orerve.net/2.0/website/initiatives/list?lang=en"); 
 
             }
             catch (Exception ex)
