@@ -13,34 +13,45 @@ using Newtonsoft.Json.Linq;
 
 namespace ImportData
 {
+    public static class JsonReaderExtensions
+    {
+        private static string GetExePath()
+        {
+            var strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            return Path.GetDirectoryName(strExeFilePath);
+        }
+
+        public static IEnumerable<T> ParseJson<T>(string path)
+        {
+            path = Path.Combine(GetExePath(), path);
+
+            if (File.Exists(path))
+            {
+                var serializer = new JsonSerializer();
+                using (var s = File.Open(path, FileMode.Open))
+                {
+                    using (var sr = new StreamReader(s))
+                    {
+                        using (var reader = new JsonTextReader(sr))
+                        {
+                            while (reader.Read())
+                            {
+                                if (reader.TokenType == JsonToken.StartObject)
+                                {
+                                    yield return serializer.Deserialize<T>(reader);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     class Program
     {
         private static readonly ILog Log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        private static byte[] Decompress(byte[] gzip)
-        {
-            using (var stream = new GZipStream(new MemoryStream(gzip),
-                CompressionMode.Decompress))
-            {
-                const int size = 100000;
-                var buffer = new byte[size];
-                using (var memory = new MemoryStream())
-                {
-                    int count;
-                    do
-                    {
-                        count = stream.Read(buffer, 0, size);
-                        if (count > 0)
-                        {
-                            memory.Write(buffer, 0, count);
-                        }
-                    }
-                    while (count > 0);
-                    return memory.ToArray();
-                }
-            }
-        }
 
         private static string GetExePath()
         {
@@ -136,32 +147,43 @@ namespace ImportData
             return true;
         }
 
-
-        private static string DownloadJson(string path, string url, ref bool wasUpdated)
+        private static void DownloadJson(string path, string url, ref bool wasUpdated)
         {
             path = Path.Combine(GetExePath(), path);
 
             DeleteExpiredFile(path, 1440);
 
-            if (File.Exists(path))
-            {
-                return File.ReadAllText(path);
-            }
-            else
+            if (!File.Exists(path))
             {
                 using (var client = new WebClient())
                 {
                     client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
-                    var data = client.DownloadData(url);
-                    var decompress = Decompress(data);
 
-                    File.WriteAllBytes(path, decompress);
-
-                    wasUpdated = true;
-
-                    return File.ReadAllText(path); // not efficient, but gets around out of memory error
-
+                    using (var compressedStream = new MemoryStream(client.DownloadData(url)))
+                    {
+                        using (var stream = new GZipStream(compressedStream, CompressionMode.Decompress))
+                        {
+                            using (BinaryWriter binWriter =
+                                new BinaryWriter(File.Open(path, FileMode.Create)))
+                            {
+                                const int size = 100000;
+                                var buffer = new byte[size];
+                                int count;
+                                do
+                                {
+                                    count = stream.Read(buffer, 0, size);
+                                    if (count > 0)
+                                    {
+                                        binWriter.Write(buffer, 0, count);
+                                    }
+                                } while (count > 0);
+                            }
+                        }
+                    }
                 }
+
+                wasUpdated = true;
+
             }
         }
 
@@ -636,30 +658,33 @@ namespace ImportData
             try
             {
                 List<StationEDSM> stationsEDSM = null;
+                List<StationEDDB> stationsEDDBList = null;
                 Dictionary<string,StationEDDB> stationsEDDB;
+                List<PopulatedSystemEDDB> populatedSystemsEDDBList;
                 Dictionary<int, PopulatedSystemEDDB> populatedSystemsEDDBbyEdsmId;
 
                 var wasAnyUpdated = false;
 
                 Console.WriteLine("downloading populated systems from EDDB");
 
-                var jsonPopulatedsystemsEDDBText = DownloadJson(@"Data\populatedsystemsEDDB.json", "https://eddb.io/archive/v6/systems_populated.json", ref wasAnyUpdated);
+                DownloadJson(@"Data\populatedsystemsEDDB.json", "https://eddb.io/archive/v6/systems_populated.json", ref wasAnyUpdated);
 
                 Console.WriteLine("downloading station list from EDSM");
 
-                var jsonStationsEDSMText = DownloadJson(@"Data\stationsEDSM.json", "https://www.edsm.net/dump/stations.json.gz", ref wasAnyUpdated);
+                DownloadJson(@"Data\stationsEDSM.json", "https://www.edsm.net/dump/stations.json.gz", ref wasAnyUpdated);
 
                 Console.WriteLine("downloading station list from EDDB");
 
-                var jsonStationsEDDBText = DownloadJson(@"Data\stationsEDDB.json", "https://eddb.io/archive/v6/stations.json", ref wasAnyUpdated);
+                DownloadJson(@"Data\stationsEDDB.json", "https://eddb.io/archive/v6/stations.json", ref wasAnyUpdated);
 
                 Console.WriteLine("checking station and system data");
+
+                populatedSystemsEDDBList = JsonReaderExtensions.ParseJson<PopulatedSystemEDDB>(@"Data\populatedsystemsEDDB.json").ToList();
 
                 if (NeedToUpdateFile(@"Data\cnbsystems.json", 1440))
                 {
                     // there are multiple stations with the same name ???
-                    var populatedSystemsEDDBbyName = JsonConvert
-                        .DeserializeObject<List<PopulatedSystemEDDB>>(jsonPopulatedsystemsEDDBText)
+                    var populatedSystemsEDDBbyName = populatedSystemsEDDBList
                         .GroupBy(x => x.Name).Select(x => x.First())
                         .ToDictionary(x => x.Name);
 
@@ -668,19 +693,21 @@ namespace ImportData
 
                 if (wasAnyUpdated || NeedToUpdateFile(@"Data\painitestations.json", 15))
                 {
-                    populatedSystemsEDDBbyEdsmId = JsonConvert
-                        .DeserializeObject<List<PopulatedSystemEDDB>>(jsonPopulatedsystemsEDDBText)
+                    populatedSystemsEDDBbyEdsmId = populatedSystemsEDDBList
                         .Where(x => x.EdsmId != null)
                         .ToDictionary(x => (int) x.EdsmId);
 
-                    stationsEDSM = JsonConvert.DeserializeObject<List<StationEDSM>>(jsonStationsEDSMText);
+
+                    stationsEDDBList = JsonReaderExtensions.ParseJson<StationEDDB>(@"Data\stationsEDDB.json").ToList();
 
                     // there are multiple stations with the same name ???
-                    stationsEDDB = JsonConvert.DeserializeObject<List<StationEDDB>>(jsonStationsEDDBText)
+                    stationsEDDB = stationsEDDBList
                         .GroupBy(x => x.Name).Select(x => x.First())
                         .ToDictionary(x => x.Name);
 
                     Console.WriteLine("looking up additional EDDB station information for all stations");
+
+                    stationsEDSM = JsonReaderExtensions.ParseJson<StationEDSM>(@"Data\stationsEDSM.json").ToList();
 
                     stationsEDSM.ForEach(z =>
                     {
