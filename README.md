@@ -55,14 +55,14 @@ The local api must be active in EDEngineer and listening on port 44405
 
 **This is optional, EDEngineer doesn't have to be installed or running.**
 
-Any data from [HWInfo](https://www.hwinfo.com) can be displayed. This also works when Elite Dangerous is not running.
+Any data from [HWInfo](https://www.hwinfo.com) can be displayed. **This also works when Elite Dangerous is not running.**
 
 When HWInfo64 is detected, all the available sensors will be written at startup to the data\hwinfo.json file.
 
 The HWINFO.inc file must be modified, to configure what will be displayed on the screen.
-This .inc file has the same format as used by various [rainmeter](https://www.deviantart.com/pul53dr1v3r/art/Rainformer-2-9-3-HWiNFO-Edition-Rainmeter-789616481) skins.
+The HWINFO.inc file has the same format as used by various [rainmeter](https://www.deviantart.com/pul53dr1v3r/art/Rainformer-2-9-3-HWiNFO-Edition-Rainmeter-789616481) skins.
 
-A configuration tool, to link sensor id's to variables in the HWINFO.inc file can be downloaded from the hwinfo website [here](https://www.hwinfo.com/beta/HWiNFOSharedMemoryViewer.exe.7z)
+A configuration tool, to link sensor ids to variables in the HWINFO.inc file, can be downloaded from the hwinfo website [here](https://www.hwinfo.com/beta/HWiNFOSharedMemoryViewer.exe.7z)
 
 ![hwinfo tool](https://i.imgur.com/Px6jvw4.png)
 
