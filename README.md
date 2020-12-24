@@ -62,7 +62,9 @@ When HWInfo64 is detected, all the available sensors will be written at startup 
 The HWINFO.inc file must be modified, to configure what will be displayed on the screen.
 The HWINFO.inc file has the same format as used by various [rainmeter](https://www.deviantart.com/pul53dr1v3r/art/Rainformer-2-9-3-HWiNFO-Edition-Rainmeter-789616481) skins.
 
-A configuration tool, to link sensor ids to variables in the HWINFO.inc file, can be downloaded from the hwinfo website [here](https://www.hwinfo.com/beta/HWiNFOSharedMemoryViewer.exe.7z)
+Note that you don't need to install rainmeter or any rainmeter plugin.
+
+A configuration tool, to link sensor ids to variables in the HWINFO.inc file, can be downloaded from the hwinfo website [here](https://www.hwinfo.com/beta/HWiNFOSharedMemoryViewer.exe.7z) :
 
 ![hwinfo tool](https://i.imgur.com/Px6jvw4.png)
 
