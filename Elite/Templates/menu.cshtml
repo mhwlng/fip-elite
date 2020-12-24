@@ -6,16 +6,16 @@
         <table class="menu">
             <tbody>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == LcdTab.Commander ? "highlight" : "") @(Model.Cursor == LcdTab.Commander ? "menucursor" : "")">CMDR</div></td>
-                </tr>
-                <tr>
                     <td><div class="@(Model.CurrentTab == LcdTab.Navigation ? "highlight" : "") @(Model.Cursor == LcdTab.Navigation ? "menucursor" : "")">NAVIGATION</div></td>
                 </tr>
+            <tr>
+                <td><div class="@(Model.CurrentTab == LcdTab.Target ? "highlight" : "") @(Model.Cursor == LcdTab.Target ? "menucursor" : "")">TARGET</div></td>
+            </tr>
+            <tr>
+                <td><div class="disabled">&nbsp;</div></td>
+            </tr>
                 <tr>
-                    <td><div class="@(Model.CurrentTab == LcdTab.Target ? "highlight" : "") @(Model.Cursor == LcdTab.Target ? "menucursor" : "")">TARGET</div></td>
-                </tr>
-                <tr>
-                    <td><div class="@(Model.CurrentTab == LcdTab.Galnet ? "highlight" : "") @(Model.Cursor == LcdTab.Galnet ? "menucursor" : "")">GALNET</div></td>
+                    <td><div class="navigation @(Model.Cursor == LcdTab.InfoMenu ? "menucursor" : "")">INFO &#x25b6;</div></td>
                 </tr>
                 <tr>
                     <td><div class="navigation @(Model.Cursor == LcdTab.ShipMenu ? "menucursor" : "")">SHIP &#x25b6;</div></td>
@@ -23,6 +23,41 @@
                 <tr>
                     <td><div class="navigation @(Model.Cursor == LcdTab.LocationsMenu ? "menucursor" : "")">LOCATIONS &#x25b6;</div></td>
                 </tr>
+
+            </tbody>
+        </table>
+    }
+    @if (Model.CurrentPage == LcdPage.InfoMenu)
+    {
+        <table class="menu">
+            <tbody>
+                <tr>
+                    <td><div class="navigation @(Model.Cursor == LcdTab.InfoBack ? "menucursor" : "")">&#x25c0; BACK</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == LcdTab.Commander ? "highlight" : "") @(Model.Cursor == LcdTab.Commander ? "menucursor" : "")">CMDR</div></td>
+                </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == LcdTab.Galnet ? "highlight" : "") @(Model.Cursor == LcdTab.Galnet ? "menucursor" : "")">GALNET</div></td>
+                </tr>
+            <tr>
+                <td>
+                    @if (Model.ShowHWInfo)
+                    {
+                        <div class="@(Model.CurrentTab == LcdTab.HWInfo ? "highlight" : "") @(Model.Cursor == LcdTab.HWInfo ? "menucursor" : "")">HWINFO</div>
+                    }
+                    else
+                    {
+                        <div class="disabled">HWINFO</div>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td><div class="disabled">&nbsp;</div></td>
+            </tr>
+            <tr>
+                <td><div class="disabled">&nbsp;</div></td>
+            </tr>
 
             </tbody>
         </table>
@@ -40,11 +75,16 @@
                 <tr>
                     <td><div class="@(Model.CurrentTab == LcdTab.Materials ? "highlight" : "") @(Model.Cursor == LcdTab.Materials ? "menucursor" : "")">MATERIALS</div></td>
                 </tr>
-                <tr>
-                    <td>
-                        <div class="@(Model.CurrentTab == LcdTab.Cargo ? "highlight" : "") @(Model.Cursor == LcdTab.Cargo ? "menucursor" : "")">CARGO</div>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <div class="@(Model.CurrentTab == LcdTab.Cargo ? "highlight" : "") @(Model.Cursor == LcdTab.Cargo ? "menucursor" : "")">CARGO</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="@(Model.CurrentTab == LcdTab.Missions ? "highlight" : "") @(Model.Cursor == LcdTab.Missions ? "menucursor" : "")">MISSIONS</div>
+                </td>
+            </tr>
             <tr>
                 <td>
                     @if (Model.ShowEngineer)
@@ -57,11 +97,6 @@
                     }
                 </td>
             </tr>
-                <tr>
-                    <td>
-                        <div class="@(Model.CurrentTab == LcdTab.Missions ? "highlight" : "") @(Model.Cursor == LcdTab.Missions ? "menucursor" : "")">MISSIONS</div>
-                    </td>
-                </tr>
             </tbody>
         </table>
     }

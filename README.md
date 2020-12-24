@@ -55,6 +55,17 @@ The local api must be active in EDEngineer and listening on port 44405
 
 **This is optional, EDEngineer doesn't have to be installed or running.**
 
+Any data from [HWInfo](https://www.hwinfo.com) can be displayed. This also works when Elite Dangerous is not running.
+
+When HWInfo64 is detected, all the available sensors will be written at startup to the data\hwinfo.json file.
+
+The HWINFO.inc file must be modified, to configure what will be displayed on the screen.
+This .inc file has the same format as used by various [rainmeter](https://www.deviantart.com/pul53dr1v3r/art/Rainformer-2-9-3-HWiNFO-Edition-Rainmeter-789616481) skins.
+
+A configuration tool, to link sensor id's to variables in the HWINFO.inc file can be downloaded from the hwinfo website [here](https://www.hwinfo.com/beta/HWiNFOSharedMemoryViewer.exe.7z)
+
+![hwinfo tool](https://i.imgur.com/Px6jvw4.png)
+
 You can automatically open the 'Target' tab on ONE Flight Instrument Panel, when a ship is targeted. (ShipTargeted event).
 
 You can automatically open the 'Navigation' tab on ONE Flight Instrument Panel, when a ship enters a system, approaches a station or a planet.
@@ -100,6 +111,7 @@ This sound can be changed or disabled by editing the 'clickSound' key in in apps
 ![Screenshot 23](https://i.imgur.com/4gUny6G.png)
 ![Screenshot 24](https://i.imgur.com/W67Nci1.png)
 ![Screenshot 25](https://i.imgur.com/z4ACs0q.png)
+![Screenshot 25](https://i.imgur.com/gFllV7v.png)
 
 Works with these 64 bit Logitech Flight Instrument Panel Drivers (currently not with older saitek drivers) :
 
@@ -126,6 +138,8 @@ https://github.com/Filtik/EliteDangerousLCD
 https://github.com/jdahlblom/DCSFIPS
 
 https://github.com/msarilar/EDEngineer
+
+https://www.hwinfo.com/
 
 DaftMav for POI list [see here](https://www.reddit.com/r/EliteDangerous/comments/9mfiug/edison_a_tool_which_helps_getting_to_planet/)
 

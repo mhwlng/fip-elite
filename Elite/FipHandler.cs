@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Microsoft.Win32;
 
 namespace Elite
@@ -111,6 +112,22 @@ namespace Elite
                 if (fipPanel.CurrentTab == LcdTab.Navigation && fipPanel.CurrentCard[(int)fipPanel.CurrentTab] == 2)
                 {
                     fipPanel.RefreshDevicePage();
+                }
+            }
+        }
+
+        public void RefreshHWInfoPages()
+        {
+            if (HWInfo.SensorData.Any())
+            {
+                for (var index = 0; index < _fipPanels.Count; index++)
+                {
+                    var fipPanel = _fipPanels[index];
+
+                    if (fipPanel.CurrentTab == LcdTab.HWInfo)
+                    {
+                        fipPanel.RefreshDevicePage();
+                    }
                 }
             }
         }

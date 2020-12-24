@@ -22,6 +22,10 @@
     {
         <div class="cardcaption">Missions</div>
     }
+    else if (Model.CurrentTab == LcdTab.HWInfo)
+    {
+        <div class="cardcaption">HWInfo</div>
+    }
     else if (Model.CurrentTab == LcdTab.Galnet)
     {
         <div class="cardcaption">@Html.Raw(Model.GalnetCaption)</div>

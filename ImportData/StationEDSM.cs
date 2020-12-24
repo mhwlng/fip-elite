@@ -48,11 +48,11 @@ namespace ImportData
     public class StationEDSM
     {
 
-        [JsonProperty("id")]
-        public int Id { get; set; }
+        //[JsonProperty("id")]
+        //public int Id { get; set; }
 
-        [JsonProperty("marketId")]
-        public long? MarketId { get; set; }
+        //[JsonProperty("marketId")]
+        //public long? MarketId { get; set; }
 
         [JsonProperty("type")]
         public string Type { get; set; }
@@ -72,29 +72,29 @@ namespace ImportData
         [JsonProperty("economy")]
         public string Economy { get; set; }
 
-        [JsonProperty("secondEconomy")]
-        public string SecondEconomy { get; set; }
+        //[JsonProperty("secondEconomy")]
+        //public string SecondEconomy { get; set; }
 
-        [JsonProperty("haveMarket")]
-        public bool HaveMarket { get; set; }
+        //[JsonProperty("haveMarket")]
+        //public bool HaveMarket { get; set; }
 
-        [JsonProperty("haveShipyard")]
-        public bool HaveShipyard { get; set; }
+        //[JsonProperty("haveShipyard")]
+        //public bool HaveShipyard { get; set; }
 
-        [JsonProperty("haveOutfitting")]
-        public bool HaveOutfitting { get; set; }
+        //[JsonProperty("haveOutfitting")]
+        //public bool HaveOutfitting { get; set; }
 
         [JsonProperty("otherServices")]
         public IList<string> OtherServices { get; set; }
 
-        [JsonProperty("updateTime")]
-        public UpdateTime UpdateTime { get; set; }
+        //[JsonProperty("updateTime")]
+        //public UpdateTime UpdateTime { get; set; }
 
         [JsonProperty("systemId")]
         public int SystemId { get; set; }
 
-        [JsonProperty("systemId64")]
-        public object SystemId64 { get; set; }
+        //[JsonProperty("systemId64")]
+        //public object SystemId64 { get; set; }
 
         [JsonProperty("systemName")]
         public string SystemName { get; set; }

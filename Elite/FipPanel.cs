@@ -37,8 +37,9 @@ namespace Elite
     {
         Collapsed = -1,
         HomeMenu = 0,
-        ShipMenu = 1,
-        LocationsMenu = 2
+        InfoMenu = 1,
+        ShipMenu = 2,
+        LocationsMenu = 3
     }
 
     public enum LcdTab
@@ -46,30 +47,39 @@ namespace Elite
         Init=-999,
         None = 0,
 
-        Commander = 1,
-        Navigation = 2,
-        Target = 3,
-        Galnet = 4,
+        Navigation = 1,
+        Target = 2,
+        // 3
+        InfoMenu = 4, // info ->
         ShipMenu = 5, // ship ->
         LocationsMenu = 6, // locations ->
 
         //---------------
 
-        ShipBack = 7, // <- back
-        Ship = 8,
-        Materials = 9,
-        Cargo = 10,
-        Engineer = 11,
-        Missions = 12,
+        InfoBack = 7,
+        Commander = 8,
+        Galnet = 9,
+        HWInfo = 10,
+        // 11
+        // 12
 
         //---------------
 
-        LocationsBack = 13, // <- back
-        POI = 14,
-        Galaxy = 15,
-        Engineers = 16,
-        Powers = 17,
-        Mining = 18
+        ShipBack = 13, // <- back
+        Ship = 14,
+        Materials = 15,
+        Cargo = 16,
+        Missions = 17,
+        Engineer = 18,
+
+        //---------------
+
+        LocationsBack = 19, // <- back
+        POI = 20,
+        Galaxy = 21,
+        Engineers = 22,
+        Powers = 23,
+        Mining = 24
 
     }
 
@@ -661,10 +671,10 @@ namespace Elite
 
                             switch (_currentTabCursor)
                             {
-                                case LcdTab.Missions:
-                                    //Missions > Engineer > Cargo > Materials > Ship >  ShipBack
+                                case LcdTab.ShipBack:
+                                    //Engineer > Missions > Cargo > Materials > Ship >  ShipBack
 
-                                    _currentTabCursor -= 1;
+                                    _currentTabCursor = LcdTab.Engineer;
 
                                     if (string.IsNullOrEmpty(Engineer.CommanderName))
                                     {
@@ -673,11 +683,20 @@ namespace Elite
 
                                     break;
 
-                                case LcdTab.Commander:
+                                case LcdTab.Navigation:
                                     _currentTabCursor = LcdTab.LocationsMenu;
                                     break;
-                                case LcdTab.ShipBack:
-                                    _currentTabCursor = LcdTab.Missions;
+                                case LcdTab.InfoMenu:
+                                    _currentTabCursor = LcdTab.Target;
+                                    break;
+
+                                case LcdTab.InfoBack:
+                                    _currentTabCursor = LcdTab.HWInfo;
+
+                                    if (!HWInfo.SensorData.Any())
+                                    {
+                                        _currentTabCursor -= 1;
+                                    }
                                     break;
                                 case LcdTab.LocationsBack:
                                     _currentTabCursor = LcdTab.Mining;
@@ -707,24 +726,35 @@ namespace Elite
 
                             switch (_currentTabCursor)
                             {
+                                case LcdTab.Engineer:
+                                    _currentTabCursor = LcdTab.ShipBack;
+                                    break;
 
-                                case LcdTab.Cargo:
-                                    //ShipBack > Ship > Materials > Cargo > Engineer > Missions 
+                                case LcdTab.Missions:
+                                    //ShipBack > Ship > Materials > Cargo > Missions > Engineer
 
-                                    _currentTabCursor += 1;
-
-                                    if (string.IsNullOrEmpty(Engineer.CommanderName))
-                                    {
-                                        _currentTabCursor += 1;
-                                    }
-
+                                    if (!string.IsNullOrEmpty(Engineer.CommanderName))
+                                        _currentTabCursor = LcdTab.Engineer;
+                                    else
+                                        _currentTabCursor = LcdTab.ShipBack;
                                     break;
 
                                 case LcdTab.LocationsMenu:
-                                    _currentTabCursor = LcdTab.Commander;
+                                    _currentTabCursor = LcdTab.Navigation;
                                     break;
-                                case LcdTab.Missions:
-                                    _currentTabCursor = LcdTab.ShipBack;
+                                case LcdTab.Target:
+                                    _currentTabCursor = LcdTab.InfoMenu;
+                                    break;
+
+                                case LcdTab.HWInfo:
+                                    _currentTabCursor = LcdTab.InfoBack;
+                                    break;
+
+                                case LcdTab.Galnet:
+                                    if (HWInfo.SensorData.Any())
+                                        _currentTabCursor = LcdTab.HWInfo;
+                                    else
+                                        _currentTabCursor = LcdTab.InfoBack;
                                     break;
                                 case LcdTab.Mining:
                                     _currentTabCursor = LcdTab.LocationsBack;
@@ -759,12 +789,17 @@ namespace Elite
                             {
                                 case 1:
                                     buttons = 32; // back
-                                    _currentTabCursor = LcdTab.ShipMenu;
+                                    _currentTabCursor = LcdTab.InfoMenu;
                                     break;
                                 case 2:
                                     buttons = 32; // back
+                                    _currentTabCursor = LcdTab.ShipMenu;
+                                    break;
+                                case 3:
+                                    buttons = 32; // back
                                     _currentTabCursor = LcdTab.LocationsMenu;
                                     break;
+
                             }
                         }
                         break;
@@ -787,6 +822,11 @@ namespace Elite
 
                             switch (_currentTabCursor)
                             {
+                                case LcdTab.InfoMenu:
+                                    buttons = CalculateButton(_currentTabCursor);
+                                    _currentTabCursor = LcdTab.InfoBack;
+                                    break;
+
                                 case LcdTab.ShipMenu:
                                     buttons = CalculateButton(_currentTabCursor);
                                     _currentTabCursor = LcdTab.ShipBack;
@@ -829,14 +869,22 @@ namespace Elite
 
                             switch (_currentTabCursor)
                             {
+                                case LcdTab.InfoMenu:
+                                    _currentTabCursor = LcdTab.InfoBack;
+                                    break;
+                                case LcdTab.InfoBack:
+                                    _currentTabCursor = LcdTab.InfoMenu;
+                                    break;
+
                                 case LcdTab.ShipMenu:
                                     _currentTabCursor = LcdTab.ShipBack;
                                     break;
-                                case LcdTab.LocationsMenu:
-                                    _currentTabCursor = LcdTab.LocationsBack;
-                                    break;
                                 case LcdTab.ShipBack:
                                     _currentTabCursor = LcdTab.ShipMenu;
+                                    break;
+
+                                case LcdTab.LocationsMenu:
+                                    _currentTabCursor = LcdTab.LocationsBack;
                                     break;
                                 case LcdTab.LocationsBack:
                                     _currentTabCursor = LcdTab.LocationsMenu;
@@ -1118,16 +1166,18 @@ namespace Elite
                                 switch (button)
                                 {
                                     case 32:
-                                        mustRefresh = SetTab(LcdTab.Commander);
-                                        break;
-                                    case 64:
                                         mustRefresh = SetTab(LcdTab.Navigation);
                                         break;
-                                    case 128:
+                                    case 64:
                                         mustRefresh = SetTab(LcdTab.Target);
                                         break;
+                                    case 128:
+                                        break;
                                     case 256:
-                                        mustRefresh = SetTab(LcdTab.Galnet);
+                                        mustRefresh = true;
+                                        _currentPage = LcdPage.InfoMenu;
+                                        _lastTab = LcdTab.Init;
+                                        App.PlayClickSound();
                                         break;
                                     case 512:
                                         mustRefresh = true;
@@ -1149,6 +1199,43 @@ namespace Elite
                             }
 
                             break;
+
+                        case LcdPage.InfoMenu:
+                            if (state)
+                            {
+                                switch (button)
+                                {
+                                    case 32:
+                                        mustRefresh = true;
+                                        _currentPage = LcdPage.HomeMenu;
+                                        _lastTab = LcdTab.Init;
+                                        App.PlayClickSound();
+                                        break;
+                                    case 64:
+                                        mustRefresh = SetTab(LcdTab.Commander);
+                                        break;
+                                    case 128:
+                                        mustRefresh = SetTab(LcdTab.Galnet);
+                                        break;
+                                    case 256:
+                                        if (HWInfo.SensorData.Any())
+                                        {
+                                            mustRefresh = SetTab(LcdTab.HWInfo);
+                                        }
+                                        break;
+                                    case 512:
+                                        break;
+                                    case 1024:
+                                        break;
+                                    case 2048:
+                                        mustRefresh = true;
+                                        App.PlayClickSound();
+                                        break;
+                                }
+                            }
+
+                            break;
+
                         case LcdPage.ShipMenu:
                             if (state)
                             {
@@ -1170,6 +1257,9 @@ namespace Elite
                                         mustRefresh = SetTab(LcdTab.Cargo);
                                         break;
                                     case 512:
+                                        mustRefresh = SetTab(LcdTab.Missions);
+                                        break;
+                                    case 1024:
                                         if (!string.IsNullOrEmpty(Engineer.CommanderName))
                                         {
                                             Engineer.GetShoppingList();
@@ -1178,9 +1268,6 @@ namespace Elite
 
                                             mustRefresh = SetTab(LcdTab.Engineer);
                                         }
-                                        break;
-                                    case 1024:
-                                        mustRefresh = SetTab(LcdTab.Missions);
                                         break;
                                     case 2048:
                                         mustRefresh = true;
@@ -1486,6 +1573,7 @@ namespace Elite
 
             lock (_refreshDevicePageLock)
             {
+                   
                 if (Engineer.BlueprintShoppingList.Count == 0 && CurrentTab == LcdTab.Engineer)
                 {
                     SetTab(LcdTab.Ship);
@@ -1614,7 +1702,7 @@ namespace Elite
                                                 ExplorationRank = Data.CommanderData.ExplorationRank,
                                                 ExplorationRankProgress = Data.CommanderData.ExplorationRankProgress,
 
-                                                CqcRank = Data.CommanderData.CqcRank.Replace("SemiProfessional", "SemiPro"),
+                                                CqcRank = Data.CommanderData.CqcRank?.Replace("SemiProfessional", "SemiPro"),
 
                                                 CqcRankProgress = Data.CommanderData.CqcRankProgress,
 
@@ -1927,6 +2015,25 @@ namespace Elite
 
                                         break;
 
+                                    case LcdTab.HWInfo:
+
+                                        lock (HWInfo.RefreshHWInfoLock)
+                                        {
+                                            str =
+                                                Engine.Razor.Run("hwinfo.cshtml", null, new
+                                                {
+                                                    CurrentTab = CurrentTab,
+                                                    CurrentPage = _currentPage,
+                                                    CurrentCard = CurrentCard[(int) CurrentTab],
+                                                    
+                                                    SensorCount = HWInfo.SensorData.Count,
+
+                                                    SensorData = HWInfo.SensorData
+
+                                                });
+                                        }
+
+                                        break;
                                     case LcdTab.Engineers:
 
                                         lock (App.RefreshJsonLock)
@@ -2301,7 +2408,9 @@ namespace Elite
 
                                         MaterialCount = Material.MaterialList.Count,
 
-                                        ShowEngineer = !string.IsNullOrEmpty(Engineer.CommanderName)
+                                        ShowEngineer = !string.IsNullOrEmpty(Engineer.CommanderName),
+                                        
+                                        ShowHWInfo = HWInfo.SensorData.Any()
                                     });
 
                                 _menuHtmlImage = HtmlRender.RenderToImage(menustr,
@@ -2346,7 +2455,13 @@ namespace Elite
                             {
                                 for (uint i = 1; i <= 6; i++)
                                 {
-                                    if (_currentPage == LcdPage.ShipMenu && i == 5 && string.IsNullOrEmpty(Engineer.CommanderName))
+                                    if (_currentPage == LcdPage.HomeMenu && i == 3 )
+                                        SetLed(i, false);
+                                    else if (_currentPage == LcdPage.InfoMenu && i == 4 && !HWInfo.SensorData.Any())
+                                        SetLed(i, false);
+                                    else if (_currentPage == LcdPage.InfoMenu && i >= 5)
+                                        SetLed(i, false);
+                                    else if (_currentPage == LcdPage.ShipMenu && i == 6 && string.IsNullOrEmpty(Engineer.CommanderName))
                                         SetLed(i, false);
                                     else
                                         SetLed(i, true);

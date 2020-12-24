@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Web.UI;
 using HtmlAgilityPack;
 using log4net;
 using Newtonsoft.Json;
@@ -15,6 +16,21 @@ namespace ImportData
 {
     public static class JsonReaderExtensions
     {
+        private static void DeleteExpiredFile(string fullPath, int minutes)
+        {
+            new FileInfo(fullPath).Directory?.Create();
+
+            if (File.Exists(fullPath))
+            {
+                var modification = File.GetLastWriteTime(fullPath);
+
+                if ((DateTime.Now - modification).TotalMinutes >= minutes)
+                {
+                    File.Delete(fullPath);
+                }
+            }
+        }
+
         private static string GetExePath()
         {
             var strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -45,6 +61,64 @@ namespace ImportData
                     }
                 }
             }
+        }
+
+        public static void DownloadJson<T>(string url, string path, ref bool wasUpdated)
+        {
+            path = Path.Combine(GetExePath(), path);
+
+            DeleteExpiredFile(path, 1440);
+
+            if (!File.Exists(path))
+            {
+                var serializer = new JsonSerializer();
+
+                using (var client = new WebClient())
+                {
+                    client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+
+                    using (var sw = new StreamWriter(File.Open(path, FileMode.Create)))
+                    {
+                        using (var jsonWriter = new JsonTextWriter(sw))
+                        {
+                            using (var compressedStream = new MemoryStream(client.DownloadData(url)))
+                            {
+                                using (var s = new GZipStream(compressedStream, CompressionMode.Decompress))
+                                {
+                                    using (var sr = new StreamReader(s))
+                                    {
+                                        using (var jsonReader = new JsonTextReader(sr))
+                                        {
+                                            while (jsonReader.Read())
+                                            {
+                                                if (jsonReader.TokenType == JsonToken.StartArray)
+                                                {
+                                                    jsonWriter.WriteStartArray();
+                                                }
+                                                else if (jsonReader.TokenType == JsonToken.EndArray)
+                                                {
+                                                    jsonWriter.WriteEndArray();
+                                                }
+                                                else if (jsonReader.TokenType == JsonToken.StartObject)
+                                                {
+                                                    var sd = serializer.Deserialize<T>(jsonReader);
+
+                                                    serializer.Serialize(jsonWriter, sd);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+                wasUpdated = true;
+
+            }
+
         }
     }
 
@@ -147,45 +221,6 @@ namespace ImportData
             return true;
         }
 
-        private static void DownloadJson(string path, string url, ref bool wasUpdated)
-        {
-            path = Path.Combine(GetExePath(), path);
-
-            DeleteExpiredFile(path, 1440);
-
-            if (!File.Exists(path))
-            {
-                using (var client = new WebClient())
-                {
-                    client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
-
-                    using (var compressedStream = new MemoryStream(client.DownloadData(url)))
-                    {
-                        using (var stream = new GZipStream(compressedStream, CompressionMode.Decompress))
-                        {
-                            using (BinaryWriter binWriter =
-                                new BinaryWriter(File.Open(path, FileMode.Create)))
-                            {
-                                const int size = 100000;
-                                var buffer = new byte[size];
-                                int count;
-                                do
-                                {
-                                    count = stream.Read(buffer, 0, size);
-                                    if (count > 0)
-                                    {
-                                        binWriter.Write(buffer, 0, count);
-                                    }
-                                } while (count > 0);
-                            }
-                        }
-                    }
-                }
-
-                wasUpdated = true;
-
-            }
-        }
 
         public class CNBSystemData
         {
@@ -665,17 +700,20 @@ namespace ImportData
 
                 var wasAnyUpdated = false;
 
-                Console.WriteLine("downloading populated systems from EDDB");
-
-                DownloadJson(@"Data\populatedsystemsEDDB.json", "https://eddb.io/archive/v6/systems_populated.json", ref wasAnyUpdated);
-
                 Console.WriteLine("downloading station list from EDSM");
 
-                DownloadJson(@"Data\stationsEDSM.json", "https://www.edsm.net/dump/stations.json.gz", ref wasAnyUpdated);
+                //DownloadJson(@"Data\stationsEDSM.json", "https://www.edsm.net/dump/stations.json.gz", ref wasAnyUpdated);
+                JsonReaderExtensions.DownloadJson<StationEDSM>("https://www.edsm.net/dump/stations.json.gz", @"Data\stationsEDSM.json", ref wasAnyUpdated);
+
+                Console.WriteLine("downloading populated systems from EDDB");
+
+                //DownloadJson(@"Data\populatedsystemsEDDB.json", "https://eddb.io/archive/v6/systems_populated.json", ref wasAnyUpdated);
+                JsonReaderExtensions.DownloadJson<PopulatedSystemEDDB>("https://eddb.io/archive/v6/systems_populated.json", @"Data\populatedsystemsEDDB.json", ref wasAnyUpdated);
 
                 Console.WriteLine("downloading station list from EDDB");
 
-                DownloadJson(@"Data\stationsEDDB.json", "https://eddb.io/archive/v6/stations.json", ref wasAnyUpdated);
+                //DownloadJson(@"Data\stationsEDDB.json", "https://eddb.io/archive/v6/stations.json", ref wasAnyUpdated);
+                JsonReaderExtensions.DownloadJson<StationEDDB>("https://eddb.io/archive/v6/stations.json", @"Data\stationsEDDB.json", ref wasAnyUpdated);
 
                 Console.WriteLine("checking station and system data");
 

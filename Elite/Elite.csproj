@@ -137,6 +137,7 @@
     <Compile Include="Audio\CachedSoundSampleProvider.cs" />
     <Compile Include="CommunityGoals.cs" />
     <Compile Include="Galnet.cs" />
+    <Compile Include="HWInfo.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="Route.cs" />
     <Compile Include="Cargo.cs" />
@@ -213,6 +214,9 @@
     <None Include="Templates\cargo.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Templates\hwinfo.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\galnet.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -271,6 +275,9 @@
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
     <Resource Include="Hourglass.ico" />
+    <None Include="HWINFO.inc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="Sounds\257357__brnck__button-click.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

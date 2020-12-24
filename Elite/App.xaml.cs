@@ -33,6 +33,9 @@ namespace Elite
         public static readonly object RefreshJsonLock = new object();
         public static readonly object RefreshSystemLock = new object();
 
+        public static Task HWInfoTask;
+        private static CancellationTokenSource _hwInfoTokenSource = new CancellationTokenSource();
+
         public static Task JsonTask;
         private static CancellationTokenSource _jsonTokenSource = new CancellationTokenSource();
 
@@ -317,6 +320,7 @@ namespace Elite
                 Engine.Razor.Compile("target.cshtml", null);
                 Engine.Razor.Compile("galnet.cshtml", null);
                 Engine.Razor.Compile("poi.cshtml", null);
+                Engine.Razor.Compile("hwinfo.cshtml", null);
 
                 Engine.Razor.Compile("galaxy.cshtml", null);
                 Engine.Razor.Compile("engineers.cshtml", null);
@@ -355,6 +359,15 @@ namespace Elite
                 Engineer.GetCommanderName();
                 Engineer.GetShoppingList();
                 Engineer.GetBestSystems();
+
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Getting sensor data from HWInfo...");
+
+                HWInfo.ReadMem("HWINFO.INC");
+                
+                if (HWInfo.SensorData.Any())
+                {
+                    HWInfo.SaveDataToFile(@"Data\hwinfo.json");
+                }
 
                 if (File.Exists(Path.Combine(ExePath, "joystickSettings.config")) && ConfigurationManager.GetSection("joystickSettings") is NameValueCollection joystickSection)
                 {
@@ -610,6 +623,28 @@ namespace Elite
 
                 }, jsonToken);
 
+                var hwInfoToken = _hwInfoTokenSource.Token;
+
+                HWInfoTask = Task.Run(async () =>
+                {
+                    Log.Info("HWInfo task started");
+
+                    while (true)
+                    {
+                        if (hwInfoToken.IsCancellationRequested)
+                        {
+                            hwInfoToken.ThrowIfCancellationRequested();
+                        }
+
+                        HWInfo.ReadMem("HWINFO.INC");
+
+                        FipHandler.RefreshHWInfoPages();
+
+                        await Task.Delay(5 * 1000, _hwInfoTokenSource.Token); // repeat every 5 seconds
+                    }
+
+                }, hwInfoToken);
+
             });
 
         }
@@ -638,6 +673,23 @@ namespace Elite
             FipHandler.Close();
 
             _notifyIcon.Dispose(); //the icon would clean up automatically, but this is cleaner
+
+            _hwInfoTokenSource.Cancel();
+
+            var hwInfoToken = _hwInfoTokenSource.Token;
+
+            try
+            {
+                HWInfoTask?.Wait(hwInfoToken);
+            }
+            catch (OperationCanceledException)
+            {
+                Log.Info("HWInfo background task ended");
+            }
+            finally
+            {
+                _hwInfoTokenSource.Dispose();
+            }
 
             _jsonTokenSource.Cancel();
 
