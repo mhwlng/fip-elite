@@ -15,31 +15,36 @@
     <table class="zebratable">
         <tbody>
 
-        @foreach (var m in Model.SensorData)
-        {
-            <tr>
-                <td class="caption center" colspan="2">@m.SensorNameUser</td>
-            </tr>
-
-            var odd = true;
-
-            foreach (var e in m.Elements)
-            {
-                <tr class="@(odd ? "zebraodd" : "zebraeven")">
-                    <td class="caption">@e.LabelUser</td>
-                    <td class="data right">@e.Value</td>
-                </tr>
-                odd = !odd;
-            }
-
-            if (!((List<HWInfo.SensorObj>)Model.SensorData).Last().Equals((HWInfo.SensorObj)m))
+            @foreach (var m in Model.SensorData)
             {
                 <tr>
-                    <td class="divider" colspan="2">&nbsp;</td>
+                    <td class="caption center" colspan="2">@m.SensorNameUser</td>
                 </tr>
-            }
 
-        }            
+                var odd = true;
+
+                foreach (var e in m.Elements)
+                {
+                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td rowspan="2" class="caption">@e.LabelUser</td>
+                        <td rowspan="2" class="data right">@e.Value</td>
+                        <td  class="data right smallfont">@e.ValueMax</td>
+                    </tr>
+                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td class="data right smallfont">@e.ValueMin</td>
+                    </tr>
+
+                    odd = !odd;
+                }
+
+                if (!((List<HWInfo.SensorObj>)Model.SensorData).Last().Equals((HWInfo.SensorObj)m))
+                {
+                    <tr>
+                        <td class="divider" colspan="3">&nbsp;</td>
+                    </tr>
+                }
+
+            }
         </tbody>
     </table>
     
