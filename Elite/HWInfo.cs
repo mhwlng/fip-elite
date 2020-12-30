@@ -10,8 +10,10 @@ using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Xml;
 using IniParser;
 using IniParser.Model;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Elite
 {
@@ -19,7 +21,7 @@ namespace Elite
 
     public static class HWInfo
     {
-        public enum SENSOR_READING_TYPE
+        public enum SENSOR_TYPE
         {
             SENSOR_TYPE_NONE,
             SENSOR_TYPE_TEMP,
@@ -51,7 +53,7 @@ namespace Elite
         public class _HWiNFO_SENSOR
         {
             public uint SensorId;
-            public uint SensorInst;
+            public uint SensorInstance;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = HWINFO_SENSORS_STRING_LEN)]
             public string SensorNameOrig;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = HWINFO_SENSORS_STRING_LEN)]
@@ -61,9 +63,9 @@ namespace Elite
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public class _HWiNFO_ELEMENT
         {
-            public SENSOR_READING_TYPE Reading;
+            public SENSOR_TYPE SensorType;
             public uint SensorIndex;
-            public uint SensorId;
+            public uint ElementId;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = HWINFO_SENSORS_STRING_LEN)]
             public string LabelOrig;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = HWINFO_SENSORS_STRING_LEN)]
@@ -78,12 +80,17 @@ namespace Elite
         
         public class ElementObj
         {
-            public SENSOR_READING_TYPE Reading;
-            public uint SensorIndex;
-            public uint SensorId;
+            [JsonIgnore]
+            public string ElementKey;
+
+            public SENSOR_TYPE SensorType;
+
+            public uint ElementId;
             public string LabelOrig;
             public string LabelUser;
             public string Unit;
+            [JsonIgnore]
+            public float NumericValue;
             public string Value;
             public string ValueMin;
             public string ValueMax;
@@ -93,10 +100,11 @@ namespace Elite
         public class SensorObj
         {
             public uint SensorId;
-            public uint SensorInst;
+            public uint SensorInstance;
+
             public string SensorNameOrig;
             public string SensorNameUser;
-            public List<ElementObj> Elements;
+            public Dictionary<string,ElementObj> Elements;
         }
 
         public static readonly object RefreshHWInfoLock = new object();
@@ -105,42 +113,44 @@ namespace Elite
         private const int HWINFO_SENSORS_STRING_LEN = 128;
         private const int HWINFO_UNIT_STRING_LEN = 16;
 
-        public static List<SensorObj> FullSensorData = new List<SensorObj>();
-        public static List<SensorObj> SensorData = new List<SensorObj>();
+        public static Dictionary<int,SensorObj> FullSensorData = new Dictionary<int,SensorObj>();
+        public static Dictionary<int, SensorObj> SensorData = new Dictionary<int,SensorObj>();
+
+        public static Dictionary<string, ChartCircularBuffer> SensorTrends = new Dictionary<string, ChartCircularBuffer>();
 
         public static IniData IncData = null;
         
-        private static string NumberFormat(SENSOR_READING_TYPE reading, string unit, double value)
+        public static string NumberFormat(SENSOR_TYPE sensorType, string unit, double value)
         {
             string valstr = "?";
 
-            switch (reading)
+            switch (sensorType)
             {
-                case SENSOR_READING_TYPE.SENSOR_TYPE_VOLT:
+                case SENSOR_TYPE.SENSOR_TYPE_VOLT:
                     valstr = value.ToString("N3");
                     break;
-                case SENSOR_READING_TYPE.SENSOR_TYPE_CURRENT:
+                case SENSOR_TYPE.SENSOR_TYPE_CURRENT:
                     valstr = value.ToString("N3");
                     break;
-                case SENSOR_READING_TYPE.SENSOR_TYPE_POWER:
+                case SENSOR_TYPE.SENSOR_TYPE_POWER:
                     valstr = value.ToString("N3");
                     break;
 
-                case SENSOR_READING_TYPE.SENSOR_TYPE_CLOCK:
+                case SENSOR_TYPE.SENSOR_TYPE_CLOCK:
                     valstr = value.ToString("N1");
                     break;
-                case SENSOR_READING_TYPE.SENSOR_TYPE_USAGE:
+                case SENSOR_TYPE.SENSOR_TYPE_USAGE:
                     valstr = value.ToString("N1");
                     break;
-                case SENSOR_READING_TYPE.SENSOR_TYPE_TEMP:
+                case SENSOR_TYPE.SENSOR_TYPE_TEMP:
                     valstr = value.ToString("N1");
                     break;
 
-                case SENSOR_READING_TYPE.SENSOR_TYPE_FAN:
+                case SENSOR_TYPE.SENSOR_TYPE_FAN:
                     valstr = value.ToString("N0");
                     break;
 
-                case SENSOR_READING_TYPE.SENSOR_TYPE_OTHER:
+                case SENSOR_TYPE.SENSOR_TYPE_OTHER:
 
                     if (unit == "Yes/No")
                     {
@@ -163,7 +173,7 @@ namespace Elite
 
                     break;
 
-                case SENSOR_READING_TYPE.SENSOR_TYPE_NONE:
+                case SENSOR_TYPE.SENSOR_TYPE_NONE:
                     valstr = value.ToString();
                     break;
 
@@ -178,9 +188,6 @@ namespace Elite
             {
                 try
                 {
-                    FullSensorData = new List<SensorObj>();
-                    SensorData = new List<SensorObj>();
-
                     var mmf = MemoryMappedFile.OpenExisting(HWINFO_SHARED_MEM_FILE_NAME, MemoryMappedFileRights.Read);
                     var accessor = mmf.CreateViewAccessor(0L, Marshal.SizeOf(typeof(_HWiNFO_SHARED_MEM)), MemoryMappedFileAccess.Read);
                     
@@ -212,7 +219,7 @@ namespace Elite
 
         private static void ReadSensors(MemoryMappedFile mmf, _HWiNFO_SHARED_MEM hWiNFOMemory)
         {
-            for (uint index = 0; index < hWiNFOMemory.NumSensorElements; ++index)
+            for (var index = 0; index < hWiNFOMemory.NumSensorElements; ++index)
             {
                 using (var viewStream = mmf.CreateViewStream(hWiNFOMemory.OffsetOfSensorSection + index * hWiNFOMemory.SizeOfSensorElement, hWiNFOMemory.SizeOfSensorElement, MemoryMappedFileAccess.Read))
                 {
@@ -222,15 +229,20 @@ namespace Elite
                     var structure = (_HWiNFO_SENSOR)Marshal.PtrToStructure(gcHandle.AddrOfPinnedObject(), typeof(_HWiNFO_SENSOR));
                     gcHandle.Free();
                     
-                    var obj = new SensorObj
+                    if (!FullSensorData.ContainsKey(index))
                     {
-                        SensorId = structure.SensorId,
-                        SensorInst = structure.SensorInst,
-                        SensorNameOrig = structure.SensorNameOrig,
-                        SensorNameUser = structure.SensorNameUser,
-                        Elements = new List<ElementObj>()
-                    };
-                    FullSensorData.Add(obj);
+                        var sensor = new SensorObj
+                        {
+                            SensorId = structure.SensorId,
+                            SensorInstance = structure.SensorInstance,
+                            SensorNameOrig = structure.SensorNameOrig,
+                            SensorNameUser = structure.SensorNameUser,
+                            Elements = new Dictionary<string, ElementObj>()
+                        };
+
+                        FullSensorData.Add(index,sensor);
+                    }
+                    
                 }
             }
             
@@ -249,21 +261,27 @@ namespace Elite
                     var structure = (_HWiNFO_ELEMENT)Marshal.PtrToStructure(gcHandle.AddrOfPinnedObject(), typeof(_HWiNFO_ELEMENT));
                     gcHandle.Free();
 
-                    var obj = new ElementObj
+                    var sensor = FullSensorData[(int) structure.SensorIndex];
+
+                    var elementKey = sensor.SensorId + "-" + sensor.SensorInstance + "-" + structure.ElementId;
+
+                    var element = new ElementObj
                     {
-                        Reading = structure.Reading,
-                        SensorIndex = structure.SensorIndex,
-                        SensorId = structure.SensorId,
+                        ElementKey = elementKey,
+
+                        SensorType = structure.SensorType,
+                        ElementId = structure.ElementId,
                         LabelOrig = structure.LabelOrig,
                         LabelUser = structure.LabelUser,
                         Unit = structure.Unit,
-                        Value = NumberFormat(structure.Reading, structure.Unit, structure.Value),
-                        ValueMin = NumberFormat(structure.Reading, structure.Unit, structure.ValueMin),
-                        ValueMax = NumberFormat(structure.Reading, structure.Unit, structure.ValueMax),
-                        ValueAvg = NumberFormat(structure.Reading, structure.Unit,structure.ValueAvg)
+                        NumericValue = (float)structure.Value,
+                        Value = NumberFormat(structure.SensorType, structure.Unit, structure.Value),
+                        ValueMin = NumberFormat(structure.SensorType, structure.Unit, structure.ValueMin),
+                        ValueMax = NumberFormat(structure.SensorType, structure.Unit, structure.ValueMax),
+                        ValueAvg = NumberFormat(structure.SensorType, structure.Unit,structure.ValueAvg)
                     };
-                    
-                    FullSensorData[(int)structure.SensorIndex].Elements.Add(obj);
+
+                    sensor.Elements[elementKey] = element;
                 }
             }
         }
@@ -272,70 +290,82 @@ namespace Elite
         {
             if (IncData != null && FullSensorData.Any())
             {
-                foreach (SectionData section in IncData.Sections.Where(x => x.SectionName != "Variables"))
+                int index = -1;
+
+                foreach (var section in IncData.Sections.Where(x => x.SectionName != "Variables"))
                 {
+                    index++;
+
                     var sectionName = Regex.Replace(section.SectionName, "HWINFO-CONFIG-", "", RegexOptions.IgnoreCase);
 
-                    var obj = new SensorObj
-                    {
-                        SensorId = 0,
-                        SensorInst = 0,
-                        SensorNameOrig = sectionName,
-                        SensorNameUser = sectionName,
-                        Elements = new List<ElementObj>()
-                    };
-
-                    //Iterate through all the keys in the current section
-                    //printing the values
                     foreach (KeyData key in section.Keys)
                     {
                         var elementName = key.Value;
 
                         var sensorIdStr = IncData["Variables"][key.KeyName + "-SensorId"];
                         var sensorInstanceStr = IncData["Variables"][key.KeyName + "-SensorInstance"];
-                        var entryIdStr = IncData["Variables"][key.KeyName + "-EntryId"];
+                        var elementIdStr = IncData["Variables"][key.KeyName + "-EntryId"];
 
                         if (sensorIdStr?.StartsWith("0x") == true && sensorInstanceStr?.StartsWith("0x") == true &&
-                            entryIdStr?.StartsWith("0x") == true)
+                            elementIdStr?.StartsWith("0x") == true)
                         {
                             var sensorId = Convert.ToUInt32(sensorIdStr.Replace("0x", ""), 16);
                             var sensorInstance = Convert.ToUInt32(sensorInstanceStr.Replace("0x", ""), 16);
-                            var entryId = Convert.ToUInt32(entryIdStr.Replace("0x", ""), 16);
+                            var elementId = Convert.ToUInt32(elementIdStr.Replace("0x", ""), 16);
 
-                            var sensor = FullSensorData.FirstOrDefault(x =>
-                                x.SensorId == sensorId && x.SensorInst == sensorInstance);
+                            var fullSensorDataSensor = FullSensorData.Values.FirstOrDefault(x =>
+                                x.SensorId == sensorId && x.SensorInstance == sensorInstance);
 
-                            if (sensor?.Elements.Any() == true)
+                            var elementKey = sensorId + "-" + sensorInstance + "-" + elementId;
+
+                            if (fullSensorDataSensor?.Elements.ContainsKey(elementKey) == true)
                             {
-                                var element =
-                                    sensor.Elements.FirstOrDefault(x => x.SensorId == entryId);
+                                var fullSensorDataElement = fullSensorDataSensor.Elements[elementKey];
 
-                                if (element != null)
+                                var element = new ElementObj
                                 {
-                                    var obj2 = new ElementObj
+                                    ElementKey = elementKey,
+
+                                    SensorType = fullSensorDataElement.SensorType,
+                                    ElementId = fullSensorDataElement.ElementId,
+                                    LabelOrig = elementName,
+                                    LabelUser = elementName,
+                                    Unit = fullSensorDataElement.Unit,
+                                    NumericValue = fullSensorDataElement.NumericValue,
+                                    Value = fullSensorDataElement.Value,
+                                    ValueMin = fullSensorDataElement.ValueMin,
+                                    ValueMax = fullSensorDataElement.ValueMax,
+                                    ValueAvg = fullSensorDataElement.ValueAvg
+                                };
+
+                                if (!SensorData.ContainsKey(index))
+                                {
+                                    var sensor = new SensorObj
                                     {
-                                        Reading = element.Reading,
-                                        SensorIndex = element.SensorIndex,
-                                        SensorId = element.SensorId,
-                                        LabelOrig = elementName,
-                                        LabelUser = elementName,
-                                        Unit = element.Unit,
-                                        Value = element.Value,
-                                        ValueMin = element.ValueMin,
-                                        ValueMax = element.ValueMax,
-                                        ValueAvg = element.ValueAvg
+                                        SensorId = 0,
+                                        SensorInstance = 0,
+                                        SensorNameOrig = sectionName,
+                                        SensorNameUser = sectionName,
+                                        Elements = new Dictionary<string, ElementObj>()
                                     };
-                                    obj.Elements.Add(obj2);
+
+                                    SensorData.Add(index, sensor);
                                 }
+
+                                SensorData[index].Elements[elementKey] = element;
+
+                                if (!SensorTrends.ContainsKey(elementKey))
+                                {
+                                    SensorTrends.Add(elementKey, new ChartCircularBuffer(fullSensorDataElement.SensorType, fullSensorDataElement.Unit));
+                                }
+
+                                SensorTrends[elementKey].Put(fullSensorDataElement.NumericValue);
+
                             }
                         }
 
                     }
 
-                    if (obj.Elements.Any())
-                    {
-                        SensorData.Add(obj);
-                    }
                 }
             }
 

@@ -9,45 +9,94 @@
 <div class="main">
 
     <div class="cardcaption">&nbsp;</div>
-    
+
     @if (Model.SensorCount > 0)
     {
-    <table class="zebratable">
-        <tbody>
+        if (Model.CurrentCard == 0)
+        {
+            <table class="zebratable">
+                <tbody>
 
-            @foreach (var m in Model.SensorData)
+                    @foreach (var m in Model.SensorData)
+                    {
+                        <tr>
+                            <td class="caption center" colspan="3">@m.SensorNameUser</td>
+                        </tr>
+
+                        var odd = true;
+
+                        foreach (var e in m.Elements)
+                        {
+                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                                <td rowspan="2" class="caption">@e.Value.LabelUser</td>
+                                <td rowspan="2" class="data right">@e.Value.Value</td>
+                                <td class="data right smallfont">@e.Value.ValueMax</td>
+                            </tr>
+                            <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                                <td class="data right smallfont" style="width: 105px;">@e.Value.ValueMin</td>
+                            </tr>
+
+                            odd = !odd;
+                        }
+
+                        if (!((List<HWInfo.SensorObj>)Model.SensorData).Last().Equals((HWInfo.SensorObj)m))
+                        {
+                            <tr>
+                                <td class="divider" colspan="3">&nbsp;</td>
+                            </tr>
+                        }
+
+                    }
+                </tbody>
+            </table>
+        }
+        else if (Model.CurrentCard == 1)
+        {
+
+            foreach (var m in Model.SensorData)
             {
-                <tr>
-                    <td class="caption center" colspan="3">@m.SensorNameUser</td>
-                </tr>
-
-                var odd = true;
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="caption center" >@m.SensorNameUser</td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 foreach (var e in m.Elements)
                 {
-                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
-                        <td rowspan="2" class="caption">@e.LabelUser</td>
-                        <td rowspan="2" class="data right">@e.Value</td>
-                        <td  class="data right smallfont">@e.ValueMax</td>
-                    </tr>
-                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
-                        <td class="data right smallfont" style="width: 105px;">@e.ValueMin</td>
-                    </tr>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="caption">@e.Value.LabelUser</td>
+                                <td class="data right">@e.Value.Value</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table>
+                        <tbody>
 
-                    odd = !odd;
+                            <tr>
+                                <td ><img src="@e.Value.ElementKey" width="@Model.ChartImageDisplayWidth" height="Model.ChartImageDisplayHeight" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 }
 
                 if (!((List<HWInfo.SensorObj>)Model.SensorData).Last().Equals((HWInfo.SensorObj)m))
                 {
-                    <tr>
-                        <td class="divider" colspan="3">&nbsp;</td>
-                    </tr>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="divider" >&nbsp;</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 }
 
             }
-        </tbody>
-    </table>
-    
+
+        }
     }
 
 </div>

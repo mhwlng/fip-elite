@@ -14,6 +14,7 @@ using RazorEngine;
 using RazorEngine.Templating;
 using RazorEngine.Text;
 using TheArtOfDev.HtmlRenderer.Core.Entities;
+using Image = System.Drawing.Image;
 
 // For extension methods.
 
@@ -395,8 +396,13 @@ namespace Elite
 
         private readonly Pen _scrollPen = new Pen(Color.FromArgb(0xff,0xFF,0xB0,0x00));
         private readonly Pen _whitePen = new Pen(Color.FromArgb(0xff, 0xFF, 0xFF, 0xFF),(float)0.1);
+        
+        
         private readonly SolidBrush _scrollBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xB0, 0x00));
         private readonly SolidBrush _redBrush = new SolidBrush(Color.FromArgb(0xFF, 0x00, 0x00));
+        private readonly SolidBrush _whiteBrush = new SolidBrush(Color.FromArgb(0xff, 0xFF, 0xFF, 0xFF));
+
+        private readonly Font _drawFont = new Font("Arial", 13, GraphicsUnit.Pixel);
 
         private Image _htmlImage;
         private Image _menuHtmlImage;
@@ -414,6 +420,10 @@ namespace Elite
         private double ScrollBarHeight => _htmlWindowHeight -7.0;
 
         private int GalaxyImageDisplayWidth => _htmlWindowWidth - 10;
+
+        private int ChartImageDisplayWidth => _htmlWindowWidth - 25;
+
+        private const int ChartImageDisplayHeight = 60;
 
         private int GalaxyImageDisplayHeight
         {
@@ -915,7 +925,7 @@ namespace Elite
                 CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                 CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                 CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
-                CurrentTab == LcdTab.Galnet)
+                CurrentTab == LcdTab.Galnet || CurrentTab == LcdTab.HWInfo)
             {
                 ledLeft = true;
                 ledRight = true;
@@ -969,7 +979,7 @@ namespace Elite
                                       CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                       CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining || 
                                       CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer || 
-                                      CurrentTab == LcdTab.Galnet))
+                                      CurrentTab == LcdTab.Galnet || CurrentTab == LcdTab.HWInfo))
                         {
 
                             CurrentCard[(int) CurrentTab]++;
@@ -1007,7 +1017,7 @@ namespace Elite
                                       CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                       CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                       CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer || 
-                                      CurrentTab == LcdTab.Galnet))
+                                      CurrentTab == LcdTab.Galnet || CurrentTab == LcdTab.HWInfo))
                         {
                             CurrentCard[(int) CurrentTab]--;
                             _currentZoomLevel[(int) CurrentTab]--;
@@ -1094,7 +1104,7 @@ namespace Elite
                                             CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                             CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                             CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
-                                            CurrentTab == LcdTab.Galnet)
+                                            CurrentTab == LcdTab.Galnet || CurrentTab == LcdTab.HWInfo)
                                         {
                                             CurrentCard[(int)CurrentTab]++;
                                             _currentZoomLevel[(int)CurrentTab]++;
@@ -1130,7 +1140,7 @@ namespace Elite
                                             CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                             CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                             CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
-                                            CurrentTab == LcdTab.Galnet)
+                                            CurrentTab == LcdTab.Galnet || CurrentTab == LcdTab.HWInfo)
                                         {
                                             CurrentCard[(int)CurrentTab]--;
                                             _currentZoomLevel[(int)CurrentTab]--;
@@ -1409,89 +1419,121 @@ namespace Elite
 
             try
             {
-                var image = Image.FromFile(Path.Combine(App.ExePath,"Templates\\images\\") + e.Src);
-
-                using (var graphics = Graphics.FromImage(image))
+                if (CurrentTab == LcdTab.HWInfo)
                 {
-                    if (e.Src.ToLower().StartsWith("galaxy") && CurrentTab == LcdTab.Galaxy)
+                    var image = new Bitmap(ChartImageDisplayWidth, ChartImageDisplayHeight);
+
+                    using (var graphics = Graphics.FromImage(image))
                     {
-                        if (e.Src.ToLower().StartsWith("galaxyl"))
+                        if (HWInfo.SensorTrends.ContainsKey(e.Src))
                         {
-                            graphics.DrawPolygon(_whitePen, History.TravelHistoryPointsL.ToArray());
-                        }
-                        else
-                        {
-                            graphics.DrawPolygon(_whitePen, History.TravelHistoryPointsP.ToArray());
+                            graphics.DrawLines(_scrollPen, HWInfo.SensorTrends[e.Src].Read(ChartImageDisplayWidth, ChartImageDisplayHeight));
                         }
 
-                        var zoomLevel = _currentZoomLevel[(int)CurrentTab] / 2.0 + 1;
+                        graphics.DrawRectangle(_whitePen,
+                            new Rectangle(0, 0, ChartImageDisplayWidth - 1, ChartImageDisplayHeight - 1));
 
-                        if (zoomLevel > 1)
+                        graphics.DrawString(HWInfo.SensorTrends[e.Src].MaxV(), _drawFont, _whiteBrush, (float)1, (float)1);
+
+
+                        graphics.DrawString(HWInfo.SensorTrends[e.Src].MinV(), _drawFont, _whiteBrush, (float)1, (float)ChartImageDisplayHeight-17);
+
+
+                    }
+
+                    e.Callback(image);
+
+                }
+                else
+                {
+                    var image = Image.FromFile(Path.Combine(App.ExePath, "Templates\\images\\") + e.Src);
+
+                    using (var graphics = Graphics.FromImage(image))
+                    {
+                        if (e.Src.ToLower().StartsWith("galaxy") && CurrentTab == LcdTab.Galaxy)
                         {
-                            markerWidth /= zoomLevel;
-                            markerHeight /= zoomLevel;
-                        }
-
-                        var zoomedXCenter = image.Width / 2.0;
-                        var zoomedYCenter = image.Height / 2.0;
-
-                        if (Data.LocationData?.StarPos?.Count == 3)
-                        {
-                            var spaceX = Data.LocationData.StarPos[0];
-                            var spaceZ = Data.LocationData.StarPos[2];
-
-                            var imgX = 0.0;
-                            var imgY = 0.0;
-
                             if (e.Src.ToLower().StartsWith("galaxyl"))
                             {
-                                imgX = (spaceX - History.SpaceMinXL) / (History.SpaceMaxXL - History.SpaceMinXL) * image.Width;
-                                imgY = (History.SpaceMaxZL - spaceZ) / (History.SpaceMaxZL - History.SpaceMinZL) * image.Height;
+                                graphics.DrawPolygon(_whitePen, History.TravelHistoryPointsL.ToArray());
                             }
                             else
                             {
-                                imgX = (spaceX - History.SpaceMinXP) / (History.SpaceMaxXP - History.SpaceMinXP) * image.Width;
-                                imgY = (History.SpaceMaxZP - spaceZ) / (History.SpaceMaxZP - History.SpaceMinZP) * image.Height;
+                                graphics.DrawPolygon(_whitePen, History.TravelHistoryPointsP.ToArray());
                             }
 
-                            imgX -= markerWidth / 2.0;
-                            imgY -= markerHeight / 2.0;
+                            var zoomLevel = _currentZoomLevel[(int) CurrentTab] / 2.0 + 1;
 
-                            graphics.FillEllipse(_redBrush, (float) imgX, (float) imgY, (float) markerWidth,
-                                (float) markerWidth);
-
-                            zoomedXCenter = imgX;
-                            zoomedYCenter = imgY;
-
-                        }
-
-                        if (zoomLevel > 1)
-                        {
-                            var zoomedWidth = image.Width / zoomLevel;
-                            var zoomedHeight = image.Height / zoomLevel;
-
-                            var zoomedXTopLeft = zoomedXCenter - zoomedWidth / 2.0;
-                            var zoomedYTopLeft = zoomedYCenter - zoomedHeight / 2.0;
-
-                            if (zoomedXTopLeft + zoomedWidth > image.Width)
+                            if (zoomLevel > 1)
                             {
-                                zoomedXTopLeft = image.Width - zoomedWidth;
+                                markerWidth /= zoomLevel;
+                                markerHeight /= zoomLevel;
                             }
 
-                            if (zoomedYTopLeft + zoomedHeight > image.Height)
+                            var zoomedXCenter = image.Width / 2.0;
+                            var zoomedYCenter = image.Height / 2.0;
+
+                            if (Data.LocationData?.StarPos?.Count == 3)
                             {
-                                zoomedYTopLeft = image.Height - zoomedHeight;
+                                var spaceX = Data.LocationData.StarPos[0];
+                                var spaceZ = Data.LocationData.StarPos[2];
+
+                                var imgX = 0.0;
+                                var imgY = 0.0;
+
+                                if (e.Src.ToLower().StartsWith("galaxyl"))
+                                {
+                                    imgX = (spaceX - History.SpaceMinXL) / (History.SpaceMaxXL - History.SpaceMinXL) *
+                                           image.Width;
+                                    imgY = (History.SpaceMaxZL - spaceZ) / (History.SpaceMaxZL - History.SpaceMinZL) *
+                                           image.Height;
+                                }
+                                else
+                                {
+                                    imgX = (spaceX - History.SpaceMinXP) / (History.SpaceMaxXP - History.SpaceMinXP) *
+                                           image.Width;
+                                    imgY = (History.SpaceMaxZP - spaceZ) / (History.SpaceMaxZP - History.SpaceMinZP) *
+                                           image.Height;
+                                }
+
+                                imgX -= markerWidth / 2.0;
+                                imgY -= markerHeight / 2.0;
+
+                                graphics.FillEllipse(_redBrush, (float) imgX, (float) imgY, (float) markerWidth,
+                                    (float) markerWidth);
+
+                                zoomedXCenter = imgX;
+                                zoomedYCenter = imgY;
+
                             }
 
-                            e.Callback(image, zoomedXTopLeft, zoomedYTopLeft, zoomedWidth, zoomedHeight);
-                            return;
+                            if (zoomLevel > 1)
+                            {
+                                var zoomedWidth = image.Width / zoomLevel;
+                                var zoomedHeight = image.Height / zoomLevel;
+
+                                var zoomedXTopLeft = zoomedXCenter - zoomedWidth / 2.0;
+                                var zoomedYTopLeft = zoomedYCenter - zoomedHeight / 2.0;
+
+                                if (zoomedXTopLeft + zoomedWidth > image.Width)
+                                {
+                                    zoomedXTopLeft = image.Width - zoomedWidth;
+                                }
+
+                                if (zoomedYTopLeft + zoomedHeight > image.Height)
+                                {
+                                    zoomedYTopLeft = image.Height - zoomedHeight;
+                                }
+
+                                e.Callback(image, zoomedXTopLeft, zoomedYTopLeft, zoomedWidth, zoomedHeight);
+                                return;
+                            }
+
                         }
 
                     }
 
+                    e.Callback(image);
                 }
-
-                e.Callback(image);
             }
             catch
             {
@@ -1622,6 +1664,9 @@ namespace Elite
                                 break;
                             case LcdTab.Mining:
                                 CheckCardSelectionLimits(5);
+                                break;
+                            case LcdTab.HWInfo:
+                                CheckCardSelectionLimits(1);
                                 break;
                             case LcdTab.Galaxy:
 
@@ -2028,7 +2073,10 @@ namespace Elite
                                                     
                                                     SensorCount = HWInfo.SensorData.Count,
 
-                                                    SensorData = HWInfo.SensorData
+                                                    SensorData = HWInfo.SensorData.Values.ToList(),
+
+                                                    ChartImageDisplayWidth = ChartImageDisplayWidth,
+                                                    ChartImageDisplayHeight = ChartImageDisplayHeight
 
                                                 });
                                         }

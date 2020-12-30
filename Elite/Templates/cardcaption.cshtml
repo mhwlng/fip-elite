@@ -24,7 +24,15 @@
     }
     else if (Model.CurrentTab == LcdTab.HWInfo)
     {
-        <div class="cardcaption">HWInfo</div>
+        if (Model.CurrentCard == 0)
+        {
+            <div class="cardcaption">&#x25c0; HWInfo &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 1)
+        {
+            <div class="cardcaption">&#x25c0; HWInfo Charts &#x25b6;</div>
+        }
+
     }
     else if (Model.CurrentTab == LcdTab.Galnet)
     {
