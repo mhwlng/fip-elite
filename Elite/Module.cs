@@ -8,6 +8,24 @@ namespace Elite
 {
     public static class Module
     {
+        public static readonly object RefreshModuleLock = new object();
+
+        public class StoredModuleData
+        {
+            public string StationName { get; set; }
+            public string StarSystem { get; set; }
+            public double X { get; set; }
+            public double Y { get; set; }
+            public double Z { get; set; }
+            public double Distance { get; set; }
+
+            public long MarketId { get; set; }
+
+            public List<StoredModulesEvent.StoredModulesEventArgs.StoredModule> Modules { get; set; }
+        }
+
+        public static Dictionary<long,StoredModuleData> StoredModulesList = new Dictionary<long,StoredModuleData>();
+
         // Frame Shift Drive Constants
         private static Dictionary<string, double> BaseOptimalMass = new Dictionary<string, double>
         {
@@ -735,6 +753,143 @@ namespace Elite
             }
         }
 
+        public static void HandleFetchRemoteModule(FetchRemoteModuleEvent.FetchRemoteModuleEventArgs info)
+        {
+
+        }
+
+        public static void HandleStoredModules(StoredModulesEvent.StoredModulesEventArgs info)
+        {
+            lock (RefreshModuleLock)
+            {
+
+                StoredModulesList = new Dictionary<long, StoredModuleData>();
+
+                foreach (var t in info.Items.OrderBy(x => x.Name_Localised))
+                {
+                    var s = t;
+
+                    var name = "";
+
+                    var size = GetModuleSize(s.Name);
+                    var cl = GetModuleClass(s.Name);
+
+                    if (!string.IsNullOrEmpty(cl) && cl != "?")
+                    {
+                        if (size > 0)
+                        {
+                            name += size;
+                        }
+
+                        name += cl;
+                    }
+                    else if (s.Name.Contains("small")) name += "S";
+                    else if (s.Name.Contains("medium")) name += "M";
+                    else if (s.Name.Contains("large")) name += "L";
+                    else if (s.Name.Contains("huge")) name += "H";
+                    else if (s.Name.Contains("tiny")) name += "T";
+
+                    if (s.Name.Contains("_gimbal")) name += " Gimbal";
+                    else if (s.Name.Contains("_turret")) name += " Turret";
+                    else if (s.Name.Contains("_fixed")) name += " Fixed";
+
+                    if (!string.IsNullOrEmpty(s.EngineerModifications))
+                    {
+                        s.EngineerModifications = s.EngineerModifications.Replace("_", "");
+
+                        s.EngineerModifications =
+                            string.Concat(s.EngineerModifications.Select(x => char.IsUpper(x) ? " " + x : x.ToString()))
+                                .TrimStart(' ');
+
+                        s.EngineerModifications = s.EngineerModifications.Replace(s.Name_Localised, "").Trim();
+
+                    }
+
+                    if (!string.IsNullOrEmpty(s.ExperimentalEffect))
+                    {
+                        s.ExperimentalEffect = s.ExperimentalEffect.Replace("_", "");
+
+                        s.ExperimentalEffect =
+                            string.Concat(s.ExperimentalEffect.Select(x => char.IsUpper(x) ? " " + x : x.ToString()))
+                                .TrimStart(' ');
+                    }
+
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        s.Name_Localised += " (" + name + ")";
+                    }
+
+                    Station.MarketIdStations.TryGetValue(s.MarketID, out var station);
+
+                    if (!StoredModulesList.ContainsKey(s.MarketID))
+                    {
+                        if (station != null)
+                        {
+                            var obj = new StoredModuleData()
+                            {
+                                MarketId = station.MarketId,
+                                StationName = station.Name,
+                                StarSystem = station.SystemName,
+                                X = station.X,
+                                Y = station.Y,
+                                Z = station.Z,
+                                Modules = new List<StoredModulesEvent.StoredModulesEventArgs.StoredModule>()
+                            };
+                            StoredModulesList.Add(s.MarketID, obj);
+                        }
+                        else
+                        {
+                            var obj = new StoredModuleData()
+                            {
+                                MarketId = s.MarketID,
+                                StationName = "Carrier",
+                                StarSystem = s.StarSystem,
+                                X = 0,
+                                Y = 0,
+                                Z = 0,
+                                Modules = new List<StoredModulesEvent.StoredModulesEventArgs.StoredModule>()
+                            };
+                            StoredModulesList.Add(s.MarketID, obj);
+                        }
+
+                    }
+
+                    StoredModulesList[s.MarketID].Modules.Add(s);
+                }
+            }
+        }
+
+        public static void HandleModuleDistance(List<double> starPos)
+        {
+            if (StoredModulesList?.Any() == true && starPos?.Count == 3)
+            {
+                foreach (var item in StoredModulesList)
+                {
+                    var xs = starPos[0];
+                    var ys = starPos[1];
+                    var zs = starPos[2];
+
+                    var xd = item.Value.X;
+                    var yd = item.Value.Y;
+                    var zd = item.Value.Z;
+
+                    var deltaX = xs - xd;
+                    var deltaY = ys - yd;
+                    var deltaZ = zs - zd;
+
+                    if (item.Value.StationName != "Carrier")
+                    {
+                        item.Value.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                    }
+                    else
+                    {
+                        item.Value.Distance = 0;
+                    }
+
+                }
+            }
+        }
+        
         public static void HandleLoadout(LoadoutEvent.LoadoutEventArgs info)
         {
             var ship = Ships.GetCurrentShip();
@@ -792,7 +947,5 @@ namespace Elite
                 ship.HullHealth = info.HullHealth * 100.0;
             }
         }
-
-
     }
 }

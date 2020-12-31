@@ -690,6 +690,7 @@ namespace Elite
                     LocationData.StarPos = locationInfo.StarPos.ToList();
 
                     Ships.HandleShipDistance(LocationData.StarPos);
+                    Module.HandleModuleDistance(LocationData.StarPos);
 
                     Poi.NearbyPoiList = Poi.GetNearestPois(LocationData.StarPos);
 
@@ -784,6 +785,24 @@ namespace Elite
                     var massModuleStoreInfo = (MassModuleStoreEvent.MassModuleStoreEventArgs)e;
 
                     Module.HandleMassModuleStore(massModuleStoreInfo);
+
+                    break;
+
+                case "FetchRemoteModule":
+                    //    When written: when requesting a module is transferred from storage at another station 
+
+                    var fetchRemoteModuleInfo = (FetchRemoteModuleEvent.FetchRemoteModuleEventArgs)e;
+
+                    Module.HandleFetchRemoteModule(fetchRemoteModuleInfo);
+
+                    break;
+
+                case "StoredModules":
+                    //    When written: when first visiting Outfitting, and when the set of stored modules has changed 
+
+                    var storedModulesInfo = (StoredModulesEvent.StoredModulesEventArgs)e;
+
+                    Module.HandleStoredModules(storedModulesInfo);
 
                     break;
 
@@ -999,7 +1018,8 @@ namespace Elite
                         LocationData.StarPos = carrierJumpInfo.StarPos.ToList();
 
                         Ships.HandleShipDistance(LocationData.StarPos);
-
+                        Module.HandleModuleDistance(LocationData.StarPos);
+                        
                         History.AddTravelPos(LocationData.StarPos);
 
                         Poi.NearbyPoiList = Poi.GetNearestPois(LocationData.StarPos);
@@ -1051,7 +1071,8 @@ namespace Elite
                     LocationData.StarPos = fsdJumpInfo.StarPos.ToList();
 
                     Ships.HandleShipDistance(LocationData.StarPos);
-
+                    Module.HandleModuleDistance(LocationData.StarPos);
+                    
                     History.AddTravelPos(LocationData.StarPos);
 
                     Poi.NearbyPoiList = Poi.GetNearestPois(LocationData.StarPos);

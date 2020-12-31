@@ -1642,7 +1642,7 @@ namespace Elite
                         switch (CurrentTab)
                         {
                             case LcdTab.Ship:
-                                CheckCardSelectionLimits(1);
+                                CheckCardSelectionLimits(2);
                                 break;
                             case LcdTab.Navigation:
                                 CheckCardSelectionLimits(2);
@@ -1768,21 +1768,28 @@ namespace Elite
 
                                     case LcdTab.Ship:
 
-                                        //var shipData = Ships.GetCurrentShip() ?? new Ships.ShipData();
+                                        lock (Module.RefreshModuleLock)
+                                        {
+                                            //var shipData = Ships.GetCurrentShip() ?? new Ships.ShipData();
 
-                                        str =
-                                            Engine.Razor.Run("ship.cshtml", null, new
-                                            {
-                                                CurrentTab = CurrentTab,
-                                                CurrentPage = _currentPage,
-                                                CurrentCard = CurrentCard[(int) CurrentTab],
+                                            str =
+                                                Engine.Razor.Run("ship.cshtml", null, new
+                                                {
+                                                    CurrentTab = CurrentTab,
+                                                    CurrentPage = _currentPage,
+                                                    CurrentCard = CurrentCard[(int) CurrentTab],
 
-                                                CurrentShip = Ships.ShipsList.FirstOrDefault(x => x.Stored == false),
+                                                    CurrentShip =
+                                                        Ships.ShipsList.FirstOrDefault(x => x.Stored == false),
 
-                                                StoredShips = Ships.ShipsList.Where(x => x.Stored)
-                                                    .OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList()
+                                                    StoredShips = Ships.ShipsList.Where(x => x.Stored)
+                                                        .OrderBy(x => x.Distance).ThenBy(x => x.ShipType).ToList(),
 
-                                            });
+                                                    StoredModules = Module.StoredModulesList.Values
+                                                        .OrderBy(x => x.Distance).ToList()
+
+                                                });
+                                        }
 
                                         break;
 

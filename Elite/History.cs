@@ -343,6 +343,20 @@ namespace Elite
 
                                         Module.HandleMassModuleStore(info);
                                     }
+                                    else if (json?.Contains("\"event\":\"FetchRemoteModule\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<FetchRemoteModuleEvent.FetchRemoteModuleEventArgs>(json);
+
+                                        Module.HandleFetchRemoteModule(info);
+                                    }
+                                    else if (json?.Contains("\"event\":\"StoredModules\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<StoredModulesEvent.StoredModulesEventArgs>(json);
+
+                                        Module.HandleStoredModules(info);
+                                    }
 
                                     /*else if (json?.Contains("\"event\":\"MissionCompleted\",") == true)
                                     {

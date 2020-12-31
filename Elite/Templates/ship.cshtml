@@ -169,6 +169,11 @@
     {
         <div class="cardcaption">&nbsp;</div>
 
+        if (Model.StoredShips.Count == 0)
+        {
+            <div class="cardcaption data">NO STORED SHIPS</div>
+        }
+
         foreach (var m in Model.StoredShips)
         {
             <table>
@@ -354,5 +359,119 @@
 
         }
     }
+    else if (Model.CurrentCard == 2)
+    {
+        <div class="cardcaption">&nbsp;</div>
 
+
+        if (Model.StoredModules.Count == 0)
+        {
+            <div class="cardcaption data">NO STORED MODULES</div>
+        }
+
+        foreach (var m in Model.StoredModules)
+        {
+            <table>
+                <tbody>
+                    @if (!string.IsNullOrEmpty(m.StarSystem))
+                    {
+                        <tr>
+                            <td class="caption">In System</td>
+                            <td class="data">@m.StarSystem</td>
+                        </tr>
+                    }
+                    @if (m.Distance > 0)
+                    {
+                        <tr>
+                            <td class="caption">Distance</td>
+                            <td class="data">@m.Distance.ToString("N0") Ly</td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrEmpty(m.StationName))
+                    {
+                        <tr>
+                            <td class="caption">On Station</td>
+                            <td class="data">@m.StationName</td>
+                        </tr>
+                    }
+
+                    @foreach (var n in m.Modules)
+                    {
+                        <tr>
+                            <td class="data" colspan="2">&bull; @n.Name_Localised</td>
+                        </tr>
+                        @*if (n.BuyPrice > 0)
+                            {
+                                <tr>
+                                    <td class="caption">&nbsp;&nbsp;&nbsp;Price</td>
+                                    <td class="data">@n.BuyPrice.ToString("N0") CR</td>
+                                </tr>
+                            }*@
+                        if (!string.IsNullOrEmpty(n.EngineerModifications))
+                        {
+                            <tr>
+                                <td class="caption">&nbsp;&nbsp;&nbsp;Engineered</td>
+                                <td class="data">@n.EngineerModifications</td>
+                            </tr>
+                            if (n.Quality != 1)
+                            {
+                                <tr>
+                                    <td class="caption">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Progress</td>
+                                    <td class="data">@((n.Quality * 100.0).ToString("N1")) %</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td class="caption">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Level</td>
+                                <td class="data">@n.Level</td>
+                            </tr>
+                        }
+                        if (!string.IsNullOrEmpty(n.ExperimentalEffect))
+                        {
+                            <tr>
+                                <td class="caption">&nbsp;&nbsp;&nbsp;Experimental</td>
+                                <td class="data">@n.ExperimentalEffect.Replace("_", " ")</td>
+                            </tr>
+                        }
+                        if (n.InTransit)
+                        {
+                            <tr>
+                                <td class="caption">&nbsp;&nbsp;&nbsp;In Transit</td>
+                                <td class="data alarm">YES</td>
+                            </tr>
+                            if (n.TransferCost > 0)
+                            {
+                                <tr>
+                                    <td class="caption">&nbsp;&nbsp;&nbsp;Transfer Cost</td>
+                                    <td class="data">@n.TransferCost.ToString("N0") CR</td>
+                                </tr>
+                            }
+                            if (n.TransferTime > 0)
+                            {
+                                <tr>
+                                    <td class="caption">&nbsp;&nbsp;&nbsp;Transfer Time</td>
+                                    <td class="data">@n.TransferTime.ToString("N0") min</td>
+                                </tr>
+                            }
+                        }
+
+                        if (n.Hot)
+                        {
+                            <tr>
+                                <td class="caption">&nbsp;&nbsp;&nbsp;Hot</td>
+                                <td class="data alarm">YES</td>
+                            </tr>
+                        }
+                    }
+                    @if (!((List<Module.StoredModuleData>)Model.StoredModules).Last().Equals((Module.StoredModuleData)m))
+                    {
+                        <tr>
+                            <td class="divider" colspan="2">&nbsp;</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+
+        }
+    }
 </div>

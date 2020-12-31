@@ -51,8 +51,8 @@ namespace ImportData
         //[JsonProperty("id")]
         //public int Id { get; set; }
 
-        //[JsonProperty("marketId")]
-        //public long? MarketId { get; set; }
+        [JsonProperty("marketId")]
+        public long? MarketId { get; set; }
 
         [JsonProperty("type")]
         public string Type { get; set; }

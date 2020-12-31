@@ -158,7 +158,9 @@ namespace ImportData
                 Y = x.PopulatedSystemEDDB?.Y ?? 0,
                 Z = x.PopulatedSystemEDDB?.Z ?? 0,
 
-                Body = x.Body
+                Body = x.Body,
+
+                MarketId = x.MarketId ?? 0
 
             }).ToList();
 

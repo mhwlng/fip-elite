@@ -55,6 +55,9 @@ namespace Elite
         [JsonProperty("body")]
         public Body Body { get; set; }
 
+        [JsonProperty("marketId")]
+        public long MarketId { get; set; }
+
         [JsonIgnore]
         public double Distance { get; set; }
 
@@ -114,6 +117,7 @@ namespace Elite
 
         public static Dictionary<string,List<StationData>> SystemStations = new Dictionary<string, List<StationData>>();
 
+        public static Dictionary<long, StationData> MarketIdStations = new Dictionary<long, StationData>();
 
         public static List<Data.EngineerData> GetEngineers(string path)
         {

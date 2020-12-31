@@ -51,6 +51,9 @@ namespace ImportData
         [JsonProperty("body")]
         public Body Body { get; set; }
 
+        [JsonProperty("marketId")]
+        public long MarketId { get; set; }
+
 
     }
 }
