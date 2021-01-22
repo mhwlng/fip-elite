@@ -620,8 +620,8 @@ namespace ImportData
                         .Select(tr => tr.Elements("td").ToList())
                         .Select(td => new HotspotStationData
                         {
-                            Station = td[0].Descendants("span").FirstOrDefault()?.InnerText ?? "?",
-                            System = td[0].Descendants("span").Skip(2).FirstOrDefault()?.InnerText ?? "?",
+                            Station = td[0].Descendants("span").FirstOrDefault()?.InnerText?.Replace(" | ","") ?? "?",
+                            System = td[0].Descendants("span").Skip(1).FirstOrDefault()?.InnerText ?? "?",
                             Price = Convert.ToInt32(td[5].GetAttributeValue("data-order", "0")),
                             Demand = Convert.ToInt32(td[4].GetAttributeValue("data-order","0")),
                             Pad = td[1].InnerText, //tr[5],
