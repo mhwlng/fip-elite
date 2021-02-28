@@ -171,23 +171,31 @@ namespace Elite
                 req.ProtocolVersion = HttpVersion.Version10;
                 var resp = (HttpWebResponse)req.GetResponse();
 
+                var configuration = new CsvConfiguration(new CultureInfo("en-US"))
+                {
+                    HasHeaderRecord = true,
+                    //PrepareHeaderForMatch = header => header?.Trim(),
+                    TrimOptions = TrimOptions.Trim,
+                    Delimiter = ",",
+                    MissingFieldFound = null,
+                    //HeaderValidated = null,
+                    IgnoreBlankLines = true,
+
+                    ShouldSkipRecord = x => string.IsNullOrEmpty(x.Record[0]),
+
+                    //csvread.Configuration.ShouldSkipRecord = records => string.IsNullOrEmpty(records[0]);
+
+                };
+                
                 using (var streamReader = new StreamReader(resp.GetResponseStream()))
                 {
-                    var csvread = new CsvReader(streamReader, new CultureInfo("en-US"));
-                    csvread.Configuration.HasHeaderRecord = true;
-                    //csv.Configuration.PrepareHeaderForMatch = header => header?.Trim();
-                    csvread.Configuration.TrimOptions = TrimOptions.Trim;
-                    csvread.Configuration.Delimiter = ",";
-                    csvread.Configuration.RegisterClassMap<PoiItemMap>();
-                    csvread.Configuration.MissingFieldFound = null;
-                    //csvread.Configuration.HeaderValidated = null;
-                    csvread.Configuration.IgnoreBlankLines = true;
-                    csvread.Configuration.ShouldSkipRecord = records => string.IsNullOrEmpty(records[0]);
-                    csvread.Configuration.TypeConverterOptionsCache.GetOptions<DateTime>().Formats =
-                        new[] { "yyyy-MM-dd" };
+                    var csvRread = new CsvReader(streamReader,configuration);
 
+                    csvRread.Context.TypeConverterOptionsCache.GetOptions<DateTime>().Formats =new[] { "yyyy-MM-dd" };
 
-                    return csvread.GetRecords<PoiItem>().Where(x => !x.LocationName.Trim().EndsWith("[X]")).ToList();
+                    csvRread.Context.RegisterClassMap<PoiItemMap>();
+
+                    return csvRread.GetRecords<PoiItem>().Where(x => !x.LocationName.Trim().EndsWith("[X]")).ToList();
 
                 }
             }
