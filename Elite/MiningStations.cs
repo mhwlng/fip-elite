@@ -15,14 +15,16 @@ namespace Elite
         {
             Painite = 1,
             LTD = 3,
-            TritiumBuy = 4,
-            TritiumSell = 5
+            Platinum = 5,
+            TritiumBuy = 6,
+            TritiumSell = 7
         }
 
         public static Dictionary<MaterialTypes, List<MiningStationData>> FullMiningStationsList = new Dictionary<MaterialTypes, List<MiningStationData>>
         {
             {MaterialTypes.Painite, new List<MiningStationData>()},
             {MaterialTypes.LTD, new List<MiningStationData>()},
+            {MaterialTypes.Platinum, new List<MiningStationData>()},
             {MaterialTypes.TritiumBuy, new List<MiningStationData>()},
             {MaterialTypes.TritiumSell, new List<MiningStationData>()}
         };

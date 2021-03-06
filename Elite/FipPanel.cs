@@ -1663,7 +1663,7 @@ namespace Elite
                                 CheckCardSelectionLimits(2);
                                 break;
                             case LcdTab.Mining:
-                                CheckCardSelectionLimits(5);
+                                CheckCardSelectionLimits(7);
                                 break;
                             case LcdTab.HWInfo:
                                 CheckCardSelectionLimits(1);

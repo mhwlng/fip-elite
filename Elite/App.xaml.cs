@@ -160,11 +160,17 @@ namespace Elite
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading LTD Hotspot Systems...");
                 HotspotSystems.FullHotspotSystemsList[HotspotSystems.MaterialTypes.LTD] = HotspotSystems.GetAllHotspotSystems(@"Data\ltdsystems.json");
 
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Platinum Hotspot Systems...");
+                HotspotSystems.FullHotspotSystemsList[HotspotSystems.MaterialTypes.Platinum] = HotspotSystems.GetAllHotspotSystems(@"Data\platinumsystems.json");
+
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Painite Mining Stations...");
                 MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.Painite] = MiningStations.GetAllMiningStations(@"Data\painitestations.json");
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading LTD Mining Stations...");
                 MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.LTD] = MiningStations.GetAllMiningStations(@"Data\ltdstations.json");
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Platinum Mining Stations...");
+                MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.Platinum] = MiningStations.GetAllMiningStations(@"Data\platinumstations.json");
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Tritium Buy Stations...");
                 MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumBuy] = MiningStations.GetAllMiningStations(@"Data\tritiumbuystations.json");

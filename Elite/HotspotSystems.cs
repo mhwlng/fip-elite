@@ -15,14 +15,16 @@ namespace Elite
         public enum MaterialTypes
         {
             Painite = 0,
-            LTD = 2
+            LTD = 2,
+            Platinum = 4
 
         }
 
         public static Dictionary<MaterialTypes, List<HotspotSystemData>> FullHotspotSystemsList = new Dictionary<MaterialTypes, List<HotspotSystemData>>
         {
             {MaterialTypes.Painite, new List<HotspotSystemData>()},
-            {MaterialTypes.LTD, new List<HotspotSystemData>()}
+            {MaterialTypes.LTD, new List<HotspotSystemData>()},
+            {MaterialTypes.Platinum, new List<HotspotSystemData>()}
         };
 
         public class HotspotSystemCoordsData
