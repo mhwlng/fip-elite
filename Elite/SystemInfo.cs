@@ -283,10 +283,11 @@ namespace Elite
             using (var client = new WebClient())
             {
 
-                client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+                //client.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
                 var data = client.DownloadData(url);
-                var decompress = Decompress(data);
-                return System.Text.Encoding.UTF8.GetString(decompress);
+                //var decompress = Decompress(data);
+                //return System.Text.Encoding.UTF8.GetString(decompress);
+                return System.Text.Encoding.UTF8.GetString(data);
             }
         }
 
