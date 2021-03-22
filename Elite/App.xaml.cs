@@ -348,7 +348,7 @@ namespace Elite
                 Data.EngineersList = Station.GetEngineers(@"Data\engineers.json");
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Engineering Materials...");
-                Engineer.EngineeringMaterials = Engineer.GetAllEngineeringMaterials(@"Data\entryData.json");
+                (Engineer.EngineeringMaterials, Engineer.EngineeringMaterialsByKey) = Engineer.GetAllEngineeringMaterials(@"Data\entryData.json");
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Blueprints...");
                 Engineer.Blueprints = Engineer.GetAllBlueprints(@"Data\blueprints.json", Engineer.EngineeringMaterials);

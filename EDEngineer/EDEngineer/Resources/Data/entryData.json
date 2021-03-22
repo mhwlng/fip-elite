@@ -2,7 +2,7 @@
   {
     "Name": "Aberrant Shield Pattern Analysis",
     "Rarity": "Rare",
-    "FormattedName": "aberrantshieldpatternanalysis",
+    "FormattedName": "shieldpatternanalysis",
     "Kind": "Data",
     "OriginDetails": [
       "Ship scanning (combat ships)",
@@ -26,7 +26,7 @@
   {
     "Name": "Adaptive Encryptors Capture",
     "Rarity": "VeryRare",
-    "FormattedName": "adaptiveencryptorscapture",
+    "FormattedName": "adaptiveencryptors",
     "Kind": "Data",
     "OriginDetails": [
       "Mission reward",
@@ -37,7 +37,7 @@
   {
     "Name": "Anomalous Bulk Scan Data",
     "Rarity": "VeryCommon",
-    "FormattedName": "anomalousbulkscandata",
+    "FormattedName": "bulkscandata",
     "Kind": "Data",
     "OriginDetails": [
       "Ship scanning (transport ships)",
@@ -48,7 +48,7 @@
   {
     "Name": "Anomalous FSD Telemetry",
     "Rarity": "Common",
-    "FormattedName": "anomalousfsdtelemetry",
+    "FormattedName": "fsdtelemetry",
     "Kind": "Data",
     "OriginDetails": [
       "High wake scanning",
@@ -116,7 +116,7 @@
   {
     "Name": "Atypical Disrupted Wake Echoes",
     "Rarity": "VeryCommon",
-    "FormattedName": "atypicaldisruptedwakeechoes",
+    "FormattedName": "disruptedwakeechoes",
     "Kind": "Data",
     "OriginDetails": [
       "High wake scanning",
@@ -127,7 +127,7 @@
   {
     "Name": "Atypical Encryption Archives",
     "Rarity": "Rare",
-    "FormattedName": "atypicalencryptionarchives",
+    "FormattedName": "encryptionarchives",
     "Kind": "Data",
     "OriginDetails": [
       "Surface POI",
@@ -373,7 +373,7 @@
   {
     "Name": "Cracked Industrial Firmware",
     "Rarity": "Standard",
-    "FormattedName": "crackedindustrialfirmware",
+    "FormattedName": "industrialfirmware",
     "Kind": "Data",
     "OriginDetails": [
       "Surface data point",
@@ -396,7 +396,7 @@
   {
     "Name": "Datamined Wake Exceptions",
     "Rarity": "VeryRare",
-    "FormattedName": "dataminedwakeexceptions",
+    "FormattedName": "dataminedwake",
     "Kind": "Data",
     "OriginDetails": [
       "High wake scanning",
@@ -419,7 +419,7 @@
   {
     "Name": "Distorted Shield Cycle Recordings",
     "Rarity": "VeryCommon",
-    "FormattedName": "distortedshieldcyclerecordings",
+    "FormattedName": "shieldcyclerecordings",
     "Kind": "Data",
     "OriginDetails": [
       "Ship scanning (transport ships)",
@@ -441,7 +441,7 @@
   {
     "Name": "Eccentric Hyperspace Trajectories",
     "Rarity": "Rare",
-    "FormattedName": "eccentrichyperspacetrajectories",
+    "FormattedName": "hyperspacetrajectories",
     "Kind": "Data",
     "OriginDetails": [
       "High wake scanning"
@@ -472,7 +472,7 @@
   {
     "Name": "Exceptional Scrambled Emission Data",
     "Rarity": "VeryCommon",
-    "FormattedName": "exceptionalscrambledemissiondata",
+    "FormattedName": "scrambledemissiondata",
     "Kind": "Data",
     "OriginDetails": [
       "Ship scanning",
@@ -697,7 +697,7 @@
   {
     "Name": "Inconsistent Shield Soak Analysis",
     "Rarity": "Common",
-    "FormattedName": "inconsistentshieldsoakanalysis",
+    "FormattedName": "shieldsoakanalysis",
     "Kind": "Data",
     "OriginDetails": [
       "Ship scanning (transport ships)",
@@ -852,7 +852,7 @@
   {
     "Name": "Modified Consumer Firmware",
     "Rarity": "Common",
-    "FormattedName": "modifiedconsumerfirmware",
+    "FormattedName": "consumerfirmware",
     "Kind": "Data",
     "OriginDetails": [
       "Mission reward",
@@ -864,7 +864,7 @@
   {
     "Name": "Modified Embedded Firmware",
     "Rarity": "VeryRare",
-    "FormattedName": "modifiedembeddedfirmware",
+    "FormattedName": "embeddedfirmware",
     "Kind": "Data",
     "OriginDetails": [
       "Surface data point",
@@ -921,7 +921,7 @@
   {
     "Name": "Open Symmetric Keys",
     "Rarity": "Standard",
-    "FormattedName": "opensymmetrickeys",
+    "FormattedName": "symmetrickeys",
     "Kind": "Data",
     "OriginDetails": [
       "Surface data point",
@@ -988,7 +988,7 @@
   {
     "Name": "Peculiar Shield Frequency Data",
     "Rarity": "VeryRare",
-    "FormattedName": "peculiarshieldfrequencydata",
+    "FormattedName": "shieldfrequencydata",
     "Kind": "Data",
     "OriginDetails": [
       "Ship scanning",
@@ -1204,7 +1204,7 @@
   {
     "Name": "Security Firmware Patch",
     "Rarity": "Rare",
-    "FormattedName": "securityfirmwarepatch",
+    "FormattedName": "securityfirmware",
     "Kind": "Data",
     "OriginDetails": [
       "Surface data point",
@@ -1252,7 +1252,7 @@
   {
     "Name": "Specialised Legacy Firmware",
     "Rarity": "VeryCommon",
-    "FormattedName": "specialisedlegacyfirmware",
+    "FormattedName": "legacyfirmware",
     "Kind": "Data",
     "OriginDetails": [
       "Mission reward",
@@ -1264,7 +1264,7 @@
   {
     "Name": "Strange Wake Solutions",
     "Rarity": "Standard",
-    "FormattedName": "strangewakesolutions",
+    "FormattedName": "wakesolutions",
     "Kind": "Data",
     "OriginDetails": [
       "High wake scanning",
@@ -1288,7 +1288,7 @@
   {
     "Name": "Tagged Encryption Codes",
     "Rarity": "Common",
-    "FormattedName": "taggedencryptioncodes",
+    "FormattedName": "encryptioncodes",
     "Kind": "Data",
     "OriginDetails": [
       "Surface data point",
@@ -1378,7 +1378,7 @@
   {
     "Name": "Unidentified Scan Archives",
     "Rarity": "Common",
-    "FormattedName": "unidentifiedscanarchives",
+    "FormattedName": "scanarchives",
     "Kind": "Data",
     "OriginDetails": [
       "Ship scanning (transport ships)"
@@ -1398,7 +1398,7 @@
   {
     "Name": "Unusual Encrypted Files",
     "Rarity": "VeryCommon",
-    "FormattedName": "unusualencryptedfiles",
+    "FormattedName": "encryptedfiles",
     "Kind": "Data",
     "OriginDetails": [
       "Surface data point",

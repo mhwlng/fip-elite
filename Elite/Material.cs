@@ -68,7 +68,7 @@ namespace Elite
         {
             var maximumCapacity = 0;
 
-            Engineer.EngineeringMaterials.TryGetValue(name, out var entry);
+            Engineer.EngineeringMaterialsByKey.TryGetValue(name, out var entry);
             if (entry != null)
             {
                 maximumCapacity = entry.MaximumCapacity;
@@ -87,7 +87,7 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    MaterialList.Add(e.Name, new MaterialItem{ Category = "Encoded" ,Name = name, Count = e.Count, MaximumCapacity = GetMaximumCapacity(name)});
+                    MaterialList.Add(e.Name, new MaterialItem{ Category = "Encoded" ,Name = name, Count = e.Count, MaximumCapacity = GetMaximumCapacity(e.Name.ToLower()) });
                 }
             }
 
@@ -97,7 +97,7 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    MaterialList.Add(e.Name, new MaterialItem { Category = "Manufactured", Name = name, Count = e.Count, MaximumCapacity = GetMaximumCapacity(name) });
+                    MaterialList.Add(e.Name, new MaterialItem { Category = "Manufactured", Name = name, Count = e.Count, MaximumCapacity = GetMaximumCapacity(e.Name.ToLower()) });
                 }
             }
 
@@ -107,7 +107,7 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    MaterialList.Add(e.Name, new MaterialItem { Category = "Raw", Name = name, Count = e.Count, MaximumCapacity = GetMaximumCapacity(name) });
+                    MaterialList.Add(e.Name, new MaterialItem { Category = "Raw", Name = name, Count = e.Count, MaximumCapacity = GetMaximumCapacity(e.Name.ToLower()) });
                 }
             }
 
@@ -123,7 +123,7 @@ namespace Elite
             {
                 var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(info.Name.ToLower())).Trim();
 
-                MaterialList.Add(info.Name, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, MaximumCapacity = GetMaximumCapacity(name) });
+                MaterialList.Add(info.Name, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, MaximumCapacity = GetMaximumCapacity(info.Name.ToLower()) });
             }
 
         }
@@ -159,7 +159,7 @@ namespace Elite
             {
                 var name = (info.Received.Material_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(info.Received.Material.ToLower())).Trim();
 
-                MaterialList.Add(info.Received.Material, new MaterialItem { Category = info.Received.Category_Localised ?? info.Received.Category, Name = name, Count = info.Received.Quantity, MaximumCapacity = GetMaximumCapacity(name) });
+                MaterialList.Add(info.Received.Material, new MaterialItem { Category = info.Received.Category_Localised ?? info.Received.Category, Name = name, Count = info.Received.Quantity, MaximumCapacity = GetMaximumCapacity(info.Received.Material.ToLower()) });
             }
         }
 
@@ -233,7 +233,7 @@ namespace Elite
                     {
                         var name = (i.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(i.Name.ToLower())).Trim();
 
-                        MaterialList.Add(i.Name, new MaterialItem { Category = i.Category_Localised ?? i.Category, Name = name, Count = i.Count, MaximumCapacity = GetMaximumCapacity(name) });
+                        MaterialList.Add(i.Name, new MaterialItem { Category = i.Category_Localised ?? i.Category, Name = name, Count = i.Count, MaximumCapacity = GetMaximumCapacity(i.Name.ToLower()) });
                     }
 
                 }

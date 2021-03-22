@@ -21,13 +21,15 @@ namespace Elite
 
         public static Dictionary<string,EntryData> EngineeringMaterials;
 
+        public static Dictionary<string, EntryData> EngineeringMaterialsByKey;
+
         public static string CommanderName;
 
         public static List<BlueprintShoppingListItem> BlueprintShoppingList = new List<BlueprintShoppingListItem>();
 
         public static List<IngredientShoppingListItem> IngredientShoppingList = new List<IngredientShoppingListItem>();
 
-        public static Dictionary<string,EntryData> GetAllEngineeringMaterials(string path)
+        public static (Dictionary<string,EntryData>,Dictionary<string, EntryData>) GetAllEngineeringMaterials(string path)
         {
             try
             {
@@ -35,8 +37,10 @@ namespace Elite
 
                 if (File.Exists(path))
                 {
-                    return JsonConvert.DeserializeObject<List<EntryData>>(File.ReadAllText(path))
-                        .ToDictionary(x => x.Name, x => x);
+                    var json = JsonConvert.DeserializeObject<List<EntryData>>(File.ReadAllText(path));
+
+                    return (json.ToDictionary(x => x.Name, x => x),
+                            json.ToDictionary(x => x.FormattedName.ToLower(), x => x));
                 }
             }
             catch (Exception ex)
@@ -44,7 +48,7 @@ namespace Elite
                 App.Log.Error(ex);
             }
 
-            return new Dictionary<string, EntryData>();
+            return (new Dictionary<string, EntryData>(), new Dictionary<string, EntryData>());
         }
 
         public static Dictionary<(string, string, int?), Blueprint> GetAllBlueprints(string path, Dictionary<string, EntryData> engineeringMaterials)
