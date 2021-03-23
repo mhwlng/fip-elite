@@ -402,7 +402,7 @@
                                                                                 <td class="caption" colspan="2">
                                                                                     @m.subType
                                                                                     @(m.isScoopable == true ? ", Fuel Star":"")
-                                                                                    @(m.isLandable == true ? ", Landable":"")
+                                                                                    @Html.Raw(m.isLandable == true ? ", <span class=\"alarm\">&nbsp;Landable&nbsp;</span>":"")
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
