@@ -154,6 +154,10 @@ namespace Elite
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading CNB Systems...");
                 CnbSystems.FullCnbSystemsList = CnbSystems.GetAllCnbSystems(@"Data\cnbsystems.json");
 
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Populated Systems...");
+                PopulatedSystems.SystemList = PopulatedSystems.GetAllPopupulatedSystems(@"Data\populatedsystemsEDDB.json").GroupBy(x => x.Name)
+                    .ToDictionary(x => x.Key, x => x.First());
+
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Painite Hotspot Systems...");
                 HotspotSystems.FullHotspotSystemsList[HotspotSystems.MaterialTypes.Painite] = HotspotSystems.GetAllHotspotSystems(@"Data\painitesystems.json");
 

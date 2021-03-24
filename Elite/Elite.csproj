@@ -176,6 +176,7 @@
     <Compile Include="Audio\CachedSound.cs" />
     <Compile Include="Audio\CachedSoundSampleProvider.cs" />
     <Compile Include="ChartCircularBuffer.cs" />
+    <Compile Include="PopulatedSystems.cs" />
     <Compile Include="CommunityGoals.cs" />
     <Compile Include="Galnet.cs" />
     <Compile Include="HWInfo.cs" />

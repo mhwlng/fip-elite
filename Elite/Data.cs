@@ -70,6 +70,7 @@ namespace Elite
 
         public static List<CnbSystems.CnbSystemData> NearbyCnbSystemsList = new List<CnbSystems.CnbSystemData>();
 
+        public static string SystemState;
 
         public static  RingBuffer<string> EventHistory = new RingBuffer<string>(50, true);
 
@@ -233,6 +234,8 @@ namespace Elite
                 NearbyMiningStationsList[MiningStations.MaterialTypes.TritiumSell] = MiningStations.GetNearestMiningStations(LocationData.StarPos, MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumSell], true);
 
                 EngineersList = Station.UpdateEngineersLocation(LocationData.StarPos, EngineersList);
+
+                SystemState = PopulatedSystems.GetSystemState(LocationData.StarSystem);
             }
         }
 

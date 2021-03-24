@@ -1948,6 +1948,8 @@ namespace Elite
                                                         PowerplayState = Data.LocationData.PowerplayState,
                                                         Powers = Data.LocationData.Powers,
 
+                                                        SystemState = Data.SystemState,
+
                                                         RouteList = routeList,
                                                         RouteListCount = routeList.Count,
                                                         RouteListDistance = routeList.Sum(x => x.Distance),

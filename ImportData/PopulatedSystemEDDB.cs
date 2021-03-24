@@ -13,7 +13,7 @@ namespace ImportData
         public string Name { get; set; }
     }
 
-    public class ActiveState
+    /*public class ActiveState
     {
 
         [JsonProperty("id")]
@@ -41,9 +41,9 @@ namespace ImportData
 
         [JsonProperty("name")]
         public string Name { get; set; }
-    }
+    }*/
 
-    public class MinorFactionPresence
+    /*public class MinorFactionPresence
     {
 
         [JsonProperty("happiness_id")]
@@ -63,7 +63,7 @@ namespace ImportData
 
         [JsonProperty("recovering_states")]
         public IList<RecoveringState> RecoveringStates { get; set; }
-    }
+    } */
 
     public class PopulatedSystemEDDB
     {
@@ -104,8 +104,8 @@ namespace ImportData
         [JsonProperty("allegiance")]
         public string Allegiance { get; set; }
 
-        //[JsonProperty("states")]
-        //public IList<State> States { get; set; }
+        [JsonProperty("states")]
+        public IList<State> States { get; set; }
 
         //[JsonProperty("security_id")]
         //public int? SecurityId { get; set; }

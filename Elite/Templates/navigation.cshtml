@@ -92,6 +92,13 @@
                         <td class="data">@Model.Population.ToString("N0")</td>
                     </tr>
                 }
+                @if (!string.IsNullOrEmpty(Model.SystemState) && Model.SystemState != "None")
+                {
+                    <tr>
+                        <td class="caption">&nbsp;&nbsp;&nbsp;State</td>
+                        <td class="data">@Model.SystemState</td>
+                    </tr>
+                }
                 @if (!string.IsNullOrEmpty(Model.SystemGovernment))
                 {
                     <tr>
