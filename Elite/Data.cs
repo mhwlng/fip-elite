@@ -70,8 +70,6 @@ namespace Elite
 
         public static List<CnbSystems.CnbSystemData> NearbyCnbSystemsList = new List<CnbSystems.CnbSystemData>();
 
-        public static string SystemState;
-
         public static  RingBuffer<string> EventHistory = new RingBuffer<string>(50, true);
 
         private static string npcSpeechBy(string from, string message)
@@ -234,8 +232,7 @@ namespace Elite
                 NearbyMiningStationsList[MiningStations.MaterialTypes.TritiumSell] = MiningStations.GetNearestMiningStations(LocationData.StarPos, MiningStations.FullMiningStationsList[MiningStations.MaterialTypes.TritiumSell], true);
 
                 EngineersList = Station.UpdateEngineersLocation(LocationData.StarPos, EngineersList);
-
-                SystemState = PopulatedSystems.GetSystemState(LocationData.StarSystem);
+               
             }
         }
 
@@ -352,6 +349,9 @@ namespace Elite
             public List<double> StarPos { get; set; } // array[x, y, z], in light years
 
             public DateTime Refreshed { get; set; }
+
+            public string SystemState { get; set; }
+
 
         }
 
@@ -686,13 +686,14 @@ namespace Elite
                     //StationGovernment
                     //StationAllegiance
                     //StationServices
-                    //SystemSecondEconomy_Localised
                     //Wanted
                     //Powers
                     //Factions
                     //Conflicts
 
                     LocationData.StarSystem = locationInfo.StarSystem;
+
+                    LocationData.SystemState = PopulatedSystems.GetSystemState(LocationData.StarSystem);
 
                     LocationData.StarPos = locationInfo.StarPos.ToList();
 
@@ -706,7 +707,13 @@ namespace Elite
                     LocationData.SystemAllegiance = locationInfo.SystemAllegiance;
                     LocationData.SystemFaction = locationInfo.SystemFaction?.Name;
                     LocationData.SystemSecurity = locationInfo.SystemSecurity_Localised;
+
                     LocationData.SystemEconomy = locationInfo.SystemEconomy_Localised;
+                    if (!string.IsNullOrEmpty(locationInfo.SystemSecondEconomy_Localised))
+                    {
+                        LocationData.SystemEconomy += "," + locationInfo.SystemSecondEconomy_Localised;
+                    }
+
                     LocationData.SystemGovernment = locationInfo.SystemGovernment_Localised;
                     LocationData.Population = locationInfo.Population;
                     LocationData.Body = locationInfo.Body;
@@ -886,6 +893,8 @@ namespace Elite
 
                     LocationData.StarSystem = approachBodyInfo.StarSystem;
 
+                    LocationData.SystemState = PopulatedSystems.GetSystemState(LocationData.StarSystem);
+
                     LocationData.Body = approachBodyInfo.Body;
                     LocationData.BodyType = "Planet";
 
@@ -924,6 +933,8 @@ namespace Elite
 
                     LocationData.StarSystem = leaveBodyInfo.StarSystem;
 
+                    LocationData.SystemState = PopulatedSystems.GetSystemState(LocationData.StarSystem);
+
                     LocationData.Body = "";
                     LocationData.BodyType = "";
 
@@ -956,7 +967,9 @@ namespace Elite
                     //Wanted
                     //ActiveFine
 
-                    LocationData.StarSystem = dockedInfo.StarSystem; 
+                    LocationData.StarSystem = dockedInfo.StarSystem;
+
+                    LocationData.SystemState = PopulatedSystems.GetSystemState(LocationData.StarSystem);
 
                     LocationData.Station = dockedInfo.StationName;
 
@@ -965,7 +978,7 @@ namespace Elite
                     DockData.Government = dockedInfo.StationGovernment_Localised;
                     DockData.Allegiance = dockedInfo.StationAllegiance;
                     DockData.Faction = dockedInfo.StationFaction?.Name;
-                    DockData.Economy = dockedInfo.StationEconomy_Localised;
+                    DockData.Economy = string.Join(",", dockedInfo.StationEconomies?.Select(x => x.Name_Localised) ?? new List<string>() { dockedInfo.StationEconomy_Localised });
                     DockData.DistFromStarLs = dockedInfo.DistFromStarLS;
 
                     DockData.Services = string.Join(", ", dockedInfo.StationServices);
@@ -1022,6 +1035,8 @@ namespace Elite
 
                         LocationData.StarSystem = carrierJumpInfo.StarSystem;
 
+                        LocationData.SystemState = PopulatedSystems.GetSystemState(LocationData.StarSystem);
+
                         LocationData.StarPos = carrierJumpInfo.StarPos.ToList();
 
                         Ships.HandleShipDistance(LocationData.StarPos);
@@ -1044,7 +1059,13 @@ namespace Elite
                         LocationData.SystemAllegiance = carrierJumpInfo.SystemAllegiance;
                         LocationData.SystemFaction = carrierJumpInfo.SystemFaction?.Name;
                         LocationData.SystemSecurity = carrierJumpInfo.SystemSecurity_Localised;
+
                         LocationData.SystemEconomy = carrierJumpInfo.SystemEconomy_Localised;
+                        if (!string.IsNullOrEmpty(carrierJumpInfo.SystemSecondEconomy_Localised))
+                        {
+                            LocationData.SystemEconomy += "," + carrierJumpInfo.SystemSecondEconomy_Localised;
+                        }
+
                         LocationData.SystemGovernment = carrierJumpInfo.SystemGovernment_Localised;
                         LocationData.Population = carrierJumpInfo.Population;
 
@@ -1062,13 +1083,14 @@ namespace Elite
                     //FuelUsed
                     //FuelLevel
                     //BoostUsed
-                    //SystemSecondEconomy_Localised
                     //Wanted
                     //Powers
 
                     LocationData.Body = fsdJumpInfo.Body;  
 
                     LocationData.StarSystem = fsdJumpInfo.StarSystem;
+
+                    LocationData.SystemState = PopulatedSystems.GetSystemState(LocationData.StarSystem);
 
                     if (StatusData.JumpRange < fsdJumpInfo.JumpDist)
                     {
@@ -1098,7 +1120,13 @@ namespace Elite
                     LocationData.SystemAllegiance = fsdJumpInfo.SystemAllegiance;
                     LocationData.SystemFaction = fsdJumpInfo.SystemFaction?.Name;
                     LocationData.SystemSecurity = fsdJumpInfo.SystemSecurity_Localised;
+
                     LocationData.SystemEconomy = fsdJumpInfo.SystemEconomy_Localised;
+                    if (!string.IsNullOrEmpty(fsdJumpInfo.SystemSecondEconomy_Localised))
+                    {
+                        LocationData.SystemEconomy += "," + fsdJumpInfo.SystemSecondEconomy_Localised;
+                    }
+
                     LocationData.SystemGovernment = fsdJumpInfo.SystemGovernment_Localised;
                     LocationData.Population = fsdJumpInfo.Population;
 
@@ -1150,7 +1178,9 @@ namespace Elite
                     //When written: leaving supercruise for normal space
                     var supercruiseExitInfo = (SupercruiseExitEvent.SupercruiseExitEventArgs) e;
 
-                    LocationData.StarSystem = supercruiseExitInfo.StarSystem; 
+                    LocationData.StarSystem = supercruiseExitInfo.StarSystem;
+
+                    LocationData.SystemState = PopulatedSystems.GetSystemState(LocationData.StarSystem);
 
                     LocationData.StartJump = false;
 

@@ -13,8 +13,8 @@ namespace ImportData
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        //[JsonProperty("system_id")]
-        //public int SystemId { get; set; }
+        [JsonProperty("system_id")]
+        public int SystemId { get; set; }
 
         //[JsonProperty("updated_at")]
         //public int UpdatedAt { get; set; }
@@ -82,8 +82,8 @@ namespace ImportData
         //[JsonProperty("prohibited_commodities")]
         //public IList<string> ProhibitedCommodities { get; set; }
 
-        //[JsonProperty("economies")]
-        //public IList<string> Economies { get; set; }
+        [JsonProperty("economies")]
+        public IList<string> Economies { get; set; }
 
         //[JsonProperty("shipyard_updated_at")]
         //public int? ShipyardUpdatedAt { get; set; }
@@ -120,6 +120,10 @@ namespace ImportData
 
         //[JsonProperty("controlling_minor_faction_id")]
         //public int? ControllingMinorFactionId { get; set; }
+
+        [JsonIgnore]
+        public string SystemName { get; set; }
+
     }
 
 }

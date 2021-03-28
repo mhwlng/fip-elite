@@ -68,8 +68,8 @@ namespace ImportData
     public class PopulatedSystemEDDB
     {
 
-        //[JsonProperty("id")]
-        //public int Id { get; set; }
+        [JsonProperty("id")]
+        public int Id { get; set; }
 
         [JsonProperty("edsm_id")]
         public int? EdsmId { get; set; }

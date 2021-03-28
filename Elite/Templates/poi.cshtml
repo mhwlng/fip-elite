@@ -318,6 +318,13 @@
                             <td class="data">@m.Distance.ToString("N0") Ly</td>
                         </tr>
                     }
+                    if (!string.IsNullOrEmpty(m.SystemState) && m.SystemState != "None")
+                    {
+                        <tr>
+                            <td class="caption">State</td>
+                            <td class="data">@m.SystemState</td>
+                        </tr>
+                    }
                     if (m.Body != null && !string.IsNullOrEmpty(m.Body.name))
                     {
                         <tr>
@@ -384,11 +391,11 @@
                             <td class="data">@m.Faction</td>
                         </tr>
                     }
-                    if (!string.IsNullOrEmpty(m.Economy))
+                    if (!string.IsNullOrEmpty(m.Economies))
                     {
                         <tr>
                             <td class="caption">&nbsp;&nbsp;&nbsp;Economy</td>
-                            <td class="data">@m.Economy</td>
+                            <td class="data">@m.Economies</td>
                         </tr>
                     }
                     if (!string.IsNullOrEmpty(m.Powers))

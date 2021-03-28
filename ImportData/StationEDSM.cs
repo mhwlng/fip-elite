@@ -111,6 +111,12 @@ namespace ImportData
         [JsonIgnore]
         public StationEDDB AdditionalStationDataEDDB { get; set; }
 
+        [JsonIgnore]
+        public string PrimaryEconomy { get; set; }
+
+        [JsonIgnore]
+        public string SecondaryEconomy { get; set; }
+
     }
 
 }

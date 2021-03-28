@@ -152,6 +152,7 @@ namespace ImportData
                 Allegiance = x.Allegiance,
                 Government = x.Government,
                 Economy = x.Economy,
+                Economies = string.Join(",", x.AdditionalStationDataEDDB?.Economies ?? new List<string>() { x.Economy }),
                 Faction = x.ControllingFaction?.Name,
 
                 X = x.PopulatedSystemEDDB?.X ?? 0,
@@ -160,7 +161,9 @@ namespace ImportData
 
                 Body = x.Body,
 
-                MarketId = x.MarketId ?? 0
+                MarketId = x.MarketId ?? 0,
+
+                SystemState = string.Join(",", x.PopulatedSystemEDDB?.States?.Select(y => y.Name) ?? new List<string>())
 
             }).ToList();
 
@@ -564,11 +567,14 @@ namespace ImportData
                 Allegiance = x.StationEDSM?.Allegiance,
                 Government = x.StationEDSM?.Government,
                 Economy = x.StationEDSM?.Economy,
+                Economies = string.Join(",", x.StationEDSM?.AdditionalStationDataEDDB?.Economies ?? new List<string>() { x.StationEDSM?.Economy }),
                 Faction = x.StationEDSM?.ControllingFaction?.Name,
 
-                Body  = x.StationEDSM?.Body
+                Body  = x.StationEDSM?.Body,
 
-            }).ToList();
+                SystemState = string.Join(",", x.StationEDSM?.PopulatedSystemEDDB?.States?.Select(y => y.Name) ?? new List<string>())
+
+                }).ToList();
         }
 
         private static void MiningStationsSerialize(List<MiningStationData> stations, string fullPath)
@@ -699,6 +705,7 @@ namespace ImportData
                 Dictionary<string,StationEDDB> stationsEDDB;
                 List<PopulatedSystemEDDB> populatedSystemsEDDBList;
                 Dictionary<int, PopulatedSystemEDDB> populatedSystemsEDDBbyEdsmId;
+                Dictionary<int, PopulatedSystemEDDB> populatedSystemsEDDBbyId;
 
                 var wasAnyUpdated = false;
 
@@ -723,9 +730,7 @@ namespace ImportData
 
                 if (NeedToUpdateFile(@"Data\cnbsystems.json", 1440))
                 {
-                    // there are multiple stations with the same name ???
                     var populatedSystemsEDDBbyName = populatedSystemsEDDBList
-                        .GroupBy(x => x.Name).Select(x => x.First())
                         .ToDictionary(x => x.Name);
 
                     DownloadCnbSystems(@"Data\cnbsystems.json", populatedSystemsEDDBbyName);
@@ -733,37 +738,51 @@ namespace ImportData
 
                 if (wasAnyUpdated || NeedToUpdateFile(@"Data\painitestations.json", 15))
                 {
+                    populatedSystemsEDDBbyId = populatedSystemsEDDBList
+                        .ToDictionary(x => x.Id);
+
                     populatedSystemsEDDBbyEdsmId = populatedSystemsEDDBList
                         .Where(x => x.EdsmId != null)
                         .ToDictionary(x => (int) x.EdsmId);
 
-
                     stationsEDDBList = JsonReaderExtensions.ParseJson<StationEDDB>(@"Data\stationsEDDB.json").ToList();
+
+                    stationsEDDBList.ForEach(z =>
+                    {
+                        populatedSystemsEDDBbyId.TryGetValue(z.SystemId, out var system);
+                        z.SystemName = system?.Name;
+                    });
 
                     // there are multiple stations with the same name ???
                     stationsEDDB = stationsEDDBList
-                        .GroupBy(x => x.Name).Select(x => x.First())
-                        .ToDictionary(x => x.Name);
+                        .GroupBy(x => x.SystemName + x.Name).Select(x => x.First())
+                        .ToDictionary(x => x.SystemName + x.Name);
 
                     Console.WriteLine("looking up additional EDDB station information for all stations");
 
                     stationsEDSM = JsonReaderExtensions.ParseJson<StationEDSM>(@"Data\stationsEDSM.json").ToList();
 
-                    stationsEDSM.ForEach(z =>
-                    {
-                        if (stationsEDDB.ContainsKey(z.Name))
-                        {
-                            z.AdditionalStationDataEDDB = stationsEDDB[z.Name];
-                        }
-                    });
-
                     Console.WriteLine("looking up EDDB system information for all stations");
 
                     stationsEDSM.ForEach(z =>
                     {
-                        if (populatedSystemsEDDBbyEdsmId.ContainsKey(z.SystemId))
+                        stationsEDDB.TryGetValue(z.SystemName + z.Name, out var station);
+                        z.AdditionalStationDataEDDB = station;
+
+                        populatedSystemsEDDBbyEdsmId.TryGetValue(z.SystemId, out var system);
+                        z.PopulatedSystemEDDB = system;
+
+                        z.PrimaryEconomy = z.AdditionalStationDataEDDB?.Economies?.First() ?? z.PopulatedSystemEDDB?.PrimaryEconomy ?? z.Economy;
+
+                        z.SecondaryEconomy = z.AdditionalStationDataEDDB?.Economies?.Last() ?? z.PopulatedSystemEDDB?.PrimaryEconomy ?? z.Economy;
+
+                        if (z.AdditionalStationDataEDDB?.Economies?.Count == 2 && !string.IsNullOrEmpty(z.PopulatedSystemEDDB?.PrimaryEconomy) && z.PrimaryEconomy != z.PopulatedSystemEDDB.PrimaryEconomy)
                         {
-                            z.PopulatedSystemEDDB = populatedSystemsEDDBbyEdsmId[z.SystemId];
+                            z.SecondaryEconomy = z.PrimaryEconomy;
+                            z.PrimaryEconomy = z.PopulatedSystemEDDB.PrimaryEconomy;
+
+                            z.AdditionalStationDataEDDB.Economies[0] = z.PrimaryEconomy;
+                            z.AdditionalStationDataEDDB.Economies[1] = z.SecondaryEconomy;
                         }
                     });
 
@@ -987,11 +1006,37 @@ namespace ImportData
 
                     StationSerialize(interStellarFactors, @"Data\interstellarfactors.json");
 
+                    // see https://github.com/EDCD/FDevIDs/blob/a2655d9836fa32c4d9a8041edd8b2a4a7ed9d15b/How%20to%20determine%20MatTrader%20and%20Broker%20type
+
+                    Console.WriteLine("finding encoded data traders");
+
+                    //Encoded data trader
+                    //Found in systems with medium-high security, a 'high tech' or 'military' economy
+                    var encodedDataTraders = stationsEDSM
+                        .Where(x =>
+                            x.Type != "Fleet Carrier" &&
+                            x.Government != "Fleet Carrier" &&
+                            x.Economy != "Fleet Carrier" &&
+                            !string.IsNullOrEmpty(x.Type) &&
+                            !string.IsNullOrEmpty(x.Government) &&
+                            !string.IsNullOrEmpty(x.Economy) &&
+                            x.PrimaryEconomy != "Extraction" &&
+                            x.PrimaryEconomy != "Refinery" &&
+                            x.PrimaryEconomy != "Industrial" &&
+
+                            (x.PrimaryEconomy == "High Tech" || x.PrimaryEconomy == "Military" || x.SecondaryEconomy == "High Tech" || x.SecondaryEconomy == "Military") &&
+
+                            x.OtherServices.Any(y => y == "Material Trader") &&
+                            x.PopulatedSystemEDDB != null &&
+                            x.AdditionalStationDataEDDB?.IsPlanetary == false &&
+                            x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
+
+                    StationSerialize(encodedDataTraders, @"Data\encodeddatatraders.json");
+
                     Console.WriteLine("finding raw material traders");
 
                     //Raw material trader
                     //Found in systems with medium-high security, an 'extraction' or 'refinery' economy
-                    var rawMaterialEconomies = new List<string> {"Extraction", "Refinery"};
                     var rawMaterialTraders = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
@@ -1000,7 +1045,12 @@ namespace ImportData
                                     !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
-                                    rawMaterialEconomies.Contains(x.Economy) &&
+                                    x.PrimaryEconomy != "High Tech" &&
+                                    x.PrimaryEconomy != "Military" &&
+                                    x.PrimaryEconomy != "Industrial" &&
+
+                                    (x.PrimaryEconomy  == "Extraction" || x.PrimaryEconomy == "Refinery"  || x.SecondaryEconomy == "Extraction" || x.SecondaryEconomy == "Refinery") &&
+                                    
                                     x.OtherServices.Any(y => y == "Material Trader") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
@@ -1012,7 +1062,6 @@ namespace ImportData
 
                     //Manufactured material trader
                     //Found in systems with medium-high security, an 'industrial' economy
-                    var manufacturedMaterialEconomies = new List<string> {"Industrial"};
                     var manufacturedMaterialTraders = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
@@ -1021,7 +1070,13 @@ namespace ImportData
                                     !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
-                                    manufacturedMaterialEconomies.Contains(x.Economy) &&
+                                    x.PrimaryEconomy != "High Tech" &&
+                                    x.PrimaryEconomy != "Military" &&
+                                    x.PrimaryEconomy != "Extraction" &&
+                                    x.PrimaryEconomy != "Refinery" &&
+
+                                    (x.PrimaryEconomy == "Industrial" || x.SecondaryEconomy == "Industrial") &&
+
                                     x.OtherServices.Any(y => y == "Material Trader") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
@@ -1029,32 +1084,10 @@ namespace ImportData
 
                     StationSerialize(manufacturedMaterialTraders, @"Data\manufacturedmaterialtraders.json");
 
-                    Console.WriteLine("finding encoded data traders");
-
-                    //Encoded data trader
-                    //Found in systems with medium-high security, a 'high tech' or 'military' economy
-                    var encodedDataEconomies = new List<string> {"High Tech", "Military"};
-                    var encodedDataTraders = stationsEDSM
-                        .Where(x =>
-                                    x.Type != "Fleet Carrier" &&
-                                    x.Government != "Fleet Carrier" &&
-                                    x.Economy != "Fleet Carrier" &&
-                                    !string.IsNullOrEmpty(x.Type) &&
-                                    !string.IsNullOrEmpty(x.Government) &&
-                                    !string.IsNullOrEmpty(x.Economy) &&
-                                    encodedDataEconomies.Contains(x.Economy) &&
-                                    x.OtherServices.Any(y => y == "Material Trader") &&
-                                    x.PopulatedSystemEDDB != null &&
-                                    x.AdditionalStationDataEDDB?.IsPlanetary == false &&
-                                    x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
-
-                    StationSerialize(encodedDataTraders, @"Data\encodeddatatraders.json");
-
                     Console.WriteLine("finding human technology brokers");
 
                     //Human Technology Broker
                     //Found in systems with an 'Industrial' economy
-                    var humanTechnologyEconomies = new List<string> {"Industrial"};
                     var humanTechnologyBrokers = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
@@ -1063,7 +1096,8 @@ namespace ImportData
                                     !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
-                                    humanTechnologyEconomies.Contains(x.Economy) &&
+                                    !(x.PrimaryEconomy == "High Tech" || (x.PrimaryEconomy != "Industrial" && x.SecondaryEconomy == "High Tech")) &&
+
                                     x.OtherServices.Any(y => y == "Technology Broker") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&
@@ -1075,7 +1109,6 @@ namespace ImportData
 
                     //Guardian Technology Broker
                     //Found in systems with a 'high tech' economy
-                    var guardianTechnologyEconomies = new List<string> {"High Tech"};
                     var guardianTechnologyBrokers = stationsEDSM
                         .Where(x =>
                                     x.Type != "Fleet Carrier" &&
@@ -1085,7 +1118,8 @@ namespace ImportData
                                     !string.IsNullOrEmpty(x.Type) &&
                                     !string.IsNullOrEmpty(x.Government) &&
                                     !string.IsNullOrEmpty(x.Economy) &&
-                                    guardianTechnologyEconomies.Contains(x.Economy) &&
+                                    (x.PrimaryEconomy == "High Tech" || (x.PrimaryEconomy != "Industrial" && x.SecondaryEconomy == "High Tech")) &&
+
                                     x.OtherServices.Any(y => y == "Technology Broker") &&
                                     x.PopulatedSystemEDDB != null &&
                                     x.AdditionalStationDataEDDB?.IsPlanetary == false &&

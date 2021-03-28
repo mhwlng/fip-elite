@@ -88,6 +88,12 @@ namespace Elite
             [JsonProperty("body")]
             public Body Body { get; set; }
 
+            [JsonProperty("economies")]
+            public string Economies { get; set; }
+
+            [JsonProperty("systemstate")]
+            public string SystemState { get; set; }
+
             [JsonIgnore]
             public double Distance { get; set; }
 
