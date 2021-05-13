@@ -138,7 +138,7 @@ namespace Elite
         }
 
 
-        public static string GetEliteHistory()
+        public static string GetEliteHistory(string defaultFilter)
         {
             var journalDirectory = StandardDirectory;
 
@@ -158,7 +158,7 @@ namespace Elite
                 GalaxyImagePWidth = imageP.Width;
                 GalaxyImagePHeight = imageP.Height;
 
-                var journalFiles = journalDirectory.GetFiles("Journal.*").OrderBy(x => x.LastWriteTime);
+                var journalFiles = journalDirectory.GetFiles(defaultFilter).OrderBy(x => x.LastWriteTime);
 
                 string lastJumpedSystem = string.Empty;
 

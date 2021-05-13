@@ -58,6 +58,44 @@
         }
 
     }
+    else if (Model.CurrentTab == LcdTab.ShipLocker)
+    {
+        if (Model.CurrentCard == 0)
+        {
+            <div class="cardcaption">&#x25c0; Ship Locker Items &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 1)
+        {
+            <div class="cardcaption">&#x25c0; Ship Locker Components &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 2)
+        {
+            <div class="cardcaption">&#x25c0; Ship Locker Consumables &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 3)
+        {
+            <div class="cardcaption">&#x25c0; Ship Locker Data &#x25b6;</div>
+        }
+    }
+    else if (Model.CurrentTab == LcdTab.BackPack)
+    {
+        if (Model.CurrentCard == 0)
+        {
+            <div class="cardcaption">&#x25c0; Backpack Items &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 1)
+        {
+            <div class="cardcaption">&#x25c0; Backpack Components &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 2)
+        {
+            <div class="cardcaption">&#x25c0; Backpack Consumables &#x25b6;</div>
+        }
+        else if (Model.CurrentCard == 3)
+        {
+            <div class="cardcaption">&#x25c0; Backpack Data &#x25b6;</div>
+        }
+    }
     else if (Model.CurrentTab == LcdTab.Materials)
     {
         if (Model.CurrentCard == 0)

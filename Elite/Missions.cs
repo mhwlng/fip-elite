@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EliteJournalReader;
 using EliteJournalReader.Events;
 
 namespace Elite
@@ -9,7 +10,7 @@ namespace Elite
     {
         public class Mission
         {
-            public long MissionID { get; set; }
+            public string MissionID { get; set; }
             public string Name { get; set; }
             public bool PassengerMission { get; set; }
             public DateTime? Expires { get; set; }
@@ -43,10 +44,10 @@ namespace Elite
 
         public static List<Mission> MissionList = new List<Mission>();
 
-        public static string GetMissionName(long missionID)
+        public static string GetMissionName(string missionID)
         {
             var missionName = string.Empty;
-            if (missionID > 0)
+            if (!string.IsNullOrEmpty(missionID) && missionID != "0")
             {
                 missionName = MissionList.FirstOrDefault(x => x.MissionID == missionID)?.Name;
 
@@ -59,10 +60,10 @@ namespace Elite
             return missionName;
         }
 
-        public static string GetMissionSystem(long missionID)
+        public static string GetMissionSystem(string missionID)
         {
             var missionSystem = string.Empty;
-            if (missionID > 0)
+            if (!string.IsNullOrEmpty(missionID) && missionID != "0")
             {
                 missionSystem = MissionList.FirstOrDefault(x => x.MissionID == missionID)?.System;
             }
@@ -70,12 +71,12 @@ namespace Elite
             return missionSystem;
         }
 
-        public static string GetMissionStation(long missionId)
+        public static string GetMissionStation(string missionID)
         {
             var missionStation = string.Empty;
-            if (missionId > 0)
+            if (!string.IsNullOrEmpty(missionID) && missionID != "0")
             {
-                missionStation = MissionList.FirstOrDefault(x => x.MissionID == missionId)?.Station;
+                missionStation = MissionList.FirstOrDefault(x => x.MissionID == missionID)?.Station;
             }
 
             return missionStation;
@@ -115,8 +116,8 @@ namespace Elite
                 Passengers = info.PassengerCount,
 
                 Faction = info.Faction,
-                Influence = info.Influence.ToString(), //    None/Low/Med/High
-                Reputation = info.Reputation.ToString(), //  None/Low/Med/High
+                Influence = info.Influence.StringValue(), //    None/Low/Med/High
+                Reputation = info.Reputation.StringValue(), //  None/Low/Med/High
 
                 Commodity = info.Commodity,
                 CommodityLocalised = info.Commodity_Localised,

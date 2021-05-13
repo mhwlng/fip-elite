@@ -66,7 +66,7 @@ namespace Elite
         public class ShipData
         {
             public bool Stored { get; set; }
-            public int ShipID { get; set; }
+            public string ShipID { get; set; }
             public string ShipType { get; set; }
             public string ShipTypeFull
             {
@@ -219,10 +219,12 @@ namespace Elite
             return ShipsList.FirstOrDefault(x => x.Stored == false);
         }
 
-        private static void AddShip(int shipId, string shipType, string starSystem, string stationName,
+        private static void AddShip(string shipId, string shipType, string starSystem, string stationName,
             List<double> starPos, bool stored)
         {
             if (shipType == "testbuggy") return;
+
+            if (shipType.Contains("suit")) return;
 
             if (string.IsNullOrEmpty(shipType)) return;
 
@@ -243,9 +245,11 @@ namespace Elite
             }
         }
 
-        private static void RemoveShip(int shipId, string shipType)
+        private static void RemoveShip(string shipId, string shipType)
         {
             if (shipType == "testbuggy") return;
+
+            if (shipType.Contains("suit")) return;
 
             var ship = ShipsList.FirstOrDefault(x =>
                 x.ShipType == shipType?.ToLower() && x.ShipID == shipId);
@@ -256,10 +260,12 @@ namespace Elite
             }
         }
 
-        private static void SetCurrentShip(int shipId, string shipType, string starSystem, string stationName,
+        private static void SetCurrentShip(string shipId, string shipType, string starSystem, string stationName,
             List<double> starPos)
         {
             if (shipType == "testbuggy") return;
+
+            if (shipType.Contains("suit")) return;
 
             if (string.IsNullOrEmpty(shipType)) return;
 
@@ -317,7 +323,7 @@ namespace Elite
         {
             if (info.SellShipID != null && !string.IsNullOrEmpty(info.SellOldShip))
             {
-                RemoveShip((int) info.SellShipID, info.SellOldShip.ToLower());
+                RemoveShip(info.SellShipID, info.SellOldShip.ToLower());
             }
         }
 
@@ -341,29 +347,32 @@ namespace Elite
 
         public static void HandleShipyardSwap(ShipyardSwapEvent.ShipyardSwapEventArgs info)
         {
-            var ship = GetCurrentShip();
+            Station.MarketIdStations.TryGetValue(info.MarketID, out var station);
 
-            if (ship != null)
+            if (station != null)
             {
+                var starPos = new List<double> {station.X, station.Y, station.Z};
+
                 if (info.SellShipID != null && !string.IsNullOrEmpty(info.SellOldShip))
                 {
-                    RemoveShip((int) info.SellShipID, info.SellOldShip.ToLower());
+                    RemoveShip(info.SellShipID, info.SellOldShip.ToLower());
                 }
 
                 if (info.StoreShipID != null && !ShipsList.Any(x =>
                     x.ShipType == info.StoreOldShip.ToLower() && x.ShipID == info.StoreShipID))
                 {
-                    AddShip((int) info.StoreShipID, info.StoreOldShip.ToLower(), ship.StarSystem, ship.StationName,
-                        ship.StarPos, true);
+                    AddShip(info.StoreShipID, info.StoreOldShip.ToLower(), station.SystemName, station.Name,
+                        starPos, true);
                 }
 
                 if (!ShipsList.Any(x => x.ShipType == info.ShipType.ToLower() && x.ShipID == info.ShipID))
                 {
-                    AddShip(info.ShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos,
+                    AddShip(info.ShipID, info.ShipType.ToLower(), station.SystemName, station.Name, starPos,
                         false);
                 }
 
-                SetCurrentShip(info.ShipID, info.ShipType.ToLower(), ship.StarSystem, ship.StationName, ship.StarPos);
+                SetCurrentShip(info.ShipID, info.ShipType.ToLower(), station.SystemName, station.Name,
+                    starPos);
             }
         }
 
@@ -417,7 +426,7 @@ namespace Elite
         }
 
 
-        public static void HandleLoadGame(int shipId, string shipType, string name)
+        public static void HandleLoadGame(string shipId, string shipType, string name)
         {
             var ship = GetCurrentShip();
             if (ship != null && !string.IsNullOrEmpty(shipType))
@@ -428,7 +437,7 @@ namespace Elite
             }
         }
 
-        public static void HandleSetUserShipName(int shipId, string name, string shipType)
+        public static void HandleSetUserShipName(string shipId, string name, string shipType)
         {
             var ship = GetCurrentShip();
             if (ship != null)

@@ -294,6 +294,11 @@ namespace Elite
                 }
             }
 
+            var defaultFilter = @"Journal.*.log";
+//#if DEBUG
+            //defaultFilter = @"JournalAlpha.*.log";
+//#endif
+
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
 
@@ -345,6 +350,9 @@ namespace Elite
                 Engine.Razor.Compile("missions.cshtml", null);
                 Engine.Razor.Compile("events.cshtml", null);
 
+                Engine.Razor.Compile("backpack.cshtml", null);
+                Engine.Razor.Compile("shiplocker.cshtml", null);
+
                 CssData = TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.ParseStyleSheet(
                     File.ReadAllText(Path.Combine(ExePath, "Templates\\styles.css")), true);
 
@@ -366,7 +374,7 @@ namespace Elite
                 RefreshJson(splashScreen);
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading History...");
-                var path = History.GetEliteHistory();
+                var path = History.GetEliteHistory(defaultFilter);
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Getting Shopping List from EDEngineer...");
                 Engineer.GetCommanderName();
@@ -549,7 +557,8 @@ namespace Elite
                 _statusWatcher.StartWatching();
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Watcher...");
-                journalWatcher = new JournalWatcher(path);
+
+                journalWatcher = new JournalWatcher(path, defaultFilter);
 
                 journalWatcher.AllEventHandler += Data.HandleEliteEvents;
 

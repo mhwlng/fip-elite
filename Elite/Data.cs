@@ -255,12 +255,18 @@ namespace Elite
             public string TradeRank { get; set; }
             public string ExplorationRank { get; set; }
 
+            public string SoldierRank { get; set; }
+            public string ExobiologistRank { get; set; }
+
             public int EmpireRankProgress { get; set; }
             public int FederationRankProgress { get; set; }
             public int CombatRankProgress { get; set; }
             public int TradeRankProgress { get; set; }
             public int ExplorationRankProgress { get; set; }
             public int CqcRankProgress { get; set; }
+
+            public int SoldierRankProgress { get; set; }
+            public int ExobiologistRankProgress { get; set; }
         }
 
         public class Dock
@@ -398,13 +404,31 @@ namespace Elite
             public double JumpRange { get; set; }
 
             public int Firegroup { get; set; }
-            public string GuiFocus { get; set; }
             public double Latitude { get; set; }
             public double Longitude { get; set; }
             public double Altitude { get; set; }
             public double Heading { get; set; }
             public string BodyName { get; set; }
             public double PlanetRadius { get; set; }
+
+            public StatusGuiFocus GuiFocus { get; set; }
+
+            public int[] Pips { get; set; } = new int[3];
+
+            public bool OnFoot { get; set; }
+            public bool InTaxi { get; set; }
+            public bool InMulticrew { get; set; }
+            public bool OnFootInStation { get; set; }
+            public bool OnFootOnPlanet { get; set; }
+            public bool AimDownSight { get; set; }
+            public bool LowOxygen { get; set; }
+            public bool LowHealth { get; set; }
+            public bool Cold { get; set; }
+            public bool Hot { get; set; }
+            public bool VeryCold { get; set; }
+            public bool VeryHot { get; set; }
+
+
         }
 
 
@@ -436,7 +460,7 @@ namespace Elite
             StatusData.SrvHandbrake = (evt.Flags & StatusFlags.SrvHandbrake) != 0 && StatusData.InSRV;
             StatusData.SrvHighBeam = (evt.Flags & StatusFlags.SrvHighBeam) != 0 && StatusData.InSRV;
 
-            StatusData.Docked = (evt.Flags & StatusFlags.Docked) != 0;
+            //!!!!!!StatusData.Docked = (evt.Flags & StatusFlags.Docked) != 0;
             StatusData.Landed = (evt.Flags & StatusFlags.Landed) != 0;
             StatusData.LandingGearDown = (evt.Flags & StatusFlags.LandingGearDown) != 0;
             StatusData.CargoScoopDeployed = (evt.Flags & StatusFlags.CargoScoopDeployed) != 0;
@@ -461,7 +485,8 @@ namespace Elite
             StatusData.LegalState = evt.LegalState;
 
             StatusData.Firegroup = evt.Firegroup;
-            StatusData.GuiFocus = evt.GuiFocus.ToString();
+            StatusData.GuiFocus = evt.GuiFocus;
+
             StatusData.Latitude = evt.Latitude;
             StatusData.Longitude = evt.Longitude;
             StatusData.Altitude = evt.Altitude;
@@ -469,6 +494,22 @@ namespace Elite
             StatusData.BodyName = evt.BodyName;
             StatusData.PlanetRadius = evt.PlanetRadius;
 
+            StatusData.Pips[0] = evt.Pips.System;
+            StatusData.Pips[1] = evt.Pips.Engine;
+            StatusData.Pips[2] = evt.Pips.Weapons;
+
+            StatusData.OnFoot = (evt.Flags2 & StatusFlags2.OnFoot) != 0;
+            StatusData.InTaxi = (evt.Flags2 & StatusFlags2.InTaxi) != 0;
+            StatusData.InMulticrew = (evt.Flags2 & StatusFlags2.InMulticrew) != 0;
+            StatusData.OnFootInStation = (evt.Flags2 & StatusFlags2.OnFootInStation) != 0;
+            StatusData.OnFootOnPlanet = (evt.Flags2 & StatusFlags2.OnFootOnPlanet) != 0;
+            StatusData.AimDownSight = (evt.Flags2 & StatusFlags2.AimDownSight) != 0;
+            StatusData.LowOxygen = (evt.Flags2 & StatusFlags2.LowOxygen) != 0;
+            StatusData.LowHealth = (evt.Flags2 & StatusFlags2.LowHealth) != 0;
+            StatusData.Cold = (evt.Flags2 & StatusFlags2.Cold) != 0;
+            StatusData.Hot = (evt.Flags2 & StatusFlags2.Hot) != 0;
+            StatusData.VeryCold = (evt.Flags2 & StatusFlags2.VeryCold) != 0;
+            StatusData.VeryHot = (evt.Flags2 & StatusFlags2.VeryHot) != 0;
 
             var shipData = Ships.GetCurrentShip();
             if (shipData != null)
@@ -608,13 +649,16 @@ namespace Elite
                     //When written: at startup
                     var rankInfo = (RankEvent.RankEventArgs) e;
 
-                    CommanderData.CqcRank = rankInfo.CQC.ToString();
+                    CommanderData.CqcRank = rankInfo.CQC.StringValue();
 
-                    CommanderData.EmpireRank = rankInfo.Empire.ToString();
-                    CommanderData.FederationRank = rankInfo.Federation.ToString();
-                    CommanderData.CombatRank = rankInfo.Combat.ToString();
-                    CommanderData.TradeRank = rankInfo.Trade.ToString();
-                    CommanderData.ExplorationRank = rankInfo.Explore.ToString();
+                    CommanderData.EmpireRank = rankInfo.Empire.StringValue();
+                    CommanderData.FederationRank = rankInfo.Federation.StringValue();
+                    CommanderData.CombatRank = rankInfo.Combat.StringValue();
+                    CommanderData.TradeRank = rankInfo.Trade.StringValue();
+                    CommanderData.ExplorationRank = rankInfo.Explore.StringValue();
+
+                    CommanderData.SoldierRank = rankInfo.Soldier.StringValue();
+                    CommanderData.ExobiologistRank = rankInfo.Exobiologist.StringValue();
 
                     break;
 
@@ -648,6 +692,9 @@ namespace Elite
 
                     CommanderData.CqcRankProgress = progressInfo.CQC;
 
+                    CommanderData.SoldierRankProgress = progressInfo.Soldier;
+                    CommanderData.ExobiologistRankProgress = progressInfo.Exobiologist;
+
                     break;
 
                 case "Commander":
@@ -677,6 +724,13 @@ namespace Elite
                     var locationInfo = (LocationEvent.LocationEventArgs)e;
 
                     Ships.HandleShipLocation(locationInfo.Docked, locationInfo.StarSystem, locationInfo.StationName, locationInfo.StarPos.ToList());
+
+                    StatusData.Docked = locationInfo.Docked;
+                    StatusData.InTaxi = locationInfo.Taxi;
+                    StatusData.InMulticrew = locationInfo.Multicrew;
+                    StatusData.InSRV = locationInfo.InSRV;
+                    StatusData.OnFoot = locationInfo.OnFoot;
+
 
                     //Docked
                     //Latitude
@@ -717,7 +771,7 @@ namespace Elite
                     LocationData.SystemGovernment = locationInfo.SystemGovernment_Localised;
                     LocationData.Population = locationInfo.Population;
                     LocationData.Body = locationInfo.Body;
-                    LocationData.BodyType = locationInfo.BodyType.ToString();
+                    LocationData.BodyType = locationInfo.BodyType.StringValue();
 
                     LocationData.PowerplayState = locationInfo.PowerplayState;
                     LocationData.Powers = locationInfo.Powers != null ? string.Join(",", locationInfo.Powers) : "";
@@ -954,11 +1008,15 @@ namespace Elite
                     LocationData.Body = "";
                     LocationData.BodyType = "";
 
+                    StatusData.Docked = false;
+
                     break;
 
                 case "Docked":
                     //    When written: when landing at landing pad in a space station, outpost, or surface settlement
                     var dockedInfo = (DockedEvent.DockedEventArgs) e;
+
+                    StatusData.Docked = true;
 
                     Ships.HandleShipDocked(dockedInfo.StarSystem, dockedInfo.StationName);
 
@@ -1139,7 +1197,7 @@ namespace Elite
                     var startJumpInfo = (StartJumpEvent.StartJumpEventArgs) e;
 
                     LocationData.StartJump = true;
-                    LocationData.JumpType = startJumpInfo.JumpType.ToString();
+                    LocationData.JumpType = startJumpInfo.JumpType.StringValue();
                     LocationData.JumpToSystem = startJumpInfo.StarSystem;
                     LocationData.JumpToStarClass = startJumpInfo.StarClass;
 
@@ -1189,7 +1247,7 @@ namespace Elite
                     LocationData.JumpType = "";
 
                     LocationData.Body = supercruiseExitInfo.Body;
-                    LocationData.BodyType = supercruiseExitInfo.BodyType.ToString();
+                    LocationData.BodyType = supercruiseExitInfo.BodyType.StringValue();
                     LocationData.HideBody = false;
 
                     LocationData.Refreshed = DateTime.Now;
@@ -1213,7 +1271,7 @@ namespace Elite
                     TargetData.HullHealth = shipTargetedInfo.HullHealth;
                     TargetData.LegalStatus = shipTargetedInfo.LegalStatus;
                     TargetData.PilotNameLocalised = shipTargetedInfo.PilotName_Localised;
-                    TargetData.PilotRank = shipTargetedInfo.PilotRank.ToString();
+                    TargetData.PilotRank = shipTargetedInfo.PilotRank.StringValue();
                     TargetData.ScanStage = shipTargetedInfo.ScanStage;
                     TargetData.ShieldHealth = shipTargetedInfo.ShieldHealth;
 
@@ -1478,12 +1536,242 @@ namespace Elite
 
                     break;
 
+                case "Promotion":
+                    var promotionInfo = (PromotionEvent.PromotionEventArgs)e;
+
+                    if (promotionInfo.CQC != null)
+                    {
+                        CommanderData.CqcRank = promotionInfo.CQC.StringValue();
+                    }
+                    if (promotionInfo.Empire != null)
+                    {
+                        CommanderData.EmpireRank = promotionInfo.Empire.StringValue();
+                    }
+                    if (promotionInfo.Federation != null)
+                    {
+                        CommanderData.FederationRank = promotionInfo.Federation.StringValue();
+                    }
+                    if (promotionInfo.Combat != null)
+                    {
+                        CommanderData.CombatRank = promotionInfo.Combat.StringValue();
+                    }
+                    if (promotionInfo.Explore != null)
+                    {
+                        CommanderData.ExplorationRank = promotionInfo.Explore.StringValue();
+                    }
+                    if (promotionInfo.Trade != null)
+                    {
+                        CommanderData.TradeRank = promotionInfo.Trade.StringValue();
+                    }
+
+                    if (promotionInfo.Soldier != null)
+                    {
+                        CommanderData.SoldierRank = promotionInfo.Soldier.StringValue();
+                    }
+                    if (promotionInfo.Exobiologist != null)
+                    {
+                        CommanderData.ExobiologistRank = promotionInfo.Exobiologist.StringValue();
+                    }
+
+                    break;
+
+                case "BuySuit":
+                    var buySuitInfo = (BuySuitEvent.BuySuitEventArgs)e;
+
+                    CommanderData.Credits -= buySuitInfo.Price;
+
+                    break;
+                case "SellSuit":
+                    var sellSuitInfo = (SellSuitEvent.SellSuitEventArgs)e;
+
+                    CommanderData.Credits -= sellSuitInfo.Price;
+
+                    break;
+                case "UpgradeSuit":
+                    var upgradeSuitInfo = (UpgradeSuitEvent.UpgradeSuitEventArgs)e;
+
+                    CommanderData.Credits -= upgradeSuitInfo.Cost;
+
+                    break;
+
+                case "DeleteSuitLoadout":
+                    var deleteSuitLoadoutInfo = (DeleteSuitLoadoutEvent.DeleteSuitLoadoutEventArgs)e;
+
+                    break;
+                case "SwitchSuitLoadout":
+                    var switchSuitLoadoutInfo = (SwitchSuitLoadoutEvent.SwitchSuitLoadoutEventArgs)e;
+
+                    break;
+                case "CreateSuitLoadout":
+                    var createSuitLoadoutInfo = (CreateSuitLoadoutEvent.CreateSuitLoadoutEventArgs)e;
+
+                    break;
+                case "RenameSuitLoadout":
+                    var renameSuitLoadoutInfo = (RenameSuitLoadoutEvent.RenameSuitLoadoutEventArgs)e;
+
+                    break;
+
+                case "BuyWeapon":
+                    var buyWeaponInfo = (BuyWeaponEvent.BuyWeaponEventArgs)e;
+
+                    CommanderData.Credits -= buyWeaponInfo.Price;
+
+                    break;
+                case "SellWeapon":
+                    var sellWeaponInfo = (SellWeaponEvent.SellWeaponEventArgs)e;
+
+                    CommanderData.Credits -= sellWeaponInfo.Price;
+
+                    break;
+                case "UpgradeWeapon":
+                    var upgradeWeaponInfo = (UpgradeWeaponEvent.UpgradeWeaponEventArgs)e;
+
+                    CommanderData.Credits -= upgradeWeaponInfo.Cost;
+
+                    break;
+
+                case "BackPackMaterials":
+                    var backPackMaterialsInfo = (BackPackMaterialsEvent.BackPackMaterialsEventArgs)e;
+
+                    Material.HandleBackPackMaterialsEvent(backPackMaterialsInfo);
+
+                    break;
+                case "ShipLockerMaterials":
+                    var shipLockerMaterialsInfo = (ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs)e;
+
+                    Material.HandleShipLockerMaterialsEvent(shipLockerMaterialsInfo);
+
+                    break;
+                case "BuyMicroResources":
+                    var buyMicroResourcesInfo = (BuyMicroResourcesEvent.BuyMicroResourcesEventArgs)e;
+
+                    Material.HandleBuyMicroResourcesEvent(buyMicroResourcesInfo);
+
+                    CommanderData.Credits -= buyMicroResourcesInfo.Price;
+
+                    break;
+                case "SellMicroResources":
+                    var sellMicroResourcesInfo = (SellMicroResourcesEvent.SellMicroResourcesEventArgs)e;
+
+                    Material.HandleSellMicroResourcesEvent(sellMicroResourcesInfo);
+
+                    CommanderData.Credits += sellMicroResourcesInfo.Price;
+
+                    break;
+
+                case "TransferMicroResources":
+
+                    var transferMicroResourcesInfo = (TransferMicroResourcesEvent.TransferMicroResourcesEventArgs)e;
+
+                    Material.HandleTransferMicroResourcesEvent(transferMicroResourcesInfo);
+
+                    break;
+
+                case "TradeMicroResources":
+                    var tradeMicroResourcesInfo = (TradeMicroResourcesEvent.TradeMicroResourcesEventArgs)e;
+
+                    Material.HandleTradeMicroResourcesEvent(tradeMicroResourcesInfo);
+
+                    break;
+
+                case "DropItems":
+                    var dropItemsInfo = (DropItemsEvent.DropItemsEventArgs)e;
+
+                    Material.HandleDropItemsEvent(dropItemsInfo);
+
+                    break;
+                case "CollectItems":
+                    var collectItemsInfo = (CollectItemsEvent.CollectItemsEventArgs)e;
+
+                    Material.HandleCollectItemsEvent(collectItemsInfo);
+
+                    break;
+
+                case "UseConsumable":
+                    var useConsumableInfo = (UseConsumableEvent.UseConsumableEventArgs)e;
+
+                    Material.HandleUseConsumableEvent(useConsumableInfo);
+
+                    break;
+
+                case "SellOrganicData":
+                    var sellOrganicDataInfo = (SellOrganicDataEvent.SellOrganicDataEventArgs)e;
+
+                    if (sellOrganicDataInfo.BioData?.Any() == true)
+                    {
+                        foreach (var b in sellOrganicDataInfo.BioData)
+                        {
+                            CommanderData.Credits += b.Bonus + b.Value;
+                        }
+                    }
+
+                    break;
+                case "ScanOrganic":
+                    var scanOrganicInfo = (ScanOrganicEvent.ScanOrganicEventArgs)e;
+
+                    break;
+
+                case "BookTaxi":
+                    var bookTaxiInfo = (BookTaxiEvent.BookTaxiEventArgs)e;
+
+                    CommanderData.Credits -= bookTaxiInfo.Cost;
+
+                    break;
+                case "BookDropship":
+                    var bookDropshipInfo = (BookDropshipEvent.BookDropshipEventArgs)e;
+
+                    CommanderData.Credits -= bookDropshipInfo.Cost;
+
+                    break;
+
+                case "CancelTaxi":
+                    var cancelTaxiInfo = (CancelTaxiEvent.CancelTaxiEventArgs)e;
+
+                    CommanderData.Credits += cancelTaxiInfo.Refund;
+
+                    break;
+                case "CancelDropship":
+                    var cancelDropshipInfo = (CancelDropshipEvent.CancelDropshipEventArgs)e;
+
+                    CommanderData.Credits += cancelDropshipInfo.Refund;
+
+                    break;
+
+                case "DropShipDeploy":
+                    var dropShipDeployInfo = (DropShipDeployEvent.DropShipDeployEventArgs)e;
+
+                    break;
+                case "LoadoutRemoveModule":
+                    var loadoutRemoveModuleInfo = (LoadoutRemoveModuleEvent.LoadoutRemoveModuleEventArgs)e;
+
+                    break;
+                case "LoadoutEquipModule":
+                    var loadoutEquipModuleInfo = (LoadoutEquipModuleEvent.LoadoutEquipModuleEventArgs)e;
+
+                    break;
+                case "Embark":
+                    var embarkInfo = (EmbarkEvent.EmbarkEventArgs)e;
+
+                    break;
+                case "Disembark":
+                    var disembarkInfo = (DisembarkEvent.DisembarkEventArgs)e;
+
+                    break;
+
                 case "Music":
 
                     var musicInfo = (MusicEvent.MusicEventArgs)e;
                     
                     switch (musicInfo.MusicTrack)
                     {
+                        case "SystemMap":
+                        case "GalaxyMap":
+                        case "DestinationFromHyperspace":
+                        case "Supercruise":
+                        case "DestinationFromSupercruise":
+                        case "Starport":
+                            break;
+
                         case "MainMenu":
                             //TabLCDStartElite.Create();
                             break;
@@ -1518,7 +1806,7 @@ namespace Elite
 
                     var receiveTextInfo = (ReceiveTextEvent.ReceiveTextEventArgs) e;
 
-                    var channel = receiveTextInfo.Channel.ToString();
+                    var channel = receiveTextInfo.Channel.StringValue();
 
                     // copied from EddiJournalMonitor https://github.com/EDCD/EDDI
 

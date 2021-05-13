@@ -1,0 +1,70 @@
+@using System
+@using System.Collections.Generic
+@using Elite
+@using System.Linq
+@{
+    Layout = "layout.cshtml";
+    var odd = true;
+}
+
+<div class="main">
+
+    <div class="cardcaption">&nbsp;</div>
+    
+    @if (Model.MaterialCount == 0)
+    {
+        <div class="cardcaption data">SHIP LOCKER EMPTY</div>
+    }
+
+    <table class="zebratable">
+        <tbody>
+
+            @if (Model.CurrentCard == 0)
+            {
+                foreach (var m in Model.Items)
+                {
+                    <tr class="@(odd ? "zebraodd": "zebraeven")">
+                        <td class="caption nowrap">@m.Value.Name</td>
+                        <td class="data right">@m.Value.Count</td>
+                    </tr>
+                    odd = !odd;
+                }
+            }
+            else if (Model.CurrentCard == 1)
+            {
+                foreach (var m in Model.Components)
+                {
+                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td class="caption nowrap">@m.Value.Name</td>
+                        <td class="data right">@m.Value.Count</td>
+                    </tr>
+                    odd = !odd;
+                }
+            }
+            else if (Model.CurrentCard == 2)
+            {
+                foreach (var m in Model.Consumables)
+                {
+                    <tr class="@(odd ? "zebraodd": "zebraeven")">
+                        <td class="caption nowrap">@m.Value.Name</td>
+                        <td class="data right">@m.Value.Count</td>
+                    </tr>
+                    odd = !odd;
+                }
+            }
+            else if (Model.CurrentCard == 3)
+            {
+                foreach (var m in Model.Data)
+                {
+                    <tr class="@(odd ? "zebraodd": "zebraeven")">
+                        <td class="caption nowrap">@m.Value.Name</td>
+                        <td class="data right">@m.Value.Count</td>
+                    </tr>
+                    odd = !odd;
+                }
+            }
+        </tbody>
+    </table>
+
+
+</div>

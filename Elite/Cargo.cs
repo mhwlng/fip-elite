@@ -13,7 +13,7 @@ namespace Elite
             public int Count { get; set; }
             public int Stolen { get; set; }
 
-            public long MissionID { get; set; }
+            public string MissionID { get; set; }
 
             public string MissionName { get; set; } // only filled in FipPanel.cs
             public string System { get; set; } // only filled in FipPanel.cs

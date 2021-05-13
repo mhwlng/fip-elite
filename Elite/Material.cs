@@ -25,6 +25,10 @@ namespace Elite
             public int Count { get; set; }
         }
 
+        public static Dictionary<string, MaterialItem> ShipLockerList = new Dictionary<string, MaterialItem>();
+
+        public static Dictionary<string, MaterialItem> BackPackList = new Dictionary<string, MaterialItem>();
+
         public static Dictionary<string, MaterialItem> MaterialList = new Dictionary<string, MaterialItem>();
 
         public static Dictionary<string, Dictionary<string,MaterialHistoryItem>> MaterialHistoryList = new Dictionary<string, Dictionary<string,MaterialHistoryItem>>();
@@ -221,9 +225,9 @@ namespace Elite
 
         public static void HandleMissionCompletedEvent(MissionCompletedEvent.MissionCompletedEventArgs info)
         {
-            if (info.MaterialReward?.Any() == true)
+            if (info.MaterialsReward?.Any() == true)
             {
-                foreach (var i in info.MaterialReward)
+                foreach (var i in info.MaterialsReward)
                 {
                     if (MaterialList.ContainsKey(i.Name))
                     {
@@ -239,6 +243,241 @@ namespace Elite
                 }
 
             }
+        }
+
+        public static void HandleBackPackMaterialsEvent(BackPackMaterialsEvent.BackPackMaterialsEventArgs info)
+        {
+            BackPackList = new Dictionary<string, MaterialItem>();
+
+            if (info.Items?.Any() == true)
+            {
+                foreach (var e in info.Items)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                    BackPackList.Add(e.Name, new MaterialItem { Category = "Item", Name = name, Count = e.Count });
+                }
+            }
+
+            if (info.Components?.Any() == true)
+            {
+                foreach (var e in info.Components)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                    BackPackList.Add(e.Name, new MaterialItem { Category = "Component", Name = name, Count = e.Count });
+                }
+            }
+
+            if (info.Consumables?.Any() == true)
+            {
+                foreach (var e in info.Consumables)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                    BackPackList.Add(e.Name, new MaterialItem { Category = "Consumable", Name = name, Count = e.Count });
+                }
+            }
+
+            if (info.Data?.Any() == true)
+            {
+                foreach (var e in info.Data)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                    BackPackList.Add(e.Name, new MaterialItem { Category = "Data", Name = name, Count = e.Count });
+                }
+            }
+
+        }
+
+        public static void HandleShipLockerMaterialsEvent(ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs info)
+        {
+            ShipLockerList = new Dictionary<string, MaterialItem>();
+
+            if (info.Items?.Any() == true)
+            {
+                foreach (var e in info.Items)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Item", Name = name, Count = e.Count });
+                }
+            }
+
+            if (info.Components?.Any() == true)
+            {
+                foreach (var e in info.Components)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Component", Name = name, Count = e.Count });
+                }
+            }
+
+            if (info.Consumables?.Any() == true)
+            {
+                foreach (var e in info.Consumables)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Consumable", Name = name, Count = e.Count});
+                }
+            }
+
+            if (info.Data?.Any() == true)
+            {
+                foreach (var e in info.Data)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Data", Name = name, Count = e.Count });
+                }
+            }
+
+        }
+
+        //"BuyMicroResources", "Name":"healthpack", "Name_Localised":"Medkit", "Category":"Consumable", "Count":1, "Price":1000, "MarketID":3221524992 }
+
+        public static void HandleBuyMicroResourcesEvent(BuyMicroResourcesEvent.BuyMicroResourcesEventArgs info)
+        {
+            if (ShipLockerList.ContainsKey(info.Name))
+            {
+                ShipLockerList[info.Name].Count += info.Count;
+            }
+            else
+            {
+                var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(info.Name.ToLower())).Trim();
+
+                ShipLockerList.Add(info.Name, new MaterialItem { Category = info.Category, Name = name, Count = info.Count });
+            }
+
+        }
+
+        public static void HandleSellMicroResourcesEvent(SellMicroResourcesEvent.SellMicroResourcesEventArgs info)
+        {
+            foreach (var e in info.MicroResources)
+            {
+                if (ShipLockerList.ContainsKey(e.Name))
+                {
+                    ShipLockerList[e.Name].Count -= e.Count;
+
+                    if (ShipLockerList[e.Name].Count == 0)
+                    {
+                        ShipLockerList.Remove(e.Name);
+                    }
+                }
+            }
+        }
+
+        // "Transfers":[ { "Name":"healthpack", "Name_Localised":"Medkit", "Category":"Consumable", "Count":1, "Direction":"ToShipLocker" }, { "Name":"energycell", "Name_Localised":"Energy Cell", "Category":"Consumable", "Count":1, "Direction":"ToShipLocker" } ] }
+        public static void HandleTransferMicroResourcesEvent(TransferMicroResourcesEvent.TransferMicroResourcesEventArgs info)
+        {
+            foreach (var e in info.Transfers)
+            {
+                if (e.Direction == "ToShipLocker")
+                {
+                    if (ShipLockerList.ContainsKey(e.Name))
+                    {
+                        ShipLockerList[e.Name].Count += e.Count;
+                    }
+                    else
+                    {
+                        var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                        ShipLockerList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count });
+                    }
+
+                    //-------------------------
+
+                    if (BackPackList.ContainsKey(e.Name))
+                    {
+                        BackPackList[e.Name].Count -= e.Count;
+                    }
+
+                    if (BackPackList[e.Name].Count == 0)
+                    {
+                        BackPackList.Remove(e.Name);
+                    }
+
+                }
+                else if (e.Direction == "ToBackpack")
+                {
+                    if (ShipLockerList.ContainsKey(e.Name))
+                    {
+                        ShipLockerList[e.Name].Count -= e.Count;
+                    }
+
+                    if (ShipLockerList[e.Name].Count == 0)
+                    {
+                        ShipLockerList.Remove(e.Name);
+                    }
+
+                    // -----------------------
+
+                    if (BackPackList.ContainsKey(e.Name))
+                    {
+                        BackPackList[e.Name].Count += e.Count;
+                    }
+                    else
+                    {
+                        var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                        BackPackList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count });
+                    }
+
+                }
+            }
+
+        }
+
+        public static void HandleDropItemsEvent(DropItemsEvent.DropItemsEventArgs info)
+        {
+            if (BackPackList.ContainsKey(info.Name))
+            {
+                BackPackList[info.Name].Count -= info.Count;
+
+                if (BackPackList[info.Name].Count == 0)
+                {
+                    BackPackList.Remove(info.Name);
+                }
+            }
+
+        }
+
+        public static void HandleCollectItemsEvent(CollectItemsEvent.CollectItemsEventArgs info)
+        {
+            if (BackPackList.ContainsKey(info.Name))
+            {
+                BackPackList[info.Name].Count += info.Count;
+            }
+            else
+            {
+                var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(info.Name.ToLower())).Trim();
+
+                BackPackList.Add(info.Name, new MaterialItem { Category = info.Type, Name = name, Count = info.Count });
+            }
+
+
+        }
+
+        public static void HandleUseConsumableEvent(UseConsumableEvent.UseConsumableEventArgs info)
+        {
+            if (BackPackList.ContainsKey(info.Name))
+            {
+                BackPackList[info.Name].Count -= 1;
+
+                if (BackPackList[info.Name].Count == 0)
+                {
+                    BackPackList.Remove(info.Name);
+                }
+            }
+
+        }
+
+        public static void HandleTradeMicroResourcesEvent(TradeMicroResourcesEvent.TradeMicroResourcesEventArgs info)
+        {
+            //????????????????????????????????
         }
 
 

@@ -40,7 +40,8 @@ namespace Elite
         HomeMenu = 0,
         InfoMenu = 1,
         ShipMenu = 2,
-        LocationsMenu = 3
+        SuitMenu = 3,
+        LocationsMenu = 4
     }
 
     public enum LcdTab
@@ -50,9 +51,9 @@ namespace Elite
 
         Navigation = 1,
         Target = 2,
-        // 3
-        InfoMenu = 4, // info ->
-        ShipMenu = 5, // ship ->
+        InfoMenu = 3, // info ->
+        ShipMenu = 4, // ship ->
+        PersonMenu = 5, // suit ->
         LocationsMenu = 6, // locations ->
 
         //---------------
@@ -75,12 +76,21 @@ namespace Elite
 
         //---------------
 
-        LocationsBack = 19, // <- back
-        POI = 20,
-        Galaxy = 21,
-        Engineers = 22,
-        Powers = 23,
-        Mining = 24
+        SuitBack = 19, // <- back
+        ShipLocker = 20,
+        BackPack = 21,
+        // = 22,
+        // = 23,
+        // = 24,
+
+        //---------------
+
+        LocationsBack = 25, // <- back
+        POI = 26,
+        Galaxy = 27,
+        Engineers = 28,
+        Powers = 29,
+        Mining = 30
 
     }
 
@@ -712,6 +722,10 @@ namespace Elite
                                     _currentTabCursor = LcdTab.Mining;
                                     break;
 
+                                case LcdTab.SuitBack:
+                                    _currentTabCursor = LcdTab.BackPack;
+                                    break;
+
                                 default:
                                     _currentTabCursor -= 1;
                                     break;
@@ -770,6 +784,10 @@ namespace Elite
                                     _currentTabCursor = LcdTab.LocationsBack;
                                     break;
 
+                                case LcdTab.BackPack:
+                                    _currentTabCursor = LcdTab.SuitBack;
+                                    break;
+
                                 default:
                                     _currentTabCursor += 1;
                                     break;
@@ -797,15 +815,19 @@ namespace Elite
 
                             switch (((int)_currentTabCursor - 1) / 6)
                             {
-                                case 1:
+                                case (int)LcdPage.InfoMenu:
                                     buttons = 32; // back
                                     _currentTabCursor = LcdTab.InfoMenu;
                                     break;
-                                case 2:
+                                case (int)LcdPage.ShipMenu:
                                     buttons = 32; // back
                                     _currentTabCursor = LcdTab.ShipMenu;
                                     break;
-                                case 3:
+                                case (int)LcdPage.SuitMenu:
+                                    buttons = 32; // back
+                                    _currentTabCursor = LcdTab.PersonMenu;
+                                    break;
+                                case (int)LcdPage.LocationsMenu:
                                     buttons = 32; // back
                                     _currentTabCursor = LcdTab.LocationsMenu;
                                     break;
@@ -840,6 +862,10 @@ namespace Elite
                                 case LcdTab.ShipMenu:
                                     buttons = CalculateButton(_currentTabCursor);
                                     _currentTabCursor = LcdTab.ShipBack;
+                                    break;
+                                case LcdTab.PersonMenu:
+                                    buttons = CalculateButton(_currentTabCursor);
+                                    _currentTabCursor = LcdTab.SuitBack;
                                     break;
                                 case LcdTab.LocationsMenu:
                                     buttons = CalculateButton(_currentTabCursor);
@@ -893,6 +919,13 @@ namespace Elite
                                     _currentTabCursor = LcdTab.ShipMenu;
                                     break;
 
+                                case LcdTab.PersonMenu:
+                                    _currentTabCursor = LcdTab.SuitBack;
+                                    break;
+                                case LcdTab.SuitBack:
+                                    _currentTabCursor = LcdTab.PersonMenu;
+                                    break;
+
                                 case LcdTab.LocationsMenu:
                                     _currentTabCursor = LcdTab.LocationsBack;
                                     break;
@@ -921,7 +954,8 @@ namespace Elite
             var ledLeft = false;
 
             if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
-                CurrentTab == LcdTab.Engineers ||
+                CurrentTab == LcdTab.Engineers || CurrentTab == LcdTab.ShipLocker ||
+                CurrentTab == LcdTab.BackPack ||
                 CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                 CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                 CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
@@ -975,7 +1009,8 @@ namespace Elite
                 {
                     case 8: // scroll clockwise
                         if (state && (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
-                                      CurrentTab == LcdTab.Engineers ||
+                                      CurrentTab == LcdTab.Engineers || CurrentTab == LcdTab.ShipLocker ||
+                                      CurrentTab == LcdTab.BackPack ||
                                       CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                       CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining || 
                                       CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer || 
@@ -1013,7 +1048,8 @@ namespace Elite
                     case 16: // scroll anti-clockwise
 
                         if (state && (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
-                                      CurrentTab == LcdTab.Engineers ||
+                                      CurrentTab == LcdTab.Engineers || CurrentTab == LcdTab.ShipLocker ||
+                                      CurrentTab == LcdTab.BackPack ||
                                       CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                       CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                       CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer || 
@@ -1100,7 +1136,8 @@ namespace Elite
                                     case 512:
 
                                         if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
-                                            CurrentTab == LcdTab.Engineers ||
+                                            CurrentTab == LcdTab.Engineers || CurrentTab == LcdTab.ShipLocker ||
+                                            CurrentTab == LcdTab.BackPack ||
                                             CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                             CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                             CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
@@ -1136,7 +1173,8 @@ namespace Elite
                                     case 1024:
 
                                         if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
-                                            CurrentTab == LcdTab.Engineers ||
+                                            CurrentTab == LcdTab.Engineers || CurrentTab == LcdTab.ShipLocker ||
+                                            CurrentTab == LcdTab.BackPack ||
                                             CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                             CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                             CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
@@ -1182,16 +1220,20 @@ namespace Elite
                                         mustRefresh = SetTab(LcdTab.Target);
                                         break;
                                     case 128:
-                                        break;
-                                    case 256:
                                         mustRefresh = true;
                                         _currentPage = LcdPage.InfoMenu;
                                         _lastTab = LcdTab.Init;
                                         App.PlayClickSound();
                                         break;
-                                    case 512:
+                                    case 256:
                                         mustRefresh = true;
                                         _currentPage = LcdPage.ShipMenu;
+                                        _lastTab = LcdTab.Init;
+                                        App.PlayClickSound();
+                                        break;
+                                    case 512:
+                                        mustRefresh = true;
+                                        _currentPage = LcdPage.SuitMenu;
                                         _lastTab = LcdTab.Init;
                                         App.PlayClickSound();
                                         break;
@@ -1278,6 +1320,38 @@ namespace Elite
 
                                             mustRefresh = SetTab(LcdTab.Engineer);
                                         }
+                                        break;
+                                    case 2048:
+                                        mustRefresh = true;
+                                        App.PlayClickSound();
+                                        break;
+                                }
+                            }
+
+                            break;
+
+                        case LcdPage.SuitMenu:
+                            if (state)
+                            {
+                                switch (button)
+                                {
+                                    case 32:
+                                        mustRefresh = true;
+                                        _currentPage = LcdPage.HomeMenu;
+                                        _lastTab = LcdTab.Init;
+                                        App.PlayClickSound();
+                                        break;
+                                    case 64:
+                                        mustRefresh = SetTab(LcdTab.ShipLocker);
+                                        break;
+                                    case 128:
+                                        mustRefresh = SetTab(LcdTab.BackPack);
+                                        break;
+                                    case 256:
+                                        break;
+                                    case 512:
+                                        break;
+                                    case 1024:
                                         break;
                                     case 2048:
                                         mustRefresh = true;
@@ -1668,6 +1742,12 @@ namespace Elite
                             case LcdTab.HWInfo:
                                 CheckCardSelectionLimits(1);
                                 break;
+                            case LcdTab.ShipLocker:
+                                CheckCardSelectionLimits(3);
+                                break;
+                            case LcdTab.BackPack:
+                                CheckCardSelectionLimits(3);
+                                break;
                             case LcdTab.Galaxy:
 
                                 if (_currentZoomLevel[(int)CurrentTab] < 0)
@@ -1747,6 +1827,12 @@ namespace Elite
                                                 ExplorationRank = Data.CommanderData.ExplorationRank,
                                                 ExplorationRankProgress = Data.CommanderData.ExplorationRankProgress,
 
+                                                SoldierRank = Data.CommanderData.SoldierRank,
+                                                SoldierRankProgress = Data.CommanderData.SoldierRankProgress,
+
+                                                ExobiologistRank = Data.CommanderData.ExobiologistRank,
+                                                ExobiologistRankProgress = Data.CommanderData.ExobiologistRankProgress,
+
                                                 CqcRank = Data.CommanderData.CqcRank?.Replace("SemiProfessional", "SemiPro"),
 
                                                 CqcRankProgress = Data.CommanderData.CqcRankProgress,
@@ -1770,6 +1856,8 @@ namespace Elite
 
                                         lock (Module.RefreshModuleLock)
                                         {
+                                            var onFoot = Data.StatusData.OnFoot;
+
                                             //var shipData = Ships.GetCurrentShip() ?? new Ships.ShipData();
 
                                             str =
@@ -1778,6 +1866,8 @@ namespace Elite
                                                     CurrentTab = CurrentTab,
                                                     CurrentPage = _currentPage,
                                                     CurrentCard = CurrentCard[(int) CurrentTab],
+
+                                                    OnFoot = onFoot,
 
                                                     CurrentShip =
                                                         Ships.ShipsList.FirstOrDefault(x => x.Stored == false),
@@ -1801,7 +1891,10 @@ namespace Elite
                                         {
                                             var routeList = new List<RouteItem>();
 
-                                            if (Data.LocationData.StarSystem != Data.LocationData.FsdTargetName &&
+                                            var onFoot = Data.StatusData.OnFoot;
+
+                                            if (!onFoot &&
+                                                Data.LocationData.StarSystem != Data.LocationData.FsdTargetName &&
                                                 Data.LocationData.RemainingJumpsInRoute > 0 && Route.RouteList.Count >=
                                                 Data.LocationData.RemainingJumpsInRoute)
                                             {
@@ -1817,7 +1910,7 @@ namespace Elite
 
                                             var fuelMain = currentShip?.CurrentFuelMain ?? 0;
 
-                                            if (fuelMain > 0)
+                                            if (!onFoot && fuelMain > 0)
                                             {
                                                 foreach (var r in routeList)
                                                 {
@@ -1856,7 +1949,7 @@ namespace Elite
                                                 }
                                             }
 
-                                            if (routeList.Count >= 1)
+                                            if (!onFoot && routeList.Count >= 1)
                                             {
                                                 var nextJump = routeList[0];
                                                 if (nextJump.StarSystem == Data.LocationData.FsdTargetName)
@@ -1877,7 +1970,9 @@ namespace Elite
                                                         CurrentPage = _currentPage,
                                                         CurrentCard = CurrentCard[(int) CurrentTab],
 
-                                                        CurrentShip = currentShip,
+                                                        CurrentShip = currentShip ?? new Ships.ShipData(),
+
+                                                        OnFoot = onFoot,
 
                                                         StarSystem = Data.LocationData.StarSystem,
 
@@ -2164,11 +2259,11 @@ namespace Elite
                                         {
 
                                             var cargo = Cargo.CargoList
-                                                .Where(x => x.Value.Count > 0 && x.Value.MissionID == 0)
+                                                .Where(x => x.Value.Count > 0 && (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0" ))
                                                 .Select(x => x.Value).OrderBy(x => x.Name).ToList();
 
                                             var missionCargo = Cargo.CargoList
-                                                .Where(x => x.Value.Count > 0 && x.Value.MissionID > 0)
+                                                .Where(x => x.Value.Count > 0 && !string.IsNullOrEmpty(x.Value.MissionID)  && x.Value.MissionID != "0")
                                                 .Select(x => new Cargo.CargoItem
                                                 {
                                                     Count = x.Value.Count,
@@ -2308,26 +2403,82 @@ namespace Elite
                                             });
 
                                         break;
-/*
-                                    case LcdTab.Events:
 
-                                        var eventlist = "";
-                                        foreach (var b in Data.EventHistory)
-                                        {
-                                            eventlist += b + "<br/>";
-                                        }
+                                    case LcdTab.ShipLocker:
 
                                         str =
-                                            Engine.Razor.Run("events.cshtml", null, new
+                                            Engine.Razor.Run("shiplocker.cshtml", null, new
                                             {
                                                 CurrentTab = CurrentTab,
                                                 CurrentPage = _currentPage,
+                                                CurrentCard = CurrentCard[(int)CurrentTab],
 
-                                                EventList = eventlist
+                                                MaterialCount = Material.ShipLockerList.Count,
+
+                                                Items = Material.ShipLockerList.Where(x => x.Value.Category == "Item")
+                                                    .OrderBy(x => x.Value.Name),
+                                                Components = Material.ShipLockerList
+                                                    .Where(x => x.Value.Category == "Component")
+                                                    .OrderBy(x => x.Value.Name),
+                                                Consumables = Material.ShipLockerList
+                                                    .Where(x => x.Value.Category == "Consumable")
+                                                    .OrderBy(x => x.Value.Name),
+                                                Data = Material.ShipLockerList
+                                                    .Where(x => x.Value.Category == "Data")
+                                                    .OrderBy(x => x.Value.Name)
+
                                             });
 
                                         break;
-*/
+
+                                    case LcdTab.BackPack:
+
+                                        str =
+                                            Engine.Razor.Run("backpack.cshtml", null, new
+                                            {
+                                                CurrentTab = CurrentTab,
+                                                CurrentPage = _currentPage,
+                                                CurrentCard = CurrentCard[(int)CurrentTab],
+
+                                                MaterialCount = Material.BackPackList.Count,
+
+                                                Items = Material.BackPackList.Where(x => x.Value.Category == "Item")
+                                                    .OrderBy(x => x.Value.Name),
+                                                Components = Material.BackPackList
+                                                    .Where(x => x.Value.Category == "Component")
+                                                    .OrderBy(x => x.Value.Name),
+                                                Consumables = Material.BackPackList
+                                                    .Where(x => x.Value.Category == "Consumable")
+                                                    .OrderBy(x => x.Value.Name),
+                                                Data = Material.BackPackList
+                                                .Where(x => x.Value.Category == "Data")
+                                                .OrderBy(x => x.Value.Name)
+
+                                            });
+
+                                        break;
+
+
+                                        /*
+                                        case LcdTab.Events:
+
+                                            var eventlist = "";
+                                            foreach (var b in Data.EventHistory)
+                                            {
+                                                eventlist += b + "<br/>";
+                                            }
+
+                                            str =
+                                                Engine.Razor.Run("events.cshtml", null, new
+                                                {
+                                                    CurrentTab = CurrentTab,
+                                                    CurrentPage = _currentPage,
+
+                                                    EventList = eventlist
+                                                });
+
+                                            break;
+                                        */
                                 }
 
 
@@ -2519,6 +2670,8 @@ namespace Elite
                                     else if (_currentPage == LcdPage.InfoMenu && i >= 5)
                                         SetLed(i, false);
                                     else if (_currentPage == LcdPage.ShipMenu && i == 6 && string.IsNullOrEmpty(Engineer.CommanderName))
+                                        SetLed(i, false);
+                                    else if (_currentPage == LcdPage.SuitMenu && i > 3) // change !!!!!!!!!!!!!
                                         SetLed(i, false);
                                     else
                                         SetLed(i, true);

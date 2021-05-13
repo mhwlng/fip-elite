@@ -8,17 +8,17 @@
                 <tr>
                     <td><div class="@(Model.CurrentTab == LcdTab.Navigation ? "highlight" : "") @(Model.Cursor == LcdTab.Navigation ? "menucursor" : "")">NAVIGATION</div></td>
                 </tr>
-            <tr>
-                <td><div class="@(Model.CurrentTab == LcdTab.Target ? "highlight" : "") @(Model.Cursor == LcdTab.Target ? "menucursor" : "")">TARGET</div></td>
-            </tr>
-            <tr>
-                <td><div class="disabled">&nbsp;</div></td>
-            </tr>
+                <tr>
+                    <td><div class="@(Model.CurrentTab == LcdTab.Target ? "highlight" : "") @(Model.Cursor == LcdTab.Target ? "menucursor" : "")">TARGET</div></td>
+                </tr>
                 <tr>
                     <td><div class="navigation @(Model.Cursor == LcdTab.InfoMenu ? "menucursor" : "")">INFO &#x25b6;</div></td>
                 </tr>
                 <tr>
                     <td><div class="navigation @(Model.Cursor == LcdTab.ShipMenu ? "menucursor" : "")">SHIP &#x25b6;</div></td>
+                </tr>
+                <tr>
+                    <td><div class="navigation @(Model.Cursor == LcdTab.PersonMenu ? "menucursor" : "")">PERSON &#x25b6;</div></td>
                 </tr>
                 <tr>
                     <td><div class="navigation @(Model.Cursor == LcdTab.LocationsMenu ? "menucursor" : "")">LOCATIONS &#x25b6;</div></td>
@@ -97,6 +97,36 @@
                     }
                 </td>
             </tr>
+            </tbody>
+        </table>
+    }
+    else if (Model.CurrentPage == LcdPage.SuitMenu)
+    {
+        <table class="menu">
+            <tbody>
+                <tr>
+                    <td><div class="navigation @(Model.Cursor == LcdTab.SuitBack ? "menucursor" : "")">&#x25c0; BACK</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="@(Model.CurrentTab == LcdTab.ShipLocker ? "highlight" : "") @(Model.Cursor == LcdTab.ShipLocker ? "menucursor" : "")">LOCKER</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="@(Model.CurrentTab == LcdTab.BackPack ? "highlight" : "") @(Model.Cursor == LcdTab.BackPack ? "menucursor" : "")">BACKPACK</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><div class="disabled">&nbsp;</div></td>
+                </tr>
+                <tr>
+                    <td><div class="disabled">&nbsp;</div></td>
+                </tr>
+                <tr>
+                    <td><div class="disabled">&nbsp;</div></td>
+                </tr>
+
             </tbody>
         </table>
     }

@@ -116,7 +116,7 @@ namespace ImportData
         //public string SettlementSecurity { get; set; }
 
         //[JsonProperty("body_id")]
-        //public int? BodyId { get; set; }
+        //public long? BodyId { get; set; }
 
         //[JsonProperty("controlling_minor_faction_id")]
         //public int? ControllingMinorFactionId { get; set; }

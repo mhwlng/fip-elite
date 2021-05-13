@@ -49,7 +49,7 @@ namespace Elite
     {
         public int id { get; set; }
         public long id64 { get; set; }
-        public int bodyId { get; set; }
+        public long bodyId { get; set; }
         public string name { get; set; } // Maia A
         public Discovery discovery { get; set; }
         [JsonProperty("type")]
