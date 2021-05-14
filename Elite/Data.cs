@@ -1335,6 +1335,78 @@ namespace Elite
 
                     break;
 
+                case "SearchAndRescue":
+                    //When written: when contributing materials to a "research" community goal
+                    var searchAndRescueInfo = (SearchAndRescueEvent.SearchAndRescueEventArgs)e;
+
+                    CommanderData.Credits += searchAndRescueInfo.Reward;
+
+                    break;
+                case "FactionKillBond":
+                    //When written: Player rewarded for taking part in a combat zone
+
+                    var factionKillBondInfo = (FactionKillBondEvent.FactionKillBondEventArgs)e;
+
+                    CommanderData.Credits += factionKillBondInfo.Reward;
+
+                    break;
+                case "DatalinkVoucher":
+
+                    //When written: when scanning a datalink generates a reward
+
+                    var datalinkVoucherInfo = (DatalinkVoucherEvent.DatalinkVoucherEventArgs)e;
+
+                    CommanderData.Credits += datalinkVoucherInfo.Reward;
+
+                    break;
+                case "CommunityGoalReward":
+
+                    //When Written: when receiving a reward for a community goal
+
+                    var communityGoalRewardInfo = (CommunityGoalRewardEvent.CommunityGoalRewardEventArgs)e;
+
+                    CommanderData.Credits += communityGoalRewardInfo.Reward;
+
+                    break;
+                case "CapShipBond":
+
+                    //When written: The player has been rewarded for a capital ship combat
+
+                    var capShipBondInfo = (CapShipBondEvent.CapShipBondEventArgs)e;
+
+                    CommanderData.Credits += capShipBondInfo.Reward;
+
+                    break;
+                case "Bounty":
+
+                    //    When written: player is awarded a bounty for a kill
+
+                    var bountyInfo = (BountyEvent.BountyEventArgs)e;
+
+                    CommanderData.Credits += bountyInfo.TotalReward;
+
+                    break;
+
+                case "MultiSellExplorationData":
+
+                    //When Written: when selling exploration data in Cartographics
+
+                    var multiSellExplorationDataInfo = (MultiSellExplorationDataEvent.MultiSellExplorationDataEventArgs)e;
+
+                    CommanderData.Credits += multiSellExplorationDataInfo.TotalEarnings;
+
+                    break;
+
+                case "SellExplorationData":
+
+                    //When Written: when selling exploration data in Cartographics
+
+                    var sellExplorationDataInfo = (SellExplorationDataEvent.SellExplorationDataEventArgs)e;
+
+                    CommanderData.Credits += sellExplorationDataInfo.TotalEarnings;
+
+                    break;
+
                 case "Materials":
 
                     var materialsInfo = (MaterialsEvent.MaterialsEventArgs)e;
