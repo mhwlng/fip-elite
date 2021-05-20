@@ -7,23 +7,11 @@ using Newtonsoft.Json.Linq;
 
 namespace EliteJournalReader.Events
 {
-    //The "BackPackMaterials" event contains:
-    /*
-     {"timestamp":"2021-03-31T21:32:03Z","event":"BackPackMaterials",
-    "Items":[
-    {"Name":"largecapacitypowerregulator",
-     "Name_Localised":"Power Regulator",
-     "OwnerID":6737826,
-     "MissionID":737622845,
-    "Count":1}],
-    "Components":[],
-    "Consumables":[]}
-     */
-    public class BackPackMaterialsEvent : JournalEvent<BackPackMaterialsEvent.BackPackMaterialsEventArgs>
+    public class BackPackEvent : JournalEvent<BackPackEvent.BackPackEventArgs>
     {
-        public BackPackMaterialsEvent() : base("BackPackMaterials") { }
+        public BackPackEvent() : base("BackPack") { }
 
-        public class BackPackMaterialsEventArgs : JournalEventArgs
+        public class BackPackEventArgs : JournalEventArgs
         {
             public struct Item
             {

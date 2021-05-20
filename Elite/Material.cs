@@ -245,7 +245,7 @@ namespace Elite
             }
         }
 
-        public static void HandleBackPackMaterialsEvent(BackPackMaterialsEvent.BackPackMaterialsEventArgs info)
+        public static void HandleBackPackEvent(BackPackEvent.BackPackEventArgs info)
         {
             BackPackList = new Dictionary<string, MaterialItem>();
 
@@ -290,7 +290,46 @@ namespace Elite
             }
 
         }
+        public static void HandleBackPackChangeEvent(BackPackChangeEvent.BackPackChangeEventArgs info)
+        {
+            if (info.Added?.Any() == true)
+            {
+                foreach (var e in info.Added)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
+                    if (BackPackList.ContainsKey(e.Name))
+                    {
+                        BackPackList[e.Name].Count += e.Count;
+                    }
+                    else
+                    {
+                        BackPackList.Add(e.Name, new MaterialItem { Category = e.Type, Name = name, Count = e.Count });
+                    }
+
+                }
+            }
+
+            if (info.Removed?.Any() == true)
+            {
+                foreach (var e in info.Removed)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                    if (BackPackList.ContainsKey(e.Name))
+                    {
+                        BackPackList[e.Name].Count -= e.Count;
+
+                        if (BackPackList[e.Name].Count == 0)
+                        {
+                            BackPackList.Remove(e.Name);
+                        }
+                    }
+                }
+            }
+
+        }
+        
         public static void HandleShipLockerMaterialsEvent(ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs info)
         {
             ShipLockerList = new Dictionary<string, MaterialItem>();
@@ -369,6 +408,30 @@ namespace Elite
                 }
             }
         }
+
+        public static void HandleTradeMicroResourcesEvent(TradeMicroResourcesEvent.TradeMicroResourcesEventArgs info)
+        {
+            foreach (var e in info.Offered)
+            {
+                if (ShipLockerList.ContainsKey(e.Name))
+                {
+                    ShipLockerList[e.Name].Count -= e.Count;
+
+                    if (ShipLockerList[e.Name].Count == 0)
+                    {
+                        ShipLockerList.Remove(e.Name);
+                    }
+                }
+            }
+
+            //????????????????var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(info.Received.ToLower())).Trim();
+
+            ShipLockerList.Add(info.Received, new MaterialItem { Category = info.Category, Name = info.Received, Count = info.Count });
+
+            //???????????????
+
+        }
+
 
         // "Transfers":[ { "Name":"healthpack", "Name_Localised":"Medkit", "Category":"Consumable", "Count":1, "Direction":"ToShipLocker" }, { "Name":"energycell", "Name_Localised":"Energy Cell", "Category":"Consumable", "Count":1, "Direction":"ToShipLocker" } ] }
         public static void HandleTransferMicroResourcesEvent(TransferMicroResourcesEvent.TransferMicroResourcesEventArgs info)
@@ -475,10 +538,6 @@ namespace Elite
 
         }
 
-        public static void HandleTradeMicroResourcesEvent(TradeMicroResourcesEvent.TradeMicroResourcesEventArgs info)
-        {
-            //????????????????????????????????
-        }
 
 
     }

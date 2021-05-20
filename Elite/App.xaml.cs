@@ -51,6 +51,7 @@ namespace Elite
         public static JournalWatcher journalWatcher;
         public static CargoWatcher cargoWatcher;
         public static NavRouteWatcher navRouteWatcher;
+        public static BackPackWatcher backPackWatcher;
 
         private static StatusWatcher _statusWatcher;
 
@@ -578,6 +579,13 @@ namespace Elite
 
                 navRouteWatcher.StartWatching();
 
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite BackPack Watcher...");
+                backPackWatcher = new BackPackWatcher(path);
+
+                backPackWatcher.BackPackUpdated += Data.HandleBackPackEvent;
+
+                backPackWatcher.StartWatching();
+
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Initializing FIP...");
                 if (!FipHandler.Initialize())
                 {
@@ -691,6 +699,10 @@ namespace Elite
             navRouteWatcher.NavRouteUpdated -= Data.HandleNavRouteEvent;
 
             navRouteWatcher.StopWatching();
+
+            backPackWatcher.BackPackUpdated -= Data.HandleBackPackEvent;
+
+            backPackWatcher.StopWatching();
 
             FipHandler.Close();
 

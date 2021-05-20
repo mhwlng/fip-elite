@@ -1187,8 +1187,7 @@
     "OriginDetails": [
       "Surface prospecting"
     ],
-    "Group": "Category3",
-    "MaximumCapacity": 100
+    "Group": "Category3"
   },
   {
     "Name": "Salvaged Alloys",

@@ -105,17 +105,20 @@
             </tbody>
         </table>
 
-        <table>
-            <tbody>
-            @foreach (var m in Model.Blueprints)
-            {
-                <tr>
-                    <td class="data" style="width: 50px;">&nbsp;&nbsp;&nbsp;@m.GradeString</td>
-                    <td class="caption">@m.Type</td>
-                </tr>
-            }
-            </tbody>
-        </table>
+        if (Model.Blueprints != null)
+        {
+            <table>
+                <tbody>
+                @foreach (var m in Model.Blueprints)
+                {
+                    <tr>
+                        <td class="data" style="width: 50px;">&nbsp;&nbsp;&nbsp;@m.GradeString</td>
+                        <td class="caption">@m.Type</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
 
     }
 </div>

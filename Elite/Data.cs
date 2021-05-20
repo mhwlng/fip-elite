@@ -427,8 +427,11 @@ namespace Elite
             public bool Hot { get; set; }
             public bool VeryCold { get; set; }
             public bool VeryHot { get; set; }
-
-
+            public bool GlideMode { get; set; }
+            public bool OnFootInHangar { get; set; }
+            public bool OnFootSocialSpace { get; set; }
+            public bool OnFootExterior { get; set; }
+            public bool BreathableAtmosphere { get; set; }
         }
 
 
@@ -511,6 +514,12 @@ namespace Elite
             StatusData.VeryCold = (evt.Flags2 & StatusFlags2.VeryCold) != 0;
             StatusData.VeryHot = (evt.Flags2 & StatusFlags2.VeryHot) != 0;
 
+            StatusData.GlideMode = (evt.Flags2 & StatusFlags2.GlideMode) != 0;
+            StatusData.OnFootInHangar = (evt.Flags2 & StatusFlags2.OnFootInHangar) != 0;
+            StatusData.OnFootSocialSpace = (evt.Flags2 & StatusFlags2.OnFootSocialSpace) != 0;
+            StatusData.OnFootExterior = (evt.Flags2 & StatusFlags2.OnFootExterior) != 0;
+            StatusData.BreathableAtmosphere = (evt.Flags2 & StatusFlags2.BreathableAtmosphere) != 0;
+
             var shipData = Ships.GetCurrentShip();
             if (shipData != null)
             {
@@ -551,6 +560,13 @@ namespace Elite
             }
 
             return "";
+        }
+
+        public static void HandleBackPackEvent(object sender, BackPackEvent.BackPackEventArgs e)
+        {
+            if (e?.Components == null) return;
+
+            Material.HandleBackPackEvent(e);
         }
 
         public static void HandleNavRouteEvent(object sender, NavRouteEvent.NavRouteEventArgs e)
@@ -800,85 +816,32 @@ namespace Elite
 
                     break;
 
-                case "ModuleRetrieve":
-                    //When Written: when fetching a previously stored module
-                    var moduleRetrieveInfo = (ModuleRetrieveEvent.ModuleRetrieveEventArgs)e;
-
-                    Module.HandleModuleRetrieve(moduleRetrieveInfo);
-
-                    break;
-
-                case "ModuleBuy":
-                    //When Written: when buying a module in outfitting
-                    var moduleBuyInfo = (ModuleBuyEvent.ModuleBuyEventArgs) e;
-
-                    Module.HandleModuleBuy(moduleBuyInfo);
-
-                    break;
-
-                case "ModuleSwap":
-                    //When Written: when moving a module to a different slot on the ship
-                    var moduleSwapInfo = (ModuleSwapEvent.ModuleSwapEventArgs)e;
-
-                    Module.HandleModuleSwap(moduleSwapInfo);
-
-                    break;
-
-                case "ModuleSell":
-                    //When Written: when selling a module in outfitting
-                    var moduleSellInfo = (ModuleSellEvent.ModuleSellEventArgs) e;
-
-                    Module.HandleModuleSell(moduleSellInfo);
-
-                    break;
-
-                case "ModuleSellRemote":
-                    //When Written: when selling a module in outfitting
-                    var moduleSellRemoteInfo = (ModuleSellRemoteEvent.ModuleSellRemoteEventArgs)e;
-
-                    Module.HandleModuleSellRemote(moduleSellRemoteInfo);
-                    
-                    break;
-
-                case "ModuleStore":
-                    //When Written: when fetching a previously stored module
-                    var moduleStoreInfo = (ModuleStoreEvent.ModuleStoreEventArgs) e;
-
-                    Module.HandleModuleStore(moduleStoreInfo);
-
-                    break;
-
-                case "MassModuleStore":
-                    //When written: when putting multiple modules into storage
-                    var massModuleStoreInfo = (MassModuleStoreEvent.MassModuleStoreEventArgs)e;
-
-                    Module.HandleMassModuleStore(massModuleStoreInfo);
-
-                    break;
-
-                case "FetchRemoteModule":
-                    //    When written: when requesting a module is transferred from storage at another station 
-
-                    var fetchRemoteModuleInfo = (FetchRemoteModuleEvent.FetchRemoteModuleEventArgs)e;
-
-                    Module.HandleFetchRemoteModule(fetchRemoteModuleInfo);
-
-                    break;
-
-                case "StoredModules":
-                    //    When written: when first visiting Outfitting, and when the set of stored modules has changed 
-
-                    var storedModulesInfo = (StoredModulesEvent.StoredModulesEventArgs)e;
-
-                    Module.HandleStoredModules(storedModulesInfo);
-
-                    break;
-
                 case "RefuelAll":
                     //When Written: when refuelling (full tank)
                     var refuelAllInfo = (RefuelAllEvent.RefuelAllEventArgs) e;
 
                     CommanderData.Credits -= refuelAllInfo.Cost;
+                    break;
+
+                case "RefuelPartial":
+                    //When Written: when refuelling (10%)
+                    var RefuelPartialInfo = (RefuelPartialEvent.RefuelPartialEventArgs)e;
+
+                    CommanderData.Credits -= RefuelPartialInfo.Cost;
+                    break;
+
+                case "RestockVehicle":
+                    //When Written: when purchasing an SRV or Fighter
+                    var restockVehicleInfo = (RestockVehicleEvent.RestockVehicleEventArgs)e;
+
+                    CommanderData.Credits -= restockVehicleInfo.Cost;
+                    break;
+
+                case "Resurrect":
+                    //When Written: when purchasing an SRV or Fighter
+                    var ResurrectInfo = (ResurrectEvent.ResurrectEventArgs)e;
+
+                    CommanderData.Credits -= ResurrectInfo.Cost;
                     break;
 
                 case "RepairAll":
@@ -932,6 +895,43 @@ namespace Elite
                     CommanderData.Credits -= payBountiesInfo.Amount;
                     break;
 
+                case "RedeemVoucher":
+                    var redeemVoucherInfo = (RedeemVoucherEvent.RedeemVoucherEventArgs)e;
+
+                    CommanderData.Credits += redeemVoucherInfo.Amount;
+
+                    break;
+
+                case "MarketSell":
+                    //When Written: when selling goods in the market
+
+                    var marketSellInfo = (MarketSellEvent.MarketSellEventArgs)e;
+
+                    CommanderData.Credits += marketSellInfo.TotalSale;
+
+                    Cargo.HandleMarketSellEvent(marketSellInfo);
+
+                    break;
+
+                case "MarketBuy":
+
+                    var marketBuyInfo = (MarketBuyEvent.MarketBuyEventArgs)e;
+
+                    CommanderData.Credits -= marketBuyInfo.TotalCost;
+
+                    Cargo.HandleMarketBuyEvent(marketBuyInfo);
+
+                    break;
+
+                case "SellDrones":
+                    //When Written: when selling unwanted drones back to the market
+
+                    var sellDronesInfo = (SellDronesEvent.SellDronesEventArgs)e;
+
+                    CommanderData.Credits += sellDronesInfo.TotalSale;
+
+                    break;
+
                 case "PayFines":
                     //When Written: when paying fines
                     var payFinesInfo = (PayFinesEvent.PayFinesEventArgs)e;
@@ -940,6 +940,180 @@ namespace Elite
 
                     CommanderData.Credits -= payFinesInfo.Amount;
                     break;
+
+                case "ModuleBuy":
+                    //When Written: when buying a module in outfitting
+                    var moduleBuyInfo = (ModuleBuyEvent.ModuleBuyEventArgs)e;
+
+                    CommanderData.Credits -= moduleBuyInfo.BuyPrice + (moduleBuyInfo.SellPrice ?? 0);
+
+                    Module.HandleModuleBuy(moduleBuyInfo);
+
+                    break;
+
+                case "ModuleSell":
+                    //When Written: when selling a module in outfitting
+                    var moduleSellInfo = (ModuleSellEvent.ModuleSellEventArgs)e;
+
+                    CommanderData.Credits += moduleSellInfo.SellPrice;
+
+                    Module.HandleModuleSell(moduleSellInfo);
+
+                    break;
+
+                case "ModuleSellRemote":
+                    //When Written: when selling a module in outfitting
+                    var moduleSellRemoteInfo = (ModuleSellRemoteEvent.ModuleSellRemoteEventArgs)e;
+
+                    CommanderData.Credits += moduleSellRemoteInfo.SellPrice;
+
+                    Module.HandleModuleSellRemote(moduleSellRemoteInfo);
+
+                    break;
+
+                case "ModuleRetrieve":
+                    //When Written: when fetching a previously stored module
+                    var moduleRetrieveInfo = (ModuleRetrieveEvent.ModuleRetrieveEventArgs)e;
+
+                    //CommanderData.Credits -= moduleRetrieveInfo.Cost; ???????????????
+
+                    Module.HandleModuleRetrieve(moduleRetrieveInfo);
+
+                    break;
+
+                case "ModuleStore":
+                    //When Written: when fetching a previously stored module
+                    var moduleStoreInfo = (ModuleStoreEvent.ModuleStoreEventArgs)e;
+
+                    //CommanderData.Credits -= moduleStoreInfo.Cost; ???????????????
+
+                    Module.HandleModuleStore(moduleStoreInfo);
+
+                    break;
+
+                case "ModuleSwap":
+                    //When Written: when moving a module to a different slot on the ship
+                    var moduleSwapInfo = (ModuleSwapEvent.ModuleSwapEventArgs)e;
+
+                    Module.HandleModuleSwap(moduleSwapInfo);
+
+                    break;
+
+                case "MassModuleStore":
+                    //When written: when putting multiple modules into storage
+                    var massModuleStoreInfo = (MassModuleStoreEvent.MassModuleStoreEventArgs)e;
+
+                    Module.HandleMassModuleStore(massModuleStoreInfo);
+
+                    break;
+
+                case "FetchRemoteModule":
+                    //    When written: when requesting a module is transferred from storage at another station 
+
+                    var fetchRemoteModuleInfo = (FetchRemoteModuleEvent.FetchRemoteModuleEventArgs)e;
+
+                    CommanderData.Credits -= fetchRemoteModuleInfo.TransferCost;
+
+                    Module.HandleFetchRemoteModule(fetchRemoteModuleInfo);
+
+                    break;
+
+                case "PowerplayFastTrack":
+                    //When written: when paying to fast-track allocation of commodities
+
+                    var powerplayFastTrackInfo = (PowerplayFastTrackEvent.PowerplayFastTrackEventArgs)e;
+
+                    CommanderData.Credits -= powerplayFastTrackInfo.Cost;
+
+                    break;
+
+                case "StoredModules":
+                    //    When written: when first visiting Outfitting, and when the set of stored modules has changed 
+
+                    var storedModulesInfo = (StoredModulesEvent.StoredModulesEventArgs)e;
+
+                    Module.HandleStoredModules(storedModulesInfo);
+
+                    break;
+
+                case "SellShipOnRebuy":
+                    //When written: When selling a stored ship to raise funds when on insurance/rebuy screen
+                    var SellShipOnRebuyInfo = (SellShipOnRebuyEvent.SellShipOnRebuyEventArgs)e;
+
+                    CommanderData.Credits += SellShipOnRebuyInfo.ShipPrice;
+
+                    break;
+
+                case "ShipyardBuy":
+                    //When Written: when buying a new ship in the shipyard
+                    //Note: the new ship’s ShipID will be logged in a separate event after the purchase
+
+                    var shipyardBuyInfo = (ShipyardBuyEvent.ShipyardBuyEventArgs)e;
+
+                    CommanderData.Credits -= shipyardBuyInfo.ShipPrice + (shipyardBuyInfo.SellPrice ?? 0);
+
+                    Ships.HandleShipyardBuy(shipyardBuyInfo);
+
+                    break;
+
+                case "ShipyardSell":
+                    //When Written: when selling a ship stored in the shipyard
+
+                    var shipyardSellInfo = (ShipyardSellEvent.ShipyardSellEventArgs)e;
+
+                    CommanderData.Credits += shipyardSellInfo.ShipPrice;
+
+                    Ships.HandleShipyardSell(shipyardSellInfo);
+
+                    break;
+
+                case "ShipyardSwap":
+                    //When Written: when switching to another ship already stored at this station
+                    var shipyardSwapInfo = (ShipyardSwapEvent.ShipyardSwapEventArgs)e;
+
+                    CommanderData.Credits += shipyardSwapInfo.SellPrice ?? 0;
+
+                    Ships.HandleShipyardSwap(shipyardSwapInfo);
+
+                    break;
+
+                case "ShipyardTransfer":
+                    //When Written: when requesting a ship at another station be transported to this station
+
+                    var shipyardTransferInfo = (ShipyardTransferEvent.ShipyardTransferEventArgs)e;
+
+                    CommanderData.Credits -= shipyardTransferInfo.TransferPrice;
+
+                    //ShipID
+
+                    break;
+
+                case "ShipyardNew":
+                    //When written: after a new ship has been purchased
+                    var shipyardNewInfo = (ShipyardNewEvent.ShipyardNewEventArgs)e;
+
+                    Ships.HandleShipyardNew(shipyardNewInfo);
+
+                    break;
+
+                case "StoredShips":
+                    //    When written: when visiting shipyard
+                    var storedShipsInfo = (StoredShipsEvent.StoredShipsEventArgs)e;
+
+                    //ShipID
+
+                    Ships.HandleStoredShips(storedShipsInfo);
+
+                    break;
+
+                case "CrewHire":
+                    //When Written: when engaging a new member of crew
+                    var crewHireInfo = (CrewHireEvent.CrewHireEventArgs)e;
+
+                    CommanderData.Credits -= crewHireInfo.Cost;
+
+                    break;
+
 
                 case "ApproachBody":
                     //    When written: when in Supercruise, and distance from planet drops to within the 'Orbital Cruise' zone
@@ -1078,6 +1252,14 @@ namespace Elite
                     LocationData.BodyType = "Station";
 
                     LocationData.Refreshed = DateTime.Now;
+
+                    break;
+
+                case "CarrierBuy":
+                    //When Written: Player has bought a fleet carrier
+                    var CarrierBuyInfo = (CarrierBuyEvent.CarrierBuyEventArgs)e;
+
+                    CommanderData.Credits -= CarrierBuyInfo.Price;
 
                     break;
 
@@ -1515,27 +1697,12 @@ namespace Elite
 
                     break;
 
-                case "MarketBuy":
-
-                    var marketBuyInfo = (MarketBuyEvent.MarketBuyEventArgs)e;
-
-                    Cargo.HandleMarketBuyEvent(marketBuyInfo);
-
-                    break;
 
                 case "MiningRefined":
 
                     var miningRefinedInfo = (MiningRefinedEvent.MiningRefinedEventArgs)e;
 
                     Cargo.HandleMiningRefinedEvent(miningRefinedInfo);
-
-                    break;
-
-                case "MarketSell":
-
-                    var marketSellInfo = (MarketSellEvent.MarketSellEventArgs)e;
-
-                    Cargo.HandleMarketSellEvent(marketSellInfo);
 
                     break;
 
@@ -1555,58 +1722,6 @@ namespace Elite
 
                     break;
 
-                case "ShipyardBuy":
-                    //When Written: when buying a new ship in the shipyard
-                    //Note: the new ship’s ShipID will be logged in a separate event after the purchase
-
-                    var shipyardBuyInfo = (ShipyardBuyEvent.ShipyardBuyEventArgs)e;
-
-                    Ships.HandleShipyardBuy(shipyardBuyInfo);
-
-                    break;
-
-                case "ShipyardSell":
-                    //When Written: when selling a ship stored in the shipyard
-
-                    var shipyardSellInfo = (ShipyardSellEvent.ShipyardSellEventArgs)e;
-
-                    Ships.HandleShipyardSell(shipyardSellInfo);
-
-                    break;
-
-                case "ShipyardNew":
-                    //When written: after a new ship has been purchased
-                    var shipyardNewInfo = (ShipyardNewEvent.ShipyardNewEventArgs)e;
-
-                    Ships.HandleShipyardNew(shipyardNewInfo);
-
-                    break;
-
-                case "ShipyardSwap":
-                    //When Written: when switching to another ship already stored at this station
-                    var shipyardSwapInfo = (ShipyardSwapEvent.ShipyardSwapEventArgs)e;
-
-                    Ships.HandleShipyardSwap(shipyardSwapInfo);
-
-                    break;
-
-                case "ShipyardTransfer":
-                    //When Written: when requesting a ship at another station be transported to this station
-                    //var shipyardTransferInfo = (ShipyardTransferEvent.ShipyardTransferEventArgs)e;
-
-                    //ShipID
-
-                    break;
-
-                case "StoredShips":
-                    //    When written: when visiting shipyard
-                    var storedShipsInfo = (StoredShipsEvent.StoredShipsEventArgs)e;
-
-                    //ShipID
-
-                    Ships.HandleStoredShips(storedShipsInfo);
-
-                    break;
 
                 case "Promotion":
                     var promotionInfo = (PromotionEvent.PromotionEventArgs)e;
@@ -1656,7 +1771,7 @@ namespace Elite
                 case "SellSuit":
                     var sellSuitInfo = (SellSuitEvent.SellSuitEventArgs)e;
 
-                    CommanderData.Credits -= sellSuitInfo.Price;
+                    CommanderData.Credits += sellSuitInfo.Price;
 
                     break;
                 case "UpgradeSuit":
@@ -1674,6 +1789,12 @@ namespace Elite
                     var switchSuitLoadoutInfo = (SwitchSuitLoadoutEvent.SwitchSuitLoadoutEventArgs)e;
 
                     break;
+
+                case "SuitLoadout":
+                    var suitLoadoutInfo = (SuitLoadoutEvent.SuitLoadoutEventArgs)e;
+
+                    break;
+
                 case "CreateSuitLoadout":
                     var createSuitLoadoutInfo = (CreateSuitLoadoutEvent.CreateSuitLoadoutEventArgs)e;
 
@@ -1692,7 +1813,7 @@ namespace Elite
                 case "SellWeapon":
                     var sellWeaponInfo = (SellWeaponEvent.SellWeaponEventArgs)e;
 
-                    CommanderData.Credits -= sellWeaponInfo.Price;
+                    CommanderData.Credits += sellWeaponInfo.Price;
 
                     break;
                 case "UpgradeWeapon":
@@ -1702,12 +1823,13 @@ namespace Elite
 
                     break;
 
-                case "BackPackMaterials":
-                    var backPackMaterialsInfo = (BackPackMaterialsEvent.BackPackMaterialsEventArgs)e;
+                case "BackPackChange":
+                    var backPackChangeInfo = (BackPackChangeEvent.BackPackChangeEventArgs)e;
 
-                    Material.HandleBackPackMaterialsEvent(backPackMaterialsInfo);
+                    Material.HandleBackPackChangeEvent(backPackChangeInfo);
 
                     break;
+
                 case "ShipLockerMaterials":
                     var shipLockerMaterialsInfo = (ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs)e;
 
@@ -1829,6 +1951,7 @@ namespace Elite
                     var disembarkInfo = (DisembarkEvent.DisembarkEventArgs)e;
 
                     break;
+
 
                 case "Music":
 

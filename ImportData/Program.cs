@@ -772,9 +772,9 @@ namespace ImportData
                         populatedSystemsEDDBbyEdsmId.TryGetValue(z.SystemId, out var system);
                         z.PopulatedSystemEDDB = system;
 
-                        z.PrimaryEconomy = z.AdditionalStationDataEDDB?.Economies?.First() ?? z.PopulatedSystemEDDB?.PrimaryEconomy ?? z.Economy;
+                        z.PrimaryEconomy = z.AdditionalStationDataEDDB?.Economies?.FirstOrDefault() ?? z.PopulatedSystemEDDB?.PrimaryEconomy ?? z.Economy;
 
-                        z.SecondaryEconomy = z.AdditionalStationDataEDDB?.Economies?.Last() ?? z.PopulatedSystemEDDB?.PrimaryEconomy ?? z.Economy;
+                        z.SecondaryEconomy = z.AdditionalStationDataEDDB?.Economies?.LastOrDefault() ?? z.PopulatedSystemEDDB?.PrimaryEconomy ?? z.Economy;
 
                         if (z.AdditionalStationDataEDDB?.Economies?.Count == 2 && !string.IsNullOrEmpty(z.PopulatedSystemEDDB?.PrimaryEconomy) && z.PrimaryEconomy != z.PopulatedSystemEDDB.PrimaryEconomy)
                         {
