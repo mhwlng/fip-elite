@@ -5,6 +5,7 @@
 @{
     Layout = "layout.cshtml";
     var odd = true;
+    var displaydivider = false;
 }
 
 <div class="main">
@@ -19,46 +20,54 @@
     <table class="zebratable">
         <tbody>
 
-            @if (Model.CurrentCard == 0)
+            @if (Model.CurrentCard == 0 && Model.ItemsCount > 0)
             {
+                displaydivider = true;
+
                 foreach (var m in Model.Items)
                 {
                     <tr class="@(odd ? "zebraodd": "zebraeven")">
-                        <td class="caption nowrap">@m.Value.Name</td>
-                        <td class="data right">@m.Value.Count</td>
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right">@m.Count</td>
                     </tr>
                     odd = !odd;
                 }
             }
-            else if (Model.CurrentCard == 1)
+            else if (Model.CurrentCard == 1 && Model.ComponentsCount > 0)
             {
+                displaydivider = true;
+
                 foreach (var m in Model.Components)
                 {
                     <tr class="@(odd ? "zebraodd" : "zebraeven")">
-                        <td class="caption nowrap">@m.Value.Name</td>
-                        <td class="data right">@m.Value.Count</td>
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right">@m.Count</td>
                     </tr>
                     odd = !odd;
                 }
             }
-            else if (Model.CurrentCard == 2)
+            else if (Model.CurrentCard == 2 && Model.ConsumablesCount > 0)
             {
+                displaydivider = true;
+
                 foreach (var m in Model.Consumables)
                 {
                     <tr class="@(odd ? "zebraodd": "zebraeven")">
-                        <td class="caption nowrap">@m.Value.Name</td>
-                        <td class="data right">@m.Value.Count</td>
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right">@m.Count</td>
                     </tr>
                     odd = !odd;
                 }
             }
-            else if (Model.CurrentCard == 3)
+            else if (Model.CurrentCard == 3 && Model.DataCount > 0)
             {
+                displaydivider = true;
+
                 foreach (var m in Model.Data)
                 {
                     <tr class="@(odd ? "zebraodd": "zebraeven")">
-                        <td class="caption nowrap">@m.Value.Name</td>
-                        <td class="data right">@m.Value.Count</td>
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right">@m.Count</td>
                     </tr>
                     odd = !odd;
                 }
@@ -66,5 +75,161 @@
         </tbody>
     </table>
 
+    @if ((Model.CurrentCard == 0 && Model.MissionItemsCount > 0) ||
+         (Model.CurrentCard == 1 && Model.MissionComponentsCount > 0) ||
+         (Model.CurrentCard == 2 && Model.MissionConsumablesCount > 0) ||
+         (Model.CurrentCard == 3 && Model.MissionDataCount > 0))
+    {
+        odd = true;
+
+        <table>
+            <tbody>
+
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">MISSION CARGO</td>
+                </tr>
+            </tbody>
+        </table>
+
+        if (Model.CurrentCard == 0 && Model.MissionItemsCount > 0)
+        {
+            foreach (var mg in Model.MissionItems)
+            {
+                Material.MaterialItem mm = ((List<Material.MaterialItem>) mg).FirstOrDefault();
+
+                <div>@mm.MissionName
+                    @if (!string.IsNullOrEmpty(mm.System))
+                    {
+                        <text>to</text>
+                        @mm.System
+                    }
+                    @if (!string.IsNullOrEmpty(mm.Station))
+                    {
+                        <text>,</text>
+                        @mm.Station
+                    }
+                </div>
+
+                <table class="zebratable">
+                    <tbody>
+                    @foreach (var m in mg)
+                    {
+                        <tr class="@(odd ? "zebraodd": "zebraeven")">
+                            <td class="caption wrap">&nbsp;&nbsp;&nbsp;@m.Name</td>
+                            <td class="data right">@m.Count</td>
+                        </tr>
+                        odd = !odd;
+                    }
+                    </tbody>
+                </table>
+            }
+        }
+        else if (Model.CurrentCard == 1 && Model.MissionComponentsCount > 0)
+        {
+            foreach (var mg in Model.MissionComponents)
+            {
+                Material.MaterialItem mm = ((List<Material.MaterialItem>) mg).FirstOrDefault();
+
+                <div>@mm.MissionName
+                    @if (!string.IsNullOrEmpty(mm.System))
+                    {
+                        <text>to</text>
+                        @mm.System
+                    }
+                    @if (!string.IsNullOrEmpty(mm.Station))
+                    {
+                        <text>,</text>
+                        @mm.Station
+                    }
+                </div>
+
+                <table class="zebratable">
+                    <tbody>
+                    @foreach (var m in mg)
+                    {
+                        <tr class="@(odd ? "zebraodd": "zebraeven")">
+                            <td class="caption wrap">&nbsp;&nbsp;&nbsp;@m.Name</td>
+                            <td class="data right">@m.Count</td>
+                        </tr>
+                        odd = !odd;
+                    }
+                    </tbody>
+                </table>
+            }
+
+        }
+        else if (Model.CurrentCard == 2 && Model.MissionConsumablesCount > 0)
+        {
+            foreach (var mg in Model.MissionConsumables)
+            {
+                Material.MaterialItem mm = ((List<Material.MaterialItem>) mg).FirstOrDefault();
+
+                <div>@mm.MissionName
+                    @if (!string.IsNullOrEmpty(mm.System))
+                    {
+                        <text>to</text>
+                        @mm.System
+                    }
+                    @if (!string.IsNullOrEmpty(mm.Station))
+                    {
+                        <text>,</text>
+                        @mm.Station
+                    }
+                </div>
+
+                <table class="zebratable">
+                    <tbody>
+                    @foreach (var m in mg)
+                    {
+                        <tr class="@(odd ? "zebraodd": "zebraeven")">
+                            <td class="caption wrap">&nbsp;&nbsp;&nbsp;@m.Name</td>
+                            <td class="data right">@m.Count</td>
+                        </tr>
+                        odd = !odd;
+                    }
+                    </tbody>
+                </table>
+            }
+        }
+        else if (Model.CurrentCard == 3 && Model.MissionDataCount > 0)
+        {
+            foreach (var mg in Model.MissionData)
+            {
+                Material.MaterialItem mm = ((List<Material.MaterialItem>) mg).FirstOrDefault();
+
+                <div>@mm.MissionName
+                    @if (!string.IsNullOrEmpty(mm.System))
+                    {
+                        <text>to</text>
+                        @mm.System
+                    }
+                    @if (!string.IsNullOrEmpty(mm.Station))
+                    {
+                        <text>,</text>
+                        @mm.Station
+                    }
+                </div>
+
+                <table class="zebratable">
+                    <tbody>
+                    @foreach (var m in mg)
+                    {
+                        <tr class="@(odd ? "zebraodd": "zebraeven")">
+                            <td class="caption wrap">&nbsp;&nbsp;&nbsp;@m.Name</td>
+                            <td class="data right">@m.Count</td>
+                        </tr>
+                        odd = !odd;
+                    }
+                    </tbody>
+                </table>
+            }
+        }
+    }
 
 </div>

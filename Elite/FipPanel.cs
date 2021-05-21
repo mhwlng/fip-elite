@@ -2406,6 +2406,90 @@ namespace Elite
 
                                     case LcdTab.ShipLocker:
 
+                                        var shipLockerItems = Material.ShipLockerList.Where(x =>
+                                                x.Value.Category == "Item" &&
+                                                (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0"))
+                                            .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                        var missionShipLockerItems = Material.ShipLockerList
+                                            .Where(x => x.Value.Category == "Item" && (!string.IsNullOrEmpty(x.Value.MissionID) && x.Value.MissionID != "0"))
+                                            .Select(x => new Material.MaterialItem
+                                            {
+                                                Count = x.Value.Count,
+                                                Name = x.Value.Name,
+                                                MissionID = x.Value.MissionID,
+                                                MissionName = Missions.GetMissionName(x.Value.MissionID),
+                                                System = Missions.GetMissionSystem(x.Value.MissionID),
+                                                Station = Missions.GetMissionStation(x.Value.MissionID)
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .GroupBy(x => x.MissionName)
+                                            .Select(grp => grp.ToList())
+                                            .ToList();
+
+                                        var shipLockerComponents = Material.ShipLockerList.Where(x =>
+                                                x.Value.Category == "Component" &&
+                                                (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0"))
+                                            .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                        var missionShipLockerComponents = Material.ShipLockerList
+                                            .Where(x => x.Value.Category == "Component" && (!string.IsNullOrEmpty(x.Value.MissionID) && x.Value.MissionID != "0"))
+                                            .Select(x => new Material.MaterialItem
+                                            {
+                                                Count = x.Value.Count,
+                                                Name = x.Value.Name,
+                                                MissionID = x.Value.MissionID,
+                                                MissionName = Missions.GetMissionName(x.Value.MissionID),
+                                                System = Missions.GetMissionSystem(x.Value.MissionID),
+                                                Station = Missions.GetMissionStation(x.Value.MissionID)
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .GroupBy(x => x.MissionName)
+                                            .Select(grp => grp.ToList())
+                                            .ToList();
+
+                                        var shipLockerConsumables = Material.ShipLockerList.Where(x =>
+                                                x.Value.Category == "Consumable" &&
+                                                (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0"))
+                                            .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                        var missionShipLockerConsumables = Material.ShipLockerList
+                                            .Where(x => x.Value.Category == "Consumable" && (!string.IsNullOrEmpty(x.Value.MissionID) && x.Value.MissionID != "0"))
+                                            .Select(x => new Material.MaterialItem
+                                            {
+                                                Count = x.Value.Count,
+                                                Name = x.Value.Name,
+                                                MissionID = x.Value.MissionID,
+                                                MissionName = Missions.GetMissionName(x.Value.MissionID),
+                                                System = Missions.GetMissionSystem(x.Value.MissionID),
+                                                Station = Missions.GetMissionStation(x.Value.MissionID)
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .GroupBy(x => x.MissionName)
+                                            .Select(grp => grp.ToList())
+                                            .ToList();
+
+                                        var shipLockerData = Material.ShipLockerList.Where(x =>
+                                                x.Value.Category == "Data" &&
+                                                (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0"))
+                                            .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                        var missionShipLockerData = Material.ShipLockerList
+                                            .Where(x => x.Value.Category == "Data" && (!string.IsNullOrEmpty(x.Value.MissionID) && x.Value.MissionID != "0"))
+                                            .Select(x => new Material.MaterialItem
+                                            {
+                                                Count = x.Value.Count,
+                                                Name = x.Value.Name,
+                                                MissionID = x.Value.MissionID,
+                                                MissionName = Missions.GetMissionName(x.Value.MissionID),
+                                                System = Missions.GetMissionSystem(x.Value.MissionID),
+                                                Station = Missions.GetMissionStation(x.Value.MissionID)
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .GroupBy(x => x.MissionName)
+                                            .Select(grp => grp.ToList())
+                                            .ToList();
+
                                         str =
                                             Engine.Razor.Run("shiplocker.cshtml", null, new
                                             {
@@ -2415,23 +2499,113 @@ namespace Elite
 
                                                 MaterialCount = Material.ShipLockerList.Count,
 
-                                                Items = Material.ShipLockerList.Where(x => x.Value.Category == "Item")
-                                                    .OrderBy(x => x.Value.Name),
-                                                Components = Material.ShipLockerList
-                                                    .Where(x => x.Value.Category == "Component")
-                                                    .OrderBy(x => x.Value.Name),
-                                                Consumables = Material.ShipLockerList
-                                                    .Where(x => x.Value.Category == "Consumable")
-                                                    .OrderBy(x => x.Value.Name),
-                                                Data = Material.ShipLockerList
-                                                    .Where(x => x.Value.Category == "Data")
-                                                    .OrderBy(x => x.Value.Name)
+                                                Items = shipLockerItems,
+                                                ItemsCount = shipLockerItems.Count,
+                                                Components = shipLockerComponents,
+                                                ComponentsCount = shipLockerComponents.Count,
+                                                Consumables = shipLockerConsumables,
+                                                ConsumablesCount = shipLockerConsumables.Count,
+                                                Data = shipLockerData,
+                                                DataCount = shipLockerData.Count,
+
+                                                MissionItems = missionShipLockerItems,
+                                                MissionItemsCount = missionShipLockerItems.Count,
+                                                MissionComponents = missionShipLockerComponents,
+                                                MissionComponentsCount = missionShipLockerComponents.Count,
+                                                MissionConsumables = missionShipLockerConsumables,
+                                                MissionConsumablesCount = missionShipLockerConsumables.Count,
+                                                MissionData = missionShipLockerData,
+                                                MissionDataCount = missionShipLockerData.Count,
 
                                             });
 
                                         break;
 
                                     case LcdTab.BackPack:
+
+                                        var backPackItems = Material.BackPackList.Where(x =>
+                                                x.Value.Category == "Item" &&
+                                                (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0"))
+                                            .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                        var missionBackPackItems = Material.BackPackList
+                                            .Where(x => x.Value.Category == "Item" && (!string.IsNullOrEmpty(x.Value.MissionID) && x.Value.MissionID != "0"))
+                                            .Select(x => new Material.MaterialItem
+                                            {
+                                                Count = x.Value.Count,
+                                                Name = x.Value.Name,
+                                                MissionID = x.Value.MissionID,
+                                                MissionName = Missions.GetMissionName(x.Value.MissionID),
+                                                System = Missions.GetMissionSystem(x.Value.MissionID),
+                                                Station = Missions.GetMissionStation(x.Value.MissionID)
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .GroupBy(x => x.MissionName)
+                                            .Select(grp => grp.ToList())
+                                            .ToList();
+
+                                        var backPackComponents = Material.BackPackList.Where(x => 
+                                                x.Value.Category == "Component" &&
+                                                (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0"))
+                                            .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                        var missionBackPackComponents = Material.BackPackList
+                                            .Where(x => x.Value.Category == "Component" && (!string.IsNullOrEmpty(x.Value.MissionID) && x.Value.MissionID != "0"))
+                                            .Select(x => new Material.MaterialItem
+                                            {
+                                                Count = x.Value.Count,
+                                                Name = x.Value.Name,
+                                                MissionID = x.Value.MissionID,
+                                                MissionName = Missions.GetMissionName(x.Value.MissionID),
+                                                System = Missions.GetMissionSystem(x.Value.MissionID),
+                                                Station = Missions.GetMissionStation(x.Value.MissionID)
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .GroupBy(x => x.MissionName)
+                                            .Select(grp => grp.ToList())
+                                            .ToList();
+
+                                        var backPackConsumables = Material.BackPackList.Where(x => 
+                                                x.Value.Category == "Consumable" &&
+                                                (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0"))
+                                            .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                        var missionBackPackConsumables = Material.BackPackList
+                                            .Where(x => x.Value.Category == "Consumable" && (!string.IsNullOrEmpty(x.Value.MissionID) && x.Value.MissionID != "0"))
+                                            .Select(x => new Material.MaterialItem
+                                            {
+                                                Count = x.Value.Count,
+                                                Name = x.Value.Name,
+                                                MissionID = x.Value.MissionID,
+                                                MissionName = Missions.GetMissionName(x.Value.MissionID),
+                                                System = Missions.GetMissionSystem(x.Value.MissionID),
+                                                Station = Missions.GetMissionStation(x.Value.MissionID)
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .GroupBy(x => x.MissionName)
+                                            .Select(grp => grp.ToList())
+                                            .ToList();
+
+                                        var backPackData = Material.BackPackList.Where(x => 
+                                                x.Value.Category == "Data" &&
+                                                (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0"))
+                                            .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                        var missionBackPackData = Material.BackPackList
+                                            .Where(x => x.Value.Category == "Data" && (!string.IsNullOrEmpty(x.Value.MissionID) && x.Value.MissionID != "0"))
+                                            .Select(x => new Material.MaterialItem
+                                            {
+                                                Count = x.Value.Count,
+                                                Name = x.Value.Name,
+                                                MissionID = x.Value.MissionID,
+                                                MissionName = Missions.GetMissionName(x.Value.MissionID),
+                                                System = Missions.GetMissionSystem(x.Value.MissionID),
+                                                Station = Missions.GetMissionStation(x.Value.MissionID)
+                                            })
+                                            .OrderBy(x => x.Name)
+                                            .GroupBy(x => x.MissionName)
+                                            .Select(grp => grp.ToList())
+                                            .ToList();
 
                                         str =
                                             Engine.Razor.Run("backpack.cshtml", null, new
@@ -2442,17 +2616,23 @@ namespace Elite
 
                                                 MaterialCount = Material.BackPackList.Count,
 
-                                                Items = Material.BackPackList.Where(x => x.Value.Category == "Item")
-                                                    .OrderBy(x => x.Value.Name),
-                                                Components = Material.BackPackList
-                                                    .Where(x => x.Value.Category == "Component")
-                                                    .OrderBy(x => x.Value.Name),
-                                                Consumables = Material.BackPackList
-                                                    .Where(x => x.Value.Category == "Consumable")
-                                                    .OrderBy(x => x.Value.Name),
-                                                Data = Material.BackPackList
-                                                .Where(x => x.Value.Category == "Data")
-                                                .OrderBy(x => x.Value.Name)
+                                                Items = backPackItems,
+                                                ItemsCount = backPackItems.Count,
+                                                Components = backPackComponents,
+                                                ComponentsCount = backPackComponents.Count,
+                                                Consumables = backPackConsumables,
+                                                ConsumablesCount = backPackConsumables.Count,
+                                                Data = backPackData,
+                                                DataCount = backPackData.Count,
+
+                                                MissionItems = missionBackPackItems,
+                                                MissionItemsCount = missionBackPackItems.Count,
+                                                MissionComponents = missionBackPackComponents,
+                                                MissionComponentsCount = missionBackPackComponents.Count,
+                                                MissionConsumables = missionBackPackConsumables,
+                                                MissionConsumablesCount = missionBackPackConsumables.Count,
+                                                MissionData = missionBackPackData,
+                                                MissionDataCount = missionBackPackData.Count,
 
                                             });
 
@@ -2663,9 +2843,7 @@ namespace Elite
                             {
                                 for (uint i = 1; i <= 6; i++)
                                 {
-                                    if (_currentPage == LcdPage.HomeMenu && i == 3 )
-                                        SetLed(i, false);
-                                    else if (_currentPage == LcdPage.InfoMenu && i == 4 && !HWInfo.SensorData.Any())
+                                    if (_currentPage == LcdPage.InfoMenu && i == 4 && !HWInfo.SensorData.Any())
                                         SetLed(i, false);
                                     else if (_currentPage == LcdPage.InfoMenu && i >= 5)
                                         SetLed(i, false);

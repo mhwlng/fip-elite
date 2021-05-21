@@ -15,6 +15,13 @@ namespace Elite
             public string Category { get; set; }
             public int Count { get; set; }
             public int MaximumCapacity { get; set; }
+
+            public string MissionID { get; set; }
+
+            public string MissionName { get; set; } // only filled in FipPanel.cs
+            public string System { get; set; } // only filled in FipPanel.cs
+            public string Station { get; set; } // only filled in FipPanel.cs
+
         }
 
         public class MaterialHistoryItem
@@ -223,21 +230,67 @@ namespace Elite
 
         }
 
+        //{ "timestamp":"2021-05-21T14:32:02Z", "event":"MissionCompleted", "Faction":"Future of Arro Naga", "Name":"Mission_OnFoot_Collect_MB_name", "MissionID":770352328,
+        //"Commodity":"$PersonalDocuments_Name;", "Commodity_Localised":"Personal Documents", "Count":1,
+        //"Reward":36674,
+        //"MaterialsReward":[ { "Name":"MiningAnalytics", "Name_Localised":"Mining Analytics", "Category":"$MICRORESOURCE_CATEGORY_Data;", "Category_Localised":"Data", "Count":2 } ],
+        //"FactionEffects":[ { "Faction":"Future of Arro Naga", "Effects":[  ], "Influence":[ { "SystemAddress":3932277478106, "Trend":"UpGood", "Influence":"+" } ], "ReputationTrend":"UpGood", "Reputation":"+" } ] }
+
+
         public static void HandleMissionCompletedEvent(MissionCompletedEvent.MissionCompletedEventArgs info)
         {
+            if (!string.IsNullOrEmpty(info.Commodity_Localised))
+            {
+                string key = ShipLockerList.FirstOrDefault(x => x.Value.Name == info.Commodity_Localised).Key;
+
+                if (!string.IsNullOrEmpty(key))
+                {
+                    ShipLockerList[key].Count -= info.Count ?? 0;
+
+                    if (ShipLockerList[key].Count <= 0)
+                    {
+                        ShipLockerList.Remove(key);
+                    }
+                }
+            }
+
             if (info.MaterialsReward?.Any() == true)
             {
                 foreach (var i in info.MaterialsReward)
                 {
-                    if (MaterialList.ContainsKey(i.Name))
+                    if (i.Category.StartsWith("$MICRORESOURCE_CATEGORY_"))
                     {
-                        MaterialList[i.Name].Count += i.Count;
+                        var category = i.Category.Replace("$MICRORESOURCE_CATEGORY_", "").Replace(";", ""); ;
+
+                        if (ShipLockerList.ContainsKey(i.Name))
+                        {
+                            ShipLockerList[i.Name].Count += i.Count;
+                        }
+                        else
+                        {
+                            var name = (i.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(i.Name.ToLower())).Trim();
+
+                            ShipLockerList.Add(i.Name, new MaterialItem { Category = category, Name = name, Count = i.Count, MissionID = null });
+                        }
+
                     }
                     else
                     {
-                        var name = (i.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(i.Name.ToLower())).Trim();
-
-                        MaterialList.Add(i.Name, new MaterialItem { Category = i.Category_Localised ?? i.Category, Name = name, Count = i.Count, MaximumCapacity = GetMaximumCapacity(i.Name.ToLower()) });
+                        if (MaterialList.ContainsKey(i.Name))
+                        {
+                            MaterialList[i.Name].Count += i.Count;
+                        }
+                        else
+                        {
+                            var name = (i.Name_Localised ??
+                                        CultureInfo.CurrentCulture.TextInfo.ToTitleCase(i.Name.ToLower())).Trim();
+                            MaterialList.Add(i.Name,
+                                new MaterialItem
+                                {
+                                    Category = i.Category_Localised ?? i.Category, Name = name, Count = i.Count,
+                                    MaximumCapacity = GetMaximumCapacity(i.Name.ToLower())
+                                });
+                        }
                     }
 
                 }
@@ -255,7 +308,7 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    BackPackList.Add(e.Name, new MaterialItem { Category = "Item", Name = name, Count = e.Count });
+                    BackPackList.Add(e.Name, new MaterialItem { Category = "Item", Name = name, Count = e.Count, MissionID = e.MissionID });
                 }
             }
 
@@ -265,7 +318,7 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    BackPackList.Add(e.Name, new MaterialItem { Category = "Component", Name = name, Count = e.Count });
+                    BackPackList.Add(e.Name, new MaterialItem { Category = "Component", Name = name, Count = e.Count, MissionID = e.MissionID });
                 }
             }
 
@@ -275,7 +328,7 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    BackPackList.Add(e.Name, new MaterialItem { Category = "Consumable", Name = name, Count = e.Count });
+                    BackPackList.Add(e.Name, new MaterialItem { Category = "Consumable", Name = name, Count = e.Count, MissionID = e.MissionID });
                 }
             }
 
@@ -285,11 +338,13 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    BackPackList.Add(e.Name, new MaterialItem { Category = "Data", Name = name, Count = e.Count });
+                    BackPackList.Add(e.Name, new MaterialItem { Category = "Data", Name = name, Count = e.Count, MissionID = e.MissionID });
                 }
             }
 
         }
+
+        /* already handled in backpack.json
         public static void HandleBackPackChangeEvent(BackPackChangeEvent.BackPackChangeEventArgs info)
         {
             if (info.Added?.Any() == true)
@@ -320,7 +375,7 @@ namespace Elite
                     {
                         BackPackList[e.Name].Count -= e.Count;
 
-                        if (BackPackList[e.Name].Count == 0)
+                        if (BackPackList[e.Name].Count <= 0)
                         {
                             BackPackList.Remove(e.Name);
                         }
@@ -328,7 +383,7 @@ namespace Elite
                 }
             }
 
-        }
+        } */
         
         public static void HandleShipLockerMaterialsEvent(ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs info)
         {
@@ -340,7 +395,7 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Item", Name = name, Count = e.Count });
+                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Item", Name = name, Count = e.Count, MissionID = e.MissionID});
                 }
             }
 
@@ -350,7 +405,7 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Component", Name = name, Count = e.Count });
+                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Component", Name = name, Count = e.Count, MissionID = e.MissionID });
                 }
             }
 
@@ -360,7 +415,7 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Consumable", Name = name, Count = e.Count});
+                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Consumable", Name = name, Count = e.Count, MissionID = e.MissionID });
                 }
             }
 
@@ -370,7 +425,7 @@ namespace Elite
                 {
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Data", Name = name, Count = e.Count });
+                    ShipLockerList.Add(e.Name, new MaterialItem { Category = "Data", Name = name, Count = e.Count, MissionID = e.MissionID });
                 }
             }
 
@@ -388,7 +443,7 @@ namespace Elite
             {
                 var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(info.Name.ToLower())).Trim();
 
-                ShipLockerList.Add(info.Name, new MaterialItem { Category = info.Category, Name = name, Count = info.Count });
+                ShipLockerList.Add(info.Name, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, MissionID = null });
             }
 
         }
@@ -401,7 +456,7 @@ namespace Elite
                 {
                     ShipLockerList[e.Name].Count -= e.Count;
 
-                    if (ShipLockerList[e.Name].Count == 0)
+                    if (ShipLockerList[e.Name].Count <= 0)
                     {
                         ShipLockerList.Remove(e.Name);
                     }
@@ -417,7 +472,7 @@ namespace Elite
                 {
                     ShipLockerList[e.Name].Count -= e.Count;
 
-                    if (ShipLockerList[e.Name].Count == 0)
+                    if (ShipLockerList[e.Name].Count <= 0)
                     {
                         ShipLockerList.Remove(e.Name);
                     }
@@ -426,7 +481,7 @@ namespace Elite
 
             //????????????????var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(info.Received.ToLower())).Trim();
 
-            ShipLockerList.Add(info.Received, new MaterialItem { Category = info.Category, Name = info.Received, Count = info.Count });
+            ShipLockerList.Add(info.Received, new MaterialItem { Category = info.Category, Name = info.Received, Count = info.Count, MissionID = null });
 
             //???????????????
 
@@ -448,7 +503,7 @@ namespace Elite
                     {
                         var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                        ShipLockerList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count });
+                        ShipLockerList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count, MissionID = null });
                     }
 
                     //-------------------------
@@ -456,11 +511,11 @@ namespace Elite
                     if (BackPackList.ContainsKey(e.Name))
                     {
                         BackPackList[e.Name].Count -= e.Count;
-                    }
 
-                    if (BackPackList[e.Name].Count == 0)
-                    {
-                        BackPackList.Remove(e.Name);
+                        if (BackPackList[e.Name].Count <= 0)
+                        {
+                            BackPackList.Remove(e.Name);
+                        }
                     }
 
                 }
@@ -469,11 +524,11 @@ namespace Elite
                     if (ShipLockerList.ContainsKey(e.Name))
                     {
                         ShipLockerList[e.Name].Count -= e.Count;
-                    }
 
-                    if (ShipLockerList[e.Name].Count == 0)
-                    {
-                        ShipLockerList.Remove(e.Name);
+                        if (ShipLockerList[e.Name].Count <= 0)
+                        {
+                            ShipLockerList.Remove(e.Name);
+                        }
                     }
 
                     // -----------------------
@@ -486,7 +541,7 @@ namespace Elite
                     {
                         var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                        BackPackList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count });
+                        BackPackList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count, MissionID = null });
                     }
 
                 }
@@ -518,7 +573,7 @@ namespace Elite
             {
                 var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(info.Name.ToLower())).Trim();
 
-                BackPackList.Add(info.Name, new MaterialItem { Category = info.Type, Name = name, Count = info.Count });
+                BackPackList.Add(info.Name, new MaterialItem { Category = info.Type, Name = name, Count = info.Count, MissionID = null });
             }
 
 

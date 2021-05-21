@@ -1823,12 +1823,10 @@ namespace Elite
 
                     break;
 
-                case "BackPackChange":
-                    var backPackChangeInfo = (BackPackChangeEvent.BackPackChangeEventArgs)e;
-
-                    Material.HandleBackPackChangeEvent(backPackChangeInfo);
-
-                    break;
+                //case "BackPackChange": already handled in backpack.json
+                //    var backPackChangeInfo = (BackPackChangeEvent.BackPackChangeEventArgs)e;
+                //    Material.HandleBackPackChangeEvent(backPackChangeInfo);
+                //    break;
 
                 case "ShipLockerMaterials":
                     var shipLockerMaterialsInfo = (ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs)e;
