@@ -59,7 +59,8 @@ namespace Elite
             {"gdn_hybrid_fighter_v3", "Lance"},
             {"unknown", "Unknown"},
             {"unknown (crew)", "Unknown (crew)"},
-            {"unknown (captain)", "Unknown (captain)"}
+            {"unknown (captain)", "Unknown (captain)"},
+            {"adder_taxi", "Adder Taxi"}
         };
 
 

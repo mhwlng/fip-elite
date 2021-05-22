@@ -239,18 +239,15 @@ namespace Elite
 
         public static void HandleMissionCompletedEvent(MissionCompletedEvent.MissionCompletedEventArgs info)
         {
-            if (!string.IsNullOrEmpty(info.Commodity_Localised))
+            if (!string.IsNullOrEmpty(info.Commodity_Localised) && ShipLockerList.Any(x => x.Value?.Name == info.Commodity_Localised))
             {
-                string key = ShipLockerList.FirstOrDefault(x => x.Value.Name == info.Commodity_Localised).Key;
+                var key = ShipLockerList.FirstOrDefault(x => x.Value.Name == info.Commodity_Localised).Key;
 
-                if (!string.IsNullOrEmpty(key))
+                ShipLockerList[key].Count -= info.Count ?? 0;
+
+                if (ShipLockerList[key].Count <= 0)
                 {
-                    ShipLockerList[key].Count -= info.Count ?? 0;
-
-                    if (ShipLockerList[key].Count <= 0)
-                    {
-                        ShipLockerList.Remove(key);
-                    }
+                    ShipLockerList.Remove(key);
                 }
             }
 
@@ -503,7 +500,16 @@ namespace Elite
                     {
                         var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                        ShipLockerList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count, MissionID = null });
+                        string missionID = null;
+
+                        if (!string.IsNullOrEmpty(name) && BackPackList.Any(x => x.Value?.Name == name))
+                        {
+                            var key = BackPackList.FirstOrDefault(x => x.Value.Name == name).Key;
+
+                            missionID = BackPackList[key].MissionID;
+                        }
+                        
+                        ShipLockerList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count, MissionID = missionID });
                     }
 
                     //-------------------------
@@ -521,6 +527,8 @@ namespace Elite
                 }
                 else if (e.Direction == "ToBackpack")
                 {
+                    // not needed, handled by backpack.json ?????????
+
                     if (ShipLockerList.ContainsKey(e.Name))
                     {
                         ShipLockerList[e.Name].Count -= e.Count;
@@ -541,13 +549,25 @@ namespace Elite
                     {
                         var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-                        BackPackList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count, MissionID = null });
+                        string missionID = null;
+
+                        if (!string.IsNullOrEmpty(name) && ShipLockerList.Any(x => x.Value?.Name == name))
+                        {
+                            var key = ShipLockerList.FirstOrDefault(x => x.Value.Name == name).Key;
+
+                            missionID = ShipLockerList[key].MissionID;
+                        }
+
+                        BackPackList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count, MissionID = missionID });
                     }
 
                 }
             }
 
         }
+
+
+        // not needed, handled by backpack.json ?????????
 
         public static void HandleDropItemsEvent(DropItemsEvent.DropItemsEventArgs info)
         {
@@ -563,6 +583,8 @@ namespace Elite
 
         }
 
+        // not needed, handled by backpack.json ???????????
+
         public static void HandleCollectItemsEvent(CollectItemsEvent.CollectItemsEventArgs info)
         {
             if (BackPackList.ContainsKey(info.Name))
@@ -575,9 +597,9 @@ namespace Elite
 
                 BackPackList.Add(info.Name, new MaterialItem { Category = info.Type, Name = name, Count = info.Count, MissionID = null });
             }
-
-
         }
+
+        // not needed, handled by backpack.json ?
 
         public static void HandleUseConsumableEvent(UseConsumableEvent.UseConsumableEventArgs info)
         {

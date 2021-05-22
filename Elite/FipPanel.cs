@@ -61,8 +61,8 @@ namespace Elite
         InfoBack = 7,
         Commander = 8,
         Galnet = 9,
-        HWInfo = 10,
-        // 11
+        Missions = 10,
+        HWInfo = 11,
         // 12
 
         //---------------
@@ -71,8 +71,8 @@ namespace Elite
         Ship = 14,
         Materials = 15,
         Cargo = 16,
-        Missions = 17,
-        Engineer = 18,
+        Engineer = 17,
+        // = 18
 
         //---------------
 
@@ -692,7 +692,7 @@ namespace Elite
                             switch (_currentTabCursor)
                             {
                                 case LcdTab.ShipBack:
-                                    //Engineer > Missions > Cargo > Materials > Ship >  ShipBack
+                                    //Engineer >  Cargo > Materials > Ship >  ShipBack
 
                                     _currentTabCursor = LcdTab.Engineer;
 
@@ -754,8 +754,8 @@ namespace Elite
                                     _currentTabCursor = LcdTab.ShipBack;
                                     break;
 
-                                case LcdTab.Missions:
-                                    //ShipBack > Ship > Materials > Cargo > Missions > Engineer
+                                case LcdTab.Cargo:
+                                    //ShipBack > Ship > Materials > Cargo > Engineer
 
                                     if (!string.IsNullOrEmpty(Engineer.CommanderName))
                                         _currentTabCursor = LcdTab.Engineer;
@@ -774,7 +774,7 @@ namespace Elite
                                     _currentTabCursor = LcdTab.InfoBack;
                                     break;
 
-                                case LcdTab.Galnet:
+                                case LcdTab.Missions:
                                     if (HWInfo.SensorData.Any())
                                         _currentTabCursor = LcdTab.HWInfo;
                                     else
@@ -1270,12 +1270,13 @@ namespace Elite
                                         mustRefresh = SetTab(LcdTab.Galnet);
                                         break;
                                     case 256:
+                                        mustRefresh = SetTab(LcdTab.Missions);
+                                        break;
+                                    case 512:
                                         if (HWInfo.SensorData.Any())
                                         {
                                             mustRefresh = SetTab(LcdTab.HWInfo);
                                         }
-                                        break;
-                                    case 512:
                                         break;
                                     case 1024:
                                         break;
@@ -1309,9 +1310,6 @@ namespace Elite
                                         mustRefresh = SetTab(LcdTab.Cargo);
                                         break;
                                     case 512:
-                                        mustRefresh = SetTab(LcdTab.Missions);
-                                        break;
-                                    case 1024:
                                         if (!string.IsNullOrEmpty(Engineer.CommanderName))
                                         {
                                             Engineer.GetShoppingList();
@@ -1320,6 +1318,8 @@ namespace Elite
 
                                             mustRefresh = SetTab(LcdTab.Engineer);
                                         }
+                                        break;
+                                    case 1024:
                                         break;
                                     case 2048:
                                         mustRefresh = true;
@@ -2843,11 +2843,13 @@ namespace Elite
                             {
                                 for (uint i = 1; i <= 6; i++)
                                 {
-                                    if (_currentPage == LcdPage.InfoMenu && i == 4 && !HWInfo.SensorData.Any())
+                                    if (_currentPage == LcdPage.InfoMenu && i == 5 && !HWInfo.SensorData.Any())
                                         SetLed(i, false);
-                                    else if (_currentPage == LcdPage.InfoMenu && i >= 5)
+                                    else if (_currentPage == LcdPage.InfoMenu && i == 6)
                                         SetLed(i, false);
-                                    else if (_currentPage == LcdPage.ShipMenu && i == 6 && string.IsNullOrEmpty(Engineer.CommanderName))
+                                    else if (_currentPage == LcdPage.ShipMenu && i == 5 && string.IsNullOrEmpty(Engineer.CommanderName))
+                                        SetLed(i, false);
+                                    else if (_currentPage == LcdPage.ShipMenu && i == 6)
                                         SetLed(i, false);
                                     else if (_currentPage == LcdPage.SuitMenu && i > 3) // change !!!!!!!!!!!!!
                                         SetLed(i, false);
