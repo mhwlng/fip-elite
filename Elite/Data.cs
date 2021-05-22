@@ -72,6 +72,8 @@ namespace Elite
 
         public static  RingBuffer<string> EventHistory = new RingBuffer<string>(50, true);
 
+        public static RingBuffer<ReceiveTextEvent.ReceiveTextEventArgs> ChatHistory = new RingBuffer<ReceiveTextEvent.ReceiveTextEventArgs>(300, true);
+
         private static string npcSpeechBy(string from, string message)
         {
             string by;
@@ -1823,11 +1825,6 @@ namespace Elite
 
                     break;
 
-                //case "BackPackChange": already handled in backpack.json
-                //    var backPackChangeInfo = (BackPackChangeEvent.BackPackChangeEventArgs)e;
-                //    Material.HandleBackPackChangeEvent(backPackChangeInfo);
-                //    break;
-
                 case "ShipLockerMaterials":
                     var shipLockerMaterialsInfo = (ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs)e;
 
@@ -1865,6 +1862,12 @@ namespace Elite
                     Material.HandleTradeMicroResourcesEvent(tradeMicroResourcesInfo);
 
                     break;
+                /* handled back backpack.json
+
+                case "BackPackChange": already handled in backpack.json
+                    var backPackChangeInfo = (BackPackChangeEvent.BackPackChangeEventArgs)e;
+                    Material.HandleBackPackChangeEvent(backPackChangeInfo);
+                    break;
 
                 case "DropItems":
                     var dropItemsInfo = (DropItemsEvent.DropItemsEventArgs)e;
@@ -1878,13 +1881,13 @@ namespace Elite
                     Material.HandleCollectItemsEvent(collectItemsInfo);
 
                     break;
-
+                
                 case "UseConsumable":
                     var useConsumableInfo = (UseConsumableEvent.UseConsumableEventArgs)e;
 
                     Material.HandleUseConsumableEvent(useConsumableInfo);
 
-                    break;
+                    break;*/
 
                 case "SellOrganicData":
                     var sellOrganicDataInfo = (SellOrganicDataEvent.SellOrganicDataEventArgs)e;
@@ -1999,11 +2002,14 @@ namespace Elite
 
                     var receiveTextInfo = (ReceiveTextEvent.ReceiveTextEventArgs) e;
 
-                    var channel = receiveTextInfo.Channel.StringValue();
+                    if (!string.IsNullOrEmpty(receiveTextInfo.From) && receiveTextInfo.Channel != TextChannel.NPC)
+                    {
+                        ChatHistory.PutLifo(receiveTextInfo);
+                    }
 
                     // copied from EddiJournalMonitor https://github.com/EDCD/EDDI
 
-                    if (receiveTextInfo.From == string.Empty && channel == "npc" &&
+                    if (receiveTextInfo.From == string.Empty && receiveTextInfo.Channel == TextChannel.NPC &&
                         (receiveTextInfo.Message.StartsWith("$COMMS_entered") ||
                          receiveTextInfo.Message.StartsWith("$CHAT_Intro")))
                     {
@@ -2012,22 +2018,21 @@ namespace Elite
                     }
 
                     if (
-                        channel == "player" ||
-                        channel == "wing" ||
-                        channel == "friend" ||
-                        channel == "voicechat" ||
-                        channel == "local" ||
-                        channel == "squadron" ||
-                        channel == "starsystem" ||
-                        channel == null
+                        receiveTextInfo.Channel == TextChannel.Player ||
+                        receiveTextInfo.Channel == TextChannel.Wing ||
+                        receiveTextInfo.Channel == TextChannel.Friend ||
+                        receiveTextInfo.Channel == TextChannel.VoiceChat ||
+                        receiveTextInfo.Channel == TextChannel.Local ||
+                        receiveTextInfo.Channel == TextChannel.Squadron ||
+                        receiveTextInfo.Channel == TextChannel.StarSystem 
                     )
                     {
                         // Give priority to player messages
-                        //var source = channel == "squadron" ? "Squadron mate" :
-                        //    channel == "wing" ? "Wing mate" :
-                        //    channel == null ? "Crew mate" : "Commander";
+                        //var source = receiveTextInfo.Channel == TextChannel.Squadron ? "Squadron mate" :
+                        //    receiveTextInfo.Channel == TextChannel.Wing ? "Wing mate" :
+                        //    receiveTextInfo.Channel == null ? "Crew mate" : "Commander";
 
-                        //var channel = receiveTextInfo.Channel ?? "multicrew";
+                        //var receiveTextInfo.Channel = receiveTextInfo.Channel ?? "multicrew";
 
                     }
                     else

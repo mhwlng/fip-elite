@@ -341,47 +341,6 @@ namespace Elite
 
         }
 
-        /* already handled in backpack.json
-        public static void HandleBackPackChangeEvent(BackPackChangeEvent.BackPackChangeEventArgs info)
-        {
-            if (info.Added?.Any() == true)
-            {
-                foreach (var e in info.Added)
-                {
-                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
-
-                    if (BackPackList.ContainsKey(e.Name))
-                    {
-                        BackPackList[e.Name].Count += e.Count;
-                    }
-                    else
-                    {
-                        BackPackList.Add(e.Name, new MaterialItem { Category = e.Type, Name = name, Count = e.Count });
-                    }
-
-                }
-            }
-
-            if (info.Removed?.Any() == true)
-            {
-                foreach (var e in info.Removed)
-                {
-                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
-
-                    if (BackPackList.ContainsKey(e.Name))
-                    {
-                        BackPackList[e.Name].Count -= e.Count;
-
-                        if (BackPackList[e.Name].Count <= 0)
-                        {
-                            BackPackList.Remove(e.Name);
-                        }
-                    }
-                }
-            }
-
-        } */
-        
         public static void HandleShipLockerMaterialsEvent(ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs info)
         {
             ShipLockerList = new Dictionary<string, MaterialItem>();
@@ -514,6 +473,8 @@ namespace Elite
 
                     //-------------------------
 
+                    // not handled by backpack.json !!!!!!!!!!!!!!!
+
                     if (BackPackList.ContainsKey(e.Name))
                     {
                         BackPackList[e.Name].Count -= e.Count;
@@ -522,13 +483,11 @@ namespace Elite
                         {
                             BackPackList.Remove(e.Name);
                         }
-                    }
+                    } 
 
                 }
                 else if (e.Direction == "ToBackpack")
                 {
-                    // not needed, handled by backpack.json ?????????
-
                     if (ShipLockerList.ContainsKey(e.Name))
                     {
                         ShipLockerList[e.Name].Count -= e.Count;
@@ -540,6 +499,10 @@ namespace Elite
                     }
 
                     // -----------------------
+
+                    // not needed, handled by backpack.json ?????????
+
+                    /*
 
                     if (BackPackList.ContainsKey(e.Name))
                     {
@@ -559,15 +522,53 @@ namespace Elite
                         }
 
                         BackPackList.Add(e.Name, new MaterialItem { Category = e.Category, Name = name, Count = e.Count, MissionID = missionID });
-                    }
+                    } */
 
                 }
             }
 
         }
 
+        /* already handled in backpack.json
+        public static void HandleBackPackChangeEvent(BackPackChangeEvent.BackPackChangeEventArgs info)
+        {
+            if (info.Added?.Any() == true)
+            {
+                foreach (var e in info.Added)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
 
-        // not needed, handled by backpack.json ?????????
+                    if (BackPackList.ContainsKey(e.Name))
+                    {
+                        BackPackList[e.Name].Count += e.Count;
+                    }
+                    else
+                    {
+                        BackPackList.Add(e.Name, new MaterialItem { Category = e.Type, Name = name, Count = e.Count });
+                    }
+
+                }
+            }
+
+            if (info.Removed?.Any() == true)
+            {
+                foreach (var e in info.Removed)
+                {
+                    var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(e.Name.ToLower())).Trim();
+
+                    if (BackPackList.ContainsKey(e.Name))
+                    {
+                        BackPackList[e.Name].Count -= e.Count;
+
+                        if (BackPackList[e.Name].Count <= 0)
+                        {
+                            BackPackList.Remove(e.Name);
+                        }
+                    }
+                }
+            }
+
+        } 
 
         public static void HandleDropItemsEvent(DropItemsEvent.DropItemsEventArgs info)
         {
@@ -583,8 +584,6 @@ namespace Elite
 
         }
 
-        // not needed, handled by backpack.json ???????????
-
         public static void HandleCollectItemsEvent(CollectItemsEvent.CollectItemsEventArgs info)
         {
             if (BackPackList.ContainsKey(info.Name))
@@ -599,8 +598,6 @@ namespace Elite
             }
         }
 
-        // not needed, handled by backpack.json ?
-
         public static void HandleUseConsumableEvent(UseConsumableEvent.UseConsumableEventArgs info)
         {
             if (BackPackList.ContainsKey(info.Name))
@@ -613,7 +610,7 @@ namespace Elite
                 }
             }
 
-        }
+        } */
 
 
 

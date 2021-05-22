@@ -250,6 +250,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Templates\chat.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\shiplocker.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

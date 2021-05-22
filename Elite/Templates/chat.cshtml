@@ -1,0 +1,32 @@
+@{
+    Layout = "layout.cshtml";
+}
+
+<div class="main">
+
+    <div class="cardcaption">&nbsp;</div>
+
+    @if (Model.ChatListCount == 0)
+    {
+        <div class="cardcaption data">CHAT LOG EMPTY</div>
+    }
+
+
+    <table class="zebratable">
+        @foreach (var m in Model.ChatList)
+        {
+            <tr>
+                <td class="chattitle">
+                    @(m.From_Localised ?? m.From)
+                </td>
+            </tr>
+
+            <tr>
+                <td class="chatmessage">
+                    @(m.Message_Localised ?? m.Message)
+                </td>
+            </tr>
+        }
+    </table>
+
+</div>

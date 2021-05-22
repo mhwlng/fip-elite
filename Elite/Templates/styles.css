@@ -153,3 +153,12 @@ ul {
 .galnettitle {
     margin-bottom: 20px;
 }
+
+.chattitle {
+    color: #FFB000;
+    padding-top: 5px;
+}
+
+.chatmessage {
+    padding-left: 20px;
+}

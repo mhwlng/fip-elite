@@ -1,5 +1,4 @@
-﻿
-namespace Elite
+﻿namespace Elite
 {
     #region License
     /* Copyright 2015 Joe Osborne
@@ -91,6 +90,15 @@ namespace Elite
                 }
             }
 
+            /// <summary>
+            /// Adds an item to the end of the buffer.
+            /// </summary>
+            /// <param name="item">The item to be added.</param>
+            public void PutLifo(T item)
+            {
+                AddToBufferLifo(item);
+            }
+
             private void AddToBuffer(T toAdd, bool overflow)
             {
                 if (overflow)
@@ -103,6 +111,23 @@ namespace Elite
                 }
                 _buffer[_tail] = toAdd;
                 _tail = (_tail + 1) % Capacity;
+            }
+
+            private void AddToBufferLifo(T toAdd)
+            {
+                _head = 0;
+                if (_size < Capacity)
+                {
+                    _size++;
+                }
+                _tail = _size - 1;
+
+                for (var i = _buffer.Length - 1; i > 0 ; i--)
+                {
+                    _buffer[i] = _buffer[i - 1];
+                }
+
+                _buffer[0] = toAdd;
             }
 
             #region Constructors

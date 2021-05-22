@@ -350,6 +350,7 @@ namespace Elite
                 Engine.Razor.Compile("mining.cshtml", null);
                 Engine.Razor.Compile("missions.cshtml", null);
                 Engine.Razor.Compile("events.cshtml", null);
+                Engine.Razor.Compile("chat.cshtml", null);
 
                 Engine.Razor.Compile("backpack.cshtml", null);
                 Engine.Razor.Compile("shiplocker.cshtml", null);

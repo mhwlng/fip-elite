@@ -227,6 +227,8 @@ namespace Elite
 
             if (shipType.Contains("suit")) return;
 
+            if (shipType.Contains("taxi")) return;
+
             if (string.IsNullOrEmpty(shipType)) return;
 
             if (starPos == null) return;
@@ -252,6 +254,8 @@ namespace Elite
 
             if (shipType.Contains("suit")) return;
 
+            if (shipType.Contains("taxi")) return;
+
             var ship = ShipsList.FirstOrDefault(x =>
                 x.ShipType == shipType?.ToLower() && x.ShipID == shipId);
 
@@ -267,6 +271,8 @@ namespace Elite
             if (shipType == "testbuggy") return;
 
             if (shipType.Contains("suit")) return;
+
+            if (shipType.Contains("taxi")) return;
 
             if (string.IsNullOrEmpty(shipType)) return;
 

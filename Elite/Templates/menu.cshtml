@@ -47,6 +47,11 @@
                 </tr>
                 <tr>
                     <td>
+                        <div class="@(Model.CurrentTab == LcdTab.Chat ? "highlight" : "") @(Model.Cursor == LcdTab.Chat ? "menucursor" : "")">CHAT LOG</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         @if (Model.ShowHWInfo)
                         {
                             <div class="@(Model.CurrentTab == LcdTab.HWInfo ? "highlight" : "") @(Model.Cursor == LcdTab.HWInfo ? "menucursor" : "")">HWINFO</div>
@@ -56,9 +61,6 @@
                             <div class="disabled">HWINFO</div>
                         }
                     </td>
-                </tr>
-                <tr>
-                    <td><div class="disabled">&nbsp;</div></td>
                 </tr>
 
             </tbody>

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Media.Imaging;
 using EDEngineer.Models;
+using EliteJournalReader;
 using TheArtOfDev.HtmlRenderer.WinForms;
 using RazorEngine;
 using RazorEngine.Templating;
@@ -62,9 +63,9 @@ namespace Elite
         Commander = 8,
         Galnet = 9,
         Missions = 10,
-        HWInfo = 11,
-        // 12
-
+        Chat = 11,
+        HWInfo = 12,
+        
         //---------------
 
         ShipBack = 13, // <- back
@@ -774,7 +775,7 @@ namespace Elite
                                     _currentTabCursor = LcdTab.InfoBack;
                                     break;
 
-                                case LcdTab.Missions:
+                                case LcdTab.Chat:
                                     if (HWInfo.SensorData.Any())
                                         _currentTabCursor = LcdTab.HWInfo;
                                     else
@@ -955,7 +956,7 @@ namespace Elite
 
             if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
                 CurrentTab == LcdTab.Engineers || CurrentTab == LcdTab.ShipLocker ||
-                CurrentTab == LcdTab.BackPack ||
+                CurrentTab == LcdTab.BackPack || CurrentTab == LcdTab.Chat ||
                 CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                 CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                 CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
@@ -1010,7 +1011,7 @@ namespace Elite
                     case 8: // scroll clockwise
                         if (state && (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
                                       CurrentTab == LcdTab.Engineers || CurrentTab == LcdTab.ShipLocker ||
-                                      CurrentTab == LcdTab.BackPack ||
+                                      CurrentTab == LcdTab.BackPack || CurrentTab == LcdTab.Chat ||
                                       CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                       CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining || 
                                       CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer || 
@@ -1049,7 +1050,7 @@ namespace Elite
 
                         if (state && (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
                                       CurrentTab == LcdTab.Engineers || CurrentTab == LcdTab.ShipLocker ||
-                                      CurrentTab == LcdTab.BackPack ||
+                                      CurrentTab == LcdTab.BackPack || CurrentTab == LcdTab.Chat ||
                                       CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                       CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                       CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer || 
@@ -1137,7 +1138,7 @@ namespace Elite
 
                                         if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
                                             CurrentTab == LcdTab.Engineers || CurrentTab == LcdTab.ShipLocker ||
-                                            CurrentTab == LcdTab.BackPack ||
+                                            CurrentTab == LcdTab.BackPack || CurrentTab == LcdTab.Chat ||
                                             CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                             CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                             CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
@@ -1174,7 +1175,7 @@ namespace Elite
 
                                         if (CurrentTab == LcdTab.POI || CurrentTab == LcdTab.Powers ||
                                             CurrentTab == LcdTab.Engineers || CurrentTab == LcdTab.ShipLocker ||
-                                            CurrentTab == LcdTab.BackPack ||
+                                            CurrentTab == LcdTab.BackPack || CurrentTab == LcdTab.Chat ||
                                             CurrentTab == LcdTab.Materials || CurrentTab == LcdTab.Galaxy ||
                                             CurrentTab == LcdTab.Ship || CurrentTab == LcdTab.Mining ||
                                             CurrentTab == LcdTab.Navigation || CurrentTab == LcdTab.Engineer ||
@@ -1273,12 +1274,13 @@ namespace Elite
                                         mustRefresh = SetTab(LcdTab.Missions);
                                         break;
                                     case 512:
+                                        mustRefresh = SetTab(LcdTab.Chat);
+                                        break;
+                                    case 1024:
                                         if (HWInfo.SensorData.Any())
                                         {
                                             mustRefresh = SetTab(LcdTab.HWInfo);
                                         }
-                                        break;
-                                    case 1024:
                                         break;
                                     case 2048:
                                         mustRefresh = true;
@@ -1747,6 +1749,9 @@ namespace Elite
                                 break;
                             case LcdTab.BackPack:
                                 CheckCardSelectionLimits(3);
+                                break;
+                            case LcdTab.Chat:
+                                CheckCardSelectionLimits(6);
                                 break;
                             case LcdTab.Galaxy:
 
@@ -2638,6 +2643,51 @@ namespace Elite
 
                                         break;
 
+                                    case LcdTab.Chat:
+
+                                        var chatCard = CurrentCard[(int) CurrentTab];
+
+                                        TextChannel channel = TextChannel.Unknown;
+                                        switch (chatCard)
+                                        {
+                                            case 0:
+                                                channel = TextChannel.StarSystem;
+                                                break;
+                                            case 1:
+                                                channel = TextChannel.Local;
+                                                break;
+                                            case 2:
+                                                channel = TextChannel.Friend;
+                                                break;
+                                            case 3:
+                                                channel = TextChannel.Player;
+                                                break;
+                                            case 4:
+                                                channel = TextChannel.Wing;
+                                                break;
+                                            case 5:
+                                                channel = TextChannel.Squadron;
+                                                break;
+                                            case 6:
+                                                channel = TextChannel.VoiceChat;
+                                                break;
+                                        }
+
+                                        var hist = Data.ChatHistory.Where(x => x.Channel == channel).Take(20).ToList();
+
+                                        str =
+                                            Engine.Razor.Run("chat.cshtml", null, new
+                                            {
+                                                CurrentTab = CurrentTab,
+                                                CurrentPage = _currentPage,
+                                                CurrentCard = chatCard,
+
+                                                ChatList = hist,
+
+                                                ChatListCount = hist.Count
+                                            });
+
+                                        break;
 
                                         /*
                                         case LcdTab.Events:
@@ -2843,9 +2893,7 @@ namespace Elite
                             {
                                 for (uint i = 1; i <= 6; i++)
                                 {
-                                    if (_currentPage == LcdPage.InfoMenu && i == 5 && !HWInfo.SensorData.Any())
-                                        SetLed(i, false);
-                                    else if (_currentPage == LcdPage.InfoMenu && i == 6)
+                                    if (_currentPage == LcdPage.InfoMenu && i == 6 && !HWInfo.SensorData.Any())
                                         SetLed(i, false);
                                     else if (_currentPage == LcdPage.ShipMenu && i == 5 && string.IsNullOrEmpty(Engineer.CommanderName))
                                         SetLed(i, false);
