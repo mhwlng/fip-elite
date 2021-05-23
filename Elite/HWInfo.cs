@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using IniParser;
 using IniParser.Model;
+using Newtonsoft.Json.Serialization;
 using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Elite
@@ -96,6 +97,13 @@ namespace Elite
             public string ValueMax;
             public string ValueAvg;
         }
+
+        public class MQTTObj
+        {
+            public float Value;
+            public string Unit;
+        }
+
 
         public class SensorObj
         {
@@ -290,6 +298,14 @@ namespace Elite
         {
             if (IncData != null && FullSensorData.Any())
             {
+                var serverName = Environment.MachineName;
+
+                DefaultContractResolver contractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                };
+
+
                 int index = -1;
 
                 foreach (var section in IncData.Sections.Where(x => x.SectionName != "Variables"))
@@ -351,8 +367,23 @@ namespace Elite
 
                                     SensorData.Add(index, sensor);
                                 }
-
+                                
                                 SensorData[index].Elements[elementKey] = element;
+
+                                var t1 = serverName.Replace(' ', '_');
+                                var t2 = SensorData[index].SensorNameUser.Replace(' ', '_');
+                                var t3 = element.LabelUser.Replace(' ', '_');
+
+                                var task = Task.Run<bool>(async () => await MQTT.Publish($"HWINFO/{t1}/{t2}/{t3}", 
+                                    JsonConvert.SerializeObject(new MQTTObj
+                                        {
+                                            Value = element.NumericValue,
+                                            Unit = element.Unit
+                                        }, 
+                                        new JsonSerializerSettings
+                                        {
+                                            ContractResolver = contractResolver
+                                        })));
 
                                 if (!SensorTrends.ContainsKey(elementKey))
                                 {

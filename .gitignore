@@ -339,3 +339,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /Elite/HWiNFOSharedMemoryViewer.exe
+
+mqtt.config

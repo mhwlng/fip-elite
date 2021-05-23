@@ -658,6 +658,8 @@ namespace Elite
 
                 HWInfoTask = Task.Run(async () =>
                 {
+                    var result = await MQTT.Connect();
+                    
                     Log.Info("HWInfo task started");
 
                     while (true)

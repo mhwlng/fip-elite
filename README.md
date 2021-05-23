@@ -68,6 +68,23 @@ A configuration tool, to link sensor ids to variables in the HWINFO.inc file, ca
 
 ![hwinfo tool](https://i.imgur.com/Px6jvw4.png)
 
+The HWINFO sensor data can optionally be sent to an MQTT server, by creating a file called mqtt.config (this file doesn't exist by default)
+
+```
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <mqtt>
+    <add key="mqttURI" value="192.168.2.34" />
+    <add key="mqttUser" value="mqttusername" />
+    <add key="mqttPassword" value="secretpassword" />
+    <add key="mqttPort" value="1883" />
+    <add key="mqttSecure" value="False" />
+  </mqtt>
+</configuration>
+```
+
+![MQTT](https://i.imgur.com/X8IkHPg.png)
+
 You can automatically open the 'Target' tab on ONE Flight Instrument Panel, when a ship is targeted. (ShipTargeted event).
 
 You can automatically open the 'Navigation' tab on ONE Flight Instrument Panel, when a ship enters a system, approaches a station or a planet.
