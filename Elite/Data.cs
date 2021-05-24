@@ -2103,7 +2103,7 @@ namespace Elite
 
             }
 
-            if (evt != "FSSSignalDiscovered" && evt != "FSSDiscoveryScan" && evt != "Music" && evt != "ReceiveText" && evt != "FuelScoop" && evt != "ReservoirReplenished")
+            if (evt != "FSSSignalDiscovered" && evt != "FSSDiscoveryScan" && evt != "Music" /*&& evt != "ReceiveText"*/ && evt != "FuelScoop" && evt != "ReservoirReplenished")
             {
                 App.FipHandler.RefreshDevicePages();
             }

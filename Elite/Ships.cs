@@ -336,6 +336,12 @@ namespace Elite
 
         public static void HandleStoredShips(StoredShipsEvent.StoredShipsEventArgs info)
         {
+            // always empty in odyssey ????
+
+            // { "timestamp":"2021-05-24T07:56:19Z", "event":"StoredShips", "StationName":"Jameson Memorial", "MarketID":128666762, "StarSystem":"Shinrarta Dezhra", "ShipsHere":[  ], "ShipsRemote":[  ] }
+
+            if (info.ShipsHere?.Any() != true) return;
+
             foreach (var s in ShipsList)
             {
                 s.Stored = false;
