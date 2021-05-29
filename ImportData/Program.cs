@@ -813,7 +813,8 @@ namespace ImportData
                     var engineers = stationsEDSM
                         .Where(x =>
                             x.PopulatedSystemEDDB != null && // now missing Cloe Sedesi in an uninhabited system !!!!!!!!!
-                            x.Government == "Workshop (Engineer)").ToList();
+                            x.Government == "Workshop (Engineer)" &&
+                            x.SystemName != "Maia").ToList(); // gets rid of second professor palin
                     
                     StationSerialize(engineers, @"Data\engineers.json");
 
