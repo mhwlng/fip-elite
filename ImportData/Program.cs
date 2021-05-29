@@ -448,7 +448,7 @@ namespace ImportData
                     {
                         var data = client.DownloadString(url);
 
-                        var galnetJson = JsonConvert.DeserializeObject<List<GalnetData>>(data)?.Take(100).ToList();
+                        var galnetJson = JsonConvert.DeserializeObject<GalnetRoot>(data)?.Data.Select(x => x.Attributes).ToList();
 
                         if (galnetJson?.Any() == true)
                         {
@@ -472,9 +472,15 @@ namespace ImportData
 
                                 x.Image = null;
 
+                                if (x.BodyItem != null)
+                                {
+                                    x.Body = x.BodyItem.Value.Replace("\r\n", "<br>");
+
+                                    x.BodyItem = null;
+                                }
                             });
 
-                            GalnetSerialize(galnetJson, path);
+                            GalnetSerialize(galnetJson, path);                    
                         }
                     }
                 }
@@ -1150,7 +1156,13 @@ namespace ImportData
                 DownloadHotspotSystems(@"Data\ltdsystems.json", "http://edtools.cc/miner?a=r&n=", "LTD");
                 DownloadHotspotSystems(@"Data\platinumsystems.json", "http://edtools.cc/miner?a=r&n=", "Platinum");
 
-                DownloadGalnet(@"Data\galnet.json", "https://elitedangerous-website-backend-production.elitedangerous.com/api/galnet?_format=json");
+                // https://gist.github.com/corenting/b6ac5cf8f446f54856e08b6e287fe835
+
+
+                // stopped woring 29/05/2021
+                //"https://elitedangerous-website-backend-production.elitedangerous.com/api/galnet?_format=json"
+
+                DownloadGalnet(@"Data\galnet.json", "https://cms.zaonce.net/en-GB/jsonapi/node/galnet_article?&sort=-published_at&page[offset]=0&page[limit]=100");  
 
                 // stopped working 1 dec 2020
                 //DownloadCommunityGoals(@"Data\communitygoals.json", "https://elitedangerous-website-backend-production.elitedangerous.com/api/initiatives/list?_format=json&lang=en"); 

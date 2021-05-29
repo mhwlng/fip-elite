@@ -13,22 +13,15 @@ namespace Elite
         [JsonProperty("title")]
         public string Title { get; set; }
 
-        [JsonProperty("body")]
-        public string Body { get; set; }
-
-        [JsonProperty("nid")]
-        public string Nid { get; set; }
-
-        [JsonProperty("date")]
+        [JsonProperty("field_galnet_date")]
         public string Date { get; set; }
-
 
         [JsonProperty("imageList")]
         public List<string> ImageList { get; set; }
 
+        [JsonProperty("field_galnet_body")]
+        public string Body { get; set; }
 
-        [JsonProperty("slug")]
-        public string Slug { get; set; }
 
     }
 

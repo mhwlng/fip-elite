@@ -104,6 +104,8 @@
     <Compile Include="Events\BackPackEvent.cs" />
     <Compile Include="Events\BackPackChangeEvent.cs" />
     <Compile Include="Events\BookDropshipEvent.cs" />
+    <Compile Include="Events\CarrierJumpCancelledEvent.cs" />
+    <Compile Include="Events\CarrierNameChangedEvent.cs" />
     <Compile Include="Events\SuitLoadoutEvent.cs" />
     <Compile Include="Events\DropShipDeployEvent.cs" />
     <Compile Include="Events\CollectItemsEvent.cs" />
