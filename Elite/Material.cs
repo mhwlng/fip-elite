@@ -494,18 +494,23 @@ namespace Elite
         }
 
 
-        // "Transfers":[ { "Name":"healthpack", "Name_Localised":"Medkit", "Category":"Consumable", "Count":1, "Direction":"ToShipLocker" }, { "Name":"energycell", "Name_Localised":"Energy Cell", "Category":"Consumable", "Count":1, "Direction":"ToShipLocker" } ] }
+        //"Transfers":[ { "Name":"healthpack", "Name_Localised":"Medkit", "Category":"Consumable", "LockerOldCount":1, "LockerNewCount":0, "Direction":"ToBackpack" },
+        //{ "Name":"energycell", "Name_Localised":"Energy Cell", "Category":"Consumable", "LockerOldCount":2, "LockerNewCount":0, "Direction":"ToBackpack" }, { "Name":"amm_grenade_emp", "Name_Localised":"Shield Disruptor", "Category":"Consumable", "LockerOldCount":1, "LockerNewCount":0, "Direction":"ToBackpack" },
+        //{ "Name":"amm_grenade_frag", "Name_Localised":"Frag Grenade", "Category":"Consumable", "LockerOldCount":1, "LockerNewCount":0, "Direction":"ToBackpack" }, { "Name":"amm_grenade_shield", "Name_Localised":"Shield Projector", "Category":"Consumable", "LockerOldCount":1, "LockerNewCount":0, "Direction":"ToBackpack" }
+        //] }
         public static void HandleTransferMicroResourcesEvent(TransferMicroResourcesEvent.TransferMicroResourcesEventArgs info)
         {
             foreach (var e in info.Transfers)
             {
+                var lockerCount = e.LockerNewCount;
+
                 var idxName = e.Name.ToLower();
 
                 if (e.Direction == "ToShipLocker")
                 {
                     if (ShipLockerList.ContainsKey(idxName))
                     {
-                        ShipLockerList[idxName].Count += e.Count;
+                        ShipLockerList[idxName].Count = lockerCount;
                     }
                     else
                     {
@@ -520,7 +525,7 @@ namespace Elite
                             missionID = BackPackList[key].MissionID;
                         }
                         
-                        ShipLockerList.Add(idxName, new MaterialItem { Category = e.Category, Name = name, Count = e.Count, MissionID = missionID });
+                        ShipLockerList.Add(idxName, new MaterialItem { Category = e.Category, Name = name, Count = lockerCount, MissionID = missionID });
                     }
 
                     //-------------------------
@@ -529,7 +534,9 @@ namespace Elite
 
                     if (BackPackList.ContainsKey(idxName))
                     {
-                        BackPackList[idxName].Count -= e.Count;
+                        var backpackCount = e.LockerNewCount - e.LockerOldCount;
+
+                        BackPackList[idxName].Count -= backpackCount;
 
                         if (BackPackList[idxName].Count <= 0)
                         {
@@ -542,7 +549,7 @@ namespace Elite
                 {
                     if (ShipLockerList.ContainsKey(idxName))
                     {
-                        ShipLockerList[idxName].Count -= e.Count;
+                        ShipLockerList[idxName].Count = lockerCount;
 
                         if (ShipLockerList[idxName].Count <= 0)
                         {
@@ -550,31 +557,6 @@ namespace Elite
                         }
                     }
 
-                    // -----------------------
-
-                    // not needed, handled by backpack.json ?????????
-
-                    /*
-
-                    if (BackPackList.ContainsKey(idxName))
-                    {
-                        BackPackList[idxName].Count += e.Count;
-                    }
-                    else
-                    {
-                        var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
-
-                        string missionID = null;
-
-                        if (!string.IsNullOrEmpty(name) && ShipLockerList.Any(x => x.Value?.Name == name))
-                        {
-                            var key = ShipLockerList.FirstOrDefault(x => x.Value.Name == name).Key;
-
-                            missionID = ShipLockerList[key].MissionID;
-                        }
-
-                        BackPackList.Add(idxName, new MaterialItem { Category = e.Category, Name = name, Count = e.Count, MissionID = missionID });
-                    } */
 
                 }
             }
