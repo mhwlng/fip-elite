@@ -32,7 +32,25 @@ namespace Elite
         Down,
         Left,
         Right,
-        Push
+        Push,
+        Navigation,
+        Target,
+        Commander,
+        Galnet,
+        Missions,
+        Chat,
+        HWInfo,
+        Ship,
+        Materials,
+        Cargo,
+        Engineer,
+        ShipLocker,
+        BackPack,
+        POI,
+        Galaxy,
+        Engineers,
+        Powers,
+        Mining
     }
 
     public enum LcdPage
@@ -630,7 +648,6 @@ namespace Elite
                 _lastTab = CurrentTab;
                 CurrentTab = tab;
 
-                _currentTabCursor = LcdTab.None;
 
                 _currentLcdYOffset = 0;
 
@@ -638,6 +655,7 @@ namespace Elite
             }
 
             _currentPage = LcdPage.Collapsed;
+            _currentTabCursor = LcdTab.None;
 
             App.PlayClickSound();
 
@@ -676,6 +694,132 @@ namespace Elite
             {
                 switch (joystickButton)
                 {
+                    case JoystickButton.Navigation:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.HomeMenu;
+
+                        buttons = CalculateButton(LcdTab.Navigation);
+                        break;
+                    case JoystickButton.Target:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.HomeMenu;
+
+                        buttons = CalculateButton(LcdTab.Target);
+                        break;
+                    case JoystickButton.Commander:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.InfoMenu;
+
+                        buttons = CalculateButton(LcdTab.Commander);
+                        break;
+                    case JoystickButton.Galnet:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.InfoMenu;
+
+                        buttons = CalculateButton(LcdTab.Galnet);
+                        break;
+                    case JoystickButton.Missions:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.InfoMenu;
+
+                        buttons = CalculateButton(LcdTab.Missions);
+                        break;
+                    case JoystickButton.Chat:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.InfoMenu;
+
+                        buttons = CalculateButton(LcdTab.Chat);
+                        break;
+                    case JoystickButton.HWInfo:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.InfoMenu;
+
+                        buttons = CalculateButton(LcdTab.HWInfo);
+                        break;
+                    case JoystickButton.Ship:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.ShipMenu;
+
+                        buttons = CalculateButton(LcdTab.Ship);
+                        break;
+                    case JoystickButton.Materials:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.ShipMenu;
+
+                        buttons = CalculateButton(LcdTab.Materials);
+                        break;
+                    case JoystickButton.Cargo:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.ShipMenu;
+
+                        buttons = CalculateButton(LcdTab.Cargo);
+                        break;
+                    case JoystickButton.Engineer:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.ShipMenu;
+
+                        buttons = CalculateButton(LcdTab.Engineer);
+                        break;
+                    case JoystickButton.ShipLocker:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.SuitMenu;
+
+                        buttons = CalculateButton(LcdTab.ShipLocker);
+                        break;
+                    case JoystickButton.BackPack:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.SuitMenu;
+
+                        buttons = CalculateButton(LcdTab.BackPack);
+                        break;
+                    case JoystickButton.POI:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.LocationsMenu;
+
+                        buttons = CalculateButton(LcdTab.POI);
+                        break;
+                    case JoystickButton.Galaxy:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.LocationsMenu;
+
+                        buttons = CalculateButton(LcdTab.Galaxy);
+                        break;
+                    case JoystickButton.Engineers:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.LocationsMenu;
+
+                        buttons = CalculateButton(LcdTab.Engineers);
+                        break;
+                    case JoystickButton.Powers:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.LocationsMenu;
+
+                        buttons = CalculateButton(LcdTab.Powers);
+                        break;
+                    case JoystickButton.Mining:
+                        if (oldState) return;
+
+                        _currentPage = LcdPage.LocationsMenu;
+
+                        buttons = CalculateButton(LcdTab.Mining);
+                        break;
                     case JoystickButton.Up:
                         if (_currentPage == LcdPage.Collapsed)
                         {
@@ -1281,6 +1425,14 @@ namespace Elite
                                         {
                                             mustRefresh = SetTab(LcdTab.HWInfo);
                                         }
+                                        else
+                                        {
+                                            mustRefresh = true;
+                                            CurrentTab = LcdTab.None;
+                                            _lastTab = LcdTab.Init;
+                                            _currentTabCursor = LcdTab.None;
+                                            _currentPage = LcdPage.Collapsed;
+                                        }
                                         break;
                                     case 2048:
                                         mustRefresh = true;
@@ -1319,6 +1471,14 @@ namespace Elite
                                             Engineer.GetBestSystems();
 
                                             mustRefresh = SetTab(LcdTab.Engineer);
+                                        }
+                                        else
+                                        {
+                                            mustRefresh = true;
+                                            CurrentTab = LcdTab.None;
+                                            _lastTab = LcdTab.Init;
+                                            _currentTabCursor = LcdTab.None;
+                                            _currentPage = LcdPage.Collapsed;
                                         }
                                         break;
                                     case 1024:

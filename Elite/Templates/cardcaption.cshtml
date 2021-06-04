@@ -217,7 +217,14 @@
     }
     else if (Model.CurrentTab == LcdTab.Engineers)
     {
-        <div class="cardcaption">&#x25c0; @(Model.EngineersList[Model.CurrentCard].Faction) &#x25b6;</div>
+        if (Model.EngineersList == null || Model.CurrentCard >= Model.EngineersList.Count)
+        {
+            <div class="cardcaption">&#x25c0; ??? &#x25b6;</div>
+        }
+        else
+        {
+            <div class="cardcaption">&#x25c0; @(Model.EngineersList[Model.CurrentCard].Faction) &#x25b6;</div>
+        }
     }
     else if (Model.CurrentTab == LcdTab.Powers)
     {

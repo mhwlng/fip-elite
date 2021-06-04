@@ -418,6 +418,9 @@
     <Content Include="Templates\images\engineers\Mel Brandon.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\images\engineers\Oden Geiger.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\images\engineers\Petra Olmanova.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

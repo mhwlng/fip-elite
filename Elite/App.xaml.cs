@@ -73,6 +73,25 @@ namespace Elite
         private static int _rightButton;
         private static int _pushButton;
 
+        private static int _navigationButton;
+        private static int _targetButton;
+        private static int _commanderButton;
+        private static int _galnetButton;
+        private static int _missionsButton;
+        private static int _chatButton;
+        private static int _hWInfoButton;
+        private static int _shipButton;
+        private static int _materialsButton;
+        private static int _cargoButton;
+        private static int _engineerButton;
+        private static int _shipLockerButton;
+        private static int _backPackButton;
+        private static int _pOIButton;
+        private static int _galaxyButton;
+        private static int _engineersButton;
+        private static int _powersButton;
+        private static int _miningButton;
+
         public static int WindowWidth;
         public static int WindowHeight;
 
@@ -215,7 +234,7 @@ namespace Elite
 
         private static void HandleJoystickButton(JoystickState state, JoystickButton button, int buttonId)
         {
-            if (state.Buttons.Length >= buttonId)
+            if (buttonId > 0 && state.Buttons.Length >= buttonId)
             {
                 var buttonState = state.Buttons[buttonId - 1];
                 var oldButtonState = _lastButtonState[buttonId - 1];
@@ -402,6 +421,25 @@ namespace Elite
                     _rightButton = Convert.ToInt32(joystickSection["RightButton"]);
                     _pushButton = Convert.ToInt32(joystickSection["PushButton"]);
 
+                    _navigationButton = Convert.ToInt32(joystickSection["NavigationButton"]);
+                    _targetButton = Convert.ToInt32(joystickSection["TargetButton"]);
+                    _commanderButton = Convert.ToInt32(joystickSection["CommanderButton"]);
+                    _galnetButton = Convert.ToInt32(joystickSection["GalnetButton"]);
+                    _missionsButton = Convert.ToInt32(joystickSection["MissionsButton"]);
+                    _chatButton = Convert.ToInt32(joystickSection["ChatButton"]);
+                    _hWInfoButton = Convert.ToInt32(joystickSection["HWInfoButton"]);
+                    _shipButton = Convert.ToInt32(joystickSection["ShipButton"]);
+                    _materialsButton = Convert.ToInt32(joystickSection["MaterialsButton"]);
+                    _cargoButton = Convert.ToInt32(joystickSection["CargoButton"]);
+                    _engineerButton = Convert.ToInt32(joystickSection["EngineerButton"]);
+                    _shipLockerButton = Convert.ToInt32(joystickSection["ShipLockerButton"]);
+                    _backPackButton = Convert.ToInt32(joystickSection["BackPackButton"]);
+                    _pOIButton = Convert.ToInt32(joystickSection["POIButton"]);
+                    _galaxyButton = Convert.ToInt32(joystickSection["GalaxyButton"]);
+                    _engineersButton = Convert.ToInt32(joystickSection["EngineersButton"]);
+                    _powersButton = Convert.ToInt32(joystickSection["PowersButton"]);
+                    _miningButton = Convert.ToInt32(joystickSection["MiningButton"]);
+
                     if (!string.IsNullOrEmpty(_pid) && !string.IsNullOrEmpty(_vid) && _upButton > 0 && _downButton > 0 && _leftButton > 0 && _rightButton > 0 && _pushButton > 0)
                     {
                         splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Looking for Joystick...");
@@ -490,6 +528,25 @@ namespace Elite
                                             HandleJoystickButton(state, JoystickButton.Left, _leftButton);
                                             HandleJoystickButton(state, JoystickButton.Right, _rightButton);
                                             HandleJoystickButton(state, JoystickButton.Push, _pushButton);
+
+                                            HandleJoystickButton(state, JoystickButton.Navigation, _navigationButton);
+                                            HandleJoystickButton(state, JoystickButton.Target, _targetButton);
+                                            HandleJoystickButton(state, JoystickButton.Commander, _commanderButton);
+                                            HandleJoystickButton(state, JoystickButton.Galnet, _galnetButton);
+                                            HandleJoystickButton(state, JoystickButton.Missions, _missionsButton);
+                                            HandleJoystickButton(state, JoystickButton.Chat, _chatButton);
+                                            HandleJoystickButton(state, JoystickButton.HWInfo, _hWInfoButton);
+                                            HandleJoystickButton(state, JoystickButton.Ship, _shipButton);
+                                            HandleJoystickButton(state, JoystickButton.Materials, _materialsButton);
+                                            HandleJoystickButton(state, JoystickButton.Cargo, _cargoButton);
+                                            HandleJoystickButton(state, JoystickButton.Engineer, _engineerButton);
+                                            HandleJoystickButton(state, JoystickButton.ShipLocker, _shipLockerButton);
+                                            HandleJoystickButton(state, JoystickButton.BackPack, _backPackButton);
+                                            HandleJoystickButton(state, JoystickButton.POI, _pOIButton);
+                                            HandleJoystickButton(state, JoystickButton.Galaxy, _galaxyButton);
+                                            HandleJoystickButton(state, JoystickButton.Engineers, _engineersButton);
+                                            HandleJoystickButton(state, JoystickButton.Powers, _powersButton);
+                                            HandleJoystickButton(state, JoystickButton.Mining, _miningButton);
 
                                             /*
                                              TODO 

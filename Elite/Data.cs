@@ -897,12 +897,6 @@ namespace Elite
                     CommanderData.Credits -= payBountiesInfo.Amount;
                     break;
 
-                case "RedeemVoucher":
-                    var redeemVoucherInfo = (RedeemVoucherEvent.RedeemVoucherEventArgs)e;
-
-                    CommanderData.Credits += redeemVoucherInfo.Amount;
-
-                    break;
 
                 case "MarketSell":
                     //When Written: when selling goods in the market
@@ -1567,9 +1561,18 @@ namespace Elite
 
                     var bountyInfo = (BountyEvent.BountyEventArgs)e;
 
-                    CommanderData.Credits += bountyInfo.TotalReward;
+                    // don't increase credits , should happen via RedeemVoucher event
+                    //CommanderData.Credits += bountyInfo.TotalReward;
 
                     break;
+
+                case "RedeemVoucher":
+                    var redeemVoucherInfo = (RedeemVoucherEvent.RedeemVoucherEventArgs)e;
+
+                    CommanderData.Credits += redeemVoucherInfo.Amount;
+
+                    break;
+
 
                 case "MultiSellExplorationData":
 

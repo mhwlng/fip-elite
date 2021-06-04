@@ -16,9 +16,15 @@ Also, the S5 button shows the next card and the S6 button shows the previous car
 
 Press the S1 button to display the menu.
 
-You can also control ONE Flight Instrument Panel with a HOTAS 4-way hat switch with pushbutton.
+You can also control ONE Flight Instrument Panel with a (virtual) Joystick 4-way hat switch with pushbutton.
 
-The joystick is configured via joysticksettings.config
+The 4-way hat switch up-, down-, left-, right- buttons are 4 normal joystick buttons. 
+An 8-way hat switch (POV) is not supported.
+
+You can also designate separate (virtual) joystick buttons as shortcuts to specific screens.
+
+The (virtual) joystick is configured via joysticksettings.config
+The button id's must be numeric.
 
 ```
 <?xml version="1.0" encoding="utf-8" ?>
@@ -30,6 +36,24 @@ The joystick is configured via joysticksettings.config
   <add key="LeftButton" value="24" />
   <add key="RightButton" value="22" />
   <add key="PushButton" value="25" />
+  <add key="NavigationButton" value="0" />
+  <add key="TargetButton" value="0" />
+  <add key="CommanderButton" value="0" />
+  <add key="GalnetButton" value="0" />
+  <add key="MissionsButton" value="0" />
+  <add key="ChatButton" value="0" />
+  <add key="HWInfoButton" value="0" />
+  <add key="ShipButton" value="0" />
+  <add key="MaterialsButton" value="0" />
+  <add key="CargoButton" value="0" />
+  <add key="EngineerButton" value="0" />
+  <add key="ShipLockerButton" value="0" />
+  <add key="BackPackButton" value="0" />
+  <add key="POIButton" value="0" />
+  <add key="GalaxyButton" value="0" />
+  <add key="EngineersButton" value="0" />
+  <add key="PowersButton" value="0" />
+  <add key="MiningButton" value="0" />
   <add key="FipSerialNumber" value="MZAAFAA883" />
   <add key="WindowWidth" value="320" />
   <add key="WindowHeight" value="240" />
