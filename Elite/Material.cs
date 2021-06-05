@@ -293,7 +293,7 @@ namespace Elite
                         {
                             var name = (i.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                            ShipLockerList.Add(idxName, new MaterialItem { Category = category, Name = name, Count = i.Count, MissionID = null });
+                            ShipLockerList.Add(idxName, new MaterialItem { Category = category, Name = name, Count = i.Count, MissionID = null, MaximumCapacity = GetMaximumCapacity(idxName) });
                         }
 
                     }
@@ -333,7 +333,7 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    BackPackList.Add(idxName, new MaterialItem { Category = "Item", Name = name, Count = e.Count, MissionID = e.MissionID });
+                    BackPackList.Add(idxName, new MaterialItem { Category = "Item", Name = name, Count = e.Count, MissionID = e.MissionID, MaximumCapacity = GetMaximumCapacity(idxName) });
                 }
             }
 
@@ -345,7 +345,7 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    BackPackList.Add(idxName, new MaterialItem { Category = "Component", Name = name, Count = e.Count, MissionID = e.MissionID });
+                    BackPackList.Add(idxName, new MaterialItem { Category = "Component", Name = name, Count = e.Count, MissionID = e.MissionID, MaximumCapacity = GetMaximumCapacity(idxName) });
                 }
             }
 
@@ -357,7 +357,7 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    BackPackList.Add(idxName, new MaterialItem { Category = "Consumable", Name = name, Count = e.Count, MissionID = e.MissionID });
+                    BackPackList.Add(idxName, new MaterialItem { Category = "Consumable", Name = name, Count = e.Count, MissionID = e.MissionID, MaximumCapacity = GetMaximumCapacity(idxName) });
                 }
             }
 
@@ -369,7 +369,7 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    BackPackList.Add(idxName, new MaterialItem { Category = "Data", Name = name, Count = e.Count, MissionID = e.MissionID });
+                    BackPackList.Add(idxName, new MaterialItem { Category = "Data", Name = name, Count = e.Count, MissionID = e.MissionID, MaximumCapacity = GetMaximumCapacity(idxName) });
                 }
             }
 
@@ -387,7 +387,7 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    ShipLockerList.Add(idxName, new MaterialItem { Category = "Item", Name = name, Count = e.Count, MissionID = e.MissionID});
+                    ShipLockerList.Add(idxName, new MaterialItem { Category = "Item", Name = name, Count = e.Count, MissionID = e.MissionID, MaximumCapacity = GetMaximumCapacity(idxName) });
                 }
             }
 
@@ -399,7 +399,7 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    ShipLockerList.Add(idxName, new MaterialItem { Category = "Component", Name = name, Count = e.Count, MissionID = e.MissionID });
+                    ShipLockerList.Add(idxName, new MaterialItem { Category = "Component", Name = name, Count = e.Count, MissionID = e.MissionID, MaximumCapacity = GetMaximumCapacity(idxName) });
                 }
             }
 
@@ -411,7 +411,7 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    ShipLockerList.Add(idxName, new MaterialItem { Category = "Consumable", Name = name, Count = e.Count, MissionID = e.MissionID });
+                    ShipLockerList.Add(idxName, new MaterialItem { Category = "Consumable", Name = name, Count = e.Count, MissionID = e.MissionID, MaximumCapacity = GetMaximumCapacity(idxName) });
                 }
             }
 
@@ -423,7 +423,7 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    ShipLockerList.Add(idxName, new MaterialItem { Category = "Data", Name = name, Count = e.Count, MissionID = e.MissionID });
+                    ShipLockerList.Add(idxName, new MaterialItem { Category = "Data", Name = name, Count = e.Count, MissionID = e.MissionID, MaximumCapacity = GetMaximumCapacity(idxName) });
                 }
             }
 
@@ -443,7 +443,7 @@ namespace Elite
             {
                 var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                ShipLockerList.Add(idxName, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, MissionID = null });
+                ShipLockerList.Add(idxName, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, MissionID = null, MaximumCapacity = GetMaximumCapacity(idxName) });
             }
 
         }
@@ -487,7 +487,7 @@ namespace Elite
 
             //????????????????var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxRecName)).Trim();
 
-            ShipLockerList.Add(idxRecName, new MaterialItem { Category = info.Category, Name = info.Received, Count = info.Count, MissionID = null });
+            ShipLockerList.Add(idxRecName, new MaterialItem { Category = info.Category, Name = info.Received, Count = info.Count, MissionID = null, MaximumCapacity = GetMaximumCapacity(idxRecName) });
 
             //???????????????
 
@@ -525,7 +525,7 @@ namespace Elite
                             missionID = BackPackList[key].MissionID;
                         }
                         
-                        ShipLockerList.Add(idxName, new MaterialItem { Category = e.Category, Name = name, Count = lockerCount, MissionID = missionID });
+                        ShipLockerList.Add(idxName, new MaterialItem { Category = e.Category, Name = name, Count = lockerCount, MissionID = missionID, MaximumCapacity = GetMaximumCapacity(idxName) });
                     }
 
                     //-------------------------

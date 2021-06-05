@@ -2355,7 +2355,7 @@ namespace Elite
 
                                         lock (App.RefreshJsonLock)
                                         {
-                                            if (Data.EngineersList != null && (int)CurrentTab < Data.EngineersList.Count)
+                                            if (Data.EngineersList != null && CurrentCard[(int)CurrentTab] < Data.EngineersList.Count )
                                             {
                                                 Engineer.EngineerBlueprints.TryGetValue(
                                                     Data.EngineersList[CurrentCard[(int) CurrentTab]].Faction,
