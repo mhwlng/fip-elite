@@ -2355,22 +2355,25 @@ namespace Elite
 
                                         lock (App.RefreshJsonLock)
                                         {
-                                            Engineer.EngineerBlueprints.TryGetValue(
-                                                Data.EngineersList[CurrentCard[(int) CurrentTab]].Faction,
-                                                out var blueprints);
+                                            if (Data.EngineersList != null && (int)CurrentTab < Data.EngineersList.Count)
+                                            {
+                                                Engineer.EngineerBlueprints.TryGetValue(
+                                                    Data.EngineersList[CurrentCard[(int) CurrentTab]].Faction,
+                                                    out var blueprints);
 
-                                            str =
-                                                Engine.Razor.Run("engineers.cshtml", null, new
-                                                {
-                                                    CurrentTab = CurrentTab,
-                                                    CurrentPage = _currentPage,
-                                                    CurrentCard = CurrentCard[(int)CurrentTab],
+                                                str =
+                                                    Engine.Razor.Run("engineers.cshtml", null, new
+                                                    {
+                                                        CurrentTab = CurrentTab,
+                                                        CurrentPage = _currentPage,
+                                                        CurrentCard = CurrentCard[(int) CurrentTab],
 
-                                                    Engineer = Data.EngineersList[CurrentCard[(int)CurrentTab]],
+                                                        Engineer = Data.EngineersList[CurrentCard[(int) CurrentTab]],
 
-                                                    Blueprints = blueprints
+                                                        Blueprints = blueprints
 
-                                                });
+                                                    });
+                                            }
                                         }
 
                                         break;
