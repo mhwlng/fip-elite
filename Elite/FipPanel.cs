@@ -2370,7 +2370,9 @@ namespace Elite
 
                                                         Engineer = Data.EngineersList[CurrentCard[(int) CurrentTab]],
 
-                                                        Blueprints = blueprints
+                                                        Blueprints = blueprints.Where(x => x.Type != "Suit" && x.Type != "Weapon"),
+
+                                                        SuitWeaponBlueprints = blueprints.Where(x => x.Type == "Suit" || x.Type == "Weapon")
 
                                                     });
                                             }
@@ -2507,6 +2509,38 @@ namespace Elite
                                                 CurrentPage = _currentPage,
                                                 CurrentCard = CurrentCard[(int) CurrentTab],
 
+                                                Circuits = Engineer.IngredientShoppingList?
+                                                                .Where(x => x.EntryData.Kind == Kind.OdysseyIngredient &&
+                                                                            x.EntryData.Group == Group.Circuits)
+                                                                .OrderBy(x => x.Name).ToList() ??
+                                                            new List<IngredientShoppingListItem>(),
+
+                                                Chemicals = Engineer.IngredientShoppingList?
+                                                           .Where(x => x.EntryData.Kind == Kind.OdysseyIngredient &&
+                                                                       x.EntryData.Group == Group.Chemicals)
+                                                           .OrderBy(x => x.Name).ToList() ??
+                                                       new List<IngredientShoppingListItem>(),
+
+                                                Tech = Engineer.IngredientShoppingList?
+                                                                .Where(x => x.EntryData.Kind == Kind.OdysseyIngredient &&
+                                                                            x.EntryData.Group == Group.Tech)
+                                                                .OrderBy(x => x.Name).ToList() ??
+                                                            new List<IngredientShoppingListItem>(),
+
+                                                Data = Engineer.IngredientShoppingList?
+                                                          .Where(x => x.EntryData.Kind == Kind.OdysseyIngredient &&
+                                                                      x.EntryData.Group == Group.Data)
+                                                          .OrderBy(x => x.Name).ToList() ??
+                                                      new List<IngredientShoppingListItem>(),
+
+                                                Item = Engineer.IngredientShoppingList?
+                                                           .Where(x => x.EntryData.Kind == Kind.OdysseyIngredient &&
+                                                                       x.EntryData.Group == Group.Item)
+                                                           .OrderBy(x => x.Name).ToList() ??
+                                                       new List<IngredientShoppingListItem>(),
+
+                                                //---------------------
+
                                                 Raw = Engineer.IngredientShoppingList?
                                                           .Where(x => x.EntryData.Subkind == Subkind.Raw)
                                                           .OrderBy(x => x.Name).ToList() ??
@@ -2553,7 +2587,35 @@ namespace Elite
                                                 MissingCommodity = Engineer.IngredientShoppingList?
                                                                 .Where(x => x.EntryData.Kind == Kind.Commodity && x.RequiredCount > x.Inventory)
                                                                 .OrderBy(x => x.Name).ToList() ??
-                                                            new List<IngredientShoppingListItem>()
+                                                            new List<IngredientShoppingListItem>(),
+
+                                                //---------------------
+
+                                                MissingCircuits = Engineer.IngredientShoppingList?
+                                                                      .Where(x => x.EntryData.Kind == Kind.OdysseyIngredient && x.EntryData.Group == Group.Circuits && x.RequiredCount > x.Inventory)
+                                                                      .OrderBy(x => x.Name).ToList() ??
+                                                                  new List<IngredientShoppingListItem>(),
+
+                                                MissingChemicals = Engineer.IngredientShoppingList?
+                                                                       .Where(x => x.EntryData.Kind == Kind.OdysseyIngredient && x.EntryData.Group == Group.Chemicals && x.RequiredCount > x.Inventory)
+                                                                       .OrderBy(x => x.Name).ToList() ??
+                                                                   new List<IngredientShoppingListItem>(),
+
+                                                MissingTech = Engineer.IngredientShoppingList?
+                                                                  .Where(x => x.EntryData.Kind == Kind.OdysseyIngredient && x.EntryData.Group == Group.Tech && x.RequiredCount > x.Inventory)
+                                                                  .OrderBy(x => x.Name).ToList() ??
+                                                              new List<IngredientShoppingListItem>(),
+
+                                                MissingData = Engineer.IngredientShoppingList?
+                                                                  .Where(x => x.EntryData.Kind == Kind.OdysseyIngredient && x.EntryData.Group == Group.Data && x.RequiredCount > x.Inventory)
+                                                                  .OrderBy(x => x.Name).ToList() ??
+                                                              new List<IngredientShoppingListItem>(),
+
+                                                MissingItem = Engineer.IngredientShoppingList?
+                                                                  .Where(x => x.EntryData.Kind == Kind.OdysseyIngredient && x.EntryData.Group == Group.Item && x.RequiredCount > x.Inventory)
+                                                                  .OrderBy(x => x.Name).ToList() ??
+                                                              new List<IngredientShoppingListItem>()
+
 
                                             });
 

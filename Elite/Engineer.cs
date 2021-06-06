@@ -93,15 +93,27 @@ namespace Elite
 
 
                     var engineerBlueprints = blueprints
-                        .Where(x => x.Category !=  BlueprintCategory.Experimental && x.Category != BlueprintCategory.Unlock)
-                        .SelectMany(blueprint => blueprint.Engineers, (blueprint, engineer) => new {blueprint, engineer})
-                        .Where(x => !x.engineer.StartsWith("@"))
-                        .GroupBy(x => x.engineer)
-                        .ToDictionary(x => x.Key, 
-                            x => x.Select( z => (Blueprint)z.blueprint)
-                                .GroupBy(a => a.Type).Select(b => b.First(c => c.Grade == b.Max(d => d.Grade)))
-                                .OrderByDescending(e => e.Grade).ThenBy(e => e.Type).ToList())
-                        ;
+                        .Where(x => x.Category != BlueprintCategory.Experimental && x.Type != "Suit" &&
+                                     x.Type != "Weapon" && x.Category != BlueprintCategory.Unlock)
+                            .SelectMany(blueprint => blueprint.Engineers,
+                                (blueprint, engineer) => new {blueprint, engineer})
+                            .Where(x => !x.engineer.StartsWith("@"))
+                            .GroupBy(x => x.engineer)
+                            .ToDictionary(x => x.Key,
+                                x => x.Select(z => (Blueprint) z.blueprint)
+                                    .GroupBy(a => a.Type).Select(b => b.First(c => c.Grade == b.Max(d => d.Grade)))
+                                    .OrderByDescending(e => e.Grade).ThenBy(e => e.Type).ToList())
+                            .Concat(blueprints
+                                .Where(y => y.Type == "Suit" || y.Type == "Weapon")
+                                .SelectMany(blueprint => blueprint.Engineers,
+                                    (blueprint, engineer) => new {blueprint, engineer})
+                                .Where(y => !y.engineer.StartsWith("@"))
+                                .GroupBy(y => y.engineer)
+                                .ToDictionary(x => x.Key,
+                                    x => x.Select(z => (Blueprint) z.blueprint)
+                                        .GroupBy(a => a.Type + a.BlueprintName).Select(b => b.First(c => c.Grade == b.Max(d => d.Grade)))
+                                        .OrderByDescending(e => e.Grade).ThenBy(e => e.Type + e.BlueprintName).ToList()))
+                        .ToDictionary(s => s.Key, s => s.Value); 
 
                     return engineerBlueprints;
 
@@ -153,6 +165,19 @@ namespace Elite
                     var materialData = Material.MaterialList.FirstOrDefault(x => x.Value.Name == i.Name).Value;
 
                     i.Inventory = materialData?.Count ?? 0;
+                }
+            }
+
+            if (IngredientShoppingList?.Any() == true && Material.ShipLockerList?.Any() == true)
+            {
+                foreach (var i in IngredientShoppingList)
+                {
+                    var materialData = Material.ShipLockerList.FirstOrDefault(x => x.Value.Name == i.Name).Value;
+
+                    if (materialData != null)
+                    {
+                        i.Inventory = materialData.Count;
+                    }
                 }
             }
         }

@@ -159,6 +159,176 @@
                 </tbody>
             </table>
         }
+        if (Model.Circuits.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">Circuits</td>
+                </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                @foreach (var m in Model.Circuits)
+                {
+                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
+                        <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
+                    </tr>
+                    odd = !odd;
+                }
+                </tbody>
+            </table>
+        }
+        if (Model.Chemicals.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">Chemicals</td>
+                </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                @foreach (var m in Model.Chemicals)
+                {
+                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
+                        <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
+                    </tr>
+                    odd = !odd;
+                }
+                </tbody>
+            </table>
+        }
+        if (Model.Tech.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">Tech</td>
+                </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                @foreach (var m in Model.Tech)
+                {
+                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
+                        <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
+                    </tr>
+                    odd = !odd;
+                }
+                </tbody>
+            </table>
+        }
+        if (Model.Data.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">Data</td>
+                </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                @foreach (var m in Model.Data)
+                {
+                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
+                        <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
+                    </tr>
+                    odd = !odd;
+                }
+                </tbody>
+            </table>
+        }
+        if (Model.Item.Count > 0)
+        {
+            odd = true;
+
+            <table>
+                <tbody>
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">Items</td>
+                </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table class="zebratable">
+                <tbody>
+                @foreach (var m in Model.Item)
+                {
+                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.Inventory</td>
+                        <td class="data right @(m.RequiredCount > m.Inventory ? "alarm" : "")">@m.RequiredCount</td>
+                    </tr>
+                    odd = !odd;
+                }
+                </tbody>
+            </table>
+        }
     }
     else if (Model.CurrentCard == 2)
     {
@@ -336,5 +506,232 @@
                 </tbody>
             </table>
         }
+
+        if (Model.MissingCircuits.Count > 0)
+        {
+            <table>
+                <tbody>
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">Circuits</td>
+                </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table>
+                <tbody>
+                @foreach (var m in Model.MissingCircuits)
+                {
+                    <tr>
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right">@m.Inventory</td>
+                        <td class="data right">@m.RequiredCount</td>
+                    </tr>
+
+                    foreach (var n in m.EntryData.OriginDetails)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">@n</td>
+                        </tr>
+                    }
+
+                    foreach (var n in m.BestSystems)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">@n</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        }
+        if (Model.MissingChemicals.Count > 0)
+        {
+            <table>
+                <tbody>
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">Chemicals</td>
+                </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table>
+                <tbody>
+                @foreach (var m in Model.MissingChemicals)
+                {
+                    <tr>
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right">@m.Inventory</td>
+                        <td class="data right">@m.RequiredCount</td>
+                    </tr>
+
+                    foreach (var n in m.EntryData.OriginDetails)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">@n</td>
+                        </tr>
+                    }
+
+                    foreach (var n in m.BestSystems)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">@n</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        }
+        if (Model.MissingTech.Count > 0)
+        {
+            <table>
+                <tbody>
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">Tech</td>
+                </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table>
+                <tbody>
+                @foreach (var m in Model.MissingTech)
+                {
+                    <tr>
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right">@m.Inventory</td>
+                        <td class="data right">@m.RequiredCount</td>
+                    </tr>
+
+                    foreach (var n in m.EntryData.OriginDetails)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">@n</td>
+                        </tr>
+                    }
+
+                    foreach (var n in m.BestSystems)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">@n</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        }
+        if (Model.MissingData.Count > 0)
+        {
+            <table>
+                <tbody>
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">Data</td>
+                </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table>
+                <tbody>
+                @foreach (var m in Model.MissingData)
+                {
+                    <tr>
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right">@m.Inventory</td>
+                        <td class="data right">@m.RequiredCount</td>
+                    </tr>
+
+                    foreach (var n in m.EntryData.OriginDetails)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">@n</td>
+                        </tr>
+                    }
+
+                    foreach (var n in m.BestSystems)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">@n</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        }
+        if (Model.MissingItem.Count > 0)
+        {
+            <table>
+                <tbody>
+                @if (displaydivider)
+                {
+                    <tr>
+                        <td class="divider">&nbsp;</td>
+                    </tr>
+                }
+                <tr>
+                    <td class="caption center">Items</td>
+                </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+
+            <table>
+                <tbody>
+                @foreach (var m in Model.MissingItem)
+                {
+                    <tr>
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right">@m.Inventory</td>
+                        <td class="data right">@m.RequiredCount</td>
+                    </tr>
+
+                    foreach (var n in m.EntryData.OriginDetails)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">@n</td>
+                        </tr>
+                    }
+
+                    foreach (var n in m.BestSystems)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">@n</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        }
+
     }
 </div>

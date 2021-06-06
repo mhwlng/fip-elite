@@ -141,7 +141,7 @@ namespace EDEngineer.Models
             return $"G{Grade} [{Type}] {BlueprintName}";
         }
 
-        public string GradeString => Grade != null ? $"G{Grade}" : "🔹";
+        public string GradeString => Grade != null ? $"G{Grade}" : "";
 
         private string Prefix
         {

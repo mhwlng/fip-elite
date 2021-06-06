@@ -7,10 +7,6 @@ RAMTemp-SensorId=0xf3000002
 RAMTemp-SensorInstance=0x0
 RAMTemp-EntryId=0x1000000
 
-WaterTemp-SensorId=0xfc04a100
-WaterTemp-SensorInstance=0x30
-WaterTemp-EntryId=0x1000000
-
 GPUTemp-SensorId=0xe0002000
 GPUTemp-SensorInstance=0x0
 GPUTemp-EntryId=0x1000000
@@ -34,14 +30,6 @@ VRMTemp-EntryId=0x1000000
 GPUFanSpeed-SensorId=0xe0002000
 GPUFanSpeed-SensorInstance=0x0
 GPUFanSpeed-EntryId=0x3000000
-
-PumpSpeed-SensorId=0xfc04a100
-PumpSpeed-SensorInstance=0x30
-PumpSpeed-EntryId=0x3000002
-
-RadiatorFanSpeed-SensorId=0xfc04a100
-RadiatorFanSpeed-SensorInstance=0x30
-RadiatorFanSpeed-EntryId=0x3000000
 
 ChipsetFanSpeed-SensorId=0xf0ec0502
 ChipsetFanSpeed-SensorInstance=0x0
@@ -82,12 +70,9 @@ SSDTemp=SSD
 VRMTemp=VRM
 ChipsetTemp=Chipset
 MotherboardTemp=Motherboard
-WaterTemp=Water
 
 [HWINFO-Config-FAN SPEEDS]
 GPUFanSpeed=GPU
-PumpSpeed=Pump
-RadiatorFanSpeed=Radiator
 ChipsetFanSpeed=Chipset
 
 [HWINFO-Config-POWER]
