@@ -17,63 +17,166 @@
         <div class="cardcaption data">BACKPACK EMPTY</div>
     }
 
-    <table class="zebratable">
-        <tbody>
+    @if (Model.CurrentCard == 0 && Model.ItemsCount > 0)
+    {
+        displaydivider = true;
 
-            @if (Model.CurrentCard == 0 && Model.ItemsCount > 0)
+        <table class="zebratable">
+            <tbody>
+            @foreach (var m in Model.Items)
             {
-                displaydivider = true;
-
-                foreach (var m in Model.Items)
-                {
-                    <tr class="@(odd ? "zebraodd": "zebraeven")">
-                        <td class="caption nowrap">@m.Name</td>
-                        <td class="data right">@m.Count</td>
-                    </tr>
-                    odd = !odd;
-                }
+                <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                    <td class="data">@m.BluePrintType</td>
+                    <td class="caption nowrap">@m.Name</td>
+                    <td class="data right">@m.Count</td>
+                </tr>
+                odd = !odd;
             }
-            else if (Model.CurrentCard == 1 && Model.ComponentsCount > 0)
-            {
-                displaydivider = true;
+            </tbody>
+        </table>
 
-                foreach (var m in Model.Components)
+    }
+    else if (Model.CurrentCard == 1)
+    {
+        if (Model.ComponentsCircuitsCount > 0)
+        {
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="caption center">CIRCUITS</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+            odd = true;
+
+            <table class="zebratable">
+                <tbody>
+                @foreach (var m in Model.ComponentsCircuits)
                 {
                     <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td class="data">@m.BluePrintType</td>
                         <td class="caption nowrap">@m.Name</td>
                         <td class="data right">@m.Count</td>
                     </tr>
                     odd = !odd;
                 }
-            }
-            else if (Model.CurrentCard == 2 && Model.ConsumablesCount > 0)
-            {
-                displaydivider = true;
+                </tbody>
+            </table>
 
-                foreach (var m in Model.Consumables)
-                {
-                    <tr class="@(odd ? "zebraodd": "zebraeven")">
-                        <td class="caption nowrap">@m.Name</td>
-                        <td class="data right">@m.Count</td>
-                    </tr>
-                    odd = !odd;
-                }
-            }
-            else if (Model.CurrentCard == 3 && Model.DataCount > 0)
-            {
-                displaydivider = true;
+        }
 
-                foreach (var m in Model.Data)
+        if (Model.ComponentsChemicalsCount > 0)
+        {
+            <table>
+                <tbody>
+
+                    @if (displaydivider)
+                    {
+                        <tr>
+                            <td class="divider">&nbsp;</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="caption center">CHEMICALS</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+            odd = true;
+            
+            <table class="zebratable">
+                <tbody>
+
+                @foreach (var m in Model.ComponentsChemicals)
                 {
-                    <tr class="@(odd ? "zebraodd": "zebraeven")">
+                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td class="data">@m.BluePrintType</td>
                         <td class="caption nowrap">@m.Name</td>
                         <td class="data right">@m.Count</td>
                     </tr>
                     odd = !odd;
                 }
+                </tbody>
+            </table>
+
+        }
+
+        if (Model.ComponentsTechCount > 0)
+        {
+            <table>
+                <tbody>
+                    @if (displaydivider)
+                    {
+                        <tr>
+                            <td class="divider">&nbsp;</td>
+                        </tr>
+                    }
+                    <tr>
+                      <td class="caption center">TECH</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            displaydivider = true;
+            odd = true;
+            
+            <table class="zebratable">
+                <tbody>
+                @foreach (var m in Model.ComponentsTech)
+                {
+                    <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                        <td class="data">@m.BluePrintType</td>
+                        <td class="caption nowrap">@m.Name</td>
+                        <td class="data right">@m.Count</td>
+                    </tr>
+                    odd = !odd;
+                }
+                </tbody>
+            </table>
+
+        }
+
+    }
+    else if (Model.CurrentCard == 2 && Model.ConsumablesCount > 0)
+    {
+        displaydivider = true;
+               
+        <table class="zebratable">
+            <tbody>
+            @foreach (var m in Model.Consumables)
+            {
+                <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                    <td class="caption nowrap">@m.Name</td>
+                    <td class="data right">@m.Count</td>
+                </tr>
+                odd = !odd;
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+
+    }
+    else if (Model.CurrentCard == 3 && Model.DataCount > 0)
+    {
+        displaydivider = true;
+                
+        <table class="zebratable">
+            <tbody>
+            @foreach (var m in Model.Data)
+            {
+                <tr class="@(odd ? "zebraodd" : "zebraeven")">
+                    <td class="data">@m.BluePrintType</td>
+                    <td class="caption nowrap">@m.Name</td>
+                    <td class="data right">@m.Count</td>
+                </tr>
+            odd = !odd;
+            }
+            </tbody>
+        </table>
+
+    }
 
     @if ((Model.CurrentCard == 0 && Model.MissionItemsCount > 0) ||
          (Model.CurrentCard == 1 && Model.MissionComponentsCount > 0) ||

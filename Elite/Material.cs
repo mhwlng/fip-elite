@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using EDEngineer.Models;
+using EliteJournalReader;
 using EliteJournalReader.Events;
 
 namespace Elite
@@ -15,6 +17,8 @@ namespace Elite
             public string Category { get; set; }
             public int Count { get; set; }
             public int MaximumCapacity { get; set; }
+            public string Group { get; set; }
+            public string BluePrintType { get; set; }
 
             public string MissionID { get; set; }
 
@@ -75,17 +79,59 @@ namespace Elite
             }
         }
 
-        private static int GetMaximumCapacity(string name)
+        private static EntryData GetMaterialInfo(string name)
+        {
+            Engineer.EngineeringMaterialsByKey.TryGetValue(name, out var entry);
+
+            return entry;
+        }
+
+        private static int GetMaximumCapacity(EntryData entry)
         {
             var maximumCapacity = 0;
 
-            Engineer.EngineeringMaterialsByKey.TryGetValue(name, out var entry);
             if (entry != null)
             {
                 maximumCapacity = entry.MaximumCapacity;
             }
 
             return maximumCapacity;
+        }
+
+        private static string GetGroup(EntryData entry)
+        {
+            var group = string.Empty;
+
+            if (entry != null)
+            {
+                group = entry.Group.StringValue();
+            }
+
+            return group;
+        }
+
+        private static string GetBluePrintType(EntryData entry)
+        {
+            var type = string.Empty;
+
+            if (entry != null)
+            {
+                Engineer.IngredientTypes.TryGetValue(entry.Name, out var material);
+
+                if (material != null)
+                {
+                    if (material.Contains("Weapon"))
+                    {
+                        type += "W";
+                    }
+                    if (material.Contains("Suit"))
+                    {
+                        type += "S";
+                    }
+                }
+            }
+
+            return type;
         }
 
         public static void HandleMaterialsEvent(MaterialsEvent.MaterialsEventArgs info)
@@ -100,7 +146,13 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    MaterialList.Add(idxName, new MaterialItem{ Category = "Encoded" ,Name = name, Count = e.Count, MaximumCapacity = GetMaximumCapacity(idxName) });
+                    var entry = GetMaterialInfo(idxName);
+
+                    MaterialList.Add(idxName, new MaterialItem{ Category = "Encoded" ,Name = name, Count = e.Count, 
+                        MaximumCapacity = GetMaximumCapacity(entry),
+                        Group = "",
+                        BluePrintType = ""
+                    });
                 }
             }
 
@@ -112,7 +164,13 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    MaterialList.Add(idxName, new MaterialItem { Category = "Manufactured", Name = name, Count = e.Count, MaximumCapacity = GetMaximumCapacity(idxName) });
+                    var entry = GetMaterialInfo(idxName);
+
+                    MaterialList.Add(idxName, new MaterialItem { Category = "Manufactured", Name = name, Count = e.Count, 
+                        MaximumCapacity = GetMaximumCapacity(entry),
+                        Group = "",
+                        BluePrintType = ""
+                    });
                 }
             }
 
@@ -124,7 +182,13 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                    MaterialList.Add(idxName, new MaterialItem { Category = "Raw", Name = name, Count = e.Count, MaximumCapacity = GetMaximumCapacity(idxName) });
+                    var entry = GetMaterialInfo(idxName);
+
+                    MaterialList.Add(idxName, new MaterialItem { Category = "Raw", Name = name, Count = e.Count, 
+                        MaximumCapacity = GetMaximumCapacity(entry),
+                        Group = "",
+                        BluePrintType = ""
+                    });
                 }
             }
 
@@ -142,7 +206,13 @@ namespace Elite
             {
                 var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                MaterialList.Add(idxName, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, MaximumCapacity = GetMaximumCapacity(idxName) });
+                var entry = GetMaterialInfo(idxName);
+
+                MaterialList.Add(idxName, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, 
+                    MaximumCapacity = GetMaximumCapacity(entry),
+                    Group = "",
+                    BluePrintType = ""
+                });
             }
 
         }
@@ -186,7 +256,13 @@ namespace Elite
             {
                 var name = (info.Received.Material_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxRecName)).Trim();
 
-                MaterialList.Add(idxRecName, new MaterialItem { Category = info.Received.Category_Localised ?? info.Received.Category, Name = name, Count = info.Received.Quantity, MaximumCapacity = GetMaximumCapacity(idxRecName) });
+                var entry = GetMaterialInfo(idxRecName);
+
+                MaterialList.Add(idxRecName, new MaterialItem { Category = info.Received.Category_Localised ?? info.Received.Category, Name = name, Count = info.Received.Quantity, 
+                    MaximumCapacity = GetMaximumCapacity(entry),
+                    Group = "",
+                    BluePrintType = ""
+                });
             }
         }
 
@@ -281,6 +357,8 @@ namespace Elite
                 {
                     var idxName = i.Name.ToLower();
 
+                    var entry = GetMaterialInfo(idxName);
+
                     if (i.Category.StartsWith("$MICRORESOURCE_CATEGORY_"))
                     {
                         var category = i.Category.Replace("$MICRORESOURCE_CATEGORY_", "").Replace(";", ""); ;
@@ -293,7 +371,11 @@ namespace Elite
                         {
                             var name = (i.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                            ShipLockerList.Add(idxName, new MaterialItem { Category = category, Name = name, Count = i.Count, MissionID = null, MaximumCapacity = GetMaximumCapacity(idxName) });
+                            ShipLockerList.Add(idxName, new MaterialItem { Category = category, Name = name, Count = i.Count, MissionID = null, 
+                                MaximumCapacity = GetMaximumCapacity(entry),
+                                Group = GetGroup(entry),
+                                BluePrintType = GetBluePrintType(entry)
+                            });
                         }
 
                     }
@@ -307,11 +389,14 @@ namespace Elite
                         {
                             var name = (i.Name_Localised ??
                                         CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
+
                             MaterialList.Add(i.Name,
                                 new MaterialItem
                                 {
                                     Category = i.Category_Localised ?? i.Category, Name = name, Count = i.Count,
-                                    MaximumCapacity = GetMaximumCapacity(idxName)
+                                    MaximumCapacity = GetMaximumCapacity(entry),
+                                    Group = "",
+                                    BluePrintType = ""
                                 });
                         }
                     }
@@ -334,11 +419,15 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
+                    var entry = GetMaterialInfo(idxName);
+
                     BackPackList.Add(idxName + idxMissionID,
                         new MaterialItem
                         {
                             Category = "Item", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(idxName)
+                            MaximumCapacity = GetMaximumCapacity(entry),
+                            Group = GetGroup(entry),
+                            BluePrintType = GetBluePrintType(entry)
                         });
                 }
             }
@@ -352,11 +441,15 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
+                    var entry = GetMaterialInfo(idxName);
+
                     BackPackList.Add(idxName + idxMissionID,
                         new MaterialItem
                         {
                             Category = "Component", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(idxName)
+                            MaximumCapacity = GetMaximumCapacity(entry),
+                            Group = GetGroup(entry),
+                            BluePrintType = GetBluePrintType(entry)
                         });
                 }
             }
@@ -370,11 +463,15 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
+                    var entry = GetMaterialInfo(idxName);
+
                     BackPackList.Add(idxName + idxMissionID,
                         new MaterialItem
                         {
                             Category = "Consumable", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(idxName)
+                            MaximumCapacity = GetMaximumCapacity(entry),
+                            Group = GetGroup(entry),
+                            BluePrintType = ""
                         });
                 }
             }
@@ -388,11 +485,15 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
+                    var entry = GetMaterialInfo(idxName);
+
                     BackPackList.Add(idxName + idxMissionID,
                         new MaterialItem
                         {
                             Category = "Data", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(idxName)
+                            MaximumCapacity = GetMaximumCapacity(entry),
+                            Group = GetGroup(entry),
+                            BluePrintType = GetBluePrintType(entry)
                         });
                 }
             }
@@ -411,11 +512,16 @@ namespace Elite
                     var idxMissionID = e.MissionID;
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
+
+                    var entry = GetMaterialInfo(idxName);
+
                     ShipLockerList.Add(idxName + idxMissionID,
                         new MaterialItem
                         {
                             Category = "Item", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(idxName)
+                            MaximumCapacity = GetMaximumCapacity(entry),
+                            Group = GetGroup(entry),
+                            BluePrintType = GetBluePrintType(entry)
                         });
                 }
             }
@@ -429,11 +535,15 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
+                    var entry = GetMaterialInfo(idxName);
+
                     ShipLockerList.Add(idxName + idxMissionID,
                         new MaterialItem
                         {
                             Category = "Component", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(idxName)
+                            MaximumCapacity = GetMaximumCapacity(entry),
+                            Group = GetGroup(entry),
+                            BluePrintType = GetBluePrintType(entry)
                         });
                 }
             }
@@ -447,11 +557,15 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
+                    var entry = GetMaterialInfo(idxName);
+
                     ShipLockerList.Add(idxName + idxMissionID,
                         new MaterialItem
                         {
                             Category = "Consumable", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(idxName)
+                            MaximumCapacity = GetMaximumCapacity(entry),
+                            Group = GetGroup(entry),
+                            BluePrintType = ""
                         });
                 }
             }
@@ -465,11 +579,15 @@ namespace Elite
 
                     var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
+                    var entry = GetMaterialInfo(idxName);
+
                     ShipLockerList.Add(idxName + idxMissionID,
                         new MaterialItem
                         {
                             Category = "Data", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(idxName)
+                            MaximumCapacity = GetMaximumCapacity(entry),
+                            Group = GetGroup(entry),
+                            BluePrintType = GetBluePrintType(entry)
                         });
                 }
             }
@@ -490,7 +608,13 @@ namespace Elite
             {
                 var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
-                ShipLockerList.Add(idxName, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, MissionID = null, MaximumCapacity = GetMaximumCapacity(idxName) });
+                var entry = GetMaterialInfo(idxName);
+
+                ShipLockerList.Add(idxName, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, MissionID = null, 
+                    MaximumCapacity = GetMaximumCapacity(entry),
+                    Group = GetGroup(entry),
+                    BluePrintType = GetBluePrintType(entry)
+                });
             }
 
         }
@@ -534,7 +658,13 @@ namespace Elite
 
             //????????????????var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxRecName)).Trim();
 
-            ShipLockerList.Add(idxRecName, new MaterialItem { Category = info.Category, Name = info.Received, Count = info.Count, MissionID = null, MaximumCapacity = GetMaximumCapacity(idxRecName) });
+            var entry = GetMaterialInfo(idxRecName);
+
+            ShipLockerList.Add(idxRecName, new MaterialItem { Category = info.Category, Name = info.Received, Count = info.Count, MissionID = null, 
+                MaximumCapacity = GetMaximumCapacity(entry),
+                Group = GetGroup(entry),
+                BluePrintType = GetBluePrintType(entry)
+            });
 
             //???????????????
 
@@ -565,6 +695,9 @@ namespace Elite
                     {
                         var name = (e.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
 
+                        var entry = GetMaterialInfo(idxName);
+
+
                         if (!string.IsNullOrEmpty(name) && BackPackList.Any(x => x.Value?.Name == name))
                         {
                             var key = BackPackList.FirstOrDefault(x => x.Value.Name == name).Key;
@@ -572,7 +705,11 @@ namespace Elite
                             missionID = BackPackList[key].MissionID;
                         }
                         
-                        ShipLockerList.Add(idxName + missionID, new MaterialItem { Category = e.Category, Name = name, Count = lockerCount, MissionID = missionID, MaximumCapacity = GetMaximumCapacity(idxName) });
+                        ShipLockerList.Add(idxName + missionID, new MaterialItem { Category = e.Category, Name = name, Count = lockerCount, MissionID = missionID, 
+                            MaximumCapacity = GetMaximumCapacity(entry),
+                            Group = GetGroup(entry),
+                            BluePrintType = GetBluePrintType(entry)
+                        });
                     }
 
                     //-------------------------

@@ -19,6 +19,8 @@ namespace Elite
 
         public static Dictionary<string, List<Blueprint>> EngineerBlueprints;
 
+        public static Dictionary<string, List<string>> IngredientTypes;
+
         public static Dictionary<string,EntryData> EngineeringMaterials;
 
         public static Dictionary<string, EntryData> EngineeringMaterialsByKey;
@@ -128,6 +130,35 @@ namespace Elite
 
 
         }
+
+        public static Dictionary<string, List<string>> GetIngredientTypes(string path, Dictionary<string, EntryData> engineeringMaterials)
+        {
+            try
+            {
+                path = Path.Combine(App.ExePath, path);
+
+                if (File.Exists(path))
+                {
+                    var blueprintConverter = new BlueprintConverter(engineeringMaterials);
+
+                    return JsonConvert.DeserializeObject<List<Blueprint>>(File.ReadAllText(path), blueprintConverter)
+                        .Where(b => b.Ingredients.Any())
+                        .SelectMany(y => y.Ingredients, (a, b) => new {b.EntryData.Name, a.Type})
+                        .GroupBy(x => x.Name)
+                        .ToDictionary(x => x.Key,
+                            y => y.Select(z => z.Type).Distinct().ToList())
+                        ;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Log.Error(ex);
+            }
+
+            return new Dictionary<string, List<string>>();
+
+        }
+
 
         private static string GetJson(string url)
         {

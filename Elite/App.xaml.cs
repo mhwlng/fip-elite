@@ -389,6 +389,9 @@ namespace Elite
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Engineer Blueprints...");
                 Engineer.EngineerBlueprints = Engineer.GetEngineerBlueprints(@"Data\blueprints.json", Engineer.EngineeringMaterials);
 
+                splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Ingredient Types...");
+                Engineer.IngredientTypes = Engineer.GetIngredientTypes(@"Data\blueprints.json", Engineer.EngineeringMaterials);
+
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
                 Poi.FullPoiList = Poi.GetAllPois(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
 

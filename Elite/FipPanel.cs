@@ -2662,6 +2662,13 @@ namespace Elite
                                                 (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0"))
                                             .Select(x => x.Value).OrderBy(x => x.Name).ToList();
 
+                                        var shipLockerComponentsTech = shipLockerComponents
+                                            .Where(x => x.Group == "Tech").ToList();
+                                        var shipLockerComponentsCircuits = shipLockerComponents
+                                            .Where(x => x.Group == "Circuits").ToList();
+                                        var shipLockerComponentsChemicals = shipLockerComponents
+                                            .Where(x => x.Group == "Chemicals").ToList();
+
                                         var missionShipLockerComponents = Material.ShipLockerList
                                             .Where(x => x.Value.Category == "Component" && (!string.IsNullOrEmpty(x.Value.MissionID) && x.Value.MissionID != "0"))
                                             .Select(x => new Material.MaterialItem
@@ -2731,8 +2738,12 @@ namespace Elite
 
                                                 Items = shipLockerItems,
                                                 ItemsCount = shipLockerItems.Count,
-                                                Components = shipLockerComponents,
-                                                ComponentsCount = shipLockerComponents.Count,
+                                                ComponentsCircuits = shipLockerComponentsCircuits,
+                                                ComponentsChemicals = shipLockerComponentsChemicals,
+                                                ComponentsTech = shipLockerComponentsTech,
+                                                ComponentsCircuitsCount = shipLockerComponentsCircuits.Count,
+                                                ComponentsChemicalsCount = shipLockerComponentsChemicals.Count,
+                                                ComponentsTechCount = shipLockerComponentsTech.Count,
                                                 Consumables = shipLockerConsumables,
                                                 ConsumablesCount = shipLockerConsumables.Count,
                                                 Data = shipLockerData,
@@ -2778,6 +2789,13 @@ namespace Elite
                                                 x.Value.Category == "Component" &&
                                                 (string.IsNullOrEmpty(x.Value.MissionID) || x.Value.MissionID == "0"))
                                             .Select(x => x.Value).OrderBy(x => x.Name).ToList();
+
+                                        var backPackComponentsTech = backPackComponents
+                                            .Where(x => x.Group == "Tech").ToList();
+                                        var backPackComponentsCircuits = backPackComponents
+                                            .Where(x => x.Group == "Circuits").ToList();
+                                        var backPackComponentsChemicals = backPackComponents
+                                            .Where(x => x.Group == "Chemicals").ToList();
 
                                         var missionBackPackComponents = Material.BackPackList
                                             .Where(x => x.Value.Category == "Component" && (!string.IsNullOrEmpty(x.Value.MissionID) && x.Value.MissionID != "0"))
@@ -2848,8 +2866,12 @@ namespace Elite
 
                                                 Items = backPackItems,
                                                 ItemsCount = backPackItems.Count,
-                                                Components = backPackComponents,
-                                                ComponentsCount = backPackComponents.Count,
+                                                ComponentsCircuits = backPackComponentsCircuits,
+                                                ComponentsChemicals = backPackComponentsChemicals,
+                                                ComponentsTech = backPackComponentsTech,
+                                                ComponentsCircuitsCount = backPackComponentsCircuits.Count,
+                                                ComponentsChemicalsCount = backPackComponentsChemicals.Count,
+                                                ComponentsTechCount = backPackComponentsTech.Count,
                                                 Consumables = backPackConsumables,
                                                 ConsumablesCount = backPackConsumables.Count,
                                                 Data = backPackData,
