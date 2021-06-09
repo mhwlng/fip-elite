@@ -2687,8 +2687,8 @@
     "ContainerType": []
   },
   {
-    "Name": "Clinical Trail Records",
-    "FormattedName": "clinicaltrailrecords",
+    "Name": "Clinical Trial Records",
+    "FormattedName": "medicaltrialrecords",
     "Kind": "OdysseyIngredient",
     "OriginDetails": [
       "Planetary Settlement"
@@ -4096,7 +4096,7 @@
   },
   {
     "Name": "Chemical Process Sample",
-    "FormattedName": "ChemicalProcessSample",
+    "FormattedName": "chemicalprocesssample",
     "Kind": "OdysseyIngredient",
     "OriginDetails": [
       "Planetary Settlement"
