@@ -571,6 +571,13 @@ namespace Elite
             Material.HandleBackPackEvent(e);
         }
 
+        public static void HandleShipLockerEvent(object sender, ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs e)
+        {
+            if (e?.Components == null) return;
+
+            Material.HandleShipLockerMaterialsEvent(e);
+        }
+
         public static void HandleNavRouteEvent(object sender, NavRouteEvent.NavRouteEventArgs e)
         {
             if (e?.Route == null) return;
@@ -1828,12 +1835,6 @@ namespace Elite
 
                     break;
 
-                case "ShipLockerMaterials":
-                    var shipLockerMaterialsInfo = (ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs)e;
-
-                    Material.HandleShipLockerMaterialsEvent(shipLockerMaterialsInfo);
-
-                    break;
                 case "BuyMicroResources":
                     var buyMicroResourcesInfo = (BuyMicroResourcesEvent.BuyMicroResourcesEventArgs)e;
 
@@ -1865,7 +1866,17 @@ namespace Elite
                     Material.HandleTradeMicroResourcesEvent(tradeMicroResourcesInfo);
 
                     break;
-                /* handled back backpack.json
+
+                /* handled by shiplocker.json
+
+                 case "ShipLockerMaterials":
+                    var shipLockerMaterialsInfo = (ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs)e;
+
+                    Material.HandleShipLockerMaterialsEvent(shipLockerMaterialsInfo);
+
+                    break;*/
+
+                /* handled by backpack.json
 
                 case "BackPackChange": already handled in backpack.json
                     var backPackChangeInfo = (BackPackChangeEvent.BackPackChangeEventArgs)e;
@@ -1949,6 +1960,10 @@ namespace Elite
                     break;
                 case "Embark":
                     var embarkInfo = (EmbarkEvent.EmbarkEventArgs)e;
+
+                    // force empty Backpack, because backpack.json is not cleared
+
+                    Material.BackPackList = new Dictionary<string, Material.MaterialItem>();
 
                     break;
                 case "Disembark":

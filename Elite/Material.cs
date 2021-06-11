@@ -421,14 +421,21 @@ namespace Elite
 
                     var entry = GetMaterialInfo(idxName);
 
-                    BackPackList.Add(idxName + idxMissionID,
-                        new MaterialItem
-                        {
-                            Category = "Item", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(entry),
-                            Group = GetGroup(entry),
-                            BluePrintType = GetBluePrintType(entry)
-                        });
+                    if (BackPackList.ContainsKey(idxName + idxMissionID))
+                    {
+                        BackPackList[idxName + idxMissionID].Count += e.Count;
+                    }
+                    else
+                    {
+                        BackPackList.Add(idxName + idxMissionID,
+                            new MaterialItem
+                            {
+                                Category = "Item", Name = name, Count = e.Count, MissionID = idxMissionID,
+                                MaximumCapacity = GetMaximumCapacity(entry),
+                                Group = GetGroup(entry),
+                                BluePrintType = GetBluePrintType(entry)
+                            });
+                    }
                 }
             }
 
@@ -443,14 +450,21 @@ namespace Elite
 
                     var entry = GetMaterialInfo(idxName);
 
-                    BackPackList.Add(idxName + idxMissionID,
-                        new MaterialItem
-                        {
-                            Category = "Component", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(entry),
-                            Group = GetGroup(entry),
-                            BluePrintType = GetBluePrintType(entry)
-                        });
+                    if (BackPackList.ContainsKey(idxName + idxMissionID))
+                    {
+                        BackPackList[idxName + idxMissionID].Count += e.Count;
+                    }
+                    else
+                    {
+                        BackPackList.Add(idxName + idxMissionID,
+                            new MaterialItem
+                            {
+                                Category = "Component", Name = name, Count = e.Count, MissionID = idxMissionID,
+                                MaximumCapacity = GetMaximumCapacity(entry),
+                                Group = GetGroup(entry),
+                                BluePrintType = GetBluePrintType(entry)
+                            });
+                    }
                 }
             }
 
@@ -465,14 +479,21 @@ namespace Elite
 
                     var entry = GetMaterialInfo(idxName);
 
-                    BackPackList.Add(idxName + idxMissionID,
-                        new MaterialItem
-                        {
-                            Category = "Consumable", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(entry),
-                            Group = GetGroup(entry),
-                            BluePrintType = ""
-                        });
+                    if (BackPackList.ContainsKey(idxName + idxMissionID))
+                    {
+                        BackPackList[idxName + idxMissionID].Count += e.Count;
+                    }
+                    else
+                    {
+                        BackPackList.Add(idxName + idxMissionID,
+                            new MaterialItem
+                            {
+                                Category = "Consumable", Name = name, Count = e.Count, MissionID = idxMissionID,
+                                MaximumCapacity = GetMaximumCapacity(entry),
+                                Group = GetGroup(entry),
+                                BluePrintType = ""
+                            });
+                    }
                 }
             }
 
@@ -487,14 +508,21 @@ namespace Elite
 
                     var entry = GetMaterialInfo(idxName);
 
-                    BackPackList.Add(idxName + idxMissionID,
-                        new MaterialItem
-                        {
-                            Category = "Data", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(entry),
-                            Group = GetGroup(entry),
-                            BluePrintType = GetBluePrintType(entry)
-                        });
+                    if (BackPackList.ContainsKey(idxName + idxMissionID))
+                    {
+                        BackPackList[idxName + idxMissionID].Count += e.Count;
+                    }
+                    else
+                    {
+                        BackPackList.Add(idxName + idxMissionID,
+                            new MaterialItem
+                            {
+                                Category = "Data", Name = name, Count = e.Count, MissionID = idxMissionID,
+                                MaximumCapacity = GetMaximumCapacity(entry),
+                                Group = GetGroup(entry),
+                                BluePrintType = GetBluePrintType(entry)
+                            });
+                    }
                 }
             }
 
@@ -515,14 +543,21 @@ namespace Elite
 
                     var entry = GetMaterialInfo(idxName);
 
-                    ShipLockerList.Add(idxName + idxMissionID,
-                        new MaterialItem
-                        {
-                            Category = "Item", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(entry),
-                            Group = GetGroup(entry),
-                            BluePrintType = GetBluePrintType(entry)
-                        });
+                    if (ShipLockerList.ContainsKey(idxName + idxMissionID))
+                    {
+                        ShipLockerList[idxName + idxMissionID].Count += e.Count;
+                    }
+                    else
+                    {
+                        ShipLockerList.Add(idxName + idxMissionID,
+                            new MaterialItem
+                            {
+                                Category = "Item", Name = name, Count = e.Count, MissionID = idxMissionID,
+                                MaximumCapacity = GetMaximumCapacity(entry),
+                                Group = GetGroup(entry),
+                                BluePrintType = GetBluePrintType(entry)
+                            });
+                    }
                 }
             }
 
@@ -537,14 +572,21 @@ namespace Elite
 
                     var entry = GetMaterialInfo(idxName);
 
-                    ShipLockerList.Add(idxName + idxMissionID,
-                        new MaterialItem
-                        {
-                            Category = "Component", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(entry),
-                            Group = GetGroup(entry),
-                            BluePrintType = GetBluePrintType(entry)
-                        });
+                    if (ShipLockerList.ContainsKey(idxName + idxMissionID))
+                    {
+                        ShipLockerList[idxName + idxMissionID].Count += e.Count;
+                    }
+                    else
+                    {
+                        ShipLockerList.Add(idxName + idxMissionID,
+                            new MaterialItem
+                            {
+                                Category = "Component", Name = name, Count = e.Count, MissionID = idxMissionID,
+                                MaximumCapacity = GetMaximumCapacity(entry),
+                                Group = GetGroup(entry),
+                                BluePrintType = GetBluePrintType(entry)
+                            });
+                    }
                 }
             }
 
@@ -559,14 +601,21 @@ namespace Elite
 
                     var entry = GetMaterialInfo(idxName);
 
-                    ShipLockerList.Add(idxName + idxMissionID,
-                        new MaterialItem
-                        {
-                            Category = "Consumable", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(entry),
-                            Group = GetGroup(entry),
-                            BluePrintType = ""
-                        });
+                    if (ShipLockerList.ContainsKey(idxName + idxMissionID))
+                    {
+                        ShipLockerList[idxName + idxMissionID].Count += e.Count;
+                    }
+                    else
+                    {
+                        ShipLockerList.Add(idxName + idxMissionID,
+                            new MaterialItem
+                            {
+                                Category = "Consumable", Name = name, Count = e.Count, MissionID = idxMissionID,
+                                MaximumCapacity = GetMaximumCapacity(entry),
+                                Group = GetGroup(entry),
+                                BluePrintType = ""
+                            });
+                    }
                 }
             }
 
@@ -581,14 +630,21 @@ namespace Elite
 
                     var entry = GetMaterialInfo(idxName);
 
-                    ShipLockerList.Add(idxName + idxMissionID,
-                        new MaterialItem
-                        {
-                            Category = "Data", Name = name, Count = e.Count, MissionID = idxMissionID,
-                            MaximumCapacity = GetMaximumCapacity(entry),
-                            Group = GetGroup(entry),
-                            BluePrintType = GetBluePrintType(entry)
-                        });
+                    if (ShipLockerList.ContainsKey(idxName + idxMissionID))
+                    {
+                        ShipLockerList[idxName + idxMissionID].Count += e.Count;
+                    }
+                    else
+                    {
+                        ShipLockerList.Add(idxName + idxMissionID,
+                            new MaterialItem
+                            {
+                                Category = "Data", Name = name, Count = e.Count, MissionID = idxMissionID,
+                                MaximumCapacity = GetMaximumCapacity(entry),
+                                Group = GetGroup(entry),
+                                BluePrintType = GetBluePrintType(entry)
+                            });
+                    }
                 }
             }
 
@@ -660,11 +716,20 @@ namespace Elite
 
             var entry = GetMaterialInfo(idxRecName);
 
-            ShipLockerList.Add(idxRecName, new MaterialItem { Category = info.Category, Name = info.Received, Count = info.Count, MissionID = null, 
-                MaximumCapacity = GetMaximumCapacity(entry),
-                Group = GetGroup(entry),
-                BluePrintType = GetBluePrintType(entry)
-            });
+            if (BackPackList.ContainsKey(idxRecName))
+            {
+                ShipLockerList[idxRecName].Count += info.Count;
+            }
+            else
+            {
+                ShipLockerList.Add(idxRecName, new MaterialItem
+                {
+                    Category = info.Category, Name = info.Received, Count = info.Count, MissionID = null,
+                    MaximumCapacity = GetMaximumCapacity(entry),
+                    Group = GetGroup(entry),
+                    BluePrintType = GetBluePrintType(entry)
+                });
+            }
 
             //???????????????
 
