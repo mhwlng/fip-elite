@@ -4042,19 +4042,7 @@
     "BuildingType": [],
     "ContainerType": []
   },
-  {
-    "Name": "Biological Sample",
-    "FormattedName": "biologicalsample",
-    "Kind": "OdysseyIngredient",
-    "OriginDetails": [
-      "Planetary Settlement"
-    ],
-    "Group": "Item",
-    "ValueCr": 35000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
-  },
+
   {
     "Name": "Building Schematic",
     "FormattedName": "buildingschematic",
@@ -4202,14 +4190,14 @@
     ]
   },
   {
-    "Name": "Genetic Sample",
+    "Name": "Biological Sample",
     "FormattedName": "geneticsample",
     "Kind": "OdysseyIngredient",
     "OriginDetails": [
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
+    "ValueCr": 35000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []

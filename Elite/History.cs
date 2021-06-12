@@ -161,6 +161,7 @@ namespace Elite
                 var journalFiles = journalDirectory.GetFiles(defaultFilter).OrderBy(x => x.LastWriteTime);
 
                 string lastJumpedSystem = string.Empty;
+                string lastJumpedSettlement = string.Empty;
 
                 foreach (var journalFile in journalFiles)
                 {
@@ -376,6 +377,29 @@ namespace Elite
                                             // { "timestamp":"2018-08-11T15:29:20Z", "event":"MaterialCollected", "Category":"Encoded", "Name":"shielddensityreports", "Name_Localised":"Untypical Shield Scans ", "Count":3 }
 
                                             Material.AddHistory(name, lastJumpedSystem, info.Count);
+                                        }
+                                    }
+                                    else if (json?.Contains("\"event\":\"ApproachSettlement\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<ApproachSettlementEvent.ApproachSettlementEventArgs>(json);
+
+                                        lastJumpedSettlement = info.BodyName + "@" + info.Name;
+
+                                    }
+
+                                    else if (json?.Contains("\"event\":\"CollectItems\",") == true)
+                                    {
+                                        var info = JsonConvert
+                                            .DeserializeObject<CollectItemsEvent.CollectItemsEventArgs>(json);
+
+                                        if (!string.IsNullOrEmpty(lastJumpedSettlement))
+                                        {
+                                            var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(info.Name.ToLower())).Trim();
+
+                                            // { "timestamp":"2021-06-11T16:24:21Z", "event":"CollectItems", "Name":"syntheticpathogen", "Name_Localised":"Synthetic Pathogen", "Type":"Item", "OwnerID":0, "Count":1, "Stolen":false }
+
+                                            Material.AddHistory(name, lastJumpedSettlement, info.Count);
                                         }
                                     }
 

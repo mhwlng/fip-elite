@@ -357,14 +357,14 @@
                         foreach (var n in m.EntryData.OriginDetails)
                         {
                             <tr>
-                                <td class="data indent" colspan="3">@n</td>
+                                <td class="data indent" colspan="3">&bull; @n</td>
                             </tr>
                         }
 
                         foreach (var n in m.BestSystems)
                         {
                             <tr>
-                                <td class="data indent" colspan="3">@n</td>
+                                <td class="data indent" colspan="3">&bull; @n</td>
                             </tr>
                         }
                     }
@@ -402,14 +402,14 @@
                         foreach (var n in m.EntryData.OriginDetails)
                         {
                             <tr>
-                                <td class="data indent" colspan="3">@n</td>
+                                <td class="data indent" colspan="3">&bull; @n</td>
                             </tr>
                         }
 
                         foreach (var n in m.BestSystems)
                         {
                             <tr>
-                                <td class="data indent" colspan="3">@n</td>
+                                <td class="data indent" colspan="3">&bull; @n</td>
                             </tr>
                         }
                     }
@@ -447,14 +447,14 @@
                         foreach (var n in m.EntryData.OriginDetails)
                         {
                             <tr>
-                                <td class="data indent" colspan="3">@n</td>
+                                <td class="data indent" colspan="3">&bull; @n</td>
                             </tr>
                         }
 
                         foreach (var n in m.BestSystems)
                         {
                             <tr>
-                                <td class="data indent" colspan="3">@n</td>
+                                <td class="data indent" colspan="3">&bull; @n</td>
                             </tr>
                         }
                     }
@@ -492,14 +492,14 @@
                         foreach (var n in m.EntryData.OriginDetails)
                         {
                             <tr>
-                                <td class="data indent" colspan="3">@n</td>
+                                <td class="data indent" colspan="3">&bull; @n</td>
                             </tr>
                         }
 
                         foreach (var n in m.BestSystems)
                         {
                             <tr>
-                                <td class="data indent" colspan="3">@n</td>
+                                <td class="data indent" colspan="3">&bull; @n</td>
                             </tr>
                         }
                     }
@@ -527,28 +527,51 @@
 
             <table>
                 <tbody>
-                @foreach (var m in Model.MissingCircuits)
-                {
-                    <tr>
-                        <td class="caption nowrap">@m.Name</td>
-                        <td class="data right">@m.Inventory</td>
-                        <td class="data right">@m.RequiredCount</td>
-                    </tr>
-
-                    foreach (var n in m.EntryData.OriginDetails)
+                    @foreach (var m in Model.MissingCircuits)
                     {
                         <tr>
-                            <td class="data indent" colspan="3">@n</td>
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right">@m.Inventory</td>
+                            <td class="data right">@m.RequiredCount</td>
                         </tr>
-                    }
 
-                    foreach (var n in m.BestSystems)
-                    {
-                        <tr>
-                            <td class="data indent" colspan="3">@n</td>
-                        </tr>
+                        foreach (var n in m.EntryData.OriginDetails)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @n</td>
+                            </tr>
+                        }
+                        if (m.EntryData.SettlementType.Length > 0)
+                        {
+                            foreach (var n in m.EntryData.SettlementType)
+                            {
+                                <tr>
+                                    <td class="data indent" colspan="3">&bull; @n</td>
+                                </tr>
+                            }
+                        }
+                        if (m.EntryData.BuildingType.Length > 0)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @string.Join(",", m.EntryData.BuildingType)</td>
+                            </tr>
+                        }
+                        if (m.EntryData.ContainerType.Length > 0)
+                        {
+                            foreach (var n in m.EntryData.ContainerType)
+                            {
+                                <tr>
+                                    <td class="data indent" colspan="3">&bull; @n</td>
+                                </tr>
+                            }
+                        }
+                        foreach (var n in m.BestSystems)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @Html.Raw(n.Replace("@", "<br/>&nbsp;&nbsp;&nbsp;&nbsp;"))</td>
+                            </tr>
+                        }
                     }
-                }
                 </tbody>
             </table>
         }
@@ -572,28 +595,51 @@
 
             <table>
                 <tbody>
-                @foreach (var m in Model.MissingChemicals)
-                {
-                    <tr>
-                        <td class="caption nowrap">@m.Name</td>
-                        <td class="data right">@m.Inventory</td>
-                        <td class="data right">@m.RequiredCount</td>
-                    </tr>
-
-                    foreach (var n in m.EntryData.OriginDetails)
+                    @foreach (var m in Model.MissingChemicals)
                     {
                         <tr>
-                            <td class="data indent" colspan="3">@n</td>
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right">@m.Inventory</td>
+                            <td class="data right">@m.RequiredCount</td>
                         </tr>
-                    }
 
-                    foreach (var n in m.BestSystems)
-                    {
-                        <tr>
-                            <td class="data indent" colspan="3">@n</td>
-                        </tr>
+                        foreach (var n in m.EntryData.OriginDetails)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @n</td>
+                            </tr>
+                        }
+                        if (m.EntryData.SettlementType.Length > 0)
+                        {
+                            foreach (var n in m.EntryData.SettlementType)
+                            {
+                                <tr>
+                                    <td class="data indent" colspan="3">&bull; @n</td>
+                                </tr>
+                            }
+                        }
+                        if (m.EntryData.BuildingType.Length > 0)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @string.Join(",", m.EntryData.BuildingType)</td>
+                            </tr>
+                        }
+                        if (m.EntryData.ContainerType.Length > 0)
+                        {
+                            foreach (var n in m.EntryData.ContainerType)
+                            {
+                                <tr>
+                                    <td class="data indent" colspan="3">&bull; @n</td>
+                                </tr>
+                            }
+                        }
+                        foreach (var n in m.BestSystems)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @Html.Raw(n.Replace("@", "<br/>&nbsp;&nbsp;&nbsp;&nbsp;"))</td>
+                            </tr>
+                        }
                     }
-                }
                 </tbody>
             </table>
         }
@@ -617,28 +663,51 @@
 
             <table>
                 <tbody>
-                @foreach (var m in Model.MissingTech)
-                {
-                    <tr>
-                        <td class="caption nowrap">@m.Name</td>
-                        <td class="data right">@m.Inventory</td>
-                        <td class="data right">@m.RequiredCount</td>
-                    </tr>
-
-                    foreach (var n in m.EntryData.OriginDetails)
+                    @foreach (var m in Model.MissingTech)
                     {
                         <tr>
-                            <td class="data indent" colspan="3">@n</td>
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right">@m.Inventory</td>
+                            <td class="data right">@m.RequiredCount</td>
                         </tr>
-                    }
 
-                    foreach (var n in m.BestSystems)
-                    {
-                        <tr>
-                            <td class="data indent" colspan="3">@n</td>
-                        </tr>
+                        foreach (var n in m.EntryData.OriginDetails)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @n</td>
+                            </tr>
+                        }
+                        if (m.EntryData.SettlementType.Length > 0)
+                        {
+                            foreach (var n in m.EntryData.SettlementType)
+                            {
+                                <tr>
+                                    <td class="data indent" colspan="3">&bull; @n</td>
+                                </tr>
+                            }
+                        }
+                        if (m.EntryData.BuildingType.Length > 0)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @string.Join(",", m.EntryData.BuildingType)</td>
+                            </tr>
+                        }
+                        if (m.EntryData.ContainerType.Length > 0)
+                        {
+                            foreach (var n in m.EntryData.ContainerType)
+                            {
+                                <tr>
+                                    <td class="data indent" colspan="3">&bull; @n</td>
+                                </tr>
+                            }
+                        }
+                        foreach (var n in m.BestSystems)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @Html.Raw(n.Replace("@", "<br/>&nbsp;&nbsp;&nbsp;&nbsp;"))</td>
+                            </tr>
+                        }
                     }
-                }
                 </tbody>
             </table>
         }
@@ -673,14 +742,37 @@
                     foreach (var n in m.EntryData.OriginDetails)
                     {
                         <tr>
-                            <td class="data indent" colspan="3">@n</td>
+                            <td class="data indent" colspan="3">&bull; @n</td>
                         </tr>
                     }
-
+                    if (m.EntryData.SettlementType.Length > 0)
+                    {
+                        foreach (var n in m.EntryData.SettlementType)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @n</td>
+                            </tr>
+                        }
+                    }
+                    if (m.EntryData.BuildingType.Length > 0)
+                    {
+                        <tr>
+                            <td class="data indent" colspan="3">&bull; @string.Join(",", m.EntryData.BuildingType)</td>
+                        </tr>
+                    }
+                    if (m.EntryData.ContainerType.Length > 0)
+                    {
+                        foreach (var n in m.EntryData.ContainerType)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @n</td>
+                            </tr>
+                        }
+                    }
                     foreach (var n in m.BestSystems)
                     {
                         <tr>
-                            <td class="data indent" colspan="3">@n</td>
+                            <td class="data indent" colspan="3">&bull; @Html.Raw(n.Replace("@", "<br/>&nbsp;&nbsp;&nbsp;&nbsp;"))</td>
                         </tr>
                     }
                 }
@@ -707,28 +799,51 @@
 
             <table>
                 <tbody>
-                @foreach (var m in Model.MissingItem)
-                {
-                    <tr>
-                        <td class="caption nowrap">@m.Name</td>
-                        <td class="data right">@m.Inventory</td>
-                        <td class="data right">@m.RequiredCount</td>
-                    </tr>
-
-                    foreach (var n in m.EntryData.OriginDetails)
+                    @foreach (var m in Model.MissingItem)
                     {
                         <tr>
-                            <td class="data indent" colspan="3">@n</td>
+                            <td class="caption nowrap">@m.Name</td>
+                            <td class="data right">@m.Inventory</td>
+                            <td class="data right">@m.RequiredCount</td>
                         </tr>
-                    }
 
-                    foreach (var n in m.BestSystems)
-                    {
-                        <tr>
-                            <td class="data indent" colspan="3">@n</td>
-                        </tr>
+                        foreach (var n in m.EntryData.OriginDetails)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @n</td>
+                            </tr>
+                        }
+                        if (m.EntryData.SettlementType.Length > 0)
+                        {
+                            foreach (var n in m.EntryData.SettlementType)
+                            {
+                                <tr>
+                                    <td class="data indent" colspan="3">&bull; @n</td>
+                                </tr>
+                            }
+                        }
+                        if (m.EntryData.BuildingType.Length > 0)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @string.Join(",", m.EntryData.BuildingType)</td>
+                            </tr>
+                        }
+                        if (m.EntryData.ContainerType.Length > 0)
+                        {
+                            foreach (var n in m.EntryData.ContainerType)
+                            {
+                                <tr>
+                                    <td class="data indent" colspan="3">&bull; @n</td>
+                                </tr>
+                            }
+                        }
+                        foreach (var n in m.BestSystems)
+                        {
+                            <tr>
+                                <td class="data indent" colspan="3">&bull; @Html.Raw(n.Replace("@", "<br/>&nbsp;&nbsp;&nbsp;&nbsp;"))</td>
+                            </tr>
+                        }
                     }
-                }
                 </tbody>
             </table>
         }

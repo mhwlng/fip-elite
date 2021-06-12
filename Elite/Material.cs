@@ -650,92 +650,6 @@ namespace Elite
 
         }
 
-        //"BuyMicroResources", "Name":"healthpack", "Name_Localised":"Medkit", "Category":"Consumable", "Count":1, "Price":1000, "MarketID":3221524992 }
-
-        public static void HandleBuyMicroResourcesEvent(BuyMicroResourcesEvent.BuyMicroResourcesEventArgs info)
-        {
-            var idxName = info.Name.ToLower();
-
-            if (ShipLockerList.ContainsKey(idxName))
-            {
-                ShipLockerList[idxName].Count += info.Count;
-            }
-            else
-            {
-                var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
-
-                var entry = GetMaterialInfo(idxName);
-
-                ShipLockerList.Add(idxName, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, MissionID = null, 
-                    MaximumCapacity = GetMaximumCapacity(entry),
-                    Group = GetGroup(entry),
-                    BluePrintType = GetBluePrintType(entry)
-                });
-            }
-
-        }
-
-        public static void HandleSellMicroResourcesEvent(SellMicroResourcesEvent.SellMicroResourcesEventArgs info)
-        {
-            foreach (var e in info.MicroResources)
-            {
-                var idxName = e.Name.ToLower();
-
-                if (ShipLockerList.ContainsKey(idxName))
-                {
-                    ShipLockerList[idxName].Count -= e.Count;
-
-                    if (ShipLockerList[idxName].Count <= 0)
-                    {
-                        ShipLockerList.Remove(idxName);
-                    }
-                }
-            }
-        }
-
-        public static void HandleTradeMicroResourcesEvent(TradeMicroResourcesEvent.TradeMicroResourcesEventArgs info)
-        {
-            foreach (var e in info.Offered)
-            {
-                var idxName = e.Name.ToLower();
-
-                if (ShipLockerList.ContainsKey(idxName))
-                {
-                    ShipLockerList[idxName].Count -= e.Count;
-
-                    if (ShipLockerList[idxName].Count <= 0)
-                    {
-                        ShipLockerList.Remove(idxName);
-                    }
-                }
-            }
-
-            var idxRecName = info.Received.ToLower();
-
-            //????????????????var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxRecName)).Trim();
-
-            var entry = GetMaterialInfo(idxRecName);
-
-            if (BackPackList.ContainsKey(idxRecName))
-            {
-                ShipLockerList[idxRecName].Count += info.Count;
-            }
-            else
-            {
-                ShipLockerList.Add(idxRecName, new MaterialItem
-                {
-                    Category = info.Category, Name = info.Received, Count = info.Count, MissionID = null,
-                    MaximumCapacity = GetMaximumCapacity(entry),
-                    Group = GetGroup(entry),
-                    BluePrintType = GetBluePrintType(entry)
-                });
-            }
-
-            //???????????????
-
-        }
-
-
         //"Transfers":[ { "Name":"healthpack", "Name_Localised":"Medkit", "Category":"Consumable", "LockerOldCount":1, "LockerNewCount":0, "Direction":"ToBackpack" },
         //{ "Name":"energycell", "Name_Localised":"Energy Cell", "Category":"Consumable", "LockerOldCount":2, "LockerNewCount":0, "Direction":"ToBackpack" }, { "Name":"amm_grenade_emp", "Name_Localised":"Shield Disruptor", "Category":"Consumable", "LockerOldCount":1, "LockerNewCount":0, "Direction":"ToBackpack" },
         //{ "Name":"amm_grenade_frag", "Name_Localised":"Frag Grenade", "Category":"Consumable", "LockerOldCount":1, "LockerNewCount":0, "Direction":"ToBackpack" }, { "Name":"amm_grenade_shield", "Name_Localised":"Shield Projector", "Category":"Consumable", "LockerOldCount":1, "LockerNewCount":0, "Direction":"ToBackpack" }
@@ -811,6 +725,94 @@ namespace Elite
             }
 
         }
+        /* already handled in shiplocker.json
+                        
+        //"BuyMicroResources", "Name":"healthpack", "Name_Localised":"Medkit", "Category":"Consumable", "Count":1, "Price":1000, "MarketID":3221524992 }
+
+        public static void HandleBuyMicroResourcesEvent(BuyMicroResourcesEvent.BuyMicroResourcesEventArgs info)
+        {
+            var idxName = info.Name.ToLower();
+
+            if (ShipLockerList.ContainsKey(idxName))
+            {
+                ShipLockerList[idxName].Count += info.Count;
+            }
+            else
+            {
+                var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxName)).Trim();
+
+                var entry = GetMaterialInfo(idxName);
+
+                ShipLockerList.Add(idxName, new MaterialItem { Category = info.Category, Name = name, Count = info.Count, MissionID = null, 
+                    MaximumCapacity = GetMaximumCapacity(entry),
+                    Group = GetGroup(entry),
+                    BluePrintType = GetBluePrintType(entry)
+                });
+            }
+
+        }
+
+        public static void HandleSellMicroResourcesEvent(SellMicroResourcesEvent.SellMicroResourcesEventArgs info)
+        {
+            foreach (var e in info.MicroResources)
+            {
+                var idxName = e.Name.ToLower();
+
+                if (ShipLockerList.ContainsKey(idxName))
+                {
+                    ShipLockerList[idxName].Count -= e.Count;
+
+                    if (ShipLockerList[idxName].Count <= 0)
+                    {
+                        ShipLockerList.Remove(idxName);
+                    }
+                }
+            }
+        }
+        
+        public static void HandleTradeMicroResourcesEvent(TradeMicroResourcesEvent.TradeMicroResourcesEventArgs info)
+        {
+            foreach (var e in info.Offered)
+            {
+                var idxName = e.Name.ToLower();
+
+                if (ShipLockerList.ContainsKey(idxName))
+                {
+                    ShipLockerList[idxName].Count -= e.Count;
+
+                    if (ShipLockerList[idxName].Count <= 0)
+                    {
+                        ShipLockerList.Remove(idxName);
+                    }
+                }
+            }
+
+            var idxRecName = info.Received.ToLower();
+
+            //????????????????var name = (info.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(idxRecName)).Trim();
+
+            var entry = GetMaterialInfo(idxRecName);
+
+            if (BackPackList.ContainsKey(idxRecName))
+            {
+                ShipLockerList[idxRecName].Count += info.Count;
+            }
+            else
+            {
+                ShipLockerList.Add(idxRecName, new MaterialItem
+                {
+                    Category = info.Category, Name = info.Received, Count = info.Count, MissionID = null,
+                    MaximumCapacity = GetMaximumCapacity(entry),
+                    Group = GetGroup(entry),
+                    BluePrintType = GetBluePrintType(entry)
+                });
+            }
+
+            //???????????????
+
+        }
+
+         */
 
         /* already handled in backpack.json
         public static void HandleBackPackChangeEvent(BackPackChangeEvent.BackPackChangeEventArgs info)

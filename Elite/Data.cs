@@ -1838,7 +1838,7 @@ namespace Elite
                 case "BuyMicroResources":
                     var buyMicroResourcesInfo = (BuyMicroResourcesEvent.BuyMicroResourcesEventArgs)e;
 
-                    Material.HandleBuyMicroResourcesEvent(buyMicroResourcesInfo);
+                    //Material.HandleBuyMicroResourcesEvent(buyMicroResourcesInfo);
 
                     CommanderData.Credits -= buyMicroResourcesInfo.Price;
 
@@ -1846,7 +1846,7 @@ namespace Elite
                 case "SellMicroResources":
                     var sellMicroResourcesInfo = (SellMicroResourcesEvent.SellMicroResourcesEventArgs)e;
 
-                    Material.HandleSellMicroResourcesEvent(sellMicroResourcesInfo);
+                    //Material.HandleSellMicroResourcesEvent(sellMicroResourcesInfo);
 
                     CommanderData.Credits += sellMicroResourcesInfo.Price;
 
@@ -1860,6 +1860,26 @@ namespace Elite
 
                     break;
 
+
+                case "CollectItems":
+                    var collectItemsInfo = (CollectItemsEvent.CollectItemsEventArgs)e;
+
+                    /// handled by backpack.json
+                    //Material.HandleCollectItemsEvent(collectItemsInfo);
+
+                    if (!string.IsNullOrEmpty(LocationData.Body) && !string.IsNullOrEmpty(LocationData.Settlement))
+                    {
+                        var name = (collectItemsInfo.Name_Localised ?? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(collectItemsInfo.Name.ToLower())).Trim();
+
+                        Material.AddHistory(name, LocationData.Body + "@" + LocationData.Settlement, collectItemsInfo.Count);
+                    }
+
+
+                    break;
+
+
+                /* handled by shiplocker.json
+
                 case "TradeMicroResources":
                     var tradeMicroResourcesInfo = (TradeMicroResourcesEvent.TradeMicroResourcesEventArgs)e;
 
@@ -1867,7 +1887,6 @@ namespace Elite
 
                     break;
 
-                /* handled by shiplocker.json
 
                  case "ShipLockerMaterials":
                     var shipLockerMaterialsInfo = (ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs)e;
@@ -1887,12 +1906,6 @@ namespace Elite
                     var dropItemsInfo = (DropItemsEvent.DropItemsEventArgs)e;
 
                     Material.HandleDropItemsEvent(dropItemsInfo);
-
-                    break;
-                case "CollectItems":
-                    var collectItemsInfo = (CollectItemsEvent.CollectItemsEventArgs)e;
-
-                    Material.HandleCollectItemsEvent(collectItemsInfo);
 
                     break;
                 
