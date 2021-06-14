@@ -64,12 +64,14 @@ This is a useful tool, to find out the joystick or throttle VID, PID and 4 way h
 
 https://vkbcontrollers.com/wp-content/uploads/2019/02/VKB_JoyTester.zip
 
-this is what a 4 way hat switch looks like in the tool
-just 5 normal buttons, with low number id's :
+This is what a 4 way hat switch looks like in the tool.
+
+Just 5 normal buttons, with low number id's :
 
 ![vkb 1](https://i.imgur.com/CsnkQCm.png)
 
-this is what an 8 way hat switch looks like, with high numbers representing the angle of the mini-stick.
+This is what an 8 way hat switch looks like, with high numbers representing the angle of the mini-stick.
+
 This is not supported by the software :
 
 ![vkb 2](https://i.imgur.com/kCYd0BT.png)
