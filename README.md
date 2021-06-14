@@ -60,6 +60,20 @@ The button id's must be numeric.
 </joystickSettings>
 ```
 
+This is a useful tool, to find out the joystick or throttle VID, PID and 4 way hat switch button numbers (this tool is not limited to VKB joysticks):
+
+https://vkbcontrollers.com/wp-content/uploads/2019/02/VKB_JoyTester.zip
+
+this is what a 4 way hat switch looks like in the tool
+just 5 normal buttons, with low number id's :
+
+![vkb 1](https://i.imgur.com/CsnkQCm.png)
+
+this is what an 8 way hat switch looks like, with high numbers representing the angle of the mini-stick.
+This is not supported by the software :
+
+![vkb 2](https://i.imgur.com/kCYd0BT.png)
+
 There is a Toggle Window menu option in the tray icon context menu.
 This option mirrors the FIP display, that is being controlled by the HOTAS hat switch, to a window for use in VR.
 
