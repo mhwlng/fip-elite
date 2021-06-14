@@ -66,7 +66,7 @@ https://vkbcontrollers.com/wp-content/uploads/2019/02/VKB_JoyTester.zip
 
 This is what a 4 way hat switch looks like in the tool.
 
-Just 5 normal buttons, with low number id's :
+Just 5 normal buttons, with low id's :
 
 ![vkb 1](https://i.imgur.com/CsnkQCm.png)
 
