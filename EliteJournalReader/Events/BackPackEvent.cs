@@ -9,7 +9,7 @@ namespace EliteJournalReader.Events
 {
     public class BackPackEvent : JournalEvent<BackPackEvent.BackPackEventArgs>
     {
-        public BackPackEvent() : base("BackPack") { }
+        public BackPackEvent() : base("Backpack") { }
 
         public class BackPackEventArgs : JournalEventArgs
         {

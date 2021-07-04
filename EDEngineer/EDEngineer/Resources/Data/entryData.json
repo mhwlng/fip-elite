@@ -1966,8 +1966,24 @@
     "BarterCost": 4,
     "BarterValue": 2,
     "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "BuildingType": [
+      "DORM",
+      "LAB",
+      "OPR",
+      "PROC",
+      "SEC",
+      "STO"
+    ],
+    "ContainerType": [
+      "Industrial Locker (S)",
+      "Industrial Locker (L)",
+      "Locker (S)",
+      "Locker (L)",
+      "Mining Locker (S)",
+      "Research Locker (L)",
+      "Security Locker (L)",
+      "Tech Locker (S)"
+    ]
   },
   {
     "Name": "Electrical Fuse",
@@ -2275,7 +2291,7 @@
       "Planetary Settlement"
     ],
     "Group": "Chemicals",
-    "ValueCr": -1,
+    "ValueCr": 300,
     "BarterCost": 5,
     "BarterValue": 3,
     "SettlementType": [],
@@ -2323,9 +2339,17 @@
     "ValueCr": 600,
     "BarterCost": 11,
     "BarterValue": 6,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Industrial",
+      "Tourist"
+    ],
+    "BuildingType": [
+      "PROC",
+      "PWR"
+    ],
+    "ContainerType": [
+      "Industrial Locker (L)"
+    ]
   },
   {
     "Name": "Transmitter",
@@ -2350,7 +2374,7 @@
       "Planetary Settlement"
     ],
     "Group": "Tech",
-    "ValueCr": -1,
+    "ValueCr": 600,
     "BarterCost": 11,
     "BarterValue": 6,
     "SettlementType": [],
@@ -2403,7 +2427,9 @@
     ],
     "Group": "Data",
     "ValueCr": 4000,
-    "SettlementType": [],
+    "SettlementType": [
+      "Tourist"
+    ],
     "BuildingType": [
       "LAB",
       "PROC",
@@ -2427,11 +2453,19 @@
     ],
     "Group": "Data",
     "ValueCr": 3000,
-    "SettlementType": [],
-    "BuildingType": [],
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB",
+      "PROC",
+      "PWR",
+      "STO"
+    ],
     "ContainerType": [
       "Industrial Data Port",
-      "Power Data Port"
+      "Power Data Port",
+      "Habitat Data Port"
     ]
   },
   {
@@ -2474,7 +2508,9 @@
     "Group": "Data",
     "ValueCr": -1,
     "SettlementType": [],
-    "BuildingType": [],
+    "BuildingType": [
+      "SEC"
+    ],
     "ContainerType": [
       "Security Data Port"
     ]
@@ -2577,9 +2613,16 @@
     ],
     "Group": "Data",
     "ValueCr": 1000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "ALL"
+    ],
+    "BuildingType": [
+      "HAB",
+      "DORM"
+    ],
+    "ContainerType": [
+      "Data Port"
+    ]
   },
   {
     "Name": "Census Data",
@@ -2682,9 +2725,15 @@
     ],
     "Group": "Data",
     "ValueCr": 7000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Clinical Trial Records",
@@ -2694,7 +2743,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 24000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -2757,7 +2806,9 @@
     "ValueCr": -1,
     "SettlementType": [],
     "BuildingType": [],
-    "ContainerType": []
+    "ContainerType": [
+      "Security Data Port"
+    ]
   },
   {
     "Name": "Criminal Records",
@@ -2840,9 +2891,15 @@
     ],
     "Group": "Data",
     "ValueCr": 5000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Employee Expenses",
@@ -2879,12 +2936,16 @@
     ],
     "Group": "Data",
     "ValueCr": 20000,
-    "SettlementType": [],
+    "SettlementType": [
+      "High Tech"
+    ],
     "BuildingType": [
-      "CMD"
+      "CMD",
+      "MED"
     ],
     "ContainerType": [
-      "Data Port"
+      "Data Port",
+      "Medical Data Port"
     ]
   },
   {
@@ -2953,9 +3014,15 @@
     ],
     "Group": "Data",
     "ValueCr": 10000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Faction Associates",
@@ -2979,9 +3046,15 @@
     ],
     "Group": "Data",
     "ValueCr": 16000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Faction News",
@@ -3046,9 +3119,18 @@
     ],
     "Group": "Data",
     "ValueCr": 21000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "High Tech",
+      "Industrial"
+    ],
+    "BuildingType": [
+      "MED",
+      "PROC"
+    ],
+    "ContainerType": [
+      "Medical Data Port",
+      "Industrial Data Port"
+    ]
   },
   {
     "Name": "Geographical Data",
@@ -3197,9 +3279,15 @@
     ],
     "Group": "Data",
     "ValueCr": -1,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Maintenance Logs",
@@ -3223,7 +3311,9 @@
     ],
     "Group": "Data",
     "ValueCr": 9000,
-    "SettlementType": [],
+    "SettlementType": [
+      "Industrial"
+    ],
     "BuildingType": [
       "HAB",
       "PROC",
@@ -3231,8 +3321,7 @@
     ],
     "ContainerType": [
       "Data Port",
-      "Industrial",
-      " Data Port",
+      "Industrial Data Port",
       "Laboratory Data Port",
       "Satellite Data Port"
     ]
@@ -3259,6 +3348,19 @@
     ],
     "Group": "Data",
     "ValueCr": 1000,
+    "SettlementType": [],
+    "BuildingType": [],
+    "ContainerType": []
+  },
+  {
+    "Name": "Mineral Analytics",
+    "FormattedName": "mineralanalytics",
+    "Kind": "OdysseyIngredient",
+    "OriginDetails": [
+      "Planetary Settlement"
+    ],
+    "Group": "Data",
+    "ValueCr": -1,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -3300,9 +3402,15 @@
     ],
     "Group": "Data",
     "ValueCr": 3000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Network Access History",
@@ -3382,10 +3490,15 @@
     ],
     "Group": "Data",
     "ValueCr": -1,
-    "SettlementType": [],
+    "SettlementType": [
+      "ALL"
+    ],
     "BuildingType": [
       "HAB",
-      "DORM"
+      "DORM",
+      "BAR",
+      "OPR",
+      "CBN"
     ],
     "ContainerType": [
       "Data Port"
@@ -3493,9 +3606,15 @@
     ],
     "Group": "Data",
     "ValueCr": -1,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Prisoner Logs",
@@ -3560,9 +3679,15 @@
     ],
     "Group": "Data",
     "ValueCr": 8000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Purchase Requests",
@@ -3586,9 +3711,15 @@
     ],
     "Group": "Data",
     "ValueCr": 16000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "ALL"
+    ],
+    "BuildingType": [
+      "PWR"
+    ],
+    "ContainerType": [
+      "Power Data Port"
+    ]
   },
   {
     "Name": "Reactor Output Review",
@@ -3600,8 +3731,14 @@
     "Group": "Data",
     "ValueCr": 8000,
     "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "BuildingType": [
+      "LAB",
+      "PWR"
+    ],
+    "ContainerType": [
+      "Laboratory Data Port",
+      "Power Data Port"
+    ]
   },
   {
     "Name": "Recycling Logs",
@@ -3612,9 +3749,15 @@
     ],
     "Group": "Data",
     "ValueCr": 2000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Residential Directory",
@@ -3651,9 +3794,15 @@
     ],
     "Group": "Data",
     "ValueCr": 7000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Security Expenses",
@@ -3706,8 +3855,12 @@
     "Group": "Data",
     "ValueCr": -1,
     "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "BuildingType": [
+      "SEC"
+    ],
+    "ContainerType": [
+      "Security Data Port"
+    ]
   },
   {
     "Name": "Settlement Defence Plans",
@@ -3717,10 +3870,12 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 22000,
     "SettlementType": [],
     "BuildingType": [],
-    "ContainerType": []
+    "ContainerType": [
+      "Data Port"
+    ]
   },
   {
     "Name": "Shareholder Information",
@@ -3737,7 +3892,7 @@
   },
   {
     "Name": "Slush Fund Logs",
-    "FormattedName": "alushfundlogs",
+    "FormattedName": "slushfundlogs",
     "Kind": "OdysseyIngredient",
     "OriginDetails": [
       "Planetary Settlement"
@@ -3810,9 +3965,12 @@
     "Group": "Data",
     "ValueCr": 19000,
     "SettlementType": [],
-    "BuildingType": [],
+    "BuildingType": [
+      "SEC"
+    ],
     "ContainerType": [
-      "Satellite Data Port"
+      "Satellite Data Port",
+      "Security Data Port"
     ]
   },
   {
@@ -3850,10 +4008,14 @@
     ],
     "Group": "Data",
     "ValueCr": 12000,
-    "SettlementType": [],
-    "BuildingType": [],
+    "SettlementType": [
+      "High Tech"
+    ],
+    "BuildingType": [
+      "LAB"
+    ],
     "ContainerType": [
-      "Data Port"
+      "Laboratory Data Port"
     ]
   },
   {
@@ -3864,10 +4026,16 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "ValueCr": 2000,
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Troop Deployment Records",
@@ -3905,7 +4073,9 @@
     "Group": "Data",
     "ValueCr": 4000,
     "SettlementType": [],
-    "BuildingType": [],
+    "BuildingType": [
+      "LAB"
+    ],
     "ContainerType": [
       "Laboratory Data Port"
     ]
@@ -3973,9 +4143,15 @@
     ],
     "Group": "Data",
     "ValueCr": 6000,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "SettlementType": [
+      "Tourist"
+    ],
+    "BuildingType": [
+      "HAB"
+    ],
+    "ContainerType": [
+      "Habitat Data Port"
+    ]
   },
   {
     "Name": "Weapon Inventory",
@@ -4000,8 +4176,12 @@
     "Group": "Data",
     "ValueCr": -1,
     "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "BuildingType": [
+      "DORM"
+    ],
+    "ContainerType": [
+      "Data Port"
+    ]
   },
   {
     "Name": "Xeno-Defence Protocols",
@@ -4024,7 +4204,7 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
+    "ValueCr": 50000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -4037,12 +4217,24 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
+    "ValueCr": 125000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
   },
-
+  {
+    "Name": "Biological Sample",
+    "FormattedName": "biologicalsample",
+    "Kind": "OdysseyIngredient",
+    "OriginDetails": [
+      "Planetary Settlement"
+    ],
+    "Group": "Item",
+    "ValueCr": 35000,
+    "SettlementType": [],
+    "BuildingType": [],
+    "ContainerType": []
+  },
   {
     "Name": "Building Schematic",
     "FormattedName": "buildingschematic",
@@ -4090,7 +4282,7 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
+    "ValueCr": 50000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -4103,7 +4295,7 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": 50000,
+    "ValueCr": 35000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -4190,7 +4382,7 @@
     ]
   },
   {
-    "Name": "Biological Sample",
+    "Name": "Genetic Sample",
     "FormattedName": "geneticsample",
     "Kind": "OdysseyIngredient",
     "OriginDetails": [
@@ -4236,7 +4428,7 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
+    "ValueCr": 75000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -4275,7 +4467,7 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
+    "ValueCr": 35000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -4450,10 +4642,18 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "ValueCr": 25000,
+    "SettlementType": [
+      "High Tech"
+    ],
+    "BuildingType": [
+      "DORM"
+    ],
+    "ContainerType": [
+      "Container",
+      "Locker (L)",
+      "Locker (S)"
+    ]
   },
   {
     "Name": "Pyrolytic Catalyst",
@@ -4463,10 +4663,17 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "ValueCr": 35000,
+    "SettlementType": [
+      "Research"
+    ],
+    "BuildingType": [
+      "RES"
+    ],
+    "ContainerType": [
+      "Research Locker (L)",
+      "Research Locker (S)"
+    ]
   },
   {
     "Name": "Refinement Process Sample",
@@ -4541,10 +4748,17 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
-    "SettlementType": [],
-    "BuildingType": [],
-    "ContainerType": []
+    "ValueCr": 75000,
+    "SettlementType": [
+      "Research"
+    ],
+    "BuildingType": [
+      "RES"
+    ],
+    "ContainerType": [
+      "Research Locker (L)",
+      "Research Locker (S)"
+    ]
   },
   {
     "Name": "True Form Fossil",

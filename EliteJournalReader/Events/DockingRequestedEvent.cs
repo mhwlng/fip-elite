@@ -19,6 +19,9 @@ namespace EliteJournalReader.Events
             public string StationName { get; set; }
             public string StationType { get; set; }
             public long MarketID { get; set; }
+
+            public DockedEvent.DockedEventArgs.LandingPad LandingPads { get; set; }
+
         }
     }
 }

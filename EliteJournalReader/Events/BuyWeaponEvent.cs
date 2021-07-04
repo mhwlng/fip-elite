@@ -26,6 +26,8 @@ namespace EliteJournalReader.Events
             public long Price { get; set; }
 
             public string SuitModuleID { get; set; }
+
+            public int Class { get; set; }
         }
     }
 }

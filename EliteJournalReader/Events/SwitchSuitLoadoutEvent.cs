@@ -14,6 +14,23 @@ namespace EliteJournalReader.Events
     "LoadoutID":4293000003,
     "LoadoutName":"Rocket Launcher with Kinetic Side Arm"}
      */
+    /*
+     { "timestamp":"2021-07-03T08:24:12Z", "event":"SwitchSuitLoadout", "SuitID":1700273897771741, 
+    "SuitName":"tacticalsuit_class1", 
+    "SuitName_Localised":"Dominator Suit",
+    "SuitMods":[  ],
+    "LoadoutID":4293000001, 
+    "LoadoutName":"dominator", 
+    "Modules":[ { "SlotName":"PrimaryWeapon1", "SuitModuleID":1703077474370671, "ModuleName":"wpn_m_sniper_plasma_charged", "ModuleName_Localised":"Manticore Executioner", 
+    "Class":2, "WeaponMods":[  ] }, 
+    { "SlotName":"SecondaryWeapon", "SuitModuleID":1703092103309717, "ModuleName":"wpn_s_pistol_plasma_charged", "ModuleName_Localised":"Manticore Tormentor", "Class":2, "WeaponMods":[  ] } ] }
+
+{ "timestamp":"2021-07-03T08:24:23Z", "event":"SwitchSuitLoadout", "SuitID":1700273889389298, "SuitName":"utilitysuit_class2", "SuitName_Localised":"$UtilitySuit_Class1_Name;", "SuitMods":[  ],
+    "LoadoutID":4293000003, "LoadoutName":"ENGINEER", "Modules":[ { "SlotName":"PrimaryWeapon1", "SuitModuleID":1703077474370671, "ModuleName":"wpn_m_sniper_plasma_charged", "ModuleName_Localised":"Manticore Executioner", "Class":2, "WeaponMods":[  ] }, { "SlotName":"SecondaryWeapon", "SuitModuleID":1703092103309717, "ModuleName":"wpn_s_pistol_plasma_charged",
+    "ModuleName_Localised":"Manticore Tormentor", "Class":2, "WeaponMods":[  ] } ] }
+
+     */
+
 
     public class SwitchSuitLoadoutEvent : JournalEvent<SwitchSuitLoadoutEvent.SwitchSuitLoadoutEventArgs>
     {
@@ -27,6 +44,8 @@ namespace EliteJournalReader.Events
                 public string SuitModuleID { get; set; }
                 public string ModuleName { get; set; }
                 public string ModuleName_Localised { get; set; }
+
+                public int Class { get; set; }
             }
 
             public string SuitID { get; set; }

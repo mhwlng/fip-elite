@@ -26,6 +26,15 @@ namespace EliteJournalReader.Events
     //•	Wanted: (only if docking when wanted locally)
     //•	ActiveFine: true (if any fine is active)
     //The ‘anonymous docking’ protocol comes into effect if you’re either Wanted(ie have a local bounty) or have an ActiveFine
+
+
+    //{ "timestamp":"2021-07-03T08:06:07Z", "event":"Docked", "StationName":"Skovoroda Hospitality Site", "StationType":"OnFootSettlement", "Taxi":true, "Multicrew":false, "StarSystem":"Shinrarta Dezhra", "SystemAddress":3932277478106, "MarketID":3866946816, "StationFaction":{ "Name":"Future of Arro Naga" }, 
+    //"StationGovernment":"$government_Democracy;", "StationGovernment_Localised":"Democracy", "StationAllegiance":"Federation", "StationServices":[ "dock", "autodock", "blackmarket", "commodities", "contacts", "missions", "crewlounge", "refuel", "repair", "engineer", "missionsgenerated", "flightcontroller", "stationoperations", "searchrescue", "stationMenu" ], 
+    //"StationEconomy":"$economy_Tourism;", "StationEconomy_Localised":"Tourism",
+    //"StationEconomies":[ { "Name":"$economy_Tourism;", "Name_Localised":"Tourism", "Proportion":1.000000 } ],
+    //"DistFromStarLS":3462.796521,
+    //"LandingPads":{ "Small":1, "Medium":0, "Large":1 } }
+
     public class DockedEvent : JournalEvent<DockedEvent.DockedEventArgs>
     {
         public DockedEvent() : base("Docked") { }
@@ -49,6 +58,7 @@ namespace EliteJournalReader.Events
             public string[] StationServices { get; set; }
             public bool Wanted { get; set; } = false;
             public bool ActiveFine { get; set; } = false;
+            public LandingPad LandingPads { get; set; }
 
             public struct Economy
             {
@@ -56,6 +66,14 @@ namespace EliteJournalReader.Events
                 public string Name_Localised { get; set; }
                 public double Proportion { get; set; }
             }
+
+            public struct LandingPad
+            {
+                public int Small { get; set; }
+                public int Medium { get; set; }
+                public int Large { get; set; }
+            }
+
 
             public override JournalEventArgs Clone()
             {

@@ -27,6 +27,9 @@ namespace EliteJournalReader.Events
         //•	ShipIdent: user-defined ship ID string
         //•	FuelLevel: current fuel 
         //•	FuelCapacity: size of main tank
+        //• Language 
+        //• Gameversion 
+        //• Build
 
         public LoadGameEvent() : base("LoadGame") { }
 
@@ -52,6 +55,10 @@ namespace EliteJournalReader.Events
             public string ShipIdent { get; set; }
             public double FuelLevel { get; set; }
             public double FuelCapacity { get; set; }
+
+            public string Language { get; set; }
+            public string Gameversion { get; set; }
+            public string Build { get; set; }
         }
     }
 }

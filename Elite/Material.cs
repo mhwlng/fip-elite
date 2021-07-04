@@ -343,12 +343,13 @@ namespace Elite
             {
                 var key = ShipLockerList.FirstOrDefault(x => x.Value.Name == info.Commodity_Localised).Key;
 
+                /*
                 ShipLockerList[key].Count -= info.Count ?? 0;
 
                 if (ShipLockerList[key].Count <= 0)
                 {
                     ShipLockerList.Remove(key);
-                }
+                }*/
             }
 
             if (info.MaterialsReward?.Any() == true)
@@ -362,7 +363,7 @@ namespace Elite
                     if (i.Category.StartsWith("$MICRORESOURCE_CATEGORY_"))
                     {
                         var category = i.Category.Replace("$MICRORESOURCE_CATEGORY_", "").Replace(";", ""); ;
-
+                        /*
                         if (ShipLockerList.ContainsKey(idxName))
                         {
                             ShipLockerList[idxName].Count += i.Count;
@@ -376,7 +377,7 @@ namespace Elite
                                 Group = GetGroup(entry),
                                 BluePrintType = GetBluePrintType(entry)
                             });
-                        }
+                        }*/
 
                     }
                     else
