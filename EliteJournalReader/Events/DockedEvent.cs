@@ -41,6 +41,9 @@ namespace EliteJournalReader.Events
 
         public class DockedEventArgs : JournalEventArgs
         {
+            public bool Taxi { get; set; }
+            public bool Multicrew { get; set; }
+
             public string StarSystem { get; set; }
             public string StationName { get; set; }
             public long SystemAddress { get; set; }

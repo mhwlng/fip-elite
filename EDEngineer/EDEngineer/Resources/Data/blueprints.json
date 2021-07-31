@@ -40802,7 +40802,38 @@
   },
   {
     "Type": "Weapon",
-    "Name": "Greater range",
+    "Name": "Greater range (Manticore plasma)",
+    "Engineers": [
+      "Domino Green",
+      "Wellington Beck"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Chemical Formulae",
+        "Size": 10
+      },
+      {
+        "Name": "Mineral Survey",
+        "Size": 15
+      },
+      {
+        "Name": "Motor",
+        "Size": 5
+      },
+      {
+        "Name": "Electromagnet",
+        "Size": 10
+      },
+      {
+        "Name": "Electrical Fuse",
+        "Size": 5
+      }
+    ],
+    "Effects": []
+  },
+  {
+    "Type": "Weapon",
+    "Name": "Greater range (Kinematic kinetic)",
     "Engineers": [
       "Domino Green",
       "Wellington Beck"
@@ -40827,6 +40858,37 @@
       {
         "Name": "Weapon Component",
         "Size": 5
+      }
+    ],
+    "Effects": []
+  },
+  {
+    "Type": "Weapon",
+    "Name": "Greater range (Takada laser)",
+    "Engineers": [
+      "Domino Green",
+      "Wellington Beck"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Stellar Activity Logs",
+        "Size": 10
+      },
+      {
+        "Name": "Risk Assessments",
+        "Size": 15
+      },
+      {
+        "Name": "Micro Transformer",
+        "Size": 15
+      },
+      {
+        "Name": "Optical Lens",
+        "Size": 5
+      },
+      {
+        "Name": "Circuit Board",
+        "Size": 3
       }
     ],
     "Effects": []
@@ -41140,7 +41202,7 @@
         "Size": 10
       },
       {
-        "Name": "Metal Coil",
+        "Name": "Electromagnet",
         "Size": 10
       }
     ],
@@ -41150,7 +41212,8 @@
     "Type": "Weapon",
     "Name": "Faster handling",
     "Engineers": [
-      "Hero Ferrari"
+      "Hero Ferrari",
+      "Yarden Bond"
     ],
     "Ingredients": [
       {
@@ -41174,34 +41237,93 @@
   },
   {
     "Type": "Weapon",
-    "Name": "Improved Hip Fire Accuracy",
+    "Name": "Improved Hip Fire Accuracy (Manticore plasma)",
     "Engineers": [
-      "Terra Velasquez"
+      "Terra Velasquez",
+      "Yarden Bond"
     ],
     "Ingredients": [
       {
-        "Name": "Optical Lens",
+        "Name": "Chemical Patents",
         "Size": 5
       },
       {
-        "Name": "Aerogel",
-        "Size": 20
+        "Name": "Combatant Performance",
+        "Size": 10
       },
       {
-        "Name": "Optical Fibre",
-        "Size": 25
+        "Name": "Chemical Catalyst",
+        "Size": 10
+      },
+      {
+        "Name": "Electromagnet",
+        "Size": 10
+      },
+      {
+        "Name": "Metal Coil",
+        "Size": 10
+      }
+    ],
+    "Effects": []
+  },
+  {
+    "Type": "Weapon",
+    "Name": "Improved Hip Fire Accuracy (Kinematic kinetic)",
+    "Engineers": [
+      "Terra Velasquez",
+      "Yarden Bond"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Extraction Yield Data",
+        "Size": 10
+      },
+      {
+        "Name": "Biometric Data",
+        "Size": 5
+      },
+      {
+        "Name": "Combatant Performance",
+        "Size": 10
+      },
+      {
+        "Name": "Viscoelastic Polymer",
+        "Size": 10
+      },
+      {
+        "Name": "RDX",
+        "Size": 10
+      }
+    ],
+    "Effects": []
+  },
+  {
+    "Type": "Weapon",
+    "Name": "Improved Hip Fire Accuracy (Takada laser)",
+    "Engineers": [
+      "Terra Velasquez",
+      "Yarden Bond"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Radioactivity Data",
+        "Size": 5
+      },
+      {
+        "Name": "Combatant Performance",
+        "Size": 10
       },
       {
         "Name": "Metal Coil",
         "Size": 10
       },
       {
-        "Name": "Electrical Wiring",
-        "Size": 15
+        "Name": "Optical Lens",
+        "Size": 5
       },
       {
-        "Name": "Radioactivity Data",
-        "Size": 5
+        "Name": "Electrical Wiring",
+        "Size": 15
       }
     ],
     "Effects": []
@@ -41210,7 +41332,8 @@
     "Type": "Suit",
     "Name": "Improved jump assist",
     "Engineers": [
-      "Hero Ferrari"
+      "Hero Ferrari",
+      "Yarden Bond"
     ],
     "Ingredients": [
       {
@@ -41377,7 +41500,37 @@
   },
   {
     "Type": "Weapon",
-    "Name": "Headshot damage",
+    "Name": "Headshot damage (Manticore plasma)",
+    "Engineers": [
+      "Uma Laszlo"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Chemical Experiment Data",
+        "Size": 10
+      },
+      {
+        "Name": "Blood Test Results",
+        "Size": 5
+      },
+      {
+        "Name": "Ion Battery",
+        "Size": 10
+      },
+      {
+        "Name": "Electromagnet",
+        "Size": 10
+      },
+      {
+        "Name": "Micro Supercapacitor",
+        "Size": 15
+      }
+    ],
+    "Effects": []
+  },
+  {
+    "Type": "Weapon",
+    "Name": "Headshot damage (Kinematic kinetic)",
     "Engineers": [
       "Uma Laszlo"
     ],
@@ -41401,6 +41554,36 @@
       {
         "Name": "Weapon Component",
         "Size": 5
+      }
+    ],
+    "Effects": []
+  },
+  {
+    "Type": "Weapon",
+    "Name": "Headshot damage (Takada laser)",
+    "Engineers": [
+      "Uma Laszlo"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Spectral Analysis Data",
+        "Size": 10
+      },
+      {
+        "Name": "Biometric Data",
+        "Size": 5
+      },
+      {
+        "Name": "Ion Battery",
+        "Size": 10
+      },
+      {
+        "Name": "Optical Lens",
+        "Size": 5
+      },
+      {
+        "Name": "Scrambler",
+        "Size": 10
       }
     ],
     "Effects": []
@@ -41589,7 +41772,8 @@
     "Type": "Suit",
     "Name": "Combat Movement Speed",
     "Engineers": [
-      "Terra Velasquez"
+      "Terra Velasquez",
+      "Yarden Bond"
     ],
     "Ingredients": [
       {

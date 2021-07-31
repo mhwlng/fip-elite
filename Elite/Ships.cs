@@ -417,11 +417,11 @@ namespace Elite
             }
         }
 
-        public static void HandleShipLocation(bool docked, string starSystem, string stationName, List<double> starPos)
+        public static void HandleShipLocation(string starSystem, string stationName, List<double> starPos)
         {
             var ship = GetCurrentShip();
 
-            if (docked && ship != null)
+            if (ship != null)
             {
                 ship.StarSystem = starSystem;
                 ship.StationName = stationName;

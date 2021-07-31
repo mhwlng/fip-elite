@@ -748,7 +748,11 @@ namespace Elite
 
                     var locationInfo = (LocationEvent.LocationEventArgs)e;
 
-                    Ships.HandleShipLocation(locationInfo.Docked, locationInfo.StarSystem, locationInfo.StationName, locationInfo.StarPos.ToList());
+                    if (!locationInfo.OnFoot && !locationInfo.Taxi && locationInfo.Docked)
+                    {
+                        Ships.HandleShipLocation(locationInfo.StarSystem, locationInfo.StationName,
+                            locationInfo.StarPos.ToList());
+                    }
 
                     StatusData.Docked = locationInfo.Docked;
                     StatusData.InTaxi = locationInfo.Taxi;
@@ -1195,7 +1199,10 @@ namespace Elite
 
                     StatusData.Docked = true;
 
-                    Ships.HandleShipDocked(dockedInfo.StarSystem, dockedInfo.StationName);
+                    if (!dockedInfo.Taxi)
+                    {
+                        Ships.HandleShipDocked(dockedInfo.StarSystem, dockedInfo.StationName);
+                    }
 
                     //CockpitBreach
                     //StationEconomies
@@ -1272,7 +1279,10 @@ namespace Elite
 
                     if (carrierJumpInfo.Docked)
                     {
-                        Ships.HandleShipFsdJump(carrierJumpInfo.StarSystem, carrierJumpInfo.StarPos.ToList());
+                        if (!carrierJumpInfo.Taxi)
+                        {
+                            Ships.HandleShipFsdJump(carrierJumpInfo.StarSystem, carrierJumpInfo.StarPos.ToList());
+                        }
 
                         LocationData.Body = carrierJumpInfo.Body;
 
@@ -1284,7 +1294,7 @@ namespace Elite
 
                         Ships.HandleShipDistance(LocationData.StarPos);
                         Module.HandleModuleDistance(LocationData.StarPos);
-                        
+
                         History.AddTravelPos(LocationData.StarPos);
 
                         Poi.NearbyPoiList = Poi.GetNearestPois(LocationData.StarPos);
@@ -1321,7 +1331,10 @@ namespace Elite
                     //When written: when jumping from one star system to another
                     var fsdJumpInfo = (FSDJumpEvent.FSDJumpEventArgs) e;
 
-                    Ships.HandleShipFsdJump(fsdJumpInfo.StarSystem, fsdJumpInfo.StarPos.ToList());
+                    if (!fsdJumpInfo.Taxi)
+                    {
+                        Ships.HandleShipFsdJump(fsdJumpInfo.StarSystem, fsdJumpInfo.StarPos.ToList());
+                    }
 
                     //FuelUsed
                     //FuelLevel
@@ -1344,7 +1357,7 @@ namespace Elite
 
                     Ships.HandleShipDistance(LocationData.StarPos);
                     Module.HandleModuleDistance(LocationData.StarPos);
-                    
+
                     History.AddTravelPos(LocationData.StarPos);
 
                     Poi.NearbyPoiList = Poi.GetNearestPois(LocationData.StarPos);

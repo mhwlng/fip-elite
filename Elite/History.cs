@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using EliteJournalReader.Events;
 using Newtonsoft.Json;
 
@@ -28,12 +29,15 @@ namespace Elite
 
         public class FSDJumpInfo
         {
+            public bool Taxi { get; set; }
             public string StarSystem { get; set; }
             public List<double> StarPos { get; set; }
         }
 
         public class CarrierJumpInfo
         {
+            public bool Taxi { get; set; }
+
             public bool Docked { get; set; }
             public string StarSystem { get; set; }
             public List<double> StarPos { get; set; }
@@ -43,8 +47,10 @@ namespace Elite
         public static List<PointF> TravelHistoryPointsP = new List<PointF>();
 
         public class LocationInfo
-
         {
+            public bool Taxi { get; set; }
+            public bool OnFoot { get; set; }
+
             //"Docked":true, "StationName":"Jameson Memorial", "StarSystem":"Shinrarta Dezhra",  "StarPos":[55.71875,17.59375,27.15625], 
 
             public bool Docked { get; set; }
@@ -55,8 +61,9 @@ namespace Elite
         }
 
         public class DockedInfo
-
         {
+            public bool Taxi { get; set; }
+
             // "StationName":"Jameson Memorial", "StarSystem":"Shinrarta Dezhra"
 
             public string StationName { get; set; }
@@ -188,7 +195,10 @@ namespace Elite
                                                 lastJumpedSystem = info.StarSystem;
                                             }
 
-                                            Ships.HandleShipFsdJump(info.StarSystem, info.StarPos.ToList());
+                                            if (!info.Taxi)
+                                            {
+                                                Ships.HandleShipFsdJump(info.StarSystem, info.StarPos.ToList());
+                                            }
                                         }
                                     }
                                     else
@@ -202,7 +212,10 @@ namespace Elite
                                             lastJumpedSystem = info.StarSystem;
                                         }
 
-                                        Ships.HandleShipFsdJump(info.StarSystem, info.StarPos.ToList());
+                                        if (!info.Taxi)
+                                        {
+                                            Ships.HandleShipFsdJump(info.StarSystem, info.StarPos.ToList());
+                                        }
                                     }
                                     else if (json?.Contains("\"event\":\"LoadGame\",") == true)
                                     {
@@ -235,14 +248,20 @@ namespace Elite
                                     {
                                         var info = JsonConvert.DeserializeObject<LocationInfo>(json);
 
-                                        Ships.HandleShipLocation(info.Docked, info.StarSystem, info.StationName,
-                                            info.StarPos);
+                                        if (!info.OnFoot && !info.Taxi && info.Docked)
+                                        {
+                                            Ships.HandleShipLocation(info.StarSystem, info.StationName,
+                                                info.StarPos);
+                                        }
                                     }
                                     else if (json?.Contains("\"event\":\"Docked\",") == true)
                                     {
                                         var info = JsonConvert.DeserializeObject<DockedInfo>(json);
 
-                                        Ships.HandleShipDocked(info.StarSystem, info.StationName);
+                                        if (!info.Taxi)
+                                        {
+                                            Ships.HandleShipDocked(info.StarSystem, info.StationName);
+                                        }
                                     }
                                     else if (json?.Contains("\"event\":\"ShipyardNew\",") == true)
                                     {

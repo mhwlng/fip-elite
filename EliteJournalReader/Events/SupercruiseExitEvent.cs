@@ -13,12 +13,17 @@ namespace EliteJournalReader.Events
     //Parameters:
     //•	Starsystem
     //•	Body
+    // { "timestamp":"2021-07-24T14:51:48Z", "event":"SupercruiseExit", "Taxi":true, "Multicrew":false, "StarSystem":"Hollatja", "SystemAddress":5370319620976, "Body":"Fermat City", "BodyID":15, "BodyType":"Station" }
+
     public class SupercruiseExitEvent : JournalEvent<SupercruiseExitEvent.SupercruiseExitEventArgs>
     {
         public SupercruiseExitEvent() : base("SupercruiseExit") { }
 
         public class SupercruiseExitEventArgs : JournalEventArgs
         {
+            public bool Taxi { get; set; }
+            public bool Multicrew { get; set; }
+
             public long  SystemAddress { get; set; }
             public string StarSystem { get; set; }
             public string Body { get; set; }
