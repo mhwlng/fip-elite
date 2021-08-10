@@ -16,6 +16,7 @@ using EliteJournalReader;
 using SharpDX.DirectInput;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Windows.Threading;
 
 
 // ReSharper disable StringLiteralTypo
@@ -273,8 +274,35 @@ namespace Elite
             }
         }
 
+
+        void AppDomainUnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs ea)
+        {
+            Exception ex = (Exception)ea.ExceptionObject;
+
+            Log.Error($"AppDomainUnhandledExceptionHandler: {ex}");
+        }
+
+        void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            Log.Error($"Application_ThreadException: {e.Exception}");
+
+        }
+
+        void AppDispatcherUnhandledException(object
+            sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            Log.Error($"AppDispatcherUnhandledException: {e.Exception}");
+        }
+
         protected override void OnStartup(StartupEventArgs evtArgs)
         {
+
+            AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledExceptionHandler;
+
+            System.Windows.Forms.Application.ThreadException += Application_ThreadException;
+
+            Application.Current.DispatcherUnhandledException += AppDispatcherUnhandledException;
+
             const string appName = "Fip-Elite";
 
             _mutex = new Mutex(true, appName, out var createdNew);

@@ -9,32 +9,23 @@ namespace EliteJournalReader.Events
 {
     //    When written: when landing at landing pad in a space station, outpost, or surface settlement
     //    Parameters:
-    //•	StationName: name of station
-    //•	MarketID
-    //•	SystemAddress
-    //•	StationType: type of station
-    //•	StarSystem: name of system
-    //•	CockpitBreach:true (only if landing with breached cockpit)
-    //•	StationFaction: station’s controlling faction
-    //•	FactionState
-    //•	StationAllegiance
-    //•	StationEconomy : (station's primary economy)
-    //•	StationEconomies: (array of name and proportion values)
-    //•	StationGovernment
-    //•	DistFromStarLS
-    //•	StationServices: (Array of strings)
-    //•	Wanted: (only if docking when wanted locally)
-    //•	ActiveFine: true (if any fine is active)
-    //The ‘anonymous docking’ protocol comes into effect if you’re either Wanted(ie have a local bounty) or have an ActiveFine
-
-
-    //{ "timestamp":"2021-07-03T08:06:07Z", "event":"Docked", "StationName":"Skovoroda Hospitality Site", "StationType":"OnFootSettlement", "Taxi":true, "Multicrew":false, "StarSystem":"Shinrarta Dezhra", "SystemAddress":3932277478106, "MarketID":3866946816, "StationFaction":{ "Name":"Future of Arro Naga" }, 
-    //"StationGovernment":"$government_Democracy;", "StationGovernment_Localised":"Democracy", "StationAllegiance":"Federation", "StationServices":[ "dock", "autodock", "blackmarket", "commodities", "contacts", "missions", "crewlounge", "refuel", "repair", "engineer", "missionsgenerated", "flightcontroller", "stationoperations", "searchrescue", "stationMenu" ], 
-    //"StationEconomy":"$economy_Tourism;", "StationEconomy_Localised":"Tourism",
-    //"StationEconomies":[ { "Name":"$economy_Tourism;", "Name_Localised":"Tourism", "Proportion":1.000000 } ],
-    //"DistFromStarLS":3462.796521,
-    //"LandingPads":{ "Small":1, "Medium":0, "Large":1 } }
-
+    //ï¿½	StationName: name of station
+    //ï¿½	MarketID
+    //ï¿½	SystemAddress
+    //ï¿½	StationType: type of station
+    //ï¿½	StarSystem: name of system
+    //ï¿½	CockpitBreach:true (only if landing with breached cockpit)
+    //ï¿½	StationFaction: stationï¿½s controlling faction
+    //ï¿½	FactionState
+    //ï¿½	StationAllegiance
+    //ï¿½	StationEconomy : (station's primary economy)
+    //ï¿½	StationEconomies: (array of name and proportion values)
+    //ï¿½	StationGovernment
+    //ï¿½	DistFromStarLS
+    //ï¿½	StationServices: (Array of strings)
+    //ï¿½	Wanted: (only if docking when wanted locally)
+    //ï¿½	ActiveFine: true (if any fine is active)
+    //The ï¿½anonymous dockingï¿½ protocol comes into effect if youï¿½re either Wanted(ie have a local bounty) or have an ActiveFine
     public class DockedEvent : JournalEvent<DockedEvent.DockedEventArgs>
     {
         public DockedEvent() : base("Docked") { }
