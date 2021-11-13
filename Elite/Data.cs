@@ -189,7 +189,7 @@ namespace Elite
 
             return by;
         }
-
+		
         public static void HandleJson()
         {
             lock (App.RefreshJsonLock)
@@ -237,7 +237,7 @@ namespace Elite
                
             }
         }
-
+		
         public class Commander
         {
             public string Name { get; set; } = "";
@@ -400,7 +400,8 @@ namespace Elite
 
             public StatusFuel Fuel { get; set; } = new StatusFuel();
 
-        
+            public double FuelCapacity { get; set; }
+
             public double Cargo { get; set; }
             public string LegalState { get; set; }
             public double JumpRange { get; set; }

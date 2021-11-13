@@ -2370,9 +2370,9 @@ namespace Elite
 
                                                         Engineer = Data.EngineersList[CurrentCard[(int) CurrentTab]],
 
-                                                        Blueprints = blueprints.Where(x => x.Type != "Suit" && x.Type != "Weapon"),
+                                                        Blueprints = blueprints?.Where(x => x.Type != "Suit" && x.Type != "Weapon"),
 
-                                                        SuitWeaponBlueprints = blueprints.Where(x => x.Type == "Suit" || x.Type == "Weapon")
+                                                        SuitWeaponBlueprints = blueprints?.Where(x => x.Type == "Suit" || x.Type == "Weapon")
 
                                                     });
                                             }

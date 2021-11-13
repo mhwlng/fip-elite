@@ -55,7 +55,7 @@ namespace Elite
         public static BackPackWatcher backPackWatcher;
         public static ShipLockerWatcher shipLockerWatcher;
 
-        private static StatusWatcher _statusWatcher;
+        private static StatusWatcher statusWatcher;
 
         public static readonly ILog Log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -641,11 +641,11 @@ namespace Elite
                 });
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Status Watcher...");
-                _statusWatcher = new StatusWatcher(path);
+                statusWatcher = new StatusWatcher(path);
 
-                _statusWatcher.StatusUpdated += Data.HandleStatusEvents;
+                statusWatcher.StatusUpdated += Data.HandleStatusEvents;
 
-                _statusWatcher.StartWatching();
+                statusWatcher.StartWatching();
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Starting Elite Journal Watcher...");
 
@@ -783,9 +783,9 @@ namespace Elite
         {
             Elite.Properties.Settings.Default.Save();
 
-            _statusWatcher.StatusUpdated -= Data.HandleStatusEvents;
+            statusWatcher.StatusUpdated -= Data.HandleStatusEvents;
 
-            _statusWatcher.StopWatching();
+            statusWatcher.StopWatching();
 
             journalWatcher.AllEventHandler -= Data.HandleEliteEvents;
 
