@@ -409,7 +409,17 @@
                                                                                 <td class="caption" colspan="2">
                                                                                     @m.subType
                                                                                     @(m.isScoopable == true ? ", Fuel Star":"")
-                                                                                    @Html.Raw(m.isLandable == true ? ", <span class=\"alarm\">&nbsp;Landable&nbsp;</span>":"")
+                                                                                    @if (m.isLandable == true)
+                                                                                    {
+                                                                                        if (m.surfacePressure > 0)
+                                                                                        {
+                                                                                            @Html.Raw(", <span class=\"alarm2\">&nbsp;Landable&nbsp;</span>")
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            @Html.Raw(", <span class=\"alarm\">&nbsp;Landable&nbsp;</span>")
+                                                                                        }
+                                                                                    }
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>

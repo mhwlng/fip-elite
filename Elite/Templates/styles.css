@@ -24,6 +24,11 @@ td.divider {
     color: white;
 }
 
+.alarm2 {
+    background-color: yellow;
+    color: black;
+}
+
 div.main {
     font-family: 'Arial Unicode MS';
     font-size: 15px;
