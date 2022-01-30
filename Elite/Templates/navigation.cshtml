@@ -411,7 +411,7 @@
                                                                                     @(m.isScoopable == true ? ", Fuel Star":"")
                                                                                     @if (m.isLandable == true)
                                                                                     {
-                                                                                        if (m.surfacePressure > 0)
+                                                                                        if (!string.IsNullOrEmpty(m.atmosphereType) && m.atmosphereType.ToLower().Contains("thin"))
                                                                                         {
                                                                                             @Html.Raw(", <span class=\"alarm2\">&nbsp;Landable&nbsp;</span>")
                                                                                         }

@@ -108,6 +108,10 @@ A configuration tool, to link sensor ids to variables in the HWINFO.inc file, ca
 
 ![hwinfo tool](https://i.imgur.com/Px6jvw4.png)
 
+The UTF-8 checkbox must be enabled for non-unicode programs in the latest unicode-enabled version of HWINFO :
+
+![unicode hwinfo](https://i.imgur.com/d8nuMwM.png)
+
 The HWINFO sensor data can optionally be sent to an MQTT server, by creating a file called mqtt.config (this file doesn't exist by default)
 
 ```
