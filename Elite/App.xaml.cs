@@ -173,6 +173,16 @@ namespace Elite
                 Station.MarketIdStations = Station.GetAllStations(@"Data\fullstationlist.json").GroupBy(x => x.MarketId)
                     .ToDictionary(x => x.Key, x => x.FirstOrDefault());
 
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Colonia Bridge Stations ...");
+
+                Station.ColoniaBridge = Station.GetAllStations(@"Data\coloniabridge.json").GroupBy(x => x.SystemName)
+                    .ToDictionary(x => x.Key, x => x.OrderBy(y => y.DistanceToArrival).ToList());
+
+                splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Odyssey Settlements ...");
+
+                Station.OdysseySettlements = Station.GetAllStations(@"Data\odysseysettlements.json").GroupBy(x => x.SystemName)
+                    .ToDictionary(x => x.Key, x => x.OrderBy(y => y.DistanceToArrival).ToList());
+
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading CNB Systems...");
                 CnbSystems.FullCnbSystemsList = CnbSystems.GetAllCnbSystems(@"Data\cnbsystems.json");
 

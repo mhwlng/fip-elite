@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -43,7 +44,11 @@ namespace ImportData
 
             if (File.Exists(path))
             {
-                var serializer = new JsonSerializer();
+                var serializer = new JsonSerializer
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    DefaultValueHandling = DefaultValueHandling.Ignore
+                };
                 using (var s = File.Open(path, FileMode.Open))
                 {
                     using (var sr = new StreamReader(s))
@@ -71,7 +76,11 @@ namespace ImportData
 
             if (!File.Exists(path))
             {
-                var serializer = new JsonSerializer();
+                var serializer = new JsonSerializer
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    DefaultValueHandling = DefaultValueHandling.Ignore
+                };
 
                 using (var client = new WebClient())
                 {
@@ -121,7 +130,7 @@ namespace ImportData
 
         }
     }
-
+    
     class Program
     {
         private static readonly ILog Log =
@@ -144,7 +153,7 @@ namespace ImportData
 
                 SystemName = x.SystemName,
                 SystemSecurity = x.PopulatedSystemEDDB?.Security,
-                SystemPopulation = x.PopulatedSystemEDDB?.Population,
+                SystemPopulation = x.PopulatedSystemEDDB?.Population ?? 0,
 
                 PowerplayState = x.PopulatedSystemEDDB?.PowerState,
                 Powers = x.PopulatedSystemEDDB?.Power,
@@ -192,7 +201,8 @@ namespace ImportData
 
             var serializer = new JsonSerializer
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
             };
 
             using (var sw = new StreamWriter(path))
@@ -230,12 +240,15 @@ namespace ImportData
         public class CNBSystemData
         {
             [JsonProperty("x")]
+            [DefaultValue(0)]
             public double X { get; set; }
 
             [JsonProperty("y")]
+            [DefaultValue(0)]
             public double Y { get; set; }
 
             [JsonProperty("z")]
+            [DefaultValue(0)]
             public double Z { get; set; }
 
             [JsonProperty("beac")]
@@ -248,7 +261,8 @@ namespace ImportData
             public string SystemSecurity { get; set; }
 
             [JsonProperty("systempopulation")]
-            public long? SystemPopulation { get; set; }
+            [DefaultValue(0)]
+            public long SystemPopulation { get; set; }
 
             [JsonProperty("powerplaystate")]
             public string PowerplayState { get; set; }
@@ -309,7 +323,8 @@ namespace ImportData
 
             var serializer = new JsonSerializer
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
             };
 
             using (var sw = new StreamWriter(fullPath))
@@ -385,7 +400,8 @@ namespace ImportData
 
             var serializer = new JsonSerializer
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
             };
 
             using (var sw = new StreamWriter(fullPath))
@@ -401,7 +417,8 @@ namespace ImportData
 
             var serializer = new JsonSerializer
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
             };
 
             using (var sw = new StreamWriter(fullPath))
@@ -565,7 +582,7 @@ namespace ImportData
                 Type = x.StationEDSM?.Type,
 
                 SystemSecurity = x.StationEDSM?.PopulatedSystemEDDB?.Security,
-                SystemPopulation = x.StationEDSM?.PopulatedSystemEDDB?.Population,
+                SystemPopulation = x.StationEDSM?.PopulatedSystemEDDB?.Population ?? 0,
 
                 PowerplayState = x.StationEDSM?.PopulatedSystemEDDB?.PowerState,
                 Powers = x.StationEDSM?.PopulatedSystemEDDB?.Power,
@@ -589,7 +606,8 @@ namespace ImportData
 
             var serializer = new JsonSerializer
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore
             };
 
             using (var sw = new StreamWriter(fullPath))
@@ -734,11 +752,11 @@ namespace ImportData
 
                 populatedSystemsEDDBList = JsonReaderExtensions.ParseJson<PopulatedSystemEDDB>(@"Data\populatedsystemsEDDB.json").ToList();
 
+                var populatedSystemsEDDBbyName = populatedSystemsEDDBList
+                    .ToDictionary(x => x.Name);
+
                 if (NeedToUpdateFile(@"Data\cnbsystems.json", 1440))
                 {
-                    var populatedSystemsEDDBbyName = populatedSystemsEDDBList
-                        .ToDictionary(x => x.Name);
-
                     DownloadCnbSystems(@"Data\cnbsystems.json", populatedSystemsEDDBbyName);
                 }
 
@@ -776,7 +794,18 @@ namespace ImportData
                         z.AdditionalStationDataEDDB = station;
 
                         populatedSystemsEDDBbyEdsmId.TryGetValue(z.SystemId, out var system);
-                        z.PopulatedSystemEDDB = system;
+                        if (system != null)
+                        {
+                            z.PopulatedSystemEDDB = system;
+                        }
+                        else
+                        {
+                            populatedSystemsEDDBbyName.TryGetValue(z.SystemName, out var system2);
+                            if (system2 != null)
+                            {
+                                z.PopulatedSystemEDDB = system2;
+                            }
+                        }
 
                         z.PrimaryEconomy = z.AdditionalStationDataEDDB?.Economies?.FirstOrDefault() ?? z.PopulatedSystemEDDB?.PrimaryEconomy ?? z.Economy;
 
@@ -1150,6 +1179,24 @@ namespace ImportData
                                     x.AdditionalStationDataEDDB.MaxLandingPadSize == "L").ToList();
 
                     StationSerialize(fullStationList, @"Data\fullstationlist.json");
+
+                    //Colonia Bridge
+                    var coloniaBridge = stationsEDSM
+                        .Where(x =>
+                            x.Name.StartsWith("CB-") &&
+                            x.Type == "Mega ship" &&
+                            x.AdditionalStationDataEDDB?.ControllingMinorFactionId == 77645
+                            ).ToList();
+
+                    StationSerialize(coloniaBridge, @"Data\coloniabridge.json");
+
+                    //Odyssey Settlements
+                    var odysseySettlements = stationsEDSM
+                        .Where(x =>
+                            x.Type == "Odyssey Settlement" 
+                        ).ToList();
+
+                    StationSerialize(odysseySettlements, @"Data\odysseysettlements.json");
 
                 }
 

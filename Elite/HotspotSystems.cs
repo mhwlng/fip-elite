@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -30,12 +31,15 @@ namespace Elite
         public class HotspotSystemCoordsData
         {
             [JsonProperty("x")]
+            [DefaultValue(0)]
             public double X { get; set; }
 
             [JsonProperty("y")]
+            [DefaultValue(0)]
             public double Y { get; set; }
 
             [JsonProperty("z")]
+            [DefaultValue(0)]
             public double Z { get; set; }
         }
 

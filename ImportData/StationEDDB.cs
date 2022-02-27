@@ -118,8 +118,8 @@ namespace ImportData
         //[JsonProperty("body_id")]
         //public long? BodyId { get; set; }
 
-        //[JsonProperty("controlling_minor_faction_id")]
-        //public int? ControllingMinorFactionId { get; set; }
+        [JsonProperty("controlling_minor_faction_id")]
+        public int? ControllingMinorFactionId { get; set; }
 
         [JsonIgnore]
         public string SystemName { get; set; }

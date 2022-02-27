@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace ImportData
 {
@@ -29,7 +30,8 @@ namespace ImportData
         public string SystemSecurity { get; set; }
 
         [JsonProperty("systempopulation")]
-        public long? SystemPopulation { get; set; }
+        [DefaultValue(0)]
+        public long SystemPopulation { get; set; }
 
         [JsonProperty("powerplaystate")]
         public string PowerplayState { get; set; }
@@ -38,12 +40,15 @@ namespace ImportData
         public string Powers { get; set; }
         
         [JsonProperty("x")]
+        [DefaultValue(0)]
         public double X { get; set; }
 
         [JsonProperty("y")]
+        [DefaultValue(0)]
         public double Y { get; set; }
 
         [JsonProperty("z")]
+        [DefaultValue(0)]
         public double Z { get; set; }
         
         [JsonProperty("price")]

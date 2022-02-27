@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace ImportData
@@ -78,16 +79,20 @@ namespace ImportData
         public string Name { get; set; }
 
         [JsonProperty("x")]
+        [DefaultValue(0)]
         public double X { get; set; }
 
         [JsonProperty("y")]
+        [DefaultValue(0)]
         public double Y { get; set; }
 
         [JsonProperty("z")]
+        [DefaultValue(0)]
         public double Z { get; set; }
 
         [JsonProperty("population")]
-        public long? Population { get; set; }
+        [DefaultValue(0)]
+        public long Population { get; set; }
 
         //[JsonProperty("is_populated")]
         //public bool IsPopulated { get; set; }

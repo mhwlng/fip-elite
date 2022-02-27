@@ -346,7 +346,7 @@ namespace Elite
             public string SystemEconomy { get; set; }
             public string SystemGovernment { get; set; }
 
-            public long? Population { get; set; }
+            public long Population { get; set; }
 
             public string PowerplayState { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -35,7 +36,8 @@ namespace Elite
         public string SystemSecurity { get; set; }
 
         [JsonProperty("systempopulation")]
-        public long? SystemPopulation { get; set; }
+        [DefaultValue(0)]
+        public long SystemPopulation { get; set; }
 
         [JsonProperty("powerplaystate")]
         public string PowerplayState { get; set; }
@@ -44,12 +46,15 @@ namespace Elite
         public string Powers { get; set; }
 
         [JsonProperty("x")]
+        [DefaultValue(0)]
         public double X { get; set; }
 
         [JsonProperty("y")]
+        [DefaultValue(0)]
         public double Y { get; set; }
 
         [JsonProperty("z")]
+        [DefaultValue(0)]
         public double Z { get; set; }
 
         [JsonProperty("body")]
@@ -124,6 +129,10 @@ namespace Elite
         public static Dictionary<string,List<StationData>> SystemStations = new Dictionary<string, List<StationData>>();
 
         public static Dictionary<long, StationData> MarketIdStations = new Dictionary<long, StationData>();
+
+        public static Dictionary<string, List<StationData>> ColoniaBridge = new Dictionary<string, List<StationData>>();
+
+        public static Dictionary<string, List<StationData>> OdysseySettlements = new Dictionary<string, List<StationData>>();
 
         public static List<Data.EngineerData> GetEngineers(string path)
         {

@@ -1881,7 +1881,7 @@ namespace Elite
                                 CheckCardSelectionLimits(2);
                                 break;
                             case LcdTab.Navigation:
-                                CheckCardSelectionLimits(2);
+                                CheckCardSelectionLimits(3);
                                 break;
                             case LcdTab.POI:
                                 CheckCardSelectionLimits(7);
@@ -2127,6 +2127,13 @@ namespace Elite
 
                                             lock (App.RefreshSystemLock)
                                             {
+                                                List<StationData> odysseySettlements = null;
+
+                                                if (CurrentCard[(int)CurrentTab] == 3)
+                                                {
+                                                    Station.OdysseySettlements.TryGetValue(Data.LocationData.StarSystem,
+                                                        out odysseySettlements);
+                                                }
 
                                                 str =
                                                     Engine.Razor.Run("navigation.cshtml", null, new
@@ -2216,7 +2223,9 @@ namespace Elite
                                                         RouteDestination = routeList.LastOrDefault()?.StarSystem ?? "",
                                                         JumpDistance = jumpDistance,
                                                         FuelCost = fuelCost,
-                                                        FuelWarning = fuelWarning
+                                                        FuelWarning = fuelWarning,
+
+                                                        OdysseySettlements = odysseySettlements
 
                                                     });
                                             }

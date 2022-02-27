@@ -503,5 +503,87 @@
         }
 
     }
+    else if (Model.CurrentCard == 3)
+    {
+    <div class="cardcaption">&nbsp;</div>
+
+        if (Model.OdysseySettlements != null)
+        {
+            <table>
+                <tbody>
+                    @foreach (var m in Model.OdysseySettlements)
+                    {
+                        if (m.Body != null && !string.IsNullOrEmpty(m.Body.name))
+                        {
+                            <tr>
+                                <td class="caption">Body</td>
+                                <td class="data">@m.Body.name</td>
+                            </tr>
+                        }
+
+                        if (!string.IsNullOrEmpty(m.Name))
+                        {
+                            <tr>
+                                <td class="caption">Settlement</td>
+                                <td class="data">@m.Name</td>
+                            </tr>
+                        }
+                        if (m.DistanceToArrival > 0)
+                        {
+                            <tr>
+                                <td class="caption">Dist. from star</td>
+                                <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                            </tr>
+                        }
+
+                        if (!string.IsNullOrEmpty(m.Government))
+                        {
+                            <tr>
+                                <td class="caption">Government</td>
+                                <td class="data">@m.Government</td>
+                            </tr>
+                        }
+                        if (!string.IsNullOrEmpty(m.Allegiance))
+                        {
+                            <tr>
+                                <td class="caption">Allegiance</td>
+                                <td class="data">@m.Allegiance</td>
+                            </tr>
+                        }
+                        if (!string.IsNullOrEmpty(m.Faction))
+                        {
+                            <tr>
+                                <td class="caption">Faction</td>
+                                <td class="data">@m.Faction</td>
+                            </tr>
+                        }
+                        if (!string.IsNullOrEmpty(m.Economies))
+                        {
+                            <tr>
+                                <td class="caption">Economy</td>
+                                <td class="data">@m.Economies</td>
+                            </tr>
+                        }
+                        if (!string.IsNullOrEmpty(m.PowerplayState))
+                        {
+                            <tr>
+                                <td class="caption">Pwr. State</td>
+                                <td class="data">@m.PowerplayState</td>
+                            </tr>
+                        }
+
+                        if (!((List<StationData>)Model.OdysseySettlements).Last().Equals((StationData)m))
+                        {
+                            <tr>
+                                <td class="divider" colspan="2">&nbsp;</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        }
+
+    }
 
 </div>
