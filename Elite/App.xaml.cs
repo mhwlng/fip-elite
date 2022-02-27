@@ -175,8 +175,7 @@ namespace Elite
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Colonia Bridge Stations ...");
 
-                Station.ColoniaBridge = Station.GetAllStations(@"Data\coloniabridge.json").GroupBy(x => x.SystemName)
-                    .ToDictionary(x => x.Key, x => x.OrderBy(y => y.DistanceToArrival).ToList());
+                Station.ColoniaBridge = Station.GetAllStations(@"Data\coloniabridge.json");
 
                 splashScreen?.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading Odyssey Settlements ...");
 

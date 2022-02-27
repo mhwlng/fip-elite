@@ -130,7 +130,7 @@ namespace Elite
 
         public static Dictionary<long, StationData> MarketIdStations = new Dictionary<long, StationData>();
 
-        public static Dictionary<string, List<StationData>> ColoniaBridge = new Dictionary<string, List<StationData>>();
+        public static List<StationData> ColoniaBridge = new List<StationData>();
 
         public static Dictionary<string, List<StationData>> OdysseySettlements = new Dictionary<string, List<StationData>>();
 
@@ -171,6 +171,39 @@ namespace Elite
 
             return new List<StationData>();
 
+        }
+
+        public static List<StationData> GetNearestColoniaBridge(List<double> starPos, List<StationData> stationData)
+        {
+
+            if (stationData?.Any() == true && starPos?.Count == 3)
+            {
+                stationData.ForEach(stationItem =>
+                {
+                    var xs = starPos[0];
+                    var ys = starPos[1];
+                    var zs = starPos[2];
+
+                    var xd = stationItem.X;
+                    var yd = stationItem.Y;
+                    var zd = stationItem.Z;
+
+                    var deltaX = xs - xd;
+                    var deltaY = ys - yd;
+                    var deltaZ = zs - zd;
+
+                    stationItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                });
+
+                var stationList = stationData.Where(x => x.Distance >= 0).OrderBy(x => x.Distance);
+                var id = int.Parse(stationList.FirstOrDefault()?.Name.Replace("CB-", "").Split(' ')[0] ?? "1");
+
+                return stationData
+                    .Where(x => x.Distance > 0 && int.Parse(x.Name.Replace("CB-", "").Split(' ')[0] ?? "1") >= id)
+                    .OrderBy(x => x.Distance).ToList();
+            }
+
+            return new List<StationData>();
         }
 
         public static List<StationData> GetNearestStations(List<double> starPos, List<StationData> stationData)

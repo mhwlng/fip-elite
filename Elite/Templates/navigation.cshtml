@@ -505,7 +505,7 @@
     }
     else if (Model.CurrentCard == 3)
     {
-    <div class="cardcaption">&nbsp;</div>
+        <div class="cardcaption">&nbsp;</div>
 
         if (Model.OdysseySettlements != null)
         {
@@ -582,6 +582,79 @@
                 </tbody>
             </table>
 
+        }
+    }
+    else if (Model.CurrentCard == 4)
+    {
+        <div class="cardcaption">&nbsp;</div>
+
+        if (Model.ColoniaBridge != null)
+        {
+            <table>
+                <tbody>
+                    @foreach (var m in Model.ColoniaBridge)
+                    {
+                        if (!string.IsNullOrEmpty(m.SystemName))
+                        {
+                            <tr>
+                                <td class="caption">In System</td>
+                                <td class="data">@m.SystemName</td>
+                            </tr>
+                        }
+                        if (m.Distance > 0)
+                        {
+                            <tr>
+                                <td class="caption">Distance</td>
+                                <td class="data">@m.Distance.ToString("N0") Ly</td>
+                            </tr>
+                        }
+                        if (!string.IsNullOrEmpty(m.SystemState) && m.SystemState != "None")
+                        {
+                            <tr>
+                                <td class="caption">State</td>
+                                <td class="data">@m.SystemState</td>
+                            </tr>
+                        }
+                        if (m.Body != null && !string.IsNullOrEmpty(m.Body.name))
+                        {
+                            <tr>
+                                <td class="caption">Body</td>
+                                <td class="data">@m.Body.name</td>
+                            </tr>
+                        }
+
+                        if (!string.IsNullOrEmpty(m.Name))
+                        {
+                            <tr>
+                                <td class="caption">Station</td>
+                                <td class="data">@m.Name</td>
+                            </tr>
+                        }
+                        if (m.DistanceToArrival > 0)
+                        {
+                            <tr>
+                                <td class="caption">Dist. from star</td>
+                                <td class="data">@m.DistanceToArrival.ToString("N0") Ls</td>
+                            </tr>
+                        }
+
+                        if (!string.IsNullOrEmpty(m.SystemSecurity))
+                        {
+                            <tr>
+                                <td class="caption">Security</td>
+                                <td class="data">@m.SystemSecurity</td>
+                            </tr>
+                        }
+
+                        if (!((List<StationData>)Model.ColoniaBridge).Last().Equals((StationData)m))
+                        {
+                            <tr>
+                                <td class="divider" colspan="2">&nbsp;</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
         }
 
     }

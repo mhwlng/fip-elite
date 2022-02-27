@@ -1881,7 +1881,7 @@ namespace Elite
                                 CheckCardSelectionLimits(2);
                                 break;
                             case LcdTab.Navigation:
-                                CheckCardSelectionLimits(3);
+                                CheckCardSelectionLimits(4);
                                 break;
                             case LcdTab.POI:
                                 CheckCardSelectionLimits(7);
@@ -2128,11 +2128,16 @@ namespace Elite
                                             lock (App.RefreshSystemLock)
                                             {
                                                 List<StationData> odysseySettlements = null;
+                                                List<StationData> coloniaBridge = null;
 
                                                 if (CurrentCard[(int)CurrentTab] == 3)
                                                 {
                                                     Station.OdysseySettlements.TryGetValue(Data.LocationData.StarSystem,
                                                         out odysseySettlements);
+                                                }
+                                                else if (CurrentCard[(int)CurrentTab] == 4)
+                                                {
+                                                    coloniaBridge = Station.GetNearestColoniaBridge(Data.LocationData.StarPos,Station.ColoniaBridge);
                                                 }
 
                                                 str =
@@ -2225,7 +2230,9 @@ namespace Elite
                                                         FuelCost = fuelCost,
                                                         FuelWarning = fuelWarning,
 
-                                                        OdysseySettlements = odysseySettlements
+                                                        OdysseySettlements = odysseySettlements,
+
+                                                        ColoniaBridge = coloniaBridge
 
                                                     });
                                             }
