@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -84,6 +86,11 @@ namespace Elite
                 IntPtr hToken, out IntPtr ppszPath);
         }
 
+        private static string GetExePath()
+        {
+            var strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            return Path.GetDirectoryName(strExeFilePath);
+        }
 
         /// <summary>
         /// The standard Directory of the Player Journal files (C:\Users\%username%\Saved Games\Frontier Developments\Elite Dangerous).
@@ -92,6 +99,18 @@ namespace Elite
         {
             get
             {
+                var exePath = GetExePath();
+
+                if (File.Exists(Path.Combine(exePath, "appSettings.config")) &&
+                    ConfigurationManager.GetSection("appSettings") is NameValueCollection appSection)
+                {
+                    var journalPath = appSection["JournalPath"];
+                    if (!string.IsNullOrEmpty(journalPath))
+                    {
+                        return new DirectoryInfo(journalPath);
+                    }
+                }
+
                 //#if DEBUG
                 //return new DirectoryInfo(@"C:\Users\Marcel\Desktop\Elite Dangerous");
                 //#endif
