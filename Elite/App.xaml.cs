@@ -622,7 +622,7 @@ namespace Elite
                                                 }
                                             }*/
 
-                                            await Task.Delay(50, _jsonTokenSource.Token);
+                                            await Task.Delay(50, _joystickTokenSource.Token);
                                         }
 
                                     }, joystickToken);

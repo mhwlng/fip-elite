@@ -411,6 +411,17 @@ namespace Elite
         private int[] _currentZoomLevel = new int[100];
 
 
+        private DateTime _lastClockwiseScroll  = DateTime.Now;
+        private DateTime _lastCounterClockwiseScroll = DateTime.Now;
+        private int _ClockwiseScrollCount;
+        private int _CounterClockwiseScrollCount;
+
+        private int _fastScrollClickDelay = 250;
+        private int _fastScrollClickCount = 4;
+        private int _scrollIncrement = 50;
+        private int _fastScrollIncrement = 200;
+
+        
         private int _currentLcdYOffset;
         private int _currentLcdHeight;
 
@@ -560,6 +571,44 @@ namespace Elite
             }
         }
 
+        private void InitScrollConstants()
+        {
+            GetExePath();
+
+            if (File.Exists(Path.Combine(_exePath, "panelSettings.config")) &&
+                ConfigurationManager.GetSection("panelSettings") is NameValueCollection panelSection)
+            {
+                var fastScrollClickDelayString = panelSection["FastScrollClickDelay"];
+
+                int.TryParse(fastScrollClickDelayString, out _fastScrollClickDelay);
+
+                App.Log.Info("FipPanel FastScrollClickDelay : " + _fastScrollClickDelay);
+
+                var fastScrollClickCountString = panelSection["FastScrollClickCount"];
+
+                int.TryParse(fastScrollClickCountString, out _fastScrollClickCount);
+
+                App.Log.Info("FipPanel FastScrollClickCount : " + _fastScrollClickCount);
+
+                var scrollIncrementString = panelSection["ScrollIncrement"];
+
+                int.TryParse(scrollIncrementString, out _scrollIncrement);
+
+                App.Log.Info("FipPanel ScrollIncrement : " + _scrollIncrement);
+
+                var fastScrollIncrementString = panelSection["FastScrollIncrement"];
+
+                int.TryParse(fastScrollIncrementString, out _fastScrollIncrement);
+
+                App.Log.Info("FipPanel FastScrollIncrement : " + _fastScrollIncrement);
+
+
+
+
+            }
+        }
+
+
         public void Initalize()
         {
             // FIP = 3e083cd8-6a37-4a58-80a8-3d6a2c07513e
@@ -592,11 +641,15 @@ namespace Elite
 
                 InitFipPanelSerialNumber();
 
+                InitScrollConstants();
+
                 _initOk = true;
 
                 AddPage(DEFAULT_PAGE, true);
 
                 RefreshDevicePage();
+
+                
             }
 
         }
@@ -610,6 +663,8 @@ namespace Elite
 
 
             InitFipPanelSerialNumber();
+
+            InitScrollConstants();
 
             RefreshDevicePage();
 
@@ -1226,7 +1281,28 @@ namespace Elite
                     case 2: // scroll clockwise
                         if (state && CurrentTab != LcdTab.Galaxy)
                         {
-                            _currentLcdYOffset += 50;
+                            _lastCounterClockwiseScroll = DateTime.Now;
+                            _CounterClockwiseScrollCount = 0;
+
+                            if ((DateTime.Now - _lastClockwiseScroll).Milliseconds > _fastScrollClickDelay)
+                            {
+                                _ClockwiseScrollCount = 0;
+                            }
+                            else
+                            {
+                                _ClockwiseScrollCount ++;
+                            }
+
+                            _lastClockwiseScroll = DateTime.Now;
+
+                            if (_ClockwiseScrollCount > _fastScrollClickCount)
+                            {
+                                _currentLcdYOffset += _fastScrollIncrement;
+                            }
+                            else
+                            {
+                                _currentLcdYOffset += _scrollIncrement;
+                            }
 
                             mustRender = false;
 
@@ -1240,7 +1316,29 @@ namespace Elite
 
                         if (state && CurrentTab != LcdTab.Galaxy)
                         {
-                            _currentLcdYOffset -= 50;
+                            _lastClockwiseScroll = DateTime.Now;
+                            _ClockwiseScrollCount = 0;
+
+                            if ((DateTime.Now - _lastCounterClockwiseScroll).Milliseconds > _fastScrollClickDelay)
+                            {
+                                _CounterClockwiseScrollCount = 0;
+                            }
+                            else
+                            {
+                                _CounterClockwiseScrollCount++;
+                            }
+
+                            _lastCounterClockwiseScroll = DateTime.Now;
+
+                            if (_CounterClockwiseScrollCount > _fastScrollClickCount)
+                            {
+                                _currentLcdYOffset -= _fastScrollIncrement;
+                            }
+                            else
+                            {
+                                _currentLcdYOffset -= _scrollIncrement;
+                            }
+
                             if (_currentLcdYOffset < 0)
                             {
                                 _currentLcdYOffset = 0;

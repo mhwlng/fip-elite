@@ -138,16 +138,29 @@ Configure the serial number of the Flight Instrument Panel, that needs these fea
 
 (The special value "window" will also work.)
 
+You can also adjust the scroll speed and acceleration.
+
+In below example, the screen will scroll 50 pixels per encoder 'click'.
+
+If there are more than 4 clicks, with no more than 250ms between clicks, then the screen will start scrolling 200 pixels per encoder 'click'.
+
+
 ```
 <?xml version="1.0" encoding="utf-8" ?>
 <panelSettings>
   <add key="AutoActivateTarget" value="MZE09FE2BC" />
   <add key="AutoActivateNavigation" value="MZAAFAA883" />
+
+  <add key="FastScrollClickDelay" value="250" />
+  <add key="FastScrollClickCount" value="4" />
+  <add key="ScrollIncrement" value="50" />
+  <add key="FastScrollIncrement" value="200" />
+
 </panelSettings>
 ```
 
 A sound is played when menu options are selected.
-This sound can be changed or disabled by editing the 'clickSound' key in in appsettings.config
+This sound can be changed or disabled by editing the 'clickSound' key in appsettings.config
 
 ![Screenshot 1](https://i.imgur.com/KA0iCcj.png)
 ![Screenshot 2](https://i.imgur.com/JTxiIBL.png)

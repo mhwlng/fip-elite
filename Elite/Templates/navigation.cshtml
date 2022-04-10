@@ -405,7 +405,7 @@
                                                                 <td>
                                                                     <table style="border-spacing: 0px;">
                                                                         <tbody>
-                                                                            <tr>
+                                                                        @*                                                                            <tr>
                                                                                 <td class="caption" colspan="2">
                                                                                     @m.subType
                                                                                     @(m.isScoopable == true ? ", Fuel Star":"")
@@ -422,6 +422,25 @@
                                                                                     }
                                                                                 </td>
                                                                             </tr>
+                                                                            *@
+                                                                            <tr>
+                                                                                <td class="caption">@m.subType</td>
+                                                                                <td class="data right">
+                                                                                    @(m.isScoopable == true ? "Fuel Star":"")
+                                                                                    @if (m.isLandable == true)
+                                                                                    {
+                                                                                        if (!string.IsNullOrEmpty(m.atmosphereType) && m.atmosphereType.ToLower().Contains("thin"))
+                                                                                        {
+                                                                                            @Html.Raw("<span class=\"alarm2\">&nbsp;Landable&nbsp;</span>")
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            @Html.Raw("<span class=\"alarm\">&nbsp;Landable&nbsp;</span>")
+                                                                                        }
+                                                                                    }
+                                                                                </td>
+                                                                            </tr>
+
                                                                             <tr>
                                                                                 <td class="caption">Distance</td>
                                                                                 <td class="data right">@m.distanceToArrival.ToString("N0") Ls</td>
