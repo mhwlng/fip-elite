@@ -8,9 +8,46 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using CsvHelper.TypeConversion;
+using EDEngineer.Models;
+using Newtonsoft.Json;
 
 namespace Elite
 {
+    public class PoiGECItem
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("galMapSearch")]
+        public string GalMapSearch { get; set; }
+        [JsonProperty("galMapUrl")]
+        public string GalMapUrl { get; set; }
+        [JsonProperty("coordinates")]
+        public float[] Coordinates { get; set; }
+        [JsonProperty("summary")]
+        public string Summary { get; set; }
+        [JsonProperty("descriptionMardown")]
+        public string DescriptionMardown { get; set; }
+        [JsonProperty("descriptionHtml")]
+        public string DescriptionHtml { get; set; }
+        [JsonProperty("solDistance")]
+        public float SolDistance { get; set; }
+        [JsonProperty("id64")]
+        public long Id64 { get; set; }
+        [JsonProperty("rating")]
+        public string Rating { get; set; }
+        [JsonProperty("curation")]
+        public string Curation { get; set; }
+        [JsonProperty("poiUrl")]
+        public string PoiUrl { get; set; }
+        [JsonProperty("mainImage")]
+        public string MainImage { get; set; }
+
+    }
+
     public class PoiItem
     {
         [Name("Location Name")] public string LocationName { get; set; }
@@ -208,6 +245,45 @@ namespace Elite
 
         }
 
+        public static List<PoiItem> GetGECPois(string path, List<PoiItem> fullPoiList)
+        {
+            try
+            {
+                //fullPoiList = new List<PoiItem>();
+
+                path = Path.Combine(App.ExePath, path);
+
+                if (File.Exists(path))
+                {
+                    var poiList = JsonConvert.DeserializeObject<List<PoiGECItem>>(File.ReadAllText(path));
+
+                    foreach (var poi in poiList)
+                    {
+                        fullPoiList.Add(new PoiItem()
+                        {
+                            LocationName = poi.Name,
+                            GalacticX = poi.Coordinates[0],
+                            GalacticY = poi.Coordinates[1],
+                            GalacticZ = poi.Coordinates[2],
+                            System = poi.GalMapSearch,
+                            Category = poi.Type,
+                            DistanceToSol = poi.SolDistance,
+                            Notable = poi.Summary
+                            //Notes=poi.summary
+                        });
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Log.Error(ex);
+            }
+
+            return fullPoiList;
+        }
+
+
         public static List<PoiItem> GetNearestPois(List<double> starPos)
         {
             if (FullPoiList?.Any() == true && starPos?.Count == 3)
@@ -229,7 +305,7 @@ namespace Elite
                     poiItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
-                return FullPoiList.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+                return FullPoiList.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(10).ToList();
             }
 
             return new List<PoiItem>();

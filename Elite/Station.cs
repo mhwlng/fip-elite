@@ -227,7 +227,7 @@ namespace Elite
                     stationItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
-                return stationData.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+                return stationData.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(10).ToList();
             }
 
             return new List<StationData>();

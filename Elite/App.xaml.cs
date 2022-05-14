@@ -433,6 +433,8 @@ namespace Elite
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading POI Items...");
                 Poi.FullPoiList = Poi.GetAllPois(); //?.GroupBy(x => x.System.Trim().ToLower()).ToDictionary(x => x.Key, x => x.ToList());
 
+                Poi.FullPoiList = Poi.GetGECPois(@"Data\poigec.json", Poi.FullPoiList);
+
                 RefreshJson(splashScreen);
 
                 splashScreen.Dispatcher.Invoke(() => splashScreen.ProgressText.Text = "Loading History...");

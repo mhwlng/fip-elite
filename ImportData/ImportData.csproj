@@ -72,6 +72,7 @@
     <Compile Include="StationEDDB.cs" />
     <Compile Include="StationEDSM.cs" />
     <Compile Include="StationData.cs" />
+    <Compile Include="SystemSpansh.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

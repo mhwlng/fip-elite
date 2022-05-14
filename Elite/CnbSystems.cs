@@ -105,7 +105,7 @@ namespace Elite
                     systemItem.Distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                 });
 
-                return FullCnbSystemsList.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(5).ToList();
+                return FullCnbSystemsList.Where(x => x.Distance >= 0).OrderBy(x => x.Distance).Take(10).ToList();
             }
 
             return new List<CnbSystemData>();
