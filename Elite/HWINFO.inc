@@ -62,7 +62,7 @@ FrameRate=Frame Rate
 CPUUsage=CPU
 GPUUsage=GPU
 
-[HWINFO-Config-TEMPERATURES]
+[HWINFO-Config-TEMPERATURE]
 CPUTemp=CPU
 GPUTemp=GPU
 RAMTemp=RAM
@@ -71,7 +71,7 @@ VRMTemp=VRM
 ChipsetTemp=Chipset
 MotherboardTemp=Motherboard
 
-[HWINFO-Config-FAN SPEEDS]
+[HWINFO-Config-FAN SPEED]
 GPUFanSpeed=GPU
 ChipsetFanSpeed=Chipset
 

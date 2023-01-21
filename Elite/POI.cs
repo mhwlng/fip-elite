@@ -218,7 +218,8 @@ namespace Elite
                     //HeaderValidated = null,
                     IgnoreBlankLines = true,
 
-                    ShouldSkipRecord = x => string.IsNullOrEmpty(x.Record[0]),
+                    ShouldSkipRecord = x => string.IsNullOrEmpty(x.Row.Parser.Record?[0]),
+                    //ShouldSkipRecord = x => x.Row.Parser.Record?.All(string.IsNullOrWhiteSpace) ?? false
 
                     //csvread.Configuration.ShouldSkipRecord = records => string.IsNullOrEmpty(records[0]);
 

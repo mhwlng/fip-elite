@@ -233,3 +233,5 @@ https://www.edsm.net/ for the galaxy image
 https://edassets.org/ CMDR Qohen Leth and CMDR Nuse for the ship images
 
 http://edtools.ddns.net/
+
+https://edastro.com/poi/

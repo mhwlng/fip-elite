@@ -114,6 +114,15 @@
     ]
   },
   {
+    "Name": "Thermal Cooling Units",
+    "Rarity": "None",
+    "FormattedName": "thermalcoolingunits",
+    "Kind": "Commodity",
+    "OriginDetails": [
+      "Mission reward"
+    ]
+  },
+  {
     "Name": "Atypical Disrupted Wake Echoes",
     "Rarity": "VeryCommon",
     "FormattedName": "disruptedwakeechoes",
@@ -2622,7 +2631,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 17000,
     "SettlementType": [],
     "BuildingType": [
       "CMD"
@@ -2639,7 +2648,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 24000,
     "SettlementType": [],
     "BuildingType": [
       "SEC",
@@ -2659,7 +2668,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 12000,
     "SettlementType": [],
     "BuildingType": [
       "CMD"
@@ -2676,7 +2685,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 35000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -2690,7 +2699,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 24000,
     "SettlementType": [],
     "BuildingType": [
       "MED",
@@ -2728,7 +2737,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 18000,
     "SettlementType": [],
     "BuildingType": [
       "MED",
@@ -2886,7 +2895,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 34000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -2973,7 +2982,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 8000,
     "SettlementType": [],
     "BuildingType": [
       "HAB",
@@ -2991,7 +3000,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 15000,
     "SettlementType": [],
     "BuildingType": [
       "CMD"
@@ -3054,7 +3063,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 12000,
     "SettlementType": [],
     "BuildingType": [
       "HAB"
@@ -3166,7 +3175,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 3000,
     "SettlementType": [],
     "BuildingType": [
       "HAB"
@@ -3183,7 +3192,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 30000,
     "SettlementType": [],
     "BuildingType": [
       "CMD"
@@ -3198,7 +3207,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 29000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -3318,7 +3327,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 17000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -3332,7 +3341,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 17000,
     "SettlementType": [],
     "BuildingType": [
       "MED",
@@ -3405,7 +3414,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 12000,
     "SettlementType": [],
     "BuildingType": [
       "AGRI"
@@ -3420,7 +3429,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 7000,
     "SettlementType": [],
     "BuildingType": [
       "CMD"
@@ -3468,7 +3477,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 23000,
     "SettlementType": [],
     "BuildingType": [
       "CMD"
@@ -3483,7 +3492,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 15000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -3514,7 +3523,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 33000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -3527,7 +3536,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 2000,
     "SettlementType": [
       "Tourist"
     ],
@@ -3661,7 +3670,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 7000,
     "SettlementType": [],
     "BuildingType": [
       "IND",
@@ -3711,7 +3720,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 23000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -3778,7 +3787,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 5000,
     "SettlementType": [
       "ALL"
     ],
@@ -3900,7 +3909,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 5000,
     "SettlementType": [],
     "BuildingType": [
       "AGRI"
@@ -3915,7 +3924,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 10000,
     "SettlementType": [
       "Tourist"
     ],
@@ -3934,7 +3943,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 19000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -3966,7 +3975,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 10000,
     "SettlementType": [],
     "BuildingType": [
       "RES",
@@ -4099,7 +4108,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 8000,
     "SettlementType": [],
     "BuildingType": [
       "HAB"
@@ -4151,7 +4160,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 16000,
     "SettlementType": [],
     "BuildingType": [
       "CMD"
@@ -4179,7 +4188,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 11000,
     "SettlementType": [],
     "BuildingType": [
       "RES",
@@ -4198,7 +4207,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 20000,
     "SettlementType": [],
     "BuildingType": [
       "SEC",
@@ -4247,7 +4256,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 27000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -4260,7 +4269,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 26000,
     "SettlementType": [],
     "BuildingType": [
       "HAB",
@@ -4278,7 +4287,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 13000,
     "SettlementType": [],
     "BuildingType": [
       "RES",
@@ -4349,7 +4358,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 18000,
     "SettlementType": [],
     "BuildingType": [
       "CMD"
@@ -4485,7 +4494,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 18000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -4498,7 +4507,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 14000,
     "SettlementType": [],
     "BuildingType": [
       "RES"
@@ -4546,7 +4555,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 9000,
     "SettlementType": [],
     "BuildingType": [
       "CMD"
@@ -4562,7 +4571,7 @@
       "Mission reward"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 15000,
     "SettlementType": [],
     "BuildingType": [
       "DORM",
@@ -4580,7 +4589,7 @@
       "Planetary Settlement"
     ],
     "Group": "Data",
-    "ValueCr": -1,
+    "ValueCr": 25000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []
@@ -4637,7 +4646,7 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
+    "ValueCr": 25000,
     "SettlementType": [],
     "BuildingType": [
       "CMD",
@@ -5033,7 +5042,7 @@
       "Planetary Settlement"
     ],
     "Group": "Item",
-    "ValueCr": -1,
+    "ValueCr": 75000,
     "SettlementType": [],
     "BuildingType": [],
     "ContainerType": []

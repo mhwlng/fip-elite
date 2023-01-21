@@ -18200,8 +18200,7 @@
     "Type": "Frame Shift Drive Interdictor",
     "Name": "Expanded FSD Interdictor Capture Arc",
     "Engineers": [
-      "Mel Brandon",
-      "Colonel Bris Dekker"
+      "Mel Brandon"
     ],
     "Ingredients": [
       {
@@ -30446,6 +30445,96 @@
     "Grade": 3
   },
   {
+    "Type": "Shock Cannon Munitions",
+    "Name": "None",
+    "Engineers": [
+      "@Synthesis"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Grid Resistors",
+        "Size": 3
+      },
+      {
+        "Name": "Heat Dispersion Plate",
+        "Size": 2
+      },
+      {
+        "Name": "Focus Crystals",
+        "Size": 2
+      },
+      {
+        "Name": "Phase Alloys",
+        "Size": 2
+      },
+      {
+        "Name": "Lead",
+        "Size": 2
+      }
+    ],
+    "Grade": 1
+  },
+  {
+    "Type": "Shock Cannon Munitions",
+    "Name": "+5% Damage Boost",
+    "Engineers": [
+      "@Synthesis"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Grid Resistors",
+        "Size": 5
+      },
+      {
+        "Name": "Heat Dispersion Plate",
+        "Size": 3
+      },
+      {
+        "Name": "Focus Crystals",
+        "Size": 4
+      },
+      {
+        "Name": "Phase Alloys",
+        "Size": 5
+      },
+      {
+        "Name": "Lead",
+        "Size": 3
+      }
+    ],
+    "Grade": 2
+  },
+  {
+    "Type": "Shock Cannon Munitions",
+    "Name": "+10% Damage Boost",
+    "Engineers": [
+      "@Synthesis"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Grid Resistors",
+        "Size": 7
+      },
+      {
+        "Name": "Heat Dispersion Plate",
+        "Size": 4
+      },
+      {
+        "Name": "Focus Crystals",
+        "Size": 6
+      },
+      {
+        "Name": "Phase Alloys",
+        "Size": 8
+      },
+      {
+        "Name": "Lead",
+        "Size": 5
+      }
+    ],
+    "Grade": 3
+  },
+  {
     "Type": "AFM Refill",
     "Name": "None",
     "Engineers": [
@@ -34757,6 +34846,180 @@
       {
         "Name": "Hardware Diagnostic Sensor",
         "Size": 8
+      }
+    ]
+  },
+  {
+    "Type": "Guardian",
+    "Name": "Modified Gauss Cannon (Fixed, Medium)",
+    "Engineers": [
+      "@Technology"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Guardian Weapon Blueprint Segment",
+        "Size": 1
+      },
+      {
+        "Name": "Guardian Power Cell",
+        "Size": 5
+      },
+      {
+        "Name": "Guardian Technology Component",
+        "Size": 5
+      },
+      {
+        "Name": "Niobium",
+        "Size": 4
+      },
+      {
+        "Name": "Thermal Cooling Units",
+        "Size": 2
+      }
+    ]
+  },
+  {
+    "Type": "Guardian",
+    "Name": "Modified Gauss Cannon (Fixed, Small)",
+    "Engineers": [
+      "@Technology"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Guardian Weapon Blueprint Segment",
+        "Size": 1
+      },
+      {
+        "Name": "Guardian Power Conduit",
+        "Size": 3
+      },
+      {
+        "Name": "Guardian Wreckage Components",
+        "Size": 3
+      },
+      {
+        "Name": "Guardian Sentinel Weapon Parts",
+        "Size": 4
+      },
+      {
+        "Name": "Niobium",
+        "Size": 2
+      }
+    ]
+  },
+  {
+    "Type": "Guardian",
+    "Name": "Modified Shard Cannon (Fixed, Medium)",
+    "Engineers": [
+      "@Technology"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Guardian Technology Component",
+        "Size": 5
+      },
+      {
+        "Name": "Guardian Weapon Blueprint Segment",
+        "Size": 1
+      },
+      {
+        "Name": "Guardian Wreckage Components",
+        "Size": 5
+      },
+      {
+        "Name": "Germanium",
+        "Size": 4
+      },
+      {
+        "Name": "Power Converter",
+        "Size": 2
+      }
+    ]
+  },
+  {
+    "Type": "Guardian",
+    "Name": "Modified Shard Cannon (Fixed, Small)",
+    "Engineers": [
+      "@Technology"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Guardian Weapon Blueprint Segment",
+        "Size": 1
+      },
+      {
+        "Name": "Guardian Power Conduit",
+        "Size": 3
+      },
+      {
+        "Name": "Guardian Wreckage Components",
+        "Size": 3
+      },
+      {
+        "Name": "Guardian Sentinel Weapon Parts",
+        "Size": 4
+      },
+      {
+        "Name": "Germanium",
+        "Size": 2
+      }
+    ]
+  },
+  {
+    "Type": "Guardian",
+    "Name": "Modified Plasma Charger (Fixed, Medium)",
+    "Engineers": [
+      "@Technology"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Guardian Power Conduit",
+        "Size": 5
+      },
+      {
+        "Name": "Guardian Weapon Blueprint Segment",
+        "Size": 1
+      },
+      {
+        "Name": "Guardian Sentinel Weapon Parts",
+        "Size": 5
+      },
+      {
+        "Name": "Arsenic",
+        "Size": 4
+      },
+      {
+        "Name": "Power Transfer Bus",
+        "Size": 2
+      }
+    ]
+  },
+  {
+    "Type": "Guardian",
+    "Name": "Modified Plasma Charger (Fixed, Small)",
+    "Engineers": [
+      "@Technology"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Guardian Weapon Blueprint Segment",
+        "Size": 1
+      },
+      {
+        "Name": "Guardian Power Cell",
+        "Size": 3
+      },
+      {
+        "Name": "Guardian Technology Component",
+        "Size": 4
+      },
+      {
+        "Name": "Guardian Sentinel Weapon Parts",
+        "Size": 3
+      },
+      {
+        "Name": "Arsenic",
+        "Size": 2
       }
     ]
   },
@@ -40659,6 +40922,31 @@
   },
   {
     "Type": "Human",
+    "Name": "Engineered Detailed Surface Scanner V1",
+    "Engineers": [
+      "@Technology"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Mechanical Scrap",
+        "Size": 26
+      },
+      {
+        "Name": "Germanium",
+        "Size": 22
+      },
+      {
+        "Name": "Mechanical Components",
+        "Size": 28
+      },
+      {
+        "Name": "Niobium",
+        "Size": 24
+      }
+    ]
+  },
+  {
+    "Type": "Human",
     "Name": "Engineered FSD V1",
     "Engineers": [
       "@Technology"
@@ -40708,6 +40996,31 @@
       {
         "Name": "Hybrid Capacitors",
         "Size": 26
+      }
+    ]
+  },
+  {
+    "Type": "Human",
+    "Name": "Modified Mining Laser",
+    "Engineers": [
+      "@Technology"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Arsenic",
+        "Size": 20
+      },
+      {
+        "Name": "Osmium",
+        "Size": 16
+      },
+      {
+        "Name": "Phosphorus",
+        "Size": 28
+      },
+      {
+        "Name": "Rhenium",
+        "Size": 24
       }
     ]
   },
