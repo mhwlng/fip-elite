@@ -49,7 +49,7 @@
       <HintPath>..\packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -64,12 +64,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommunityGoalsData.cs" />
-    <Compile Include="PopulatedSystemEDDB.cs" />
+    <Compile Include="PopulatedSystemEDSM.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MiningStationData.cs" />
     <Compile Include="GalnetData.cs" />
-    <Compile Include="StationEDDB.cs" />
+    <Compile Include="PowerplayEDSM.cs" />
     <Compile Include="StationEDSM.cs" />
     <Compile Include="StationData.cs" />
     <Compile Include="SystemSpansh.cs" />

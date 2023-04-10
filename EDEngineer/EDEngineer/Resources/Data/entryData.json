@@ -1196,7 +1196,8 @@
     "OriginDetails": [
       "Surface prospecting"
     ],
-    "Group": "Category3"
+    "Group": "Category3",
+    "MaximumCapacity": 150
   },
   {
     "Name": "Salvaged Alloys",
@@ -1794,6 +1795,17 @@
       "Ship salvage (Thargoid ships)"
     ],
     "Group": "ThargoidShip"
+  },
+  {
+    "Name": "Thargoid Interdiction Telemetry",
+    "Rarity": "VeryRare",
+    "FormattedName": "tg_interdictiondata",
+    "Kind": "Data",
+    "OriginDetails": [
+      "Ship scanning (Thargoid interceptors)"
+    ],
+    "Group": "ThargoidShip",
+    "MaximumCapacity": 200
   },
   {
     "Name": "Guardian Weapon Blueprint Segment",

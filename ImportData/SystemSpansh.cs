@@ -14,7 +14,7 @@ namespace ImportData
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("coords")]
-        public Coords Coords { get; set; }
+        public SystemSpanshCoords Coords { get; set; }
         [JsonProperty("allegiance")]
         public string Allegiance { get; set; }
         [JsonProperty("government")]
@@ -27,21 +27,21 @@ namespace ImportData
         public string Security { get; set; }
         [JsonProperty("population")]
         public long Population { get; set; }
-        [JsonProperty("bodyCount")]
-        public int BodyCount { get; set; }
+        //[JsonProperty("bodyCount")]
+        //public int BodyCount { get; set; }
         [JsonProperty("controllingFaction")]
-        public ControllingFactionSpansh ControllingFaction { get; set; }
+        public SystemSpanshControllingFaction ControllingFaction { get; set; }
         [JsonProperty("factions")]
-        public List<Faction> Factions { get; set; }
+        public List<SystemSpanshFaction> Factions { get; set; }
         [JsonProperty("date")]
         public string Date { get; set; }
         //[JsonProperty("bodies")]
         //public List<BodySpansh> Bodies { get; set; }
         [JsonProperty("stations")]
-        public List<Station> Stations { get; set; }
+        public List<SystemSpanshStation> Stations { get; set; }
     }
 
-    public class Coords
+    public class SystemSpanshCoords
     {
         [JsonProperty("x")]
         public float X { get; set; }
@@ -51,13 +51,13 @@ namespace ImportData
         public float Z { get; set; }
     }
 
-    public class ControllingFactionSpansh
+    public class SystemSpanshControllingFaction
     {
         [JsonProperty("name")]
         public string Name { get; set; }
     }
 
-    public class Faction
+    public class SystemSpanshFaction
     {
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -89,8 +89,8 @@ namespace ImportData
         public float surfaceTemperature { get; set; }
         public float rotationalPeriod { get; set; }
         public float axialTilt { get; set; }
-        public List<Belt> belts { get; set; }
-        public List<Station> stations { get; set; }
+        public List<SystemSpanshBelt> belts { get; set; }
+        public List<SystemSpanshStation> stations { get; set; }
         public string updateTime { get; set; }
         public float orbitalPeriod { get; set; }
         public float semiMajorAxis { get; set; }
@@ -105,41 +105,41 @@ namespace ImportData
         public float surfacePressure { get; set; }
         public string volcanismType { get; set; }
         public string atmosphereType { get; set; }
-        public List<Parent> parents { get; set; }
-        public Solidcomposition solidComposition { get; set; }
+        public List<SystemSpanshParent> parents { get; set; }
+        public SystemSpanshSolidcomposition solidComposition { get; set; }
         public string terraformingState { get; set; }
-        public Materials materials { get; set; }
-        public Signals signals { get; set; }
-        public Atmospherecomposition atmosphereComposition { get; set; }
+        public SystemSpanshMaterials Materials { get; set; }
+        public SystemSpanshSignals Signals { get; set; }
+        public SystemSpanshAtmospherecomposition atmosphereComposition { get; set; }
         public string reserveLevel { get; set; }
-        public List<Ring> rings { get; set; }
+        public List<SystemSpanshRing> rings { get; set; }
     }
 
-    public class Parent
+    public class SystemSpanshParent
     {
         public long Star { get; set; }
         public long Null { get; set; }
         public long Planet { get; set; }
     }
 
-    public class Ring
+    public class SystemSpanshRing
     {
         public string name { get; set; }
         public string type { get; set; }
         public float mass { get; set; }
         public float innerRadius { get; set; }
         public float outerRadius { get; set; }
-        public Signals signals { get; set; }
+        public SystemSpanshSignals Signals { get; set; }
     }
 
-    public class Solidcomposition
+    public class SystemSpanshSolidcomposition
     {
         public float Ice { get; set; }
         public float Metal { get; set; }
         public float Rock { get; set; }
     }
 
-    public class Materials
+    public class SystemSpanshMaterials
     {
         public float Arsenic { get; set; }
         public float Carbon { get; set; }
@@ -168,13 +168,13 @@ namespace ImportData
         public float Antimony { get; set; }
     }
 
-    public class Signals
+    public class SystemSpanshSignals
     {
-        public SignalsDetails signals { get; set; }
+        public SystemSpanshSignalsDetails Signals { get; set; }
         public string updateTime { get; set; }
     }
     
-    public class SignalsDetails
+    public class SystemSpanshSignalsDetails
     {
         public int SAA_SignalType_Human { get; set; }
         public int SAA_SignalType_Other { get; set; }
@@ -188,7 +188,7 @@ namespace ImportData
         public int SAA_SignalType_Geological { get; set; }
     }
 
-    public class Atmospherecomposition
+    public class SystemSpanshAtmospherecomposition
     {
         public float Carbondioxide { get; set; }
         public float Sulphurdioxide { get; set; }
@@ -201,16 +201,16 @@ namespace ImportData
         public float Argon { get; set; }
     }
 
-    public class Belt
+    public class SystemSpanshBelt
     {
         public string name { get; set; }
         public string type { get; set; }
         public float mass { get; set; }
         public float innerRadius { get; set; }
         public float outerRadius { get; set; }
-    }
-    */
-    public class Station
+    } */
+    
+    public class SystemSpanshStation
     {
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -222,6 +222,8 @@ namespace ImportData
         public float DistanceToArrival { get; set; }
         [JsonProperty("primaryEconomy")]
         public string PrimaryEconomy { get; set; }
+        [JsonProperty("secondaryEconomy")]
+        public string SecondaryEconomy { get; set; }
         [JsonProperty("government")]
         public string Government { get; set; }
         [JsonProperty("services")]
@@ -229,23 +231,23 @@ namespace ImportData
         [JsonProperty("type")]
         public string Type { get; set; }
         [JsonProperty("landingPads")]
-        public LandingpadsDetails LandingPads { get; set; }
+        public SystemSpanshLandingpadsDetails LandingPads { get; set; }
         [JsonProperty("id")]
         public long Id { get; set; }
-        //[JsonProperty("updateTime")]
-        //public string UpdateTime { get; set; }
+        [JsonProperty("updateTime")]
+        public string UpdateTime { get; set; }
         //[JsonProperty("market")]
-        //public Market Market { get; set; }
+        //public SystemSpanshMarket Market { get; set; }
         //[JsonProperty("outfitting")]
-        //public OutfittingDetails Outfitting { get; set; }
+        //public SystemSpanshOutfittingDetails Outfitting { get; set; }
         [JsonProperty("allegiance")]
         public string Allegiance { get; set; }
         //[JsonProperty("shipyard")]
-        //public ShipyardDetails Shipyard { get; set; }
+        //public SystemSpanshShipyardDetails Shipyard { get; set; }
     }
 
 
-    public class LandingpadsDetails
+    public class SystemSpanshLandingpadsDetails
     {
         [JsonProperty("large")]
         public int Large { get; set; }
@@ -255,15 +257,15 @@ namespace ImportData
         public int Small { get; set; }
     }
 
-    /*
-    public class Market
+    
+    /*public class SystemSpanshMarket
     {
-        public List<Commodity> commodities { get; set; }
+        public List<SystemSpanshCommodity> commodities { get; set; }
         public List<string> prohibitedCommodities { get; set; }
         public string updateTime { get; set; }
     }
 
-    public class Commodity
+    public class SystemSpanshCommodity
     {
         public string name { get; set; }
         public string symbol { get; set; }
@@ -275,13 +277,13 @@ namespace ImportData
         public int sellPrice { get; set; }
     }
     
-    public class OutfittingDetails
+    public class SystemSpanshOutfittingDetails
     {
-        public List<Module> modules { get; set; }
+        public List<SystemSpanshModule> modules { get; set; }
         public string updateTime { get; set; }
     }
     
-    public class Module
+    public class SystemSpanshModule
     {
         public string name { get; set; }
         public string symbol { get; set; }
@@ -292,18 +294,18 @@ namespace ImportData
         public string ship { get; set; }
     }
     
-    public class ShipyardDetails
+    public class SystemSpanshShipyardDetails
     {
-        public List<Ship> ships { get; set; }
+        public List<SystemSpanshShip> ships { get; set; }
         public string updateTime { get; set; }
     }
 
-    public class Ship
+    public class SystemSpanshShip
     {
         public string name { get; set; }
         public string symbol { get; set; }
         public long shipId { get; set; }
-    }
+    }*/
 
-    */
+    
 }

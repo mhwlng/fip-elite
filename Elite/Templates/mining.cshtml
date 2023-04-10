@@ -12,7 +12,7 @@
 
     <table>
         <tbody>
-            @if (Model.CurrentCard == 0 || Model.CurrentCard == 2 || Model.CurrentCard == 4)
+            @if (Model.CurrentCard == 0 || Model.CurrentCard == 1 || Model.CurrentCard == 2)
             {
 
                 foreach (var m in Model.NearbyHotspotSystemsList[(HotspotSystems.MaterialTypes)Model.CurrentCard])
@@ -47,6 +47,7 @@
 
                 }
             }
+            @*
             else if (Model.CurrentCard == 1 || Model.CurrentCard == 3 || Model.CurrentCard == 5 || Model.CurrentCard == 6 || Model.CurrentCard == 7)
             {
 
@@ -118,7 +119,7 @@
                         </tr>
                     }
 
-                }
+                }*@
             }
 
         </tbody>

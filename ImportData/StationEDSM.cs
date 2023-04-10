@@ -48,8 +48,8 @@ namespace ImportData
     public class StationEDSM
     {
 
-        //[JsonProperty("id")]
-        //public int Id { get; set; }
+        [JsonProperty("id")]
+        public int Id { get; set; }
 
         [JsonProperty("marketId")]
         public long? MarketId { get; set; }
@@ -72,29 +72,29 @@ namespace ImportData
         [JsonProperty("economy")]
         public string Economy { get; set; }
 
-        //[JsonProperty("secondEconomy")]
-        //public string SecondEconomy { get; set; }
+        [JsonProperty("secondEconomy")]
+        public string SecondEconomy { get; set; }
 
-        //[JsonProperty("haveMarket")]
-        //public bool HaveMarket { get; set; }
+        [JsonProperty("haveMarket")]
+        public bool HaveMarket { get; set; }
 
-        //[JsonProperty("haveShipyard")]
-        //public bool HaveShipyard { get; set; }
+        [JsonProperty("haveShipyard")]
+        public bool HaveShipyard { get; set; }
 
-        //[JsonProperty("haveOutfitting")]
-        //public bool HaveOutfitting { get; set; }
+        [JsonProperty("haveOutfitting")]
+        public bool HaveOutfitting { get; set; }
 
         [JsonProperty("otherServices")]
         public IList<string> OtherServices { get; set; }
 
-        //[JsonProperty("updateTime")]
-        //public UpdateTime UpdateTime { get; set; }
+        [JsonProperty("updateTime")]
+        public UpdateTime UpdateTime { get; set; }
 
         [JsonProperty("systemId")]
         public int SystemId { get; set; }
 
-        //[JsonProperty("systemId64")]
-        //public object SystemId64 { get; set; }
+        [JsonProperty("systemId64")]
+        public long SystemId64 { get; set; }
 
         [JsonProperty("systemName")]
         public string SystemName { get; set; }
@@ -106,17 +106,27 @@ namespace ImportData
         public Body Body { get; set; }
 
         [JsonIgnore]
-        public PopulatedSystemEDDB PopulatedSystemEDDB { get; set; }
+        public PowerplayEDSM PowerplayEDSM { get; set; }
 
         [JsonIgnore]
-        public StationEDDB AdditionalStationDataEDDB { get; set; }
+        public SystemSpanshStation SpanshStation { get; set; }
 
         [JsonIgnore]
-        public string PrimaryEconomy { get; set; }
+        public double? X { get; set; }
+        [JsonIgnore]
+        public double? Y { get; set; }
+        [JsonIgnore]
+        public double? Z { get; set; }
 
         [JsonIgnore]
-        public string SecondaryEconomy { get; set; }
-
+        public string Security { get; set; }
+        [JsonIgnore]
+        public long? Population { get; set; }
+        [JsonIgnore]
+        public List<string>Economies { get; set; }
+        [JsonIgnore]
+        public List<string>States { get; set; }
     }
+
 
 }

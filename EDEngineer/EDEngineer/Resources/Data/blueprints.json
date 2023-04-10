@@ -6425,6 +6425,38 @@
   },
   {
     "Type": "Heat Sink Launcher",
+    "Name": "Modified Heat Sink Launcher",
+    "Engineers": [
+      "@Technology"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Mechanical Scrap",
+        "Size": 8
+      },
+      {
+        "Name": "Niobium",
+        "Size": 6
+      },
+      {
+        "Name": "Vanadium",
+        "Size": 6
+      },
+      {
+        "Name": "Mechanical Components",
+        "Size": 4
+      }
+    ],
+    "Effects": [
+      {
+        "Effect": "+100%",
+        "Property": "Capacity",
+        "IsGood": true
+      }
+    ]
+  },
+  {
+    "Type": "Heat Sink Launcher",
     "Name": "Reinforced",
     "Engineers": [
       "Ram Tah",
@@ -18233,7 +18265,8 @@
         "IsGood": false
       }
     ],
-    "Grade": 5
+    "Grade": 5,
+    "CoriolisGuid": "dd804ba4-5186-44b5-a096-6490b5806165"
   },
   {
     "Type": "Fuel Transfer Limpet Controller",
@@ -34290,6 +34323,31 @@
     ]
   },
   {
+    "Type": "Human",
+    "Name": "Sirius Modified Heat Sink Launcher",
+    "Engineers": [
+      "@Technology"
+    ],
+    "Ingredients": [
+      {
+        "Name": "Mechanical Components",
+        "Size": 5
+      },
+      {
+        "Name": "Mechanical Scrap",
+        "Size": 8
+      },
+      {
+        "Name": "Niobium",
+        "Size": 6
+      },
+      {
+        "Name": "Vanadium",
+        "Size": 6
+      }
+    ]
+  },
+  {
     "Type": "Guardian",
     "Name": "Guardian Gauss Cannon (Fixed, Medium)",
     "Engineers": [
@@ -41201,7 +41259,7 @@
       },
       {
         "Name": "Circuit Board",
-        "Size": 3
+        "Size": 5
       }
     ],
     "Effects": []

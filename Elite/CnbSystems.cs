@@ -41,12 +41,6 @@ namespace Elite
             [DefaultValue(0)]
             public long SystemPopulation { get; set; }
 
-            [JsonProperty("powerplaystate")]
-            public string PowerplayState { get; set; }
-
-            [JsonProperty("powers")]
-            public string Powers { get; set; }
-
             [JsonProperty("allegiance")]
             public string Allegiance { get; set; }
 
@@ -55,11 +49,7 @@ namespace Elite
 
             [JsonProperty("government")]
             public string Government { get; set; }
-
-            [JsonProperty("controlling_minor_faction")]
-            public string ControllingMinorFaction { get; set; }
-
-
+            
             [JsonIgnore]
             public double Distance { get; set; }
 

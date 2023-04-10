@@ -1997,7 +1997,7 @@ namespace Elite
                                 CheckCardSelectionLimits(2);
                                 break;
                             case LcdTab.Mining:
-                                CheckCardSelectionLimits(7);
+                                CheckCardSelectionLimits(2); //''7);
                                 break;
                             case LcdTab.HWInfo:
                                 CheckCardSelectionLimits(1);
@@ -2603,9 +2603,9 @@ namespace Elite
                                                     CurrentPage = _currentPage,
                                                     CurrentCard = CurrentCard[(int)CurrentTab],
 
-                                                    NearbyHotspotSystemsList = Data.NearbyHotspotSystemsList,
+                                                    NearbyHotspotSystemsList = Data.NearbyHotspotSystemsList//,
 
-                                                    NearbyMiningStationsList = Data.NearbyMiningStationsList
+                                                    //NearbyMiningStationsList = Data.NearbyMiningStationsList
 
                                                 });
                                         }
